@@ -98,9 +98,8 @@ BulkSchedule.builder()
   .build() // build methd accessible after specifying frequency
 ```
 
-## Beta status
-This SDK is in beta, and there may be breaking changes between versions 
-without a major version update. Therefore, we recommend pinning the package
+## Version pinning
+We recommend pinning the package
 version to a specific version in your build.gradle file. This way, you can 
 install the same version each time without breaking changes unless you are
 intentionally looking for the latest version.
