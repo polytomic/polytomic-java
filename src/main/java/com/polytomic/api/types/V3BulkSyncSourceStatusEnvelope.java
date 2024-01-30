@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.lang.Object;
@@ -14,30 +15,32 @@ import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(
-    builder = V2ActivateSyncInput.Builder.class
+    builder = V3BulkSyncSourceStatusEnvelope.Builder.class
 )
-public final class V2ActivateSyncInput {
-  private final boolean active;
+public final class V3BulkSyncSourceStatusEnvelope {
+  private final Optional<V3BulkSyncSourceStatus> data;
 
   private final Map<String, Object> additionalProperties;
 
-  private V2ActivateSyncInput(boolean active, Map<String, Object> additionalProperties) {
-    this.active = active;
+  private V3BulkSyncSourceStatusEnvelope(Optional<V3BulkSyncSourceStatus> data,
+      Map<String, Object> additionalProperties) {
+    this.data = data;
     this.additionalProperties = additionalProperties;
   }
 
-  @JsonProperty("active")
-  public boolean getActive() {
-    return active;
+  @JsonProperty("data")
+  public Optional<V3BulkSyncSourceStatus> getData() {
+    return data;
   }
 
   @Override
   public boolean equals(Object other) {
     if (this == other) return true;
-    return other instanceof V2ActivateSyncInput && equalTo((V2ActivateSyncInput) other);
+    return other instanceof V3BulkSyncSourceStatusEnvelope && equalTo((V3BulkSyncSourceStatusEnvelope) other);
   }
 
   @JsonAnyGetter
@@ -45,13 +48,13 @@ public final class V2ActivateSyncInput {
     return this.additionalProperties;
   }
 
-  private boolean equalTo(V2ActivateSyncInput other) {
-    return active == other.active;
+  private boolean equalTo(V3BulkSyncSourceStatusEnvelope other) {
+    return data.equals(other.data);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.active);
+    return Objects.hash(this.data);
   }
 
   @Override
@@ -59,25 +62,15 @@ public final class V2ActivateSyncInput {
     return ObjectMappers.stringify(this);
   }
 
-  public static ActiveStage builder() {
+  public static Builder builder() {
     return new Builder();
-  }
-
-  public interface ActiveStage {
-    _FinalStage active(boolean active);
-
-    Builder from(V2ActivateSyncInput other);
-  }
-
-  public interface _FinalStage {
-    V2ActivateSyncInput build();
   }
 
   @JsonIgnoreProperties(
       ignoreUnknown = true
   )
-  public static final class Builder implements ActiveStage, _FinalStage {
-    private boolean active;
+  public static final class Builder {
+    private Optional<V3BulkSyncSourceStatus> data = Optional.empty();
 
     @JsonAnySetter
     private Map<String, Object> additionalProperties = new HashMap<>();
@@ -85,22 +78,27 @@ public final class V2ActivateSyncInput {
     private Builder() {
     }
 
-    @Override
-    public Builder from(V2ActivateSyncInput other) {
-      active(other.getActive());
+    public Builder from(V3BulkSyncSourceStatusEnvelope other) {
+      data(other.getData());
       return this;
     }
 
-    @Override
-    @JsonSetter("active")
-    public _FinalStage active(boolean active) {
-      this.active = active;
+    @JsonSetter(
+        value = "data",
+        nulls = Nulls.SKIP
+    )
+    public Builder data(Optional<V3BulkSyncSourceStatus> data) {
+      this.data = data;
       return this;
     }
 
-    @Override
-    public V2ActivateSyncInput build() {
-      return new V2ActivateSyncInput(active, additionalProperties);
+    public Builder data(V3BulkSyncSourceStatus data) {
+      this.data = Optional.of(data);
+      return this;
+    }
+
+    public V3BulkSyncSourceStatusEnvelope build() {
+      return new V3BulkSyncSourceStatusEnvelope(data, additionalProperties);
     }
   }
 }

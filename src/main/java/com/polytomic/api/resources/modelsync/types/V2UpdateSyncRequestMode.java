@@ -1,30 +1,31 @@
-
 package com.polytomic.api.resources.modelsync.types;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.lang.Override;
+import java.lang.String;
 
 public enum V2UpdateSyncRequestMode {
-    UPDATE("update"),
+  UPDATE("update"),
 
-    UPDATE_OR_CREATE("updateOrCreate"),
+  UPDATE_OR_CREATE("updateOrCreate"),
 
-    CREATE("create"),
+  CREATE("create"),
 
-    REPLACE("replace"),
+  REPLACE("replace"),
 
-    APPEND("append"),
+  APPEND("append"),
 
-    SNAPSHOT("snapshot");
+  SNAPSHOT("snapshot");
 
-    private final String value;
+  private final String value;
 
-    V2UpdateSyncRequestMode(String value) {
-        this.value = value;
-    }
+  V2UpdateSyncRequestMode(String value) {
+    this.value = value;
+  }
 
-    @JsonValue
-    @Override
-    public String toString() {
-        return this.value;
-    }
+  @JsonValue
+  @Override
+  public String toString() {
+    return this.value;
+  }
 }
