@@ -1,5 +1,3 @@
-
-
 package sample;
 
 import java.lang.String;

@@ -46,7 +46,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.polytomic'
             artifactId = 'polytomic-java'
-            version = '0.0.1-beta0'
+            version = '0.0.2'
             from components.java
         }
     }
