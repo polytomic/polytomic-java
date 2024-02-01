@@ -24,6 +24,8 @@ import java.util.Optional;
 public final class V2Organization {
   private final Optional<String> id;
 
+  private final Optional<String> issuer;
+
   private final Optional<String> name;
 
   private final Optional<String> ssoDomain;
@@ -32,9 +34,11 @@ public final class V2Organization {
 
   private final Map<String, Object> additionalProperties;
 
-  private V2Organization(Optional<String> id, Optional<String> name, Optional<String> ssoDomain,
-      Optional<String> ssoOrgId, Map<String, Object> additionalProperties) {
+  private V2Organization(Optional<String> id, Optional<String> issuer, Optional<String> name,
+      Optional<String> ssoDomain, Optional<String> ssoOrgId,
+      Map<String, Object> additionalProperties) {
     this.id = id;
+    this.issuer = issuer;
     this.name = name;
     this.ssoDomain = ssoDomain;
     this.ssoOrgId = ssoOrgId;
@@ -44,6 +48,11 @@ public final class V2Organization {
   @JsonProperty("id")
   public Optional<String> getId() {
     return id;
+  }
+
+  @JsonProperty("issuer")
+  public Optional<String> getIssuer() {
+    return issuer;
   }
 
   @JsonProperty("name")
@@ -73,12 +82,12 @@ public final class V2Organization {
   }
 
   private boolean equalTo(V2Organization other) {
-    return id.equals(other.id) && name.equals(other.name) && ssoDomain.equals(other.ssoDomain) && ssoOrgId.equals(other.ssoOrgId);
+    return id.equals(other.id) && issuer.equals(other.issuer) && name.equals(other.name) && ssoDomain.equals(other.ssoDomain) && ssoOrgId.equals(other.ssoOrgId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.name, this.ssoDomain, this.ssoOrgId);
+    return Objects.hash(this.id, this.issuer, this.name, this.ssoDomain, this.ssoOrgId);
   }
 
   @Override
@@ -96,6 +105,8 @@ public final class V2Organization {
   public static final class Builder {
     private Optional<String> id = Optional.empty();
 
+    private Optional<String> issuer = Optional.empty();
+
     private Optional<String> name = Optional.empty();
 
     private Optional<String> ssoDomain = Optional.empty();
@@ -110,6 +121,7 @@ public final class V2Organization {
 
     public Builder from(V2Organization other) {
       id(other.getId());
+      issuer(other.getIssuer());
       name(other.getName());
       ssoDomain(other.getSsoDomain());
       ssoOrgId(other.getSsoOrgId());
@@ -127,6 +139,20 @@ public final class V2Organization {
 
     public Builder id(String id) {
       this.id = Optional.of(id);
+      return this;
+    }
+
+    @JsonSetter(
+        value = "issuer",
+        nulls = Nulls.SKIP
+    )
+    public Builder issuer(Optional<String> issuer) {
+      this.issuer = issuer;
+      return this;
+    }
+
+    public Builder issuer(String issuer) {
+      this.issuer = Optional.of(issuer);
       return this;
     }
 
@@ -173,7 +199,7 @@ public final class V2Organization {
     }
 
     public V2Organization build() {
-      return new V2Organization(id, name, ssoDomain, ssoOrgId, additionalProperties);
+      return new V2Organization(id, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
     }
   }
 }

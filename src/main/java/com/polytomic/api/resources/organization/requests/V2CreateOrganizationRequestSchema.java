@@ -22,6 +22,12 @@ import java.util.Optional;
     builder = V2CreateOrganizationRequestSchema.Builder.class
 )
 public final class V2CreateOrganizationRequestSchema {
+  private final Optional<String> clientId;
+
+  private final Optional<String> clientSecret;
+
+  private final Optional<String> issuer;
+
   private final String name;
 
   private final Optional<String> ssoDomain;
@@ -30,12 +36,32 @@ public final class V2CreateOrganizationRequestSchema {
 
   private final Map<String, Object> additionalProperties;
 
-  private V2CreateOrganizationRequestSchema(String name, Optional<String> ssoDomain,
-      Optional<String> ssoOrgId, Map<String, Object> additionalProperties) {
+  private V2CreateOrganizationRequestSchema(Optional<String> clientId,
+      Optional<String> clientSecret, Optional<String> issuer, String name,
+      Optional<String> ssoDomain, Optional<String> ssoOrgId,
+      Map<String, Object> additionalProperties) {
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
+    this.issuer = issuer;
     this.name = name;
     this.ssoDomain = ssoDomain;
     this.ssoOrgId = ssoOrgId;
     this.additionalProperties = additionalProperties;
+  }
+
+  @JsonProperty("client_id")
+  public Optional<String> getClientId() {
+    return clientId;
+  }
+
+  @JsonProperty("client_secret")
+  public Optional<String> getClientSecret() {
+    return clientSecret;
+  }
+
+  @JsonProperty("issuer")
+  public Optional<String> getIssuer() {
+    return issuer;
   }
 
   @JsonProperty("name")
@@ -65,12 +91,12 @@ public final class V2CreateOrganizationRequestSchema {
   }
 
   private boolean equalTo(V2CreateOrganizationRequestSchema other) {
-    return name.equals(other.name) && ssoDomain.equals(other.ssoDomain) && ssoOrgId.equals(other.ssoOrgId);
+    return clientId.equals(other.clientId) && clientSecret.equals(other.clientSecret) && issuer.equals(other.issuer) && name.equals(other.name) && ssoDomain.equals(other.ssoDomain) && ssoOrgId.equals(other.ssoOrgId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.name, this.ssoDomain, this.ssoOrgId);
+    return Objects.hash(this.clientId, this.clientSecret, this.issuer, this.name, this.ssoDomain, this.ssoOrgId);
   }
 
   @Override
@@ -91,6 +117,18 @@ public final class V2CreateOrganizationRequestSchema {
   public interface _FinalStage {
     V2CreateOrganizationRequestSchema build();
 
+    _FinalStage clientId(Optional<String> clientId);
+
+    _FinalStage clientId(String clientId);
+
+    _FinalStage clientSecret(Optional<String> clientSecret);
+
+    _FinalStage clientSecret(String clientSecret);
+
+    _FinalStage issuer(Optional<String> issuer);
+
+    _FinalStage issuer(String issuer);
+
     _FinalStage ssoDomain(Optional<String> ssoDomain);
 
     _FinalStage ssoDomain(String ssoDomain);
@@ -110,6 +148,12 @@ public final class V2CreateOrganizationRequestSchema {
 
     private Optional<String> ssoDomain = Optional.empty();
 
+    private Optional<String> issuer = Optional.empty();
+
+    private Optional<String> clientSecret = Optional.empty();
+
+    private Optional<String> clientId = Optional.empty();
+
     @JsonAnySetter
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -118,6 +162,9 @@ public final class V2CreateOrganizationRequestSchema {
 
     @Override
     public Builder from(V2CreateOrganizationRequestSchema other) {
+      clientId(other.getClientId());
+      clientSecret(other.getClientSecret());
+      issuer(other.getIssuer());
       name(other.getName());
       ssoDomain(other.getSsoDomain());
       ssoOrgId(other.getSsoOrgId());
@@ -164,8 +211,56 @@ public final class V2CreateOrganizationRequestSchema {
     }
 
     @Override
+    public _FinalStage issuer(String issuer) {
+      this.issuer = Optional.of(issuer);
+      return this;
+    }
+
+    @Override
+    @JsonSetter(
+        value = "issuer",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage issuer(Optional<String> issuer) {
+      this.issuer = issuer;
+      return this;
+    }
+
+    @Override
+    public _FinalStage clientSecret(String clientSecret) {
+      this.clientSecret = Optional.of(clientSecret);
+      return this;
+    }
+
+    @Override
+    @JsonSetter(
+        value = "client_secret",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage clientSecret(Optional<String> clientSecret) {
+      this.clientSecret = clientSecret;
+      return this;
+    }
+
+    @Override
+    public _FinalStage clientId(String clientId) {
+      this.clientId = Optional.of(clientId);
+      return this;
+    }
+
+    @Override
+    @JsonSetter(
+        value = "client_id",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage clientId(Optional<String> clientId) {
+      this.clientId = clientId;
+      return this;
+    }
+
+    @Override
     public V2CreateOrganizationRequestSchema build() {
-      return new V2CreateOrganizationRequestSchema(name, ssoDomain, ssoOrgId, additionalProperties);
+      return new V2CreateOrganizationRequestSchema(clientId, clientSecret, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
     }
   }
 }

@@ -23,13 +23,13 @@ import java.util.Optional;
     builder = V2BulkSyncDest.Builder.class
 )
 public final class V2BulkSyncDest {
-  private final Optional<Map<String, Optional<V2DestMeta>>> configuration;
+  private final Optional<Map<String, Object>> configuration;
 
   private final Optional<List<V2SupportedMode>> modes;
 
   private final Map<String, Object> additionalProperties;
 
-  private V2BulkSyncDest(Optional<Map<String, Optional<V2DestMeta>>> configuration,
+  private V2BulkSyncDest(Optional<Map<String, Object>> configuration,
       Optional<List<V2SupportedMode>> modes, Map<String, Object> additionalProperties) {
     this.configuration = configuration;
     this.modes = modes;
@@ -37,7 +37,7 @@ public final class V2BulkSyncDest {
   }
 
   @JsonProperty("configuration")
-  public Optional<Map<String, Optional<V2DestMeta>>> getConfiguration() {
+  public Optional<Map<String, Object>> getConfiguration() {
     return configuration;
   }
 
@@ -79,7 +79,7 @@ public final class V2BulkSyncDest {
       ignoreUnknown = true
   )
   public static final class Builder {
-    private Optional<Map<String, Optional<V2DestMeta>>> configuration = Optional.empty();
+    private Optional<Map<String, Object>> configuration = Optional.empty();
 
     private Optional<List<V2SupportedMode>> modes = Optional.empty();
 
@@ -99,12 +99,12 @@ public final class V2BulkSyncDest {
         value = "configuration",
         nulls = Nulls.SKIP
     )
-    public Builder configuration(Optional<Map<String, Optional<V2DestMeta>>> configuration) {
+    public Builder configuration(Optional<Map<String, Object>> configuration) {
       this.configuration = configuration;
       return this;
     }
 
-    public Builder configuration(Map<String, Optional<V2DestMeta>> configuration) {
+    public Builder configuration(Map<String, Object> configuration) {
       this.configuration = Optional.of(configuration);
       return this;
     }

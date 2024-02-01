@@ -27,9 +27,15 @@ import java.util.Optional;
 public final class V2CreateBulkSyncRequest {
   private final Optional<Boolean> active;
 
+  private final Optional<Boolean> automaticallyAddNewFields;
+
+  private final Optional<Boolean> automaticallyAddNewObjects;
+
   private final Optional<Map<String, Object>> destinationConfiguration;
 
   private final String destinationConnectionId;
+
+  private final Optional<Boolean> disableRecordTimestamps;
 
   private final Optional<Boolean> discover;
 
@@ -52,14 +58,19 @@ public final class V2CreateBulkSyncRequest {
   private final Map<String, Object> additionalProperties;
 
   private V2CreateBulkSyncRequest(Optional<Boolean> active,
+      Optional<Boolean> automaticallyAddNewFields, Optional<Boolean> automaticallyAddNewObjects,
       Optional<Map<String, Object>> destinationConfiguration, String destinationConnectionId,
-      Optional<Boolean> discover, String mode, String name, Optional<String> organizationId,
-      Optional<List<String>> policies, BulkSchedule schedule, Optional<List<String>> schemas,
+      Optional<Boolean> disableRecordTimestamps, Optional<Boolean> discover, String mode,
+      String name, Optional<String> organizationId, Optional<List<String>> policies,
+      BulkSchedule schedule, Optional<List<String>> schemas,
       Optional<Map<String, Object>> sourceConfiguration, String sourceConnectionId,
       Map<String, Object> additionalProperties) {
     this.active = active;
+    this.automaticallyAddNewFields = automaticallyAddNewFields;
+    this.automaticallyAddNewObjects = automaticallyAddNewObjects;
     this.destinationConfiguration = destinationConfiguration;
     this.destinationConnectionId = destinationConnectionId;
+    this.disableRecordTimestamps = disableRecordTimestamps;
     this.discover = discover;
     this.mode = mode;
     this.name = name;
@@ -77,6 +88,16 @@ public final class V2CreateBulkSyncRequest {
     return active;
   }
 
+  @JsonProperty("automatically_add_new_fields")
+  public Optional<Boolean> getAutomaticallyAddNewFields() {
+    return automaticallyAddNewFields;
+  }
+
+  @JsonProperty("automatically_add_new_objects")
+  public Optional<Boolean> getAutomaticallyAddNewObjects() {
+    return automaticallyAddNewObjects;
+  }
+
   @JsonProperty("destination_configuration")
   public Optional<Map<String, Object>> getDestinationConfiguration() {
     return destinationConfiguration;
@@ -87,6 +108,14 @@ public final class V2CreateBulkSyncRequest {
     return destinationConnectionId;
   }
 
+  @JsonProperty("disable_record_timestamps")
+  public Optional<Boolean> getDisableRecordTimestamps() {
+    return disableRecordTimestamps;
+  }
+
+  /**
+   * @return DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead
+   */
   @JsonProperty("discover")
   public Optional<Boolean> getDiscover() {
     return discover;
@@ -144,12 +173,12 @@ public final class V2CreateBulkSyncRequest {
   }
 
   private boolean equalTo(V2CreateBulkSyncRequest other) {
-    return active.equals(other.active) && destinationConfiguration.equals(other.destinationConfiguration) && destinationConnectionId.equals(other.destinationConnectionId) && discover.equals(other.discover) && mode.equals(other.mode) && name.equals(other.name) && organizationId.equals(other.organizationId) && policies.equals(other.policies) && schedule.equals(other.schedule) && schemas.equals(other.schemas) && sourceConfiguration.equals(other.sourceConfiguration) && sourceConnectionId.equals(other.sourceConnectionId);
+    return active.equals(other.active) && automaticallyAddNewFields.equals(other.automaticallyAddNewFields) && automaticallyAddNewObjects.equals(other.automaticallyAddNewObjects) && destinationConfiguration.equals(other.destinationConfiguration) && destinationConnectionId.equals(other.destinationConnectionId) && disableRecordTimestamps.equals(other.disableRecordTimestamps) && discover.equals(other.discover) && mode.equals(other.mode) && name.equals(other.name) && organizationId.equals(other.organizationId) && policies.equals(other.policies) && schedule.equals(other.schedule) && schemas.equals(other.schemas) && sourceConfiguration.equals(other.sourceConfiguration) && sourceConnectionId.equals(other.sourceConnectionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.active, this.destinationConfiguration, this.destinationConnectionId, this.discover, this.mode, this.name, this.organizationId, this.policies, this.schedule, this.schemas, this.sourceConfiguration, this.sourceConnectionId);
+    return Objects.hash(this.active, this.automaticallyAddNewFields, this.automaticallyAddNewObjects, this.destinationConfiguration, this.destinationConnectionId, this.disableRecordTimestamps, this.discover, this.mode, this.name, this.organizationId, this.policies, this.schedule, this.schemas, this.sourceConfiguration, this.sourceConnectionId);
   }
 
   @Override
@@ -190,9 +219,21 @@ public final class V2CreateBulkSyncRequest {
 
     _FinalStage active(Boolean active);
 
+    _FinalStage automaticallyAddNewFields(Optional<Boolean> automaticallyAddNewFields);
+
+    _FinalStage automaticallyAddNewFields(Boolean automaticallyAddNewFields);
+
+    _FinalStage automaticallyAddNewObjects(Optional<Boolean> automaticallyAddNewObjects);
+
+    _FinalStage automaticallyAddNewObjects(Boolean automaticallyAddNewObjects);
+
     _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration);
 
     _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration);
+
+    _FinalStage disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps);
+
+    _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps);
 
     _FinalStage discover(Optional<Boolean> discover);
 
@@ -239,7 +280,13 @@ public final class V2CreateBulkSyncRequest {
 
     private Optional<Boolean> discover = Optional.empty();
 
+    private Optional<Boolean> disableRecordTimestamps = Optional.empty();
+
     private Optional<Map<String, Object>> destinationConfiguration = Optional.empty();
+
+    private Optional<Boolean> automaticallyAddNewObjects = Optional.empty();
+
+    private Optional<Boolean> automaticallyAddNewFields = Optional.empty();
 
     private Optional<Boolean> active = Optional.empty();
 
@@ -252,8 +299,11 @@ public final class V2CreateBulkSyncRequest {
     @Override
     public Builder from(V2CreateBulkSyncRequest other) {
       active(other.getActive());
+      automaticallyAddNewFields(other.getAutomaticallyAddNewFields());
+      automaticallyAddNewObjects(other.getAutomaticallyAddNewObjects());
       destinationConfiguration(other.getDestinationConfiguration());
       destinationConnectionId(other.getDestinationConnectionId());
+      disableRecordTimestamps(other.getDisableRecordTimestamps());
       discover(other.getDiscover());
       mode(other.getMode());
       name(other.getName());
@@ -365,6 +415,10 @@ public final class V2CreateBulkSyncRequest {
       return this;
     }
 
+    /**
+     * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+     * @return Reference to {@code this} so that method calls can be chained together.
+     */
     @Override
     public _FinalStage discover(Boolean discover) {
       this.discover = Optional.of(discover);
@@ -378,6 +432,22 @@ public final class V2CreateBulkSyncRequest {
     )
     public _FinalStage discover(Optional<Boolean> discover) {
       this.discover = discover;
+      return this;
+    }
+
+    @Override
+    public _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps) {
+      this.disableRecordTimestamps = Optional.of(disableRecordTimestamps);
+      return this;
+    }
+
+    @Override
+    @JsonSetter(
+        value = "disable_record_timestamps",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps) {
+      this.disableRecordTimestamps = disableRecordTimestamps;
       return this;
     }
 
@@ -399,6 +469,38 @@ public final class V2CreateBulkSyncRequest {
     }
 
     @Override
+    public _FinalStage automaticallyAddNewObjects(Boolean automaticallyAddNewObjects) {
+      this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
+      return this;
+    }
+
+    @Override
+    @JsonSetter(
+        value = "automatically_add_new_objects",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage automaticallyAddNewObjects(Optional<Boolean> automaticallyAddNewObjects) {
+      this.automaticallyAddNewObjects = automaticallyAddNewObjects;
+      return this;
+    }
+
+    @Override
+    public _FinalStage automaticallyAddNewFields(Boolean automaticallyAddNewFields) {
+      this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
+      return this;
+    }
+
+    @Override
+    @JsonSetter(
+        value = "automatically_add_new_fields",
+        nulls = Nulls.SKIP
+    )
+    public _FinalStage automaticallyAddNewFields(Optional<Boolean> automaticallyAddNewFields) {
+      this.automaticallyAddNewFields = automaticallyAddNewFields;
+      return this;
+    }
+
+    @Override
     public _FinalStage active(Boolean active) {
       this.active = Optional.of(active);
       return this;
@@ -416,7 +518,7 @@ public final class V2CreateBulkSyncRequest {
 
     @Override
     public V2CreateBulkSyncRequest build() {
-      return new V2CreateBulkSyncRequest(active, destinationConfiguration, destinationConnectionId, discover, mode, name, organizationId, policies, schedule, schemas, sourceConfiguration, sourceConnectionId, additionalProperties);
+      return new V2CreateBulkSyncRequest(active, automaticallyAddNewFields, automaticallyAddNewObjects, destinationConfiguration, destinationConnectionId, disableRecordTimestamps, discover, mode, name, organizationId, policies, schedule, schemas, sourceConfiguration, sourceConnectionId, additionalProperties);
     }
   }
 }
