@@ -110,7 +110,7 @@ public final class V3BulkSyncExecution {
         return type;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3BulkSyncExecution && equalTo((V3BulkSyncExecution) other);
@@ -133,7 +133,7 @@ public final class V3BulkSyncExecution {
                 && type.equals(other.type);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.completedAt,
@@ -147,7 +147,7 @@ public final class V3BulkSyncExecution {
                 this.type);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

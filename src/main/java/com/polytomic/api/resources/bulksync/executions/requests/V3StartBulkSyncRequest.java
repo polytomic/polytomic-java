@@ -55,7 +55,7 @@ public final class V3StartBulkSyncRequest {
         return test;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3StartBulkSyncRequest && equalTo((V3StartBulkSyncRequest) other);
@@ -70,12 +70,12 @@ public final class V3StartBulkSyncRequest {
         return resync.equals(other.resync) && schemas.equals(other.schemas) && test.equals(other.test);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.resync, this.schemas, this.test);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

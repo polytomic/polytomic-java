@@ -5,6 +5,7 @@ package com.polytomic.api.resources.bulksync;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.util.function.Supplier;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -44,6 +44,10 @@ public class BulkSyncClient {
         this.clientOptions = clientOptions;
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
+    }
+
+    public V2BulkSyncDestEnvelope getDestination(String id) {
+        return getDestination(id, null);
     }
 
     public V2BulkSyncDestEnvelope getDestination(String id, RequestOptions requestOptions) {
@@ -72,12 +76,12 @@ public class BulkSyncClient {
         }
     }
 
-    public V2BulkSyncDestEnvelope getDestination(String id) {
-        return getDestination(id, null);
-    }
-
     public V3BulkSyncSourceEnvelope getSource(String connectionId) {
         return getSource(connectionId, BulkSyncGetSourceRequest.builder().build());
+    }
+
+    public V3BulkSyncSourceEnvelope getSource(String connectionId, BulkSyncGetSourceRequest request) {
+        return getSource(connectionId, request, null);
     }
 
     public V3BulkSyncSourceEnvelope getSource(
@@ -114,8 +118,8 @@ public class BulkSyncClient {
         }
     }
 
-    public V3BulkSyncSourceEnvelope getSource(String connectionId, BulkSyncGetSourceRequest request) {
-        return getSource(connectionId, request, null);
+    public V3BulkSyncSourceSchemaEnvelope getSourceSchema(String connectionId, String schemaId) {
+        return getSourceSchema(connectionId, schemaId, null);
     }
 
     public V3BulkSyncSourceSchemaEnvelope getSourceSchema(
@@ -148,8 +152,8 @@ public class BulkSyncClient {
         }
     }
 
-    public V3BulkSyncSourceSchemaEnvelope getSourceSchema(String connectionId, String schemaId) {
-        return getSourceSchema(connectionId, schemaId, null);
+    public V3BulkSyncSourceStatusEnvelope apiV3GetBulkSourceStatus(String connectionId) {
+        return apiV3GetBulkSourceStatus(connectionId, null);
     }
 
     public V3BulkSyncSourceStatusEnvelope apiV3GetBulkSourceStatus(String connectionId, RequestOptions requestOptions) {
@@ -180,8 +184,8 @@ public class BulkSyncClient {
         }
     }
 
-    public V3BulkSyncSourceStatusEnvelope apiV3GetBulkSourceStatus(String connectionId) {
-        return apiV3GetBulkSourceStatus(connectionId, null);
+    public V2BulkSyncListEnvelope list() {
+        return list(null);
     }
 
     public V2BulkSyncListEnvelope list(RequestOptions requestOptions) {
@@ -209,8 +213,8 @@ public class BulkSyncClient {
         }
     }
 
-    public V2BulkSyncListEnvelope list() {
-        return list(null);
+    public V2BulkSyncResponseEnvelope create(V2CreateBulkSyncRequest request) {
+        return create(request, null);
     }
 
     public V2BulkSyncResponseEnvelope create(V2CreateBulkSyncRequest request, RequestOptions requestOptions) {
@@ -221,7 +225,7 @@ public class BulkSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -245,12 +249,12 @@ public class BulkSyncClient {
         }
     }
 
-    public V2BulkSyncResponseEnvelope create(V2CreateBulkSyncRequest request) {
-        return create(request, null);
-    }
-
     public V2BulkSyncResponseEnvelope get(String id) {
         return get(id, BulkSyncGetRequest.builder().build());
+    }
+
+    public V2BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request) {
+        return get(id, request, null);
     }
 
     public V2BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request, RequestOptions requestOptions) {
@@ -282,12 +286,12 @@ public class BulkSyncClient {
         }
     }
 
-    public V2BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request) {
-        return get(id, request, null);
-    }
-
     public void remove(String id) {
         remove(id, BulkSyncRemoveRequest.builder().build());
+    }
+
+    public void remove(String id, BulkSyncRemoveRequest request) {
+        remove(id, request, null);
     }
 
     public void remove(String id, BulkSyncRemoveRequest request, RequestOptions requestOptions) {
@@ -318,8 +322,14 @@ public class BulkSyncClient {
         }
     }
 
-    public void remove(String id, BulkSyncRemoveRequest request) {
-        remove(id, request, null);
+    /**
+     * <blockquote>
+     * 📘 Updating schemas
+     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
+     * </blockquote>
+     */
+    public V2BulkSyncResponseEnvelope update(String id, V2UpdateBulkSyncRequest request) {
+        return update(id, request, null);
     }
 
     /**
@@ -338,7 +348,7 @@ public class BulkSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -362,14 +372,8 @@ public class BulkSyncClient {
         }
     }
 
-    /**
-     * <blockquote>
-     * 📘 Updating schemas
-     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
-     * </blockquote>
-     */
-    public V2BulkSyncResponseEnvelope update(String id, V2UpdateBulkSyncRequest request) {
-        return update(id, request, null);
+    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request) {
+        return activate(id, request, null);
     }
 
     public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request, RequestOptions requestOptions) {
@@ -382,7 +386,7 @@ public class BulkSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -406,8 +410,8 @@ public class BulkSyncClient {
         }
     }
 
-    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request) {
-        return activate(id, request, null);
+    public V3BulkSyncStatusEnvelope getStatus(String id) {
+        return getStatus(id, null);
     }
 
     public V3BulkSyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
@@ -435,10 +439,6 @@ public class BulkSyncClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V3BulkSyncStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
     }
 
     public ExecutionsClient executions() {

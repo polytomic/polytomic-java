@@ -54,7 +54,7 @@ public final class V3BulkField {
         return obfuscated;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3BulkField && equalTo((V3BulkField) other);
@@ -69,12 +69,12 @@ public final class V3BulkField {
         return enabled.equals(other.enabled) && id.equals(other.id) && obfuscated.equals(other.obfuscated);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.enabled, this.id, this.obfuscated);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

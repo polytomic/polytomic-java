@@ -55,7 +55,7 @@ public final class V3Schema {
         return name;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3Schema && equalTo((V3Schema) other);
@@ -70,12 +70,12 @@ public final class V3Schema {
         return fields.equals(other.fields) && id.equals(other.id) && name.equals(other.name);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.fields, this.id, this.name);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

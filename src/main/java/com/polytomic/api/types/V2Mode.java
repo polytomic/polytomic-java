@@ -81,7 +81,7 @@ public final class V2Mode {
         return supportsTargetFilters;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Mode && equalTo((V2Mode) other);
@@ -101,7 +101,7 @@ public final class V2Mode {
                 && supportsTargetFilters.equals(other.supportsTargetFilters);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.description,
@@ -112,7 +112,7 @@ public final class V2Mode {
                 this.supportsTargetFilters);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

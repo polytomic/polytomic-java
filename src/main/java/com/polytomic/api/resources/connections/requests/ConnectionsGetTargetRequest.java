@@ -43,7 +43,7 @@ public final class ConnectionsGetTargetRequest {
         return search;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof ConnectionsGetTargetRequest && equalTo((ConnectionsGetTargetRequest) other);
@@ -58,12 +58,12 @@ public final class ConnectionsGetTargetRequest {
         return type.equals(other.type) && search.equals(other.search);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.type, this.search);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

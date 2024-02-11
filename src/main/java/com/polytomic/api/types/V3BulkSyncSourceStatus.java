@@ -55,7 +55,7 @@ public final class V3BulkSyncSourceStatus {
         return lastRefreshStarted;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3BulkSyncSourceStatus && equalTo((V3BulkSyncSourceStatus) other);
@@ -72,12 +72,12 @@ public final class V3BulkSyncSourceStatus {
                 && lastRefreshStarted.equals(other.lastRefreshStarted);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.cacheStatus, this.lastRefreshFinished, this.lastRefreshStarted);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

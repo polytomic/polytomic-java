@@ -32,7 +32,7 @@ public final class V2ActivateSyncInput {
         return active;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ActivateSyncInput && equalTo((V2ActivateSyncInput) other);
@@ -47,12 +47,12 @@ public final class V2ActivateSyncInput {
         return active == other.active;
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.active);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -80,20 +80,20 @@ public final class V2ActivateSyncInput {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2ActivateSyncInput other) {
             active(other.getActive());
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("active")
         public _FinalStage active(boolean active) {
             this.active = active;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2ActivateSyncInput build() {
             return new V2ActivateSyncInput(active, additionalProperties);
         }

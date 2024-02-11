@@ -64,7 +64,7 @@ public final class SchemaAssociation {
         return referencedField;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof SchemaAssociation && equalTo((SchemaAssociation) other);
@@ -82,12 +82,12 @@ public final class SchemaAssociation {
                 && referencedField.equals(other.referencedField);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.id, this.name, this.referenceTo, this.referencedField);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

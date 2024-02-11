@@ -55,7 +55,7 @@ public final class V2ConnectionMetaResponse {
         return requiresOneOf;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ConnectionMetaResponse && equalTo((V2ConnectionMetaResponse) other);
@@ -72,12 +72,12 @@ public final class V2ConnectionMetaResponse {
                 && requiresOneOf.equals(other.requiresOneOf);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.configuration, this.items, this.requiresOneOf);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

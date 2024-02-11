@@ -42,7 +42,7 @@ public final class V2Relation {
         return to;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Relation && equalTo((V2Relation) other);
@@ -57,12 +57,12 @@ public final class V2Relation {
         return from.equals(other.from) && to.equals(other.to);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.from, this.to);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

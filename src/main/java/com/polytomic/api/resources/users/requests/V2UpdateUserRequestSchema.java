@@ -42,7 +42,7 @@ public final class V2UpdateUserRequestSchema {
         return role;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2UpdateUserRequestSchema && equalTo((V2UpdateUserRequestSchema) other);
@@ -57,12 +57,12 @@ public final class V2UpdateUserRequestSchema {
         return email.equals(other.email) && role.equals(other.role);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.email, this.role);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -96,34 +96,34 @@ public final class V2UpdateUserRequestSchema {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2UpdateUserRequestSchema other) {
             email(other.getEmail());
             role(other.getRole());
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("email")
         public _FinalStage email(String email) {
             this.email = email;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage role(String role) {
             this.role = Optional.of(role);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "role", nulls = Nulls.SKIP)
         public _FinalStage role(Optional<String> role) {
             this.role = role;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2UpdateUserRequestSchema build() {
             return new V2UpdateUserRequestSchema(email, role, additionalProperties);
         }

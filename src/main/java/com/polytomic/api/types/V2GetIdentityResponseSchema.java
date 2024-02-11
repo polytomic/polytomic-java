@@ -108,7 +108,7 @@ public final class V2GetIdentityResponseSchema {
         return role;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2GetIdentityResponseSchema && equalTo((V2GetIdentityResponseSchema) other);
@@ -131,7 +131,7 @@ public final class V2GetIdentityResponseSchema {
                 && role.equals(other.role);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.email,
@@ -145,7 +145,7 @@ public final class V2GetIdentityResponseSchema {
                 this.role);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

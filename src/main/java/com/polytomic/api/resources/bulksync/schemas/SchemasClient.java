@@ -5,6 +5,7 @@ package com.polytomic.api.resources.bulksync.schemas;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.schemas.requests.V3UpdateBulkSchema;
@@ -13,7 +14,6 @@ import com.polytomic.api.types.V3ListBulkSchemaEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -23,6 +23,10 @@ public class SchemasClient {
 
     public SchemasClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public V3ListBulkSchemaEnvelope list(String id) {
+        return list(id, null);
     }
 
     public V3ListBulkSchemaEnvelope list(String id, RequestOptions requestOptions) {
@@ -52,12 +56,12 @@ public class SchemasClient {
         }
     }
 
-    public V3ListBulkSchemaEnvelope list(String id) {
-        return list(id, null);
-    }
-
     public V3BulkSchemaEnvelope update(String id, String schemaId) {
         return update(id, schemaId, V3UpdateBulkSchema.builder().build());
+    }
+
+    public V3BulkSchemaEnvelope update(String id, String schemaId, V3UpdateBulkSchema request) {
+        return update(id, schemaId, request, null);
     }
 
     public V3BulkSchemaEnvelope update(
@@ -72,7 +76,7 @@ public class SchemasClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -96,8 +100,8 @@ public class SchemasClient {
         }
     }
 
-    public V3BulkSchemaEnvelope update(String id, String schemaId, V3UpdateBulkSchema request) {
-        return update(id, schemaId, request, null);
+    public V3BulkSchemaEnvelope get(String id, String schemaId) {
+        return get(id, schemaId, null);
     }
 
     public V3BulkSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
@@ -126,9 +130,5 @@ public class SchemasClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V3BulkSchemaEnvelope get(String id, String schemaId) {
-        return get(id, schemaId, null);
     }
 }

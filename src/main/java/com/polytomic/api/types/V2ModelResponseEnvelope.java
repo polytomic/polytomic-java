@@ -34,7 +34,7 @@ public final class V2ModelResponseEnvelope {
         return data;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ModelResponseEnvelope && equalTo((V2ModelResponseEnvelope) other);
@@ -49,12 +49,12 @@ public final class V2ModelResponseEnvelope {
         return data.equals(other.data);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.data);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

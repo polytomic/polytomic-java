@@ -81,7 +81,7 @@ public final class V2UpdateOrganizationRequestSchema {
         return ssoOrgId;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2UpdateOrganizationRequestSchema && equalTo((V2UpdateOrganizationRequestSchema) other);
@@ -101,12 +101,12 @@ public final class V2UpdateOrganizationRequestSchema {
                 && ssoOrgId.equals(other.ssoOrgId);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.clientId, this.clientSecret, this.issuer, this.name, this.ssoDomain, this.ssoOrgId);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -164,7 +164,7 @@ public final class V2UpdateOrganizationRequestSchema {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2UpdateOrganizationRequestSchema other) {
             clientId(other.getClientId());
             clientSecret(other.getClientSecret());
@@ -175,79 +175,79 @@ public final class V2UpdateOrganizationRequestSchema {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public _FinalStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage ssoOrgId(String ssoOrgId) {
             this.ssoOrgId = Optional.of(ssoOrgId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "sso_org_id", nulls = Nulls.SKIP)
         public _FinalStage ssoOrgId(Optional<String> ssoOrgId) {
             this.ssoOrgId = ssoOrgId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage ssoDomain(String ssoDomain) {
             this.ssoDomain = Optional.of(ssoDomain);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "sso_domain", nulls = Nulls.SKIP)
         public _FinalStage ssoDomain(Optional<String> ssoDomain) {
             this.ssoDomain = ssoDomain;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage issuer(String issuer) {
             this.issuer = Optional.of(issuer);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "issuer", nulls = Nulls.SKIP)
         public _FinalStage issuer(Optional<String> issuer) {
             this.issuer = issuer;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage clientSecret(String clientSecret) {
             this.clientSecret = Optional.of(clientSecret);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "client_secret", nulls = Nulls.SKIP)
         public _FinalStage clientSecret(Optional<String> clientSecret) {
             this.clientSecret = clientSecret;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage clientId(String clientId) {
             this.clientId = Optional.of(clientId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "client_id", nulls = Nulls.SKIP)
         public _FinalStage clientId(Optional<String> clientId) {
             this.clientId = clientId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2UpdateOrganizationRequestSchema build() {
             return new V2UpdateOrganizationRequestSchema(
                     clientId, clientSecret, issuer, name, ssoDomain, ssoOrgId, additionalProperties);

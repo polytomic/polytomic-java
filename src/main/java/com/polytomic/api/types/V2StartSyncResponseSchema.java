@@ -55,7 +55,7 @@ public final class V2StartSyncResponseSchema {
         return status;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2StartSyncResponseSchema && equalTo((V2StartSyncResponseSchema) other);
@@ -70,12 +70,12 @@ public final class V2StartSyncResponseSchema {
         return createdAt.equals(other.createdAt) && id.equals(other.id) && status.equals(other.status);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.createdAt, this.id, this.status);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

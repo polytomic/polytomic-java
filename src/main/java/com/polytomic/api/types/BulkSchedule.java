@@ -81,7 +81,7 @@ public final class BulkSchedule {
         return month;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof BulkSchedule && equalTo((BulkSchedule) other);
@@ -101,12 +101,12 @@ public final class BulkSchedule {
                 && month.equals(other.month);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.dayOfMonth, this.dayOfWeek, this.frequency, this.hour, this.minute, this.month);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -164,7 +164,7 @@ public final class BulkSchedule {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(BulkSchedule other) {
             dayOfMonth(other.getDayOfMonth());
             dayOfWeek(other.getDayOfWeek());
@@ -175,79 +175,79 @@ public final class BulkSchedule {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("frequency")
         public _FinalStage frequency(String frequency) {
             this.frequency = frequency;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage month(String month) {
             this.month = Optional.of(month);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "month", nulls = Nulls.SKIP)
         public _FinalStage month(Optional<String> month) {
             this.month = month;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage minute(String minute) {
             this.minute = Optional.of(minute);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "minute", nulls = Nulls.SKIP)
         public _FinalStage minute(Optional<String> minute) {
             this.minute = minute;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage hour(String hour) {
             this.hour = Optional.of(hour);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "hour", nulls = Nulls.SKIP)
         public _FinalStage hour(Optional<String> hour) {
             this.hour = hour;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage dayOfWeek(String dayOfWeek) {
             this.dayOfWeek = Optional.of(dayOfWeek);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "day_of_week", nulls = Nulls.SKIP)
         public _FinalStage dayOfWeek(Optional<String> dayOfWeek) {
             this.dayOfWeek = dayOfWeek;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage dayOfMonth(String dayOfMonth) {
             this.dayOfMonth = Optional.of(dayOfMonth);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "day_of_month", nulls = Nulls.SKIP)
         public _FinalStage dayOfMonth(Optional<String> dayOfMonth) {
             this.dayOfMonth = dayOfMonth;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public BulkSchedule build() {
             return new BulkSchedule(dayOfMonth, dayOfWeek, frequency, hour, minute, month, additionalProperties);
         }

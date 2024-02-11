@@ -42,7 +42,7 @@ public final class V2IdentityFunction {
         return label;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2IdentityFunction && equalTo((V2IdentityFunction) other);
@@ -57,12 +57,12 @@ public final class V2IdentityFunction {
         return id.equals(other.id) && label.equals(other.label);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.id, this.label);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

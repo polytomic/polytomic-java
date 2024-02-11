@@ -63,7 +63,7 @@ public final class V2ModelFieldRequest {
         return type;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ModelFieldRequest && equalTo((V2ModelFieldRequest) other);
@@ -81,12 +81,12 @@ public final class V2ModelFieldRequest {
                 && type.equals(other.type);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.example, this.label, this.name, this.type);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -132,7 +132,7 @@ public final class V2ModelFieldRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2ModelFieldRequest other) {
             example(other.getExample());
             label(other.getLabel());
@@ -141,41 +141,41 @@ public final class V2ModelFieldRequest {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("label")
         public NameStage label(String label) {
             this.label = label;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public TypeStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("type")
         public _FinalStage type(String type) {
             this.type = type;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage example(String example) {
             this.example = Optional.of(example);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "example", nulls = Nulls.SKIP)
         public _FinalStage example(Optional<String> example) {
             this.example = example;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2ModelFieldRequest build() {
             return new V2ModelFieldRequest(example, label, name, type, additionalProperties);
         }

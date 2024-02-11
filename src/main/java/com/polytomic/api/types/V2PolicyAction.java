@@ -43,7 +43,7 @@ public final class V2PolicyAction {
         return roleIds;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2PolicyAction && equalTo((V2PolicyAction) other);
@@ -58,12 +58,12 @@ public final class V2PolicyAction {
         return action.equals(other.action) && roleIds.equals(other.roleIds);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.action, this.roleIds);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -97,34 +97,34 @@ public final class V2PolicyAction {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2PolicyAction other) {
             action(other.getAction());
             roleIds(other.getRoleIds());
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("action")
         public _FinalStage action(String action) {
             this.action = action;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage roleIds(List<String> roleIds) {
             this.roleIds = Optional.of(roleIds);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "role_ids", nulls = Nulls.SKIP)
         public _FinalStage roleIds(Optional<List<String>> roleIds) {
             this.roleIds = roleIds;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2PolicyAction build() {
             return new V2PolicyAction(action, roleIds, additionalProperties);
         }

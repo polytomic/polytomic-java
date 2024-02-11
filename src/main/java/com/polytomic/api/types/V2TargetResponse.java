@@ -83,7 +83,7 @@ public final class V2TargetResponse {
         return refreshedAt;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2TargetResponse && equalTo((V2TargetResponse) other);
@@ -103,12 +103,12 @@ public final class V2TargetResponse {
                 && refreshedAt.equals(other.refreshedAt);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.fields, this.id, this.modes, this.name, this.properties, this.refreshedAt);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

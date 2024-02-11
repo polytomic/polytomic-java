@@ -136,7 +136,7 @@ public final class V2BulkSyncResponse {
         return sourceConnectionId;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2BulkSyncResponse && equalTo((V2BulkSyncResponse) other);
@@ -162,7 +162,7 @@ public final class V2BulkSyncResponse {
                 && sourceConnectionId.equals(other.sourceConnectionId);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.active,
@@ -179,7 +179,7 @@ public final class V2BulkSyncResponse {
                 this.sourceConnectionId);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

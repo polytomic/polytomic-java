@@ -43,7 +43,7 @@ public final class V3ConnectCardResponse {
         return token;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3ConnectCardResponse && equalTo((V3ConnectCardResponse) other);
@@ -58,12 +58,12 @@ public final class V3ConnectCardResponse {
         return redirectUrl.equals(other.redirectUrl) && token.equals(other.token);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.redirectUrl, this.token);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

@@ -21,6 +21,10 @@ public class SchemasClient {
         this.clientOptions = clientOptions;
     }
 
+    public V3SchemaRecordsResponseEnvelope getRecords(String connectionId, String schemaId) {
+        return getRecords(connectionId, schemaId, null);
+    }
+
     public V3SchemaRecordsResponseEnvelope getRecords(
             String connectionId, String schemaId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -49,9 +53,5 @@ public class SchemasClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V3SchemaRecordsResponseEnvelope getRecords(String connectionId, String schemaId) {
-        return getRecords(connectionId, schemaId, null);
     }
 }

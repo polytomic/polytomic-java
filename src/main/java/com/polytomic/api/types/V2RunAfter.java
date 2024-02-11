@@ -46,7 +46,7 @@ public final class V2RunAfter {
         return syncIds;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2RunAfter && equalTo((V2RunAfter) other);
@@ -61,12 +61,12 @@ public final class V2RunAfter {
         return bulkSyncIds.equals(other.bulkSyncIds) && syncIds.equals(other.syncIds);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.bulkSyncIds, this.syncIds);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

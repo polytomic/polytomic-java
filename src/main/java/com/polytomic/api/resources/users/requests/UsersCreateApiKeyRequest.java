@@ -34,7 +34,7 @@ public final class UsersCreateApiKeyRequest {
         return force;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof UsersCreateApiKeyRequest && equalTo((UsersCreateApiKeyRequest) other);
@@ -49,12 +49,12 @@ public final class UsersCreateApiKeyRequest {
         return force.equals(other.force);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.force);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

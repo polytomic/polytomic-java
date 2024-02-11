@@ -63,7 +63,7 @@ public final class V2ExecutionCounts {
         return update;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ExecutionCounts && equalTo((V2ExecutionCounts) other);
@@ -81,12 +81,12 @@ public final class V2ExecutionCounts {
                 && update.equals(other.update);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.error, this.insert, this.total, this.update);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
