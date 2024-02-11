@@ -73,7 +73,7 @@ public final class V2PolicyResponse {
         return system;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2PolicyResponse && equalTo((V2PolicyResponse) other);
@@ -92,12 +92,12 @@ public final class V2PolicyResponse {
                 && system.equals(other.system);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.id, this.name, this.organizationId, this.policyActions, this.system);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

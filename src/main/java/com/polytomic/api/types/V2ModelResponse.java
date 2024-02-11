@@ -145,7 +145,7 @@ public final class V2ModelResponse {
         return version;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ModelResponse && equalTo((V2ModelResponse) other);
@@ -172,7 +172,7 @@ public final class V2ModelResponse {
                 && version.equals(other.version);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.configuration,
@@ -190,7 +190,7 @@ public final class V2ModelResponse {
                 this.version);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

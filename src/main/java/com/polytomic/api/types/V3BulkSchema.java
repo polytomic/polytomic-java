@@ -64,7 +64,7 @@ public final class V3BulkSchema {
         return partitionKey;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3BulkSchema && equalTo((V3BulkSchema) other);
@@ -82,12 +82,12 @@ public final class V3BulkSchema {
                 && partitionKey.equals(other.partitionKey);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.enabled, this.fields, this.id, this.partitionKey);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

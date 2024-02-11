@@ -72,7 +72,7 @@ public final class V2Filter {
         return value;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Filter && equalTo((V2Filter) other);
@@ -91,12 +91,12 @@ public final class V2Filter {
                 && value.equals(other.value);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.fieldId, this.fieldType, this.function, this.label, this.value);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -148,7 +148,7 @@ public final class V2Filter {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2Filter other) {
             fieldId(other.getFieldId());
             fieldType(other.getFieldType());
@@ -158,54 +158,54 @@ public final class V2Filter {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("field_id")
         public FieldTypeStage fieldId(String fieldId) {
             this.fieldId = fieldId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("field_type")
         public FunctionStage fieldType(String fieldType) {
             this.fieldType = fieldType;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("function")
         public _FinalStage function(String function) {
             this.function = function;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage value(Object value) {
             this.value = Optional.of(value);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public _FinalStage value(Optional<Object> value) {
             this.value = value;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage label(String label) {
             this.label = Optional.of(label);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public _FinalStage label(Optional<String> label) {
             this.label = label;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2Filter build() {
             return new V2Filter(fieldId, fieldType, function, label, value, additionalProperties);
         }

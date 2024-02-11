@@ -34,7 +34,7 @@ public final class BulkSyncRemoveRequest {
         return refreshSchemas;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof BulkSyncRemoveRequest && equalTo((BulkSyncRemoveRequest) other);
@@ -49,12 +49,12 @@ public final class BulkSyncRemoveRequest {
         return refreshSchemas.equals(other.refreshSchemas);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.refreshSchemas);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

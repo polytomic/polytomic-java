@@ -63,7 +63,7 @@ public final class V2ConnectionType {
         return useOauth;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ConnectionType && equalTo((V2ConnectionType) other);
@@ -81,12 +81,12 @@ public final class V2ConnectionType {
                 && useOauth.equals(other.useOauth);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.envConfig, this.id, this.name, this.useOauth);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.bulksync.executions;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.executions.requests.V3StartBulkSyncRequest;
@@ -13,7 +14,6 @@ import com.polytomic.api.types.V3ListBulkSyncExecutionsEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -23,6 +23,10 @@ public class ExecutionsClient {
 
     public ExecutionsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public V3ListBulkSyncExecutionsEnvelope list(String id) {
+        return list(id, null);
     }
 
     public V3ListBulkSyncExecutionsEnvelope list(String id, RequestOptions requestOptions) {
@@ -53,12 +57,12 @@ public class ExecutionsClient {
         }
     }
 
-    public V3ListBulkSyncExecutionsEnvelope list(String id) {
-        return list(id, null);
-    }
-
     public V3BulkSyncExecutionEnvelope start(String id) {
         return start(id, V3StartBulkSyncRequest.builder().build());
+    }
+
+    public V3BulkSyncExecutionEnvelope start(String id, V3StartBulkSyncRequest request) {
+        return start(id, request, null);
     }
 
     public V3BulkSyncExecutionEnvelope start(String id, V3StartBulkSyncRequest request, RequestOptions requestOptions) {
@@ -71,7 +75,7 @@ public class ExecutionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -95,8 +99,8 @@ public class ExecutionsClient {
         }
     }
 
-    public V3BulkSyncExecutionEnvelope start(String id, V3StartBulkSyncRequest request) {
-        return start(id, request, null);
+    public V3BulkSyncExecutionEnvelope get(String id, String execId) {
+        return get(id, execId, null);
     }
 
     public V3BulkSyncExecutionEnvelope get(String id, String execId, RequestOptions requestOptions) {
@@ -125,9 +129,5 @@ public class ExecutionsClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V3BulkSyncExecutionEnvelope get(String id, String execId) {
-        return get(id, execId, null);
     }
 }

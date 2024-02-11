@@ -90,7 +90,7 @@ public final class V2Schedule {
         return runAfter;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Schedule && equalTo((V2Schedule) other);
@@ -111,13 +111,13 @@ public final class V2Schedule {
                 && runAfter.equals(other.runAfter);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.dayOfMonth, this.dayOfWeek, this.frequency, this.hour, this.minute, this.month, this.runAfter);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

@@ -117,7 +117,7 @@ public final class SyncDestinationProperties {
         return useFieldNamesAsLabels;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof SyncDestinationProperties && equalTo((SyncDestinationProperties) other);
@@ -141,7 +141,7 @@ public final class SyncDestinationProperties {
                 && useFieldNamesAsLabels.equals(other.useFieldNamesAsLabels);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.doesNotReportOperationCounts,
@@ -156,7 +156,7 @@ public final class SyncDestinationProperties {
                 this.useFieldNamesAsLabels);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

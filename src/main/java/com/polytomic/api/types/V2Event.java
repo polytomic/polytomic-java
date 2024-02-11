@@ -73,7 +73,7 @@ public final class V2Event {
         return type;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Event && equalTo((V2Event) other);
@@ -92,12 +92,12 @@ public final class V2Event {
                 && type.equals(other.type);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.createdAt, this.event, this.id, this.organizationId, this.type);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

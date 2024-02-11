@@ -72,7 +72,7 @@ public final class V2SyncField {
         return target;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2SyncField && equalTo((V2SyncField) other);
@@ -91,12 +91,12 @@ public final class V2SyncField {
                 && target.equals(other.target);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.new_, this.overrideValue, this.source, this.syncMode, this.target);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -148,7 +148,7 @@ public final class V2SyncField {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2SyncField other) {
             new_(other.getNew());
             overrideValue(other.getOverrideValue());
@@ -158,60 +158,60 @@ public final class V2SyncField {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("source")
         public TargetStage source(V2Source source) {
             this.source = source;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(String target) {
             this.target = target;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage syncMode(String syncMode) {
             this.syncMode = Optional.of(syncMode);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "sync_mode", nulls = Nulls.SKIP)
         public _FinalStage syncMode(Optional<String> syncMode) {
             this.syncMode = syncMode;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage overrideValue(String overrideValue) {
             this.overrideValue = Optional.of(overrideValue);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "override_value", nulls = Nulls.SKIP)
         public _FinalStage overrideValue(Optional<String> overrideValue) {
             this.overrideValue = overrideValue;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage new_(Boolean new_) {
             this.new_ = Optional.of(new_);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "new", nulls = Nulls.SKIP)
         public _FinalStage new_(Optional<Boolean> new_) {
             this.new_ = new_;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2SyncField build() {
             return new V2SyncField(new_, overrideValue, source, syncMode, target, additionalProperties);
         }

@@ -51,7 +51,7 @@ public final class V2CreateWebhooksSchema {
         return secret;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2CreateWebhooksSchema && equalTo((V2CreateWebhooksSchema) other);
@@ -68,12 +68,12 @@ public final class V2CreateWebhooksSchema {
                 && secret.equals(other.secret);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.endpoint, this.organizationId, this.secret);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -113,7 +113,7 @@ public final class V2CreateWebhooksSchema {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2CreateWebhooksSchema other) {
             endpoint(other.getEndpoint());
             organizationId(other.getOrganizationId());
@@ -121,34 +121,34 @@ public final class V2CreateWebhooksSchema {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("endpoint")
         public SecretStage endpoint(String endpoint) {
             this.endpoint = endpoint;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("secret")
         public _FinalStage secret(String secret) {
             this.secret = secret;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2CreateWebhooksSchema build() {
             return new V2CreateWebhooksSchema(endpoint, organizationId, secret, additionalProperties);
         }

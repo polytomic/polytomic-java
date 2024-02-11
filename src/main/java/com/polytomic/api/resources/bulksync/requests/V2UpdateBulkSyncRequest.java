@@ -128,7 +128,7 @@ public final class V2UpdateBulkSyncRequest {
         return sourceConnectionId;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2UpdateBulkSyncRequest && equalTo((V2UpdateBulkSyncRequest) other);
@@ -153,7 +153,7 @@ public final class V2UpdateBulkSyncRequest {
                 && sourceConnectionId.equals(other.sourceConnectionId);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.active,
@@ -169,7 +169,7 @@ public final class V2UpdateBulkSyncRequest {
                 this.sourceConnectionId);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -263,7 +263,7 @@ public final class V2UpdateBulkSyncRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2UpdateBulkSyncRequest other) {
             active(other.getActive());
             destinationConfiguration(other.getDestinationConfiguration());
@@ -279,120 +279,120 @@ public final class V2UpdateBulkSyncRequest {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("destination_connection_id")
         public ModeStage destinationConnectionId(String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("mode")
         public NameStage mode(String mode) {
             this.mode = mode;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public ScheduleStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("schedule")
         public SourceConnectionIdStage schedule(BulkSchedule schedule) {
             this.schedule = schedule;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("source_connection_id")
         public _FinalStage sourceConnectionId(String sourceConnectionId) {
             this.sourceConnectionId = sourceConnectionId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage sourceConfiguration(Map<String, Object> sourceConfiguration) {
             this.sourceConfiguration = Optional.of(sourceConfiguration);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "source_configuration", nulls = Nulls.SKIP)
         public _FinalStage sourceConfiguration(Optional<Map<String, Object>> sourceConfiguration) {
             this.sourceConfiguration = sourceConfiguration;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.of(policies);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
             this.policies = policies;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage discover(Boolean discover) {
             this.discover = Optional.of(discover);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "discover", nulls = Nulls.SKIP)
         public _FinalStage discover(Optional<Boolean> discover) {
             this.discover = discover;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration) {
             this.destinationConfiguration = Optional.of(destinationConfiguration);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
         public _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration) {
             this.destinationConfiguration = destinationConfiguration;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage active(Boolean active) {
             this.active = Optional.of(active);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public _FinalStage active(Optional<Boolean> active) {
             this.active = active;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2UpdateBulkSyncRequest build() {
             return new V2UpdateBulkSyncRequest(
                     active,

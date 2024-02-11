@@ -99,7 +99,7 @@ public final class V2ModelField {
         return userAdded;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ModelField && equalTo((V2ModelField) other);
@@ -121,7 +121,7 @@ public final class V2ModelField {
                 && userAdded.equals(other.userAdded);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.description,
@@ -134,7 +134,7 @@ public final class V2ModelField {
                 this.userAdded);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

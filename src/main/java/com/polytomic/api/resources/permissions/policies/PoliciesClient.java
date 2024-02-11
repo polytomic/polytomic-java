@@ -5,6 +5,7 @@ package com.polytomic.api.resources.permissions.policies;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.permissions.policies.requests.V2CreatePolicyRequest;
@@ -14,7 +15,6 @@ import com.polytomic.api.types.V2PolicyResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -24,6 +24,10 @@ public class PoliciesClient {
 
     public PoliciesClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public V2ListPoliciesResponseEnvelope list() {
+        return list(null);
     }
 
     public V2ListPoliciesResponseEnvelope list(RequestOptions requestOptions) {
@@ -52,8 +56,8 @@ public class PoliciesClient {
         }
     }
 
-    public V2ListPoliciesResponseEnvelope list() {
-        return list(null);
+    public V2PolicyResponseEnvelope create(V2CreatePolicyRequest request) {
+        return create(request, null);
     }
 
     public V2PolicyResponseEnvelope create(V2CreatePolicyRequest request, RequestOptions requestOptions) {
@@ -64,7 +68,7 @@ public class PoliciesClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -88,8 +92,8 @@ public class PoliciesClient {
         }
     }
 
-    public V2PolicyResponseEnvelope create(V2CreatePolicyRequest request) {
-        return create(request, null);
+    public V2PolicyResponseEnvelope get(String id) {
+        return get(id, null);
     }
 
     public V2PolicyResponseEnvelope get(String id, RequestOptions requestOptions) {
@@ -118,8 +122,8 @@ public class PoliciesClient {
         }
     }
 
-    public V2PolicyResponseEnvelope get(String id) {
-        return get(id, null);
+    public void delete(String id) {
+        delete(id, null);
     }
 
     public void delete(String id, RequestOptions requestOptions) {
@@ -147,8 +151,8 @@ public class PoliciesClient {
         }
     }
 
-    public void delete(String id) {
-        delete(id, null);
+    public V2PolicyResponseEnvelope update(String id, V2UpdatePolicyRequest request) {
+        return update(id, request, null);
     }
 
     public V2PolicyResponseEnvelope update(String id, V2UpdatePolicyRequest request, RequestOptions requestOptions) {
@@ -160,7 +164,7 @@ public class PoliciesClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -182,9 +186,5 @@ public class PoliciesClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V2PolicyResponseEnvelope update(String id, V2UpdatePolicyRequest request) {
-        return update(id, request, null);
     }
 }

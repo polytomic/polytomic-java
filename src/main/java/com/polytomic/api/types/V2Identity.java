@@ -72,7 +72,7 @@ public final class V2Identity {
         return target;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Identity && equalTo((V2Identity) other);
@@ -91,12 +91,12 @@ public final class V2Identity {
                 && target.equals(other.target);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.function, this.newField, this.remoteFieldTypeId, this.source, this.target);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -148,7 +148,7 @@ public final class V2Identity {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2Identity other) {
             function(other.getFunction());
             newField(other.getNewField());
@@ -158,54 +158,54 @@ public final class V2Identity {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("function")
         public SourceStage function(String function) {
             this.function = function;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("source")
         public TargetStage source(V2Source source) {
             this.source = source;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(String target) {
             this.target = target;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage remoteFieldTypeId(String remoteFieldTypeId) {
             this.remoteFieldTypeId = Optional.of(remoteFieldTypeId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "remote_field_type_id", nulls = Nulls.SKIP)
         public _FinalStage remoteFieldTypeId(Optional<String> remoteFieldTypeId) {
             this.remoteFieldTypeId = remoteFieldTypeId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage newField(Boolean newField) {
             this.newField = Optional.of(newField);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "new_field", nulls = Nulls.SKIP)
         public _FinalStage newField(Optional<Boolean> newField) {
             this.newField = newField;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2Identity build() {
             return new V2Identity(function, newField, remoteFieldTypeId, source, target, additionalProperties);
         }

@@ -46,7 +46,7 @@ public final class V3BulkSyncSource {
         return schemas;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3BulkSyncSource && equalTo((V3BulkSyncSource) other);
@@ -61,12 +61,12 @@ public final class V3BulkSyncSource {
         return configuration.equals(other.configuration) && schemas.equals(other.schemas);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.configuration, this.schemas);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

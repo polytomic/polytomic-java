@@ -55,7 +55,7 @@ public final class V3BulkSyncStatusResponse {
         return nextExecutionTime;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3BulkSyncStatusResponse && equalTo((V3BulkSyncStatusResponse) other);
@@ -72,12 +72,12 @@ public final class V3BulkSyncStatusResponse {
                 && nextExecutionTime.equals(other.nextExecutionTime);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.currentExecution, this.lastExecution, this.nextExecutionTime);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

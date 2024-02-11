@@ -5,6 +5,7 @@ package com.polytomic.api.resources.webhooks;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.webhooks.requests.V2CreateWebhooksSchema;
@@ -14,7 +15,6 @@ import com.polytomic.api.types.V2WebhookListEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -24,6 +24,16 @@ public class WebhooksClient {
 
     public WebhooksClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    /**
+     * Webooks can be set up using the webhook API endpoints. Currently, only one
+     * webhook may be created per organization. The webhook will be called for events
+     * in that organization.
+     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     */
+    public V2WebhookListEnvelope list() {
+        return list(null);
     }
 
     /**
@@ -63,8 +73,8 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookListEnvelope list() {
-        return list(null);
+    public V2WebhookEnvelope create(V2CreateWebhooksSchema request) {
+        return create(request, null);
     }
 
     /**
@@ -81,7 +91,7 @@ public class WebhooksClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -111,8 +121,8 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookEnvelope create(V2CreateWebhooksSchema request) {
-        return create(request, null);
+    public V2WebhookEnvelope get(String id) {
+        return get(id, null);
     }
 
     /**
@@ -147,14 +157,8 @@ public class WebhooksClient {
         }
     }
 
-    /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
-     */
-    public V2WebhookEnvelope get(String id) {
-        return get(id, null);
+    public void delete(String id) {
+        delete(id, null);
     }
 
     public void delete(String id, RequestOptions requestOptions) {
@@ -182,8 +186,14 @@ public class WebhooksClient {
         }
     }
 
-    public void delete(String id) {
-        delete(id, null);
+    /**
+     * Webooks can be set up using the webhook API endpoints. Currently, only one
+     * webhook may be created per organization. The webhook will be called for events
+     * in that organization.
+     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     */
+    public V2WebhookEnvelope update(String id, V2UpdateWebhooksSchema request) {
+        return update(id, request, null);
     }
 
     /**
@@ -201,7 +211,7 @@ public class WebhooksClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -223,15 +233,5 @@ public class WebhooksClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
-     */
-    public V2WebhookEnvelope update(String id, V2UpdateWebhooksSchema request) {
-        return update(id, request, null);
     }
 }

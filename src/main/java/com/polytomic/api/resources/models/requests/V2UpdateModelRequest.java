@@ -129,7 +129,7 @@ public final class V2UpdateModelRequest {
         return trackingColumns;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2UpdateModelRequest && equalTo((V2UpdateModelRequest) other);
@@ -154,7 +154,7 @@ public final class V2UpdateModelRequest {
                 && trackingColumns.equals(other.trackingColumns);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.additionalFields,
@@ -170,7 +170,7 @@ public final class V2UpdateModelRequest {
                 this.trackingColumns);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -258,7 +258,7 @@ public final class V2UpdateModelRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2UpdateModelRequest other) {
             additionalFields(other.getAdditionalFields());
             configuration(other.getConfiguration());
@@ -274,138 +274,138 @@ public final class V2UpdateModelRequest {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("connection_id")
         public NameStage connectionId(String connectionId) {
             this.connectionId = connectionId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public _FinalStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage trackingColumns(List<String> trackingColumns) {
             this.trackingColumns = Optional.of(trackingColumns);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "tracking_columns", nulls = Nulls.SKIP)
         public _FinalStage trackingColumns(Optional<List<String>> trackingColumns) {
             this.trackingColumns = trackingColumns;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage relations(List<V2Relation> relations) {
             this.relations = Optional.of(relations);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "relations", nulls = Nulls.SKIP)
         public _FinalStage relations(Optional<List<V2Relation>> relations) {
             this.relations = relations;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.of(policies);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
             this.policies = policies;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage labels(List<String> labels) {
             this.labels = Optional.of(labels);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "labels", nulls = Nulls.SKIP)
         public _FinalStage labels(Optional<List<String>> labels) {
             this.labels = labels;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage identifier(String identifier) {
             this.identifier = Optional.of(identifier);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "identifier", nulls = Nulls.SKIP)
         public _FinalStage identifier(Optional<String> identifier) {
             this.identifier = identifier;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage fields(List<String> fields) {
             this.fields = Optional.of(fields);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public _FinalStage fields(Optional<List<String>> fields) {
             this.fields = fields;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration = Optional.of(configuration);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage additionalFields(List<V2ModelFieldRequest> additionalFields) {
             this.additionalFields = Optional.of(additionalFields);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "additional_fields", nulls = Nulls.SKIP)
         public _FinalStage additionalFields(Optional<List<V2ModelFieldRequest>> additionalFields) {
             this.additionalFields = additionalFields;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2UpdateModelRequest build() {
             return new V2UpdateModelRequest(
                     additionalFields,

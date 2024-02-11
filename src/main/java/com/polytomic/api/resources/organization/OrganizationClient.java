@@ -5,6 +5,7 @@ package com.polytomic.api.resources.organization;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.organization.requests.V2CreateOrganizationRequestSchema;
@@ -14,7 +15,6 @@ import com.polytomic.api.types.V2OrganizationsEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -24,6 +24,16 @@ public class OrganizationClient {
 
     public OrganizationClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * </blockquote>
+     */
+    public V2OrganizationsEnvelope list() {
+        return list(null);
     }
 
     /**
@@ -63,8 +73,8 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationsEnvelope list() {
-        return list(null);
+    public V2OrganizationEnvelope create(V2CreateOrganizationRequestSchema request) {
+        return create(request, null);
     }
 
     /**
@@ -81,7 +91,7 @@ public class OrganizationClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -111,8 +121,8 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationEnvelope create(V2CreateOrganizationRequestSchema request) {
-        return create(request, null);
+    public V2OrganizationEnvelope get(String id) {
+        return get(id, null);
     }
 
     /**
@@ -153,8 +163,8 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationEnvelope get(String id) {
-        return get(id, null);
+    public void remove(String id) {
+        remove(id, null);
     }
 
     /**
@@ -194,8 +204,8 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public void remove(String id) {
-        remove(id, null);
+    public V2OrganizationEnvelope update(String id, V2UpdateOrganizationRequestSchema request) {
+        return update(id, request, null);
     }
 
     /**
@@ -214,7 +224,7 @@ public class OrganizationClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -236,15 +246,5 @@ public class OrganizationClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
-     * </blockquote>
-     */
-    public V2OrganizationEnvelope update(String id, V2UpdateOrganizationRequestSchema request) {
-        return update(id, request, null);
     }
 }

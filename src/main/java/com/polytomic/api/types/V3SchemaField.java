@@ -82,7 +82,7 @@ public final class V3SchemaField {
         return values;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3SchemaField && equalTo((V3SchemaField) other);
@@ -102,12 +102,12 @@ public final class V3SchemaField {
                 && values.equals(other.values);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.association, this.id, this.name, this.remoteType, this.type, this.values);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

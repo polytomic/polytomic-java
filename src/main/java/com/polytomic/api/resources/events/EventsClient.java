@@ -27,6 +27,10 @@ public class EventsClient {
         return apiV2GetEvents(EventsApiV2GetEventsRequest.builder().build());
     }
 
+    public V2EventsEnvelope apiV2GetEvents(EventsApiV2GetEventsRequest request) {
+        return apiV2GetEvents(request, null);
+    }
+
     public V2EventsEnvelope apiV2GetEvents(EventsApiV2GetEventsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -69,8 +73,8 @@ public class EventsClient {
         }
     }
 
-    public V2EventsEnvelope apiV2GetEvents(EventsApiV2GetEventsRequest request) {
-        return apiV2GetEvents(request, null);
+    public V2EventTypesEnvelope apiV2GetEventTypes() {
+        return apiV2GetEventTypes(null);
     }
 
     public V2EventTypesEnvelope apiV2GetEventTypes(RequestOptions requestOptions) {
@@ -96,9 +100,5 @@ public class EventsClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V2EventTypesEnvelope apiV2GetEventTypes() {
-        return apiV2GetEventTypes(null);
     }
 }

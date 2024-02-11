@@ -42,7 +42,7 @@ public final class V3PickValue {
         return value;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3PickValue && equalTo((V3PickValue) other);
@@ -57,12 +57,12 @@ public final class V3PickValue {
         return label.equals(other.label) && value.equals(other.value);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.label, this.value);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
