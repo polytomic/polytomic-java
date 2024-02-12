@@ -63,7 +63,7 @@ public final class V2Override {
         return value;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Override && equalTo((V2Override) other);
@@ -81,12 +81,12 @@ public final class V2Override {
                 && value.equals(other.value);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.fieldId, this.function, this.override, this.value);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

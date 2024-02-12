@@ -124,7 +124,7 @@ public final class V2CreateConnectionResponseSchema {
         return type;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2CreateConnectionResponseSchema && equalTo((V2CreateConnectionResponseSchema) other);
@@ -148,7 +148,7 @@ public final class V2CreateConnectionResponseSchema {
                 && type.equals(other.type);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.authCode,
@@ -163,7 +163,7 @@ public final class V2CreateConnectionResponseSchema {
                 this.type);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

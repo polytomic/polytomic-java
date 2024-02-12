@@ -40,7 +40,7 @@ public final class V2Source {
         return modelId;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Source && equalTo((V2Source) other);
@@ -55,12 +55,12 @@ public final class V2Source {
         return field.equals(other.field) && modelId.equals(other.modelId);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.field, this.modelId);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -94,28 +94,28 @@ public final class V2Source {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2Source other) {
             field(other.getField());
             modelId(other.getModelId());
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("field")
         public ModelIdStage field(String field) {
             this.field = field;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("model_id")
         public _FinalStage modelId(String modelId) {
             this.modelId = modelId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2Source build() {
             return new V2Source(field, modelId, additionalProperties);
         }

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.permissions.roles;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.permissions.roles.requests.V2CreateRoleRequest;
@@ -14,7 +15,6 @@ import com.polytomic.api.types.V2RoleResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -24,6 +24,10 @@ public class RolesClient {
 
     public RolesClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public V2RoleListResponseEnvelope list() {
+        return list(null);
     }
 
     public V2RoleListResponseEnvelope list(RequestOptions requestOptions) {
@@ -51,8 +55,8 @@ public class RolesClient {
         }
     }
 
-    public V2RoleListResponseEnvelope list() {
-        return list(null);
+    public V2RoleResponseEnvelope create(V2CreateRoleRequest request) {
+        return create(request, null);
     }
 
     public V2RoleResponseEnvelope create(V2CreateRoleRequest request, RequestOptions requestOptions) {
@@ -63,7 +67,7 @@ public class RolesClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -87,8 +91,8 @@ public class RolesClient {
         }
     }
 
-    public V2RoleResponseEnvelope create(V2CreateRoleRequest request) {
-        return create(request, null);
+    public V2RoleResponseEnvelope get(String id) {
+        return get(id, null);
     }
 
     public V2RoleResponseEnvelope get(String id, RequestOptions requestOptions) {
@@ -117,8 +121,8 @@ public class RolesClient {
         }
     }
 
-    public V2RoleResponseEnvelope get(String id) {
-        return get(id, null);
+    public void delete(String id) {
+        delete(id, null);
     }
 
     public void delete(String id, RequestOptions requestOptions) {
@@ -146,8 +150,8 @@ public class RolesClient {
         }
     }
 
-    public void delete(String id) {
-        delete(id, null);
+    public V2RoleResponseEnvelope update(String id, V2UpdateRoleRequest request) {
+        return update(id, request, null);
     }
 
     public V2RoleResponseEnvelope update(String id, V2UpdateRoleRequest request, RequestOptions requestOptions) {
@@ -159,7 +163,7 @@ public class RolesClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -181,9 +185,5 @@ public class RolesClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V2RoleResponseEnvelope update(String id, V2UpdateRoleRequest request) {
-        return update(id, request, null);
     }
 }

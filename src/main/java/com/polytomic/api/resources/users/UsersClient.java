@@ -5,6 +5,7 @@ package com.polytomic.api.resources.users;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.users.requests.UsersCreateApiKeyRequest;
@@ -16,7 +17,6 @@ import com.polytomic.api.types.V2UserEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -26,6 +26,16 @@ public class UsersClient {
 
     public UsersClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * </blockquote>
+     */
+    public V2ListUsersEnvelope list(String orgId) {
+        return list(orgId, null);
     }
 
     /**
@@ -67,8 +77,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2ListUsersEnvelope list(String orgId) {
-        return list(orgId, null);
+    public V2UserEnvelope create(String orgId, V2CreateUserRequestSchema request) {
+        return create(orgId, request, null);
     }
 
     /**
@@ -87,7 +97,7 @@ public class UsersClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -117,8 +127,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2UserEnvelope create(String orgId, V2CreateUserRequestSchema request) {
-        return create(orgId, request, null);
+    public V2UserEnvelope get(String id, String orgId) {
+        return get(id, orgId, null);
     }
 
     /**
@@ -161,8 +171,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2UserEnvelope get(String id, String orgId) {
-        return get(id, orgId, null);
+    public V2UserEnvelope remove(String id, String orgId) {
+        return remove(id, orgId, null);
     }
 
     /**
@@ -205,8 +215,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2UserEnvelope remove(String id, String orgId) {
-        return remove(id, orgId, null);
+    public V2UserEnvelope update(String id, String orgId, V2UpdateUserRequestSchema request) {
+        return update(id, orgId, request, null);
     }
 
     /**
@@ -227,7 +237,7 @@ public class UsersClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -257,8 +267,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2UserEnvelope update(String id, String orgId, V2UpdateUserRequestSchema request) {
-        return update(id, orgId, request, null);
+    public V2ApiKeyResponseEnvelope createApiKey(String orgId, String id) {
+        return createApiKey(orgId, id, UsersCreateApiKeyRequest.builder().build());
     }
 
     /**
@@ -267,8 +277,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2ApiKeyResponseEnvelope createApiKey(String orgId, String id) {
-        return createApiKey(orgId, id, UsersCreateApiKeyRequest.builder().build());
+    public V2ApiKeyResponseEnvelope createApiKey(String orgId, String id, UsersCreateApiKeyRequest request) {
+        return createApiKey(orgId, id, request, null);
     }
 
     /**
@@ -307,15 +317,5 @@ public class UsersClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
-     * </blockquote>
-     */
-    public V2ApiKeyResponseEnvelope createApiKey(String orgId, String id, UsersCreateApiKeyRequest request) {
-        return createApiKey(orgId, id, request, null);
     }
 }

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.modelsync;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.util.function.Supplier;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -35,6 +35,10 @@ public class ModelSyncClient {
     public ModelSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
+    }
+
+    public V2ListSyncResponseEnvelope list() {
+        return list(null);
     }
 
     public V2ListSyncResponseEnvelope list(RequestOptions requestOptions) {
@@ -62,8 +66,8 @@ public class ModelSyncClient {
         }
     }
 
-    public V2ListSyncResponseEnvelope list() {
-        return list(null);
+    public V2SyncResponseEnvelope create(V2CreateSyncRequest request) {
+        return create(request, null);
     }
 
     public V2SyncResponseEnvelope create(V2CreateSyncRequest request, RequestOptions requestOptions) {
@@ -74,7 +78,7 @@ public class ModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -98,8 +102,8 @@ public class ModelSyncClient {
         }
     }
 
-    public V2SyncResponseEnvelope create(V2CreateSyncRequest request) {
-        return create(request, null);
+    public V2SyncResponseEnvelope get(String id) {
+        return get(id, null);
     }
 
     public V2SyncResponseEnvelope get(String id, RequestOptions requestOptions) {
@@ -128,8 +132,8 @@ public class ModelSyncClient {
         }
     }
 
-    public V2SyncResponseEnvelope get(String id) {
-        return get(id, null);
+    public void remove(String id) {
+        remove(id, null);
     }
 
     public void remove(String id, RequestOptions requestOptions) {
@@ -157,8 +161,8 @@ public class ModelSyncClient {
         }
     }
 
-    public void remove(String id) {
-        remove(id, null);
+    public V2SyncResponseEnvelope update(String id, V2UpdateSyncRequest request) {
+        return update(id, request, null);
     }
 
     public V2SyncResponseEnvelope update(String id, V2UpdateSyncRequest request, RequestOptions requestOptions) {
@@ -170,7 +174,7 @@ public class ModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -194,8 +198,8 @@ public class ModelSyncClient {
         }
     }
 
-    public V2SyncResponseEnvelope update(String id, V2UpdateSyncRequest request) {
-        return update(id, request, null);
+    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request) {
+        return activate(id, request, null);
     }
 
     public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request, RequestOptions requestOptions) {
@@ -208,7 +212,7 @@ public class ModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -232,12 +236,12 @@ public class ModelSyncClient {
         }
     }
 
-    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request) {
-        return activate(id, request, null);
-    }
-
     public V2StartSyncResponseEnvelope start(String id) {
         return start(id, V2StartSyncRequest.builder().build());
+    }
+
+    public V2StartSyncResponseEnvelope start(String id, V2StartSyncRequest request) {
+        return start(id, request, null);
     }
 
     public V2StartSyncResponseEnvelope start(String id, V2StartSyncRequest request, RequestOptions requestOptions) {
@@ -250,7 +254,7 @@ public class ModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -274,8 +278,8 @@ public class ModelSyncClient {
         }
     }
 
-    public V2StartSyncResponseEnvelope start(String id, V2StartSyncRequest request) {
-        return start(id, request, null);
+    public V2SyncStatusEnvelope getStatus(String id) {
+        return getStatus(id, null);
     }
 
     public V2SyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
@@ -303,10 +307,6 @@ public class ModelSyncClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V2SyncStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
     }
 
     public ExecutionsClient executions() {

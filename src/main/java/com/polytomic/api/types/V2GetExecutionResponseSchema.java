@@ -101,7 +101,7 @@ public final class V2GetExecutionResponseSchema {
         return type;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2GetExecutionResponseSchema && equalTo((V2GetExecutionResponseSchema) other);
@@ -123,7 +123,7 @@ public final class V2GetExecutionResponseSchema {
                 && type.equals(other.type);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.completedAt,
@@ -136,7 +136,7 @@ public final class V2GetExecutionResponseSchema {
                 this.type);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

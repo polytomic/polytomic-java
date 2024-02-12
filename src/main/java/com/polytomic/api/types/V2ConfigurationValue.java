@@ -44,7 +44,7 @@ public final class V2ConfigurationValue {
         return type;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2ConfigurationValue && equalTo((V2ConfigurationValue) other);
@@ -59,12 +59,12 @@ public final class V2ConfigurationValue {
         return items.equals(other.items) && type.equals(other.type);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.items, this.type);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

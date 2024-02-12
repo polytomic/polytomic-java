@@ -81,7 +81,7 @@ public final class V2Target {
         return searchValues;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Target && equalTo((V2Target) other);
@@ -101,13 +101,13 @@ public final class V2Target {
                 && searchValues.equals(other.searchValues);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.configuration, this.connectionId, this.filterLogic, this.newName, this._object, this.searchValues);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -165,7 +165,7 @@ public final class V2Target {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2Target other) {
             configuration(other.getConfiguration());
             connectionId(other.getConnectionId());
@@ -176,73 +176,73 @@ public final class V2Target {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("connection_id")
         public ObjectStage connectionId(String connectionId) {
             this.connectionId = connectionId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("object")
         public _FinalStage _object(String _object) {
             this._object = _object;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage searchValues(Map<String, Object> searchValues) {
             this.searchValues = Optional.of(searchValues);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "search_values", nulls = Nulls.SKIP)
         public _FinalStage searchValues(Optional<Map<String, Object>> searchValues) {
             this.searchValues = searchValues;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage newName(String newName) {
             this.newName = Optional.of(newName);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "new_name", nulls = Nulls.SKIP)
         public _FinalStage newName(Optional<String> newName) {
             this.newName = newName;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage filterLogic(String filterLogic) {
             this.filterLogic = Optional.of(filterLogic);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "filter_logic", nulls = Nulls.SKIP)
         public _FinalStage filterLogic(Optional<String> filterLogic) {
             this.filterLogic = filterLogic;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration = Optional.of(configuration);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2Target build() {
             return new V2Target(
                     configuration, connectionId, filterLogic, newName, _object, searchValues, additionalProperties);

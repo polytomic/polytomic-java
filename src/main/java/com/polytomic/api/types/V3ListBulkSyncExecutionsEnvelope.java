@@ -36,7 +36,7 @@ public final class V3ListBulkSyncExecutionsEnvelope {
         return data;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3ListBulkSyncExecutionsEnvelope && equalTo((V3ListBulkSyncExecutionsEnvelope) other);
@@ -51,12 +51,12 @@ public final class V3ListBulkSyncExecutionsEnvelope {
         return data.equals(other.data);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.data);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

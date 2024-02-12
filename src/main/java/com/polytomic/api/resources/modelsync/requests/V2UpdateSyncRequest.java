@@ -161,7 +161,7 @@ public final class V2UpdateSyncRequest {
         return target;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2UpdateSyncRequest && equalTo((V2UpdateSyncRequest) other);
@@ -189,7 +189,7 @@ public final class V2UpdateSyncRequest {
                 && target.equals(other.target);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.active,
@@ -208,7 +208,7 @@ public final class V2UpdateSyncRequest {
                 this.target);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -314,7 +314,7 @@ public final class V2UpdateSyncRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2UpdateSyncRequest other) {
             active(other.getActive());
             fields(other.getFields());
@@ -333,165 +333,165 @@ public final class V2UpdateSyncRequest {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("mode")
         public NameStage mode(V2UpdateSyncRequestMode mode) {
             this.mode = mode;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public ScheduleStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("schedule")
         public TargetStage schedule(V2Schedule schedule) {
             this.schedule = schedule;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(V2Target target) {
             this.target = target;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage syncAllRecords(Boolean syncAllRecords) {
             this.syncAllRecords = Optional.of(syncAllRecords);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "sync_all_records", nulls = Nulls.SKIP)
         public _FinalStage syncAllRecords(Optional<Boolean> syncAllRecords) {
             this.syncAllRecords = syncAllRecords;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.of(policies);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
             this.policies = policies;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage overrides(List<V2Override> overrides) {
             this.overrides = Optional.of(overrides);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "overrides", nulls = Nulls.SKIP)
         public _FinalStage overrides(Optional<List<V2Override>> overrides) {
             this.overrides = overrides;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage overrideFields(List<V2SyncField> overrideFields) {
             this.overrideFields = Optional.of(overrideFields);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "override_fields", nulls = Nulls.SKIP)
         public _FinalStage overrideFields(Optional<List<V2SyncField>> overrideFields) {
             this.overrideFields = overrideFields;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage identity(V2Identity identity) {
             this.identity = Optional.of(identity);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "identity", nulls = Nulls.SKIP)
         public _FinalStage identity(Optional<V2Identity> identity) {
             this.identity = identity;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage filters(List<V2Filter> filters) {
             this.filters = Optional.of(filters);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
         public _FinalStage filters(Optional<List<V2Filter>> filters) {
             this.filters = filters;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage filterLogic(String filterLogic) {
             this.filterLogic = Optional.of(filterLogic);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "filter_logic", nulls = Nulls.SKIP)
         public _FinalStage filterLogic(Optional<String> filterLogic) {
             this.filterLogic = filterLogic;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage fields(List<V2SyncField> fields) {
             this.fields = Optional.of(fields);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public _FinalStage fields(Optional<List<V2SyncField>> fields) {
             this.fields = fields;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage active(Boolean active) {
             this.active = Optional.of(active);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public _FinalStage active(Optional<Boolean> active) {
             this.active = active;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2UpdateSyncRequest build() {
             return new V2UpdateSyncRequest(
                     active,

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.connections;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.connections.requests.ConnectionsGetTargetRequest;
@@ -25,7 +26,6 @@ import com.polytomic.api.types.V3ConnectCardResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -35,6 +35,10 @@ public class ConnectionsClient {
 
     public ConnectionsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public V2ConnectionTypeResponseEnvelope getTypes() {
+        return getTypes(null);
     }
 
     public V2ConnectionTypeResponseEnvelope getTypes(RequestOptions requestOptions) {
@@ -63,8 +67,8 @@ public class ConnectionsClient {
         }
     }
 
-    public V2ConnectionTypeResponseEnvelope getTypes() {
-        return getTypes(null);
+    public V2ConnectionListResponseEnvelope list() {
+        return list(null);
     }
 
     public V2ConnectionListResponseEnvelope list(RequestOptions requestOptions) {
@@ -93,8 +97,8 @@ public class ConnectionsClient {
         }
     }
 
-    public V2ConnectionListResponseEnvelope list() {
-        return list(null);
+    public V2CreateConnectionResponseEnvelope create(V2CreateConnectionRequestSchema request) {
+        return create(request, null);
     }
 
     public V2CreateConnectionResponseEnvelope create(
@@ -106,7 +110,7 @@ public class ConnectionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -131,8 +135,8 @@ public class ConnectionsClient {
         }
     }
 
-    public V2CreateConnectionResponseEnvelope create(V2CreateConnectionRequestSchema request) {
-        return create(request, null);
+    public V3ConnectCardResponseEnvelope apiV3Connect(V3ConnectCardRequest request) {
+        return apiV3Connect(request, null);
     }
 
     public V3ConnectCardResponseEnvelope apiV3Connect(V3ConnectCardRequest request, RequestOptions requestOptions) {
@@ -143,7 +147,7 @@ public class ConnectionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -168,8 +172,8 @@ public class ConnectionsClient {
         }
     }
 
-    public V3ConnectCardResponseEnvelope apiV3Connect(V3ConnectCardRequest request) {
-        return apiV3Connect(request, null);
+    public V2ConnectionResponseEnvelope get(String id) {
+        return get(id, null);
     }
 
     public V2ConnectionResponseEnvelope get(String id, RequestOptions requestOptions) {
@@ -199,12 +203,12 @@ public class ConnectionsClient {
         }
     }
 
-    public V2ConnectionResponseEnvelope get(String id) {
-        return get(id, null);
-    }
-
     public void remove(String id) {
         remove(id, ConnectionsRemoveRequest.builder().build());
+    }
+
+    public void remove(String id, ConnectionsRemoveRequest request) {
+        remove(id, request, null);
     }
 
     public void remove(String id, ConnectionsRemoveRequest request, RequestOptions requestOptions) {
@@ -234,8 +238,8 @@ public class ConnectionsClient {
         }
     }
 
-    public void remove(String id, ConnectionsRemoveRequest request) {
-        remove(id, request, null);
+    public V2CreateConnectionResponseEnvelope update(String id, V2UpdateConnectionRequestSchema request) {
+        return update(id, request, null);
     }
 
     public V2CreateConnectionResponseEnvelope update(
@@ -248,7 +252,7 @@ public class ConnectionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -273,8 +277,8 @@ public class ConnectionsClient {
         }
     }
 
-    public V2CreateConnectionResponseEnvelope update(String id, V2UpdateConnectionRequestSchema request) {
-        return update(id, request, null);
+    public V2GetConnectionMetaEnvelope getSource(String id) {
+        return getSource(id, null);
     }
 
     public V2GetConnectionMetaEnvelope getSource(String id, RequestOptions requestOptions) {
@@ -304,12 +308,12 @@ public class ConnectionsClient {
         }
     }
 
-    public V2GetConnectionMetaEnvelope getSource(String id) {
-        return getSource(id, null);
-    }
-
     public V2ModelFieldResponse getSourceFields(String id) {
         return getSourceFields(id, V2ModelFieldsRequest.builder().build());
+    }
+
+    public V2ModelFieldResponse getSourceFields(String id, V2ModelFieldsRequest request) {
+        return getSourceFields(id, request, null);
     }
 
     public V2ModelFieldResponse getSourceFields(
@@ -323,7 +327,7 @@ public class ConnectionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -347,12 +351,12 @@ public class ConnectionsClient {
         }
     }
 
-    public V2ModelFieldResponse getSourceFields(String id, V2ModelFieldsRequest request) {
-        return getSourceFields(id, request, null);
-    }
-
     public V2GetConnectionMetaEnvelope getTarget(String id) {
         return getTarget(id, ConnectionsGetTargetRequest.builder().build());
+    }
+
+    public V2GetConnectionMetaEnvelope getTarget(String id, ConnectionsGetTargetRequest request) {
+        return getTarget(id, request, null);
     }
 
     public V2GetConnectionMetaEnvelope getTarget(
@@ -388,8 +392,8 @@ public class ConnectionsClient {
         }
     }
 
-    public V2GetConnectionMetaEnvelope getTarget(String id, ConnectionsGetTargetRequest request) {
-        return getTarget(id, request, null);
+    public V2TargetResponseEnvelope getTargetFields(String id, V2TargetRequest request) {
+        return getTargetFields(id, request, null);
     }
 
     public V2TargetResponseEnvelope getTargetFields(String id, V2TargetRequest request, RequestOptions requestOptions) {
@@ -402,7 +406,7 @@ public class ConnectionsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -426,8 +430,8 @@ public class ConnectionsClient {
         }
     }
 
-    public V2TargetResponseEnvelope getTargetFields(String id, V2TargetRequest request) {
-        return getTargetFields(id, request, null);
+    public void connect() {
+        connect(null);
     }
 
     public void connect(RequestOptions requestOptions) {
@@ -452,9 +456,5 @@ public class ConnectionsClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void connect() {
-        connect(null);
     }
 }

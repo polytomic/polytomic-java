@@ -22,6 +22,10 @@ public class ExecutionsClient {
         this.clientOptions = clientOptions;
     }
 
+    public V2ListExecutionResponseEnvelope list(String syncId) {
+        return list(syncId, null);
+    }
+
     public V2ListExecutionResponseEnvelope list(String syncId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -50,8 +54,8 @@ public class ExecutionsClient {
         }
     }
 
-    public V2ListExecutionResponseEnvelope list(String syncId) {
-        return list(syncId, null);
+    public V2GetExecutionResponseEnvelope get(String syncId, String id) {
+        return get(syncId, id, null);
     }
 
     public V2GetExecutionResponseEnvelope get(String syncId, String id, RequestOptions requestOptions) {
@@ -81,9 +85,5 @@ public class ExecutionsClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V2GetExecutionResponseEnvelope get(String syncId, String id) {
-        return get(syncId, id, null);
     }
 }

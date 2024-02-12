@@ -63,7 +63,7 @@ public final class V2User {
         return role;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2User && equalTo((V2User) other);
@@ -81,12 +81,12 @@ public final class V2User {
                 && role.equals(other.role);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.email, this.id, this.organizationId, this.role);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

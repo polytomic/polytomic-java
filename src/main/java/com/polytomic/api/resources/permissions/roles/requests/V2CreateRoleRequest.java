@@ -43,7 +43,7 @@ public final class V2CreateRoleRequest {
         return organizationId;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2CreateRoleRequest && equalTo((V2CreateRoleRequest) other);
@@ -58,12 +58,12 @@ public final class V2CreateRoleRequest {
         return name.equals(other.name) && organizationId.equals(other.organizationId);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.name, this.organizationId);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -97,34 +97,34 @@ public final class V2CreateRoleRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2CreateRoleRequest other) {
             name(other.getName());
             organizationId(other.getOrganizationId());
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public _FinalStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2CreateRoleRequest build() {
             return new V2CreateRoleRequest(name, organizationId, additionalProperties);
         }

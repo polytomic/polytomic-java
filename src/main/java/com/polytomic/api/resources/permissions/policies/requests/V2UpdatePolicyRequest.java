@@ -56,7 +56,7 @@ public final class V2UpdatePolicyRequest {
         return policyActions;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2UpdatePolicyRequest && equalTo((V2UpdatePolicyRequest) other);
@@ -73,12 +73,12 @@ public final class V2UpdatePolicyRequest {
                 && policyActions.equals(other.policyActions);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.name, this.organizationId, this.policyActions);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -118,7 +118,7 @@ public final class V2UpdatePolicyRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2UpdatePolicyRequest other) {
             name(other.getName());
             organizationId(other.getOrganizationId());
@@ -126,40 +126,40 @@ public final class V2UpdatePolicyRequest {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public _FinalStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage policyActions(List<V2PolicyAction> policyActions) {
             this.policyActions = Optional.of(policyActions);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "policy_actions", nulls = Nulls.SKIP)
         public _FinalStage policyActions(Optional<List<V2PolicyAction>> policyActions) {
             this.policyActions = policyActions;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2UpdatePolicyRequest build() {
             return new V2UpdatePolicyRequest(name, organizationId, policyActions, additionalProperties);
         }

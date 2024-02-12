@@ -73,7 +73,7 @@ public final class V2Webhook {
         return secret;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2Webhook && equalTo((V2Webhook) other);
@@ -92,12 +92,12 @@ public final class V2Webhook {
                 && secret.equals(other.secret);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.createdAt, this.endpoint, this.id, this.organizationId, this.secret);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }

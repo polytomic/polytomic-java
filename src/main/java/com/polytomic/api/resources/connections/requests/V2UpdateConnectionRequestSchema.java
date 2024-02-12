@@ -94,7 +94,7 @@ public final class V2UpdateConnectionRequestSchema {
         return validate;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2UpdateConnectionRequestSchema && equalTo((V2UpdateConnectionRequestSchema) other);
@@ -115,7 +115,7 @@ public final class V2UpdateConnectionRequestSchema {
                 && validate.equals(other.validate);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.configuration,
@@ -127,7 +127,7 @@ public final class V2UpdateConnectionRequestSchema {
                 this.validate);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -191,7 +191,7 @@ public final class V2UpdateConnectionRequestSchema {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2UpdateConnectionRequestSchema other) {
             configuration(other.getConfiguration());
             name(other.getName());
@@ -203,7 +203,7 @@ public final class V2UpdateConnectionRequestSchema {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public _FinalStage name(String name) {
             this.name = name;
@@ -214,85 +214,85 @@ public final class V2UpdateConnectionRequestSchema {
          * <p>Validate connection configuration.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
-        @Override
+        @java.lang.Override
         public _FinalStage validate(Boolean validate) {
             this.validate = Optional.of(validate);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "validate", nulls = Nulls.SKIP)
         public _FinalStage validate(Optional<Boolean> validate) {
             this.validate = validate;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage type(String type) {
             this.type = Optional.of(type);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public _FinalStage type(Optional<String> type) {
             this.type = type;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage reconnect(Boolean reconnect) {
             this.reconnect = Optional.of(reconnect);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "reconnect", nulls = Nulls.SKIP)
         public _FinalStage reconnect(Optional<Boolean> reconnect) {
             this.reconnect = reconnect;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.of(policies);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
             this.policies = policies;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration = Optional.of(configuration);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2UpdateConnectionRequestSchema build() {
             return new V2UpdateConnectionRequestSchema(
                     configuration, name, organizationId, policies, reconnect, type, validate, additionalProperties);

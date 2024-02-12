@@ -42,7 +42,7 @@ public final class V2TargetRequest {
         return target;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2TargetRequest && equalTo((V2TargetRequest) other);
@@ -57,12 +57,12 @@ public final class V2TargetRequest {
         return refresh.equals(other.refresh) && target.equals(other.target);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(this.refresh, this.target);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -96,34 +96,34 @@ public final class V2TargetRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V2TargetRequest other) {
             refresh(other.getRefresh());
             target(other.getTarget());
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(String target) {
             this.target = target;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage refresh(Boolean refresh) {
             this.refresh = Optional.of(refresh);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "refresh", nulls = Nulls.SKIP)
         public _FinalStage refresh(Optional<Boolean> refresh) {
             this.refresh = refresh;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V2TargetRequest build() {
             return new V2TargetRequest(refresh, target, additionalProperties);
         }

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.models;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.models.requests.V2CreateModelRequest;
@@ -14,7 +15,6 @@ import com.polytomic.api.types.V2ModelResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -24,6 +24,10 @@ public class ModelsClient {
 
     public ModelsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public V2ModelListResponseEnvelope list() {
+        return list(null);
     }
 
     public V2ModelListResponseEnvelope list(RequestOptions requestOptions) {
@@ -51,8 +55,8 @@ public class ModelsClient {
         }
     }
 
-    public V2ModelListResponseEnvelope list() {
-        return list(null);
+    public V2ModelResponseEnvelope create(V2CreateModelRequest request) {
+        return create(request, null);
     }
 
     public V2ModelResponseEnvelope create(V2CreateModelRequest request, RequestOptions requestOptions) {
@@ -63,7 +67,7 @@ public class ModelsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -87,8 +91,8 @@ public class ModelsClient {
         }
     }
 
-    public V2ModelResponseEnvelope create(V2CreateModelRequest request) {
-        return create(request, null);
+    public V2ModelResponseEnvelope get(String id) {
+        return get(id, null);
     }
 
     public V2ModelResponseEnvelope get(String id, RequestOptions requestOptions) {
@@ -117,8 +121,8 @@ public class ModelsClient {
         }
     }
 
-    public V2ModelResponseEnvelope get(String id) {
-        return get(id, null);
+    public void remove(String id) {
+        remove(id, null);
     }
 
     public void remove(String id, RequestOptions requestOptions) {
@@ -146,8 +150,8 @@ public class ModelsClient {
         }
     }
 
-    public void remove(String id) {
-        remove(id, null);
+    public V2ModelResponseEnvelope update(String id, V2UpdateModelRequest request) {
+        return update(id, request, null);
     }
 
     public V2ModelResponseEnvelope update(String id, V2UpdateModelRequest request, RequestOptions requestOptions) {
@@ -159,7 +163,7 @@ public class ModelsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaType.parse("application/json"));
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -181,9 +185,5 @@ public class ModelsClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public V2ModelResponseEnvelope update(String id, V2UpdateModelRequest request) {
-        return update(id, request, null);
     }
 }

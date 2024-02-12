@@ -82,7 +82,7 @@ public final class V3ConnectCardRequest {
         return whitelist;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V3ConnectCardRequest && equalTo((V3ConnectCardRequest) other);
@@ -102,13 +102,13 @@ public final class V3ConnectCardRequest {
                 && whitelist.equals(other.whitelist);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.connection, this.name, this.organizationId, this.redirectUrl, this.type, this.whitelist);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
@@ -166,7 +166,7 @@ public final class V3ConnectCardRequest {
 
         private Builder() {}
 
-        @Override
+        @java.lang.Override
         public Builder from(V3ConnectCardRequest other) {
             connection(other.getConnection());
             name(other.getName());
@@ -177,73 +177,73 @@ public final class V3ConnectCardRequest {
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("name")
         public RedirectUrlStage name(String name) {
             this.name = name;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter("redirect_url")
         public _FinalStage redirectUrl(String redirectUrl) {
             this.redirectUrl = redirectUrl;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage whitelist(List<String> whitelist) {
             this.whitelist = Optional.of(whitelist);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "whitelist", nulls = Nulls.SKIP)
         public _FinalStage whitelist(Optional<List<String>> whitelist) {
             this.whitelist = whitelist;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage type(String type) {
             this.type = Optional.of(type);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public _FinalStage type(Optional<String> type) {
             this.type = type;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public _FinalStage connection(String connection) {
             this.connection = Optional.of(connection);
             return this;
         }
 
-        @Override
+        @java.lang.Override
         @JsonSetter(value = "connection", nulls = Nulls.SKIP)
         public _FinalStage connection(Optional<String> connection) {
             this.connection = connection;
             return this;
         }
 
-        @Override
+        @java.lang.Override
         public V3ConnectCardRequest build() {
             return new V3ConnectCardRequest(
                     connection, name, organizationId, redirectUrl, type, whitelist, additionalProperties);

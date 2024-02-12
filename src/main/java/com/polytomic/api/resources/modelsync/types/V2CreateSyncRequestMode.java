@@ -25,7 +25,7 @@ public enum V2CreateSyncRequestMode {
     }
 
     @JsonValue
-    @Override
+    @java.lang.Override
     public String toString() {
         return this.value;
     }

@@ -163,7 +163,7 @@ public final class V2SyncResponse {
         return target;
     }
 
-    @Override
+    @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
         return other instanceof V2SyncResponse && equalTo((V2SyncResponse) other);
@@ -192,7 +192,7 @@ public final class V2SyncResponse {
                 && target.equals(other.target);
     }
 
-    @Override
+    @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.active,
@@ -212,7 +212,7 @@ public final class V2SyncResponse {
                 this.target);
     }
 
-    @Override
+    @java.lang.Override
     public String toString() {
         return ObjectMappers.stringify(this);
     }
