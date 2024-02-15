@@ -34,7 +34,7 @@ public final class V2GetExecutionResponseSchema {
 
     private final Optional<OffsetDateTime> startedAt;
 
-    private final Optional<String> status;
+    private final Optional<ExecutionStatus> status;
 
     private final Optional<String> type;
 
@@ -47,7 +47,7 @@ public final class V2GetExecutionResponseSchema {
             Optional<List<String>> errors,
             Optional<String> id,
             Optional<OffsetDateTime> startedAt,
-            Optional<String> status,
+            Optional<ExecutionStatus> status,
             Optional<String> type,
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
@@ -92,7 +92,7 @@ public final class V2GetExecutionResponseSchema {
     }
 
     @JsonProperty("status")
-    public Optional<String> getStatus() {
+    public Optional<ExecutionStatus> getStatus() {
         return status;
     }
 
@@ -159,7 +159,7 @@ public final class V2GetExecutionResponseSchema {
 
         private Optional<OffsetDateTime> startedAt = Optional.empty();
 
-        private Optional<String> status = Optional.empty();
+        private Optional<ExecutionStatus> status = Optional.empty();
 
         private Optional<String> type = Optional.empty();
 
@@ -247,12 +247,12 @@ public final class V2GetExecutionResponseSchema {
         }
 
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
-        public Builder status(Optional<String> status) {
+        public Builder status(Optional<ExecutionStatus> status) {
             this.status = status;
             return this;
         }
 
-        public Builder status(String status) {
+        public Builder status(ExecutionStatus status) {
             this.status = Optional.of(status);
             return this;
         }

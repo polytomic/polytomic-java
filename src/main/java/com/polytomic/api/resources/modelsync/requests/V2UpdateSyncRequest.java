@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.resources.modelsync.types.V2UpdateSyncRequestMode;
 import com.polytomic.api.types.V2Filter;
 import com.polytomic.api.types.V2Identity;
 import com.polytomic.api.types.V2Override;
@@ -38,7 +37,7 @@ public final class V2UpdateSyncRequest {
 
     private final Optional<V2Identity> identity;
 
-    private final V2UpdateSyncRequestMode mode;
+    private final String mode;
 
     private final String name;
 
@@ -64,7 +63,7 @@ public final class V2UpdateSyncRequest {
             Optional<String> filterLogic,
             Optional<List<V2Filter>> filters,
             Optional<V2Identity> identity,
-            V2UpdateSyncRequestMode mode,
+            String mode,
             String name,
             Optional<String> organizationId,
             Optional<List<V2SyncField>> overrideFields,
@@ -117,7 +116,7 @@ public final class V2UpdateSyncRequest {
     }
 
     @JsonProperty("mode")
-    public V2UpdateSyncRequestMode getMode() {
+    public String getMode() {
         return mode;
     }
 
@@ -218,7 +217,7 @@ public final class V2UpdateSyncRequest {
     }
 
     public interface ModeStage {
-        NameStage mode(V2UpdateSyncRequestMode mode);
+        NameStage mode(String mode);
 
         Builder from(V2UpdateSyncRequest other);
     }
@@ -281,7 +280,7 @@ public final class V2UpdateSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ModeStage, NameStage, ScheduleStage, TargetStage, _FinalStage {
-        private V2UpdateSyncRequestMode mode;
+        private String mode;
 
         private String name;
 
@@ -335,7 +334,7 @@ public final class V2UpdateSyncRequest {
 
         @java.lang.Override
         @JsonSetter("mode")
-        public NameStage mode(V2UpdateSyncRequestMode mode) {
+        public NameStage mode(String mode) {
             this.mode = mode;
             return this;
         }

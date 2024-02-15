@@ -36,7 +36,7 @@ public final class V3BulkSyncExecution {
 
     private final Optional<OffsetDateTime> startedAt;
 
-    private final Optional<String> status;
+    private final Optional<BulkExecutionStatus> status;
 
     private final Optional<String> type;
 
@@ -50,7 +50,7 @@ public final class V3BulkSyncExecution {
             Optional<Boolean> isTest,
             Optional<List<V3BulkSyncSchemaExecution>> schemas,
             Optional<OffsetDateTime> startedAt,
-            Optional<String> status,
+            Optional<BulkExecutionStatus> status,
             Optional<String> type,
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
@@ -101,7 +101,7 @@ public final class V3BulkSyncExecution {
     }
 
     @JsonProperty("status")
-    public Optional<String> getStatus() {
+    public Optional<BulkExecutionStatus> getStatus() {
         return status;
     }
 
@@ -172,7 +172,7 @@ public final class V3BulkSyncExecution {
 
         private Optional<OffsetDateTime> startedAt = Optional.empty();
 
-        private Optional<String> status = Optional.empty();
+        private Optional<BulkExecutionStatus> status = Optional.empty();
 
         private Optional<String> type = Optional.empty();
 
@@ -272,12 +272,12 @@ public final class V3BulkSyncExecution {
         }
 
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
-        public Builder status(Optional<String> status) {
+        public Builder status(Optional<BulkExecutionStatus> status) {
             this.status = status;
             return this;
         }
 
-        public Builder status(String status) {
+        public Builder status(BulkExecutionStatus status) {
             this.status = Optional.of(status);
             return this;
         }

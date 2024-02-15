@@ -25,14 +25,14 @@ public final class V2StartSyncResponseSchema {
 
     private final Optional<String> id;
 
-    private final Optional<String> status;
+    private final Optional<ExecutionStatus> status;
 
     private final Map<String, Object> additionalProperties;
 
     private V2StartSyncResponseSchema(
             Optional<OffsetDateTime> createdAt,
             Optional<String> id,
-            Optional<String> status,
+            Optional<ExecutionStatus> status,
             Map<String, Object> additionalProperties) {
         this.createdAt = createdAt;
         this.id = id;
@@ -51,7 +51,7 @@ public final class V2StartSyncResponseSchema {
     }
 
     @JsonProperty("status")
-    public Optional<String> getStatus() {
+    public Optional<ExecutionStatus> getStatus() {
         return status;
     }
 
@@ -90,7 +90,7 @@ public final class V2StartSyncResponseSchema {
 
         private Optional<String> id = Optional.empty();
 
-        private Optional<String> status = Optional.empty();
+        private Optional<ExecutionStatus> status = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -127,12 +127,12 @@ public final class V2StartSyncResponseSchema {
         }
 
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
-        public Builder status(Optional<String> status) {
+        public Builder status(Optional<ExecutionStatus> status) {
             this.status = status;
             return this;
         }
 
-        public Builder status(String status) {
+        public Builder status(ExecutionStatus status) {
             this.status = Optional.of(status);
             return this;
         }
