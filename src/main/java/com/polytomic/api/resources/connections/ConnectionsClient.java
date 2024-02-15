@@ -278,18 +278,17 @@ public class ConnectionsClient {
         }
     }
 
-    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameters(String id, String name) {
-        return apiV2ConnectionParameters(id, name, null);
+    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameterValues(String id) {
+        return apiV2ConnectionParameterValues(id, null);
     }
 
-    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameters(
-            String id, String name, RequestOptions requestOptions) {
+    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameterValues(
+            String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
-                .addPathSegments("parameters")
-                .addPathSegment(name)
+                .addPathSegments("parameter_values")
                 .build();
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)

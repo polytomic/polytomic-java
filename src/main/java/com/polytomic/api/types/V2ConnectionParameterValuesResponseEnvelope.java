@@ -20,18 +20,19 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = V2ConnectionParameterValuesResponseEnvelope.Builder.class)
 public final class V2ConnectionParameterValuesResponseEnvelope {
-    private final Optional<V2ConnectionParameterValuesResp> data;
+    private final Optional<Map<String, Optional<V2ConnectionParameterValuesResp>>> data;
 
     private final Map<String, Object> additionalProperties;
 
     private V2ConnectionParameterValuesResponseEnvelope(
-            Optional<V2ConnectionParameterValuesResp> data, Map<String, Object> additionalProperties) {
+            Optional<Map<String, Optional<V2ConnectionParameterValuesResp>>> data,
+            Map<String, Object> additionalProperties) {
         this.data = data;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
-    public Optional<V2ConnectionParameterValuesResp> getData() {
+    public Optional<Map<String, Optional<V2ConnectionParameterValuesResp>>> getData() {
         return data;
     }
 
@@ -67,7 +68,7 @@ public final class V2ConnectionParameterValuesResponseEnvelope {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<V2ConnectionParameterValuesResp> data = Optional.empty();
+        private Optional<Map<String, Optional<V2ConnectionParameterValuesResp>>> data = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -80,12 +81,12 @@ public final class V2ConnectionParameterValuesResponseEnvelope {
         }
 
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
-        public Builder data(Optional<V2ConnectionParameterValuesResp> data) {
+        public Builder data(Optional<Map<String, Optional<V2ConnectionParameterValuesResp>>> data) {
             this.data = data;
             return this;
         }
 
-        public Builder data(V2ConnectionParameterValuesResp data) {
+        public Builder data(Map<String, Optional<V2ConnectionParameterValuesResp>> data) {
             this.data = Optional.of(data);
             return this;
         }

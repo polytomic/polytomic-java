@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,8 +26,6 @@ public final class V2ConnectionType {
 
     private final Optional<String> name;
 
-    private final Optional<List<String>> parameterNames;
-
     private final Optional<Boolean> useOauth;
 
     private final Map<String, Object> additionalProperties;
@@ -37,13 +34,11 @@ public final class V2ConnectionType {
             Optional<Map<String, Object>> envConfig,
             Optional<String> id,
             Optional<String> name,
-            Optional<List<String>> parameterNames,
             Optional<Boolean> useOauth,
             Map<String, Object> additionalProperties) {
         this.envConfig = envConfig;
         this.id = id;
         this.name = name;
-        this.parameterNames = parameterNames;
         this.useOauth = useOauth;
         this.additionalProperties = additionalProperties;
     }
@@ -61,11 +56,6 @@ public final class V2ConnectionType {
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
-    }
-
-    @JsonProperty("parameter_names")
-    public Optional<List<String>> getParameterNames() {
-        return parameterNames;
     }
 
     @JsonProperty("use_oauth")
@@ -88,13 +78,12 @@ public final class V2ConnectionType {
         return envConfig.equals(other.envConfig)
                 && id.equals(other.id)
                 && name.equals(other.name)
-                && parameterNames.equals(other.parameterNames)
                 && useOauth.equals(other.useOauth);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.envConfig, this.id, this.name, this.parameterNames, this.useOauth);
+        return Objects.hash(this.envConfig, this.id, this.name, this.useOauth);
     }
 
     @java.lang.Override
@@ -114,8 +103,6 @@ public final class V2ConnectionType {
 
         private Optional<String> name = Optional.empty();
 
-        private Optional<List<String>> parameterNames = Optional.empty();
-
         private Optional<Boolean> useOauth = Optional.empty();
 
         @JsonAnySetter
@@ -127,7 +114,6 @@ public final class V2ConnectionType {
             envConfig(other.getEnvConfig());
             id(other.getId());
             name(other.getName());
-            parameterNames(other.getParameterNames());
             useOauth(other.getUseOauth());
             return this;
         }
@@ -165,17 +151,6 @@ public final class V2ConnectionType {
             return this;
         }
 
-        @JsonSetter(value = "parameter_names", nulls = Nulls.SKIP)
-        public Builder parameterNames(Optional<List<String>> parameterNames) {
-            this.parameterNames = parameterNames;
-            return this;
-        }
-
-        public Builder parameterNames(List<String> parameterNames) {
-            this.parameterNames = Optional.of(parameterNames);
-            return this;
-        }
-
         @JsonSetter(value = "use_oauth", nulls = Nulls.SKIP)
         public Builder useOauth(Optional<Boolean> useOauth) {
             this.useOauth = useOauth;
@@ -188,7 +163,7 @@ public final class V2ConnectionType {
         }
 
         public V2ConnectionType build() {
-            return new V2ConnectionType(envConfig, id, name, parameterNames, useOauth, additionalProperties);
+            return new V2ConnectionType(envConfig, id, name, useOauth, additionalProperties);
         }
     }
 }
