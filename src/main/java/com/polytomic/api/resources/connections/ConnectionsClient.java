@@ -16,6 +16,7 @@ import com.polytomic.api.resources.connections.requests.V2TargetRequest;
 import com.polytomic.api.resources.connections.requests.V2UpdateConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.V3ConnectCardRequest;
 import com.polytomic.api.types.V2ConnectionListResponseEnvelope;
+import com.polytomic.api.types.V2ConnectionParameterValuesResponseEnvelope;
 import com.polytomic.api.types.V2ConnectionResponseEnvelope;
 import com.polytomic.api.types.V2ConnectionTypeResponseEnvelope;
 import com.polytomic.api.types.V2CreateConnectionResponseEnvelope;
@@ -268,6 +269,40 @@ public class ConnectionsClient {
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
                         response.body().string(), V2CreateConnectionResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameters(String id, String name) {
+        return apiV2ConnectionParameters(id, name, null);
+    }
+
+    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameters(
+            String id, String name, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("parameters")
+                .addPathSegment(name)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        response.body().string(), V2ConnectionParameterValuesResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

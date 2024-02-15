@@ -309,6 +309,105 @@ public class ModelSyncClient {
         }
     }
 
+    public void apiV2GetExecutionLogs2(String syncId, String id, String filename) {
+        apiV2GetExecutionLogs2(syncId, id, filename, null);
+    }
+
+    public void apiV2GetExecutionLogs2(String syncId, String id, String filename, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs")
+                .addPathSegment(syncId)
+                .addPathSegments("executions")
+                .addPathSegment(id)
+                .addPathSegments("inserts")
+                .addPathSegment(filename)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void apiV2GetExecutionLogs(String syncId, String id, String filename) {
+        apiV2GetExecutionLogs(syncId, id, filename, null);
+    }
+
+    public void apiV2GetExecutionLogs(String syncId, String id, String filename, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs")
+                .addPathSegment(syncId)
+                .addPathSegments("executions")
+                .addPathSegment(id)
+                .addPathSegments("records")
+                .addPathSegment(filename)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void apiV2GetExecutionLogs3(String syncId, String id, String filename) {
+        apiV2GetExecutionLogs3(syncId, id, filename, null);
+    }
+
+    public void apiV2GetExecutionLogs3(String syncId, String id, String filename, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs")
+                .addPathSegment(syncId)
+                .addPathSegments("executions")
+                .addPathSegment(id)
+                .addPathSegments("updates")
+                .addPathSegment(filename)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public ExecutionsClient executions() {
         return this.executionsClient.get();
     }

@@ -32,6 +32,8 @@ public final class BulkSchedule {
 
     private final Optional<String> month;
 
+    private final Optional<BulkMultiScheduleConfiguration> multi;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSchedule(
@@ -41,6 +43,7 @@ public final class BulkSchedule {
             Optional<String> hour,
             Optional<String> minute,
             Optional<String> month,
+            Optional<BulkMultiScheduleConfiguration> multi,
             Map<String, Object> additionalProperties) {
         this.dayOfMonth = dayOfMonth;
         this.dayOfWeek = dayOfWeek;
@@ -48,6 +51,7 @@ public final class BulkSchedule {
         this.hour = hour;
         this.minute = minute;
         this.month = month;
+        this.multi = multi;
         this.additionalProperties = additionalProperties;
     }
 
@@ -81,6 +85,11 @@ public final class BulkSchedule {
         return month;
     }
 
+    @JsonProperty("multi")
+    public Optional<BulkMultiScheduleConfiguration> getMulti() {
+        return multi;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -98,12 +107,14 @@ public final class BulkSchedule {
                 && frequency.equals(other.frequency)
                 && hour.equals(other.hour)
                 && minute.equals(other.minute)
-                && month.equals(other.month);
+                && month.equals(other.month)
+                && multi.equals(other.multi);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.dayOfMonth, this.dayOfWeek, this.frequency, this.hour, this.minute, this.month);
+        return Objects.hash(
+                this.dayOfMonth, this.dayOfWeek, this.frequency, this.hour, this.minute, this.month, this.multi);
     }
 
     @java.lang.Override
@@ -143,11 +154,17 @@ public final class BulkSchedule {
         _FinalStage month(Optional<String> month);
 
         _FinalStage month(String month);
+
+        _FinalStage multi(Optional<BulkMultiScheduleConfiguration> multi);
+
+        _FinalStage multi(BulkMultiScheduleConfiguration multi);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements FrequencyStage, _FinalStage {
         private String frequency;
+
+        private Optional<BulkMultiScheduleConfiguration> multi = Optional.empty();
 
         private Optional<String> month = Optional.empty();
 
@@ -172,6 +189,7 @@ public final class BulkSchedule {
             hour(other.getHour());
             minute(other.getMinute());
             month(other.getMonth());
+            multi(other.getMulti());
             return this;
         }
 
@@ -179,6 +197,19 @@ public final class BulkSchedule {
         @JsonSetter("frequency")
         public _FinalStage frequency(String frequency) {
             this.frequency = frequency;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage multi(BulkMultiScheduleConfiguration multi) {
+            this.multi = Optional.of(multi);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "multi", nulls = Nulls.SKIP)
+        public _FinalStage multi(Optional<BulkMultiScheduleConfiguration> multi) {
+            this.multi = multi;
             return this;
         }
 
@@ -249,7 +280,7 @@ public final class BulkSchedule {
 
         @java.lang.Override
         public BulkSchedule build() {
-            return new BulkSchedule(dayOfMonth, dayOfWeek, frequency, hour, minute, month, additionalProperties);
+            return new BulkSchedule(dayOfMonth, dayOfWeek, frequency, hour, minute, month, multi, additionalProperties);
         }
     }
 }
