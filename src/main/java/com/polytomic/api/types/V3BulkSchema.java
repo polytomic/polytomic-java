@@ -27,6 +27,8 @@ public final class V3BulkSchema {
 
     private final Optional<String> id;
 
+    private final Optional<String> outputName;
+
     private final Optional<String> partitionKey;
 
     private final Map<String, Object> additionalProperties;
@@ -35,11 +37,13 @@ public final class V3BulkSchema {
             Optional<Boolean> enabled,
             Optional<List<V3BulkField>> fields,
             Optional<String> id,
+            Optional<String> outputName,
             Optional<String> partitionKey,
             Map<String, Object> additionalProperties) {
         this.enabled = enabled;
         this.fields = fields;
         this.id = id;
+        this.outputName = outputName;
         this.partitionKey = partitionKey;
         this.additionalProperties = additionalProperties;
     }
@@ -57,6 +61,11 @@ public final class V3BulkSchema {
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
+    }
+
+    @JsonProperty("output_name")
+    public Optional<String> getOutputName() {
+        return outputName;
     }
 
     @JsonProperty("partition_key")
@@ -79,12 +88,13 @@ public final class V3BulkSchema {
         return enabled.equals(other.enabled)
                 && fields.equals(other.fields)
                 && id.equals(other.id)
+                && outputName.equals(other.outputName)
                 && partitionKey.equals(other.partitionKey);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.fields, this.id, this.partitionKey);
+        return Objects.hash(this.enabled, this.fields, this.id, this.outputName, this.partitionKey);
     }
 
     @java.lang.Override
@@ -104,6 +114,8 @@ public final class V3BulkSchema {
 
         private Optional<String> id = Optional.empty();
 
+        private Optional<String> outputName = Optional.empty();
+
         private Optional<String> partitionKey = Optional.empty();
 
         @JsonAnySetter
@@ -115,6 +127,7 @@ public final class V3BulkSchema {
             enabled(other.getEnabled());
             fields(other.getFields());
             id(other.getId());
+            outputName(other.getOutputName());
             partitionKey(other.getPartitionKey());
             return this;
         }
@@ -152,6 +165,17 @@ public final class V3BulkSchema {
             return this;
         }
 
+        @JsonSetter(value = "output_name", nulls = Nulls.SKIP)
+        public Builder outputName(Optional<String> outputName) {
+            this.outputName = outputName;
+            return this;
+        }
+
+        public Builder outputName(String outputName) {
+            this.outputName = Optional.of(outputName);
+            return this;
+        }
+
         @JsonSetter(value = "partition_key", nulls = Nulls.SKIP)
         public Builder partitionKey(Optional<String> partitionKey) {
             this.partitionKey = partitionKey;
@@ -164,7 +188,7 @@ public final class V3BulkSchema {
         }
 
         public V3BulkSchema build() {
-            return new V3BulkSchema(enabled, fields, id, partitionKey, additionalProperties);
+            return new V3BulkSchema(enabled, fields, id, outputName, partitionKey, additionalProperties);
         }
     }
 }
