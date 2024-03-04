@@ -18,20 +18,21 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = BulkItemizedSchedule.Builder.class)
 public final class BulkItemizedSchedule {
-    private final String item;
+    private final BulkSelectiveMode item;
 
     private final BulkSchedule schedule;
 
     private final Map<String, Object> additionalProperties;
 
-    private BulkItemizedSchedule(String item, BulkSchedule schedule, Map<String, Object> additionalProperties) {
+    private BulkItemizedSchedule(
+            BulkSelectiveMode item, BulkSchedule schedule, Map<String, Object> additionalProperties) {
         this.item = item;
         this.schedule = schedule;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("item")
-    public String getItem() {
+    public BulkSelectiveMode getItem() {
         return item;
     }
 
@@ -70,7 +71,7 @@ public final class BulkItemizedSchedule {
     }
 
     public interface ItemStage {
-        ScheduleStage item(String item);
+        ScheduleStage item(BulkSelectiveMode item);
 
         Builder from(BulkItemizedSchedule other);
     }
@@ -85,7 +86,7 @@ public final class BulkItemizedSchedule {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ItemStage, ScheduleStage, _FinalStage {
-        private String item;
+        private BulkSelectiveMode item;
 
         private BulkSchedule schedule;
 
@@ -103,7 +104,7 @@ public final class BulkItemizedSchedule {
 
         @java.lang.Override
         @JsonSetter("item")
-        public ScheduleStage item(String item) {
+        public ScheduleStage item(BulkSelectiveMode item) {
             this.item = item;
             return this;
         }

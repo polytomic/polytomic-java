@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.BulkDiscover;
 import com.polytomic.api.types.BulkSchedule;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +25,9 @@ import java.util.Optional;
 public final class V2CreateBulkSyncRequest {
     private final Optional<Boolean> active;
 
-    private final Optional<Boolean> automaticallyAddNewFields;
+    private final Optional<BulkDiscover> automaticallyAddNewFields;
 
-    private final Optional<Boolean> automaticallyAddNewObjects;
+    private final Optional<BulkDiscover> automaticallyAddNewObjects;
 
     private final Optional<Map<String, Object>> destinationConfiguration;
 
@@ -36,7 +37,7 @@ public final class V2CreateBulkSyncRequest {
 
     private final Optional<Boolean> discover;
 
-    private final String mode;
+    private final Optional<String> mode;
 
     private final String name;
 
@@ -56,13 +57,13 @@ public final class V2CreateBulkSyncRequest {
 
     private V2CreateBulkSyncRequest(
             Optional<Boolean> active,
-            Optional<Boolean> automaticallyAddNewFields,
-            Optional<Boolean> automaticallyAddNewObjects,
+            Optional<BulkDiscover> automaticallyAddNewFields,
+            Optional<BulkDiscover> automaticallyAddNewObjects,
             Optional<Map<String, Object>> destinationConfiguration,
             String destinationConnectionId,
             Optional<Boolean> disableRecordTimestamps,
             Optional<Boolean> discover,
-            String mode,
+            Optional<String> mode,
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
@@ -95,12 +96,12 @@ public final class V2CreateBulkSyncRequest {
     }
 
     @JsonProperty("automatically_add_new_fields")
-    public Optional<Boolean> getAutomaticallyAddNewFields() {
+    public Optional<BulkDiscover> getAutomaticallyAddNewFields() {
         return automaticallyAddNewFields;
     }
 
     @JsonProperty("automatically_add_new_objects")
-    public Optional<Boolean> getAutomaticallyAddNewObjects() {
+    public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
         return automaticallyAddNewObjects;
     }
 
@@ -127,8 +128,11 @@ public final class V2CreateBulkSyncRequest {
         return discover;
     }
 
+    /**
+     * @return
+     */
     @JsonProperty("mode")
-    public String getMode() {
+    public Optional<String> getMode() {
         return mode;
     }
 
@@ -226,13 +230,9 @@ public final class V2CreateBulkSyncRequest {
     }
 
     public interface DestinationConnectionIdStage {
-        ModeStage destinationConnectionId(String destinationConnectionId);
+        NameStage destinationConnectionId(String destinationConnectionId);
 
         Builder from(V2CreateBulkSyncRequest other);
-    }
-
-    public interface ModeStage {
-        NameStage mode(String mode);
     }
 
     public interface NameStage {
@@ -254,13 +254,13 @@ public final class V2CreateBulkSyncRequest {
 
         _FinalStage active(Boolean active);
 
-        _FinalStage automaticallyAddNewFields(Optional<Boolean> automaticallyAddNewFields);
+        _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields);
 
-        _FinalStage automaticallyAddNewFields(Boolean automaticallyAddNewFields);
+        _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields);
 
-        _FinalStage automaticallyAddNewObjects(Optional<Boolean> automaticallyAddNewObjects);
+        _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects);
 
-        _FinalStage automaticallyAddNewObjects(Boolean automaticallyAddNewObjects);
+        _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
 
         _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration);
 
@@ -273,6 +273,10 @@ public final class V2CreateBulkSyncRequest {
         _FinalStage discover(Optional<Boolean> discover);
 
         _FinalStage discover(Boolean discover);
+
+        _FinalStage mode(Optional<String> mode);
+
+        _FinalStage mode(String mode);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
@@ -293,15 +297,8 @@ public final class V2CreateBulkSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements DestinationConnectionIdStage,
-                    ModeStage,
-                    NameStage,
-                    ScheduleStage,
-                    SourceConnectionIdStage,
-                    _FinalStage {
+            implements DestinationConnectionIdStage, NameStage, ScheduleStage, SourceConnectionIdStage, _FinalStage {
         private String destinationConnectionId;
-
-        private String mode;
 
         private String name;
 
@@ -317,15 +314,17 @@ public final class V2CreateBulkSyncRequest {
 
         private Optional<String> organizationId = Optional.empty();
 
+        private Optional<String> mode = Optional.empty();
+
         private Optional<Boolean> discover = Optional.empty();
 
         private Optional<Boolean> disableRecordTimestamps = Optional.empty();
 
         private Optional<Map<String, Object>> destinationConfiguration = Optional.empty();
 
-        private Optional<Boolean> automaticallyAddNewObjects = Optional.empty();
+        private Optional<BulkDiscover> automaticallyAddNewObjects = Optional.empty();
 
-        private Optional<Boolean> automaticallyAddNewFields = Optional.empty();
+        private Optional<BulkDiscover> automaticallyAddNewFields = Optional.empty();
 
         private Optional<Boolean> active = Optional.empty();
 
@@ -356,15 +355,8 @@ public final class V2CreateBulkSyncRequest {
 
         @java.lang.Override
         @JsonSetter("destination_connection_id")
-        public ModeStage destinationConnectionId(String destinationConnectionId) {
+        public NameStage destinationConnectionId(String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter("mode")
-        public NameStage mode(String mode) {
-            this.mode = mode;
             return this;
         }
 
@@ -442,6 +434,22 @@ public final class V2CreateBulkSyncRequest {
         }
 
         /**
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage mode(String mode) {
+            this.mode = Optional.of(mode);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "mode", nulls = Nulls.SKIP)
+        public _FinalStage mode(Optional<String> mode) {
+            this.mode = mode;
+            return this;
+        }
+
+        /**
          * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -485,27 +493,27 @@ public final class V2CreateBulkSyncRequest {
         }
 
         @java.lang.Override
-        public _FinalStage automaticallyAddNewObjects(Boolean automaticallyAddNewObjects) {
+        public _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
             this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "automatically_add_new_objects", nulls = Nulls.SKIP)
-        public _FinalStage automaticallyAddNewObjects(Optional<Boolean> automaticallyAddNewObjects) {
+        public _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects) {
             this.automaticallyAddNewObjects = automaticallyAddNewObjects;
             return this;
         }
 
         @java.lang.Override
-        public _FinalStage automaticallyAddNewFields(Boolean automaticallyAddNewFields) {
+        public _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
             this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "automatically_add_new_fields", nulls = Nulls.SKIP)
-        public _FinalStage automaticallyAddNewFields(Optional<Boolean> automaticallyAddNewFields) {
+        public _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields) {
             this.automaticallyAddNewFields = automaticallyAddNewFields;
             return this;
         }
