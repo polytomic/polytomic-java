@@ -35,14 +35,16 @@ public class SchemasClient {
     }
 
     public V3ListBulkSchemaEnvelope list(String id, SchemasListRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
                 .addPathSegment(id)
-                .addPathSegments("schemas")
-                .build();
+                .addPathSegments("schemas");
+        if (request.getFilters().isPresent()) {
+            httpUrl.addQueryParameter("filters", request.getFilters().get());
+        }
         Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl)
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json");
