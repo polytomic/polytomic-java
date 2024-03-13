@@ -4,7 +4,7 @@
 package com.polytomic.api.core;
 
 public final class Environment {
-    public static final Environment DEFAULT = new Environment("https://app.polytomic-local.com:8443/");
+    public static final Environment DEFAULT = new Environment("https://app.polytomic.com/");
 
     private final String url;
 

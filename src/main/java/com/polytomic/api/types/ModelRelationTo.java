@@ -18,35 +18,35 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = V2ModelResponseEnvelope.Builder.class)
-public final class V2ModelResponseEnvelope {
-    private final Optional<V2ModelResponse> data;
+@JsonDeserialize(builder = ModelRelationTo.Builder.class)
+public final class ModelRelationTo {
+    private final Optional<String> field;
 
-    private final Optional<V2JobResponse> job;
+    private final Optional<String> modelId;
 
     private final Map<String, Object> additionalProperties;
 
-    private V2ModelResponseEnvelope(
-            Optional<V2ModelResponse> data, Optional<V2JobResponse> job, Map<String, Object> additionalProperties) {
-        this.data = data;
-        this.job = job;
+    private ModelRelationTo(
+            Optional<String> field, Optional<String> modelId, Map<String, Object> additionalProperties) {
+        this.field = field;
+        this.modelId = modelId;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("data")
-    public Optional<V2ModelResponse> getData() {
-        return data;
+    @JsonProperty("field")
+    public Optional<String> getField() {
+        return field;
     }
 
-    @JsonProperty("job")
-    public Optional<V2JobResponse> getJob() {
-        return job;
+    @JsonProperty("model_id")
+    public Optional<String> getModelId() {
+        return modelId;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof V2ModelResponseEnvelope && equalTo((V2ModelResponseEnvelope) other);
+        return other instanceof ModelRelationTo && equalTo((ModelRelationTo) other);
     }
 
     @JsonAnyGetter
@@ -54,13 +54,13 @@ public final class V2ModelResponseEnvelope {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(V2ModelResponseEnvelope other) {
-        return data.equals(other.data) && job.equals(other.job);
+    private boolean equalTo(ModelRelationTo other) {
+        return field.equals(other.field) && modelId.equals(other.modelId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.data, this.job);
+        return Objects.hash(this.field, this.modelId);
     }
 
     @java.lang.Override
@@ -74,45 +74,45 @@ public final class V2ModelResponseEnvelope {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<V2ModelResponse> data = Optional.empty();
+        private Optional<String> field = Optional.empty();
 
-        private Optional<V2JobResponse> job = Optional.empty();
+        private Optional<String> modelId = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        public Builder from(V2ModelResponseEnvelope other) {
-            data(other.getData());
-            job(other.getJob());
+        public Builder from(ModelRelationTo other) {
+            field(other.getField());
+            modelId(other.getModelId());
             return this;
         }
 
-        @JsonSetter(value = "data", nulls = Nulls.SKIP)
-        public Builder data(Optional<V2ModelResponse> data) {
-            this.data = data;
+        @JsonSetter(value = "field", nulls = Nulls.SKIP)
+        public Builder field(Optional<String> field) {
+            this.field = field;
             return this;
         }
 
-        public Builder data(V2ModelResponse data) {
-            this.data = Optional.of(data);
+        public Builder field(String field) {
+            this.field = Optional.of(field);
             return this;
         }
 
-        @JsonSetter(value = "job", nulls = Nulls.SKIP)
-        public Builder job(Optional<V2JobResponse> job) {
-            this.job = job;
+        @JsonSetter(value = "model_id", nulls = Nulls.SKIP)
+        public Builder modelId(Optional<String> modelId) {
+            this.modelId = modelId;
             return this;
         }
 
-        public Builder job(V2JobResponse job) {
-            this.job = Optional.of(job);
+        public Builder modelId(String modelId) {
+            this.modelId = Optional.of(modelId);
             return this;
         }
 
-        public V2ModelResponseEnvelope build() {
-            return new V2ModelResponseEnvelope(data, job, additionalProperties);
+        public ModelRelationTo build() {
+            return new ModelRelationTo(field, modelId, additionalProperties);
         }
     }
 }

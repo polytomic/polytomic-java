@@ -18,35 +18,26 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = V2ModelResponseEnvelope.Builder.class)
-public final class V2ModelResponseEnvelope {
-    private final Optional<V2ModelResponse> data;
-
-    private final Optional<V2JobResponse> job;
+@JsonDeserialize(builder = V2JobResponseEnvelope.Builder.class)
+public final class V2JobResponseEnvelope {
+    private final Optional<V2JobResponse> data;
 
     private final Map<String, Object> additionalProperties;
 
-    private V2ModelResponseEnvelope(
-            Optional<V2ModelResponse> data, Optional<V2JobResponse> job, Map<String, Object> additionalProperties) {
+    private V2JobResponseEnvelope(Optional<V2JobResponse> data, Map<String, Object> additionalProperties) {
         this.data = data;
-        this.job = job;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
-    public Optional<V2ModelResponse> getData() {
+    public Optional<V2JobResponse> getData() {
         return data;
-    }
-
-    @JsonProperty("job")
-    public Optional<V2JobResponse> getJob() {
-        return job;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof V2ModelResponseEnvelope && equalTo((V2ModelResponseEnvelope) other);
+        return other instanceof V2JobResponseEnvelope && equalTo((V2JobResponseEnvelope) other);
     }
 
     @JsonAnyGetter
@@ -54,13 +45,13 @@ public final class V2ModelResponseEnvelope {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(V2ModelResponseEnvelope other) {
-        return data.equals(other.data) && job.equals(other.job);
+    private boolean equalTo(V2JobResponseEnvelope other) {
+        return data.equals(other.data);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.data, this.job);
+        return Objects.hash(this.data);
     }
 
     @java.lang.Override
@@ -74,45 +65,31 @@ public final class V2ModelResponseEnvelope {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<V2ModelResponse> data = Optional.empty();
-
-        private Optional<V2JobResponse> job = Optional.empty();
+        private Optional<V2JobResponse> data = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        public Builder from(V2ModelResponseEnvelope other) {
+        public Builder from(V2JobResponseEnvelope other) {
             data(other.getData());
-            job(other.getJob());
             return this;
         }
 
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
-        public Builder data(Optional<V2ModelResponse> data) {
+        public Builder data(Optional<V2JobResponse> data) {
             this.data = data;
             return this;
         }
 
-        public Builder data(V2ModelResponse data) {
+        public Builder data(V2JobResponse data) {
             this.data = Optional.of(data);
             return this;
         }
 
-        @JsonSetter(value = "job", nulls = Nulls.SKIP)
-        public Builder job(Optional<V2JobResponse> job) {
-            this.job = job;
-            return this;
-        }
-
-        public Builder job(V2JobResponse job) {
-            this.job = Optional.of(job);
-            return this;
-        }
-
-        public V2ModelResponseEnvelope build() {
-            return new V2ModelResponseEnvelope(data, job, additionalProperties);
+        public V2JobResponseEnvelope build() {
+            return new V2JobResponseEnvelope(data, additionalProperties);
         }
     }
 }

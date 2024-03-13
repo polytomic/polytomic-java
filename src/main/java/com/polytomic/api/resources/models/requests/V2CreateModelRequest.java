@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.V2ModelFieldRequest;
-import com.polytomic.api.types.V2Relation;
+import com.polytomic.api.types.ModelModelFieldRequest;
+import com.polytomic.api.types.ModelRelation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,9 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = V2CreateModelRequest.Builder.class)
 public final class V2CreateModelRequest {
-    private final Optional<List<V2ModelFieldRequest>> additionalFields;
+    private final Optional<Boolean> async;
+
+    private final Optional<List<ModelModelFieldRequest>> additionalFields;
 
     private final Optional<Map<String, Object>> configuration;
 
@@ -41,14 +43,15 @@ public final class V2CreateModelRequest {
 
     private final Optional<List<String>> policies;
 
-    private final Optional<List<V2Relation>> relations;
+    private final Optional<List<ModelRelation>> relations;
 
     private final Optional<List<String>> trackingColumns;
 
     private final Map<String, Object> additionalProperties;
 
     private V2CreateModelRequest(
-            Optional<List<V2ModelFieldRequest>> additionalFields,
+            Optional<Boolean> async,
+            Optional<List<ModelModelFieldRequest>> additionalFields,
             Optional<Map<String, Object>> configuration,
             String connectionId,
             Optional<List<String>> fields,
@@ -57,9 +60,10 @@ public final class V2CreateModelRequest {
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
-            Optional<List<V2Relation>> relations,
+            Optional<List<ModelRelation>> relations,
             Optional<List<String>> trackingColumns,
             Map<String, Object> additionalProperties) {
+        this.async = async;
         this.additionalFields = additionalFields;
         this.configuration = configuration;
         this.connectionId = connectionId;
@@ -74,8 +78,13 @@ public final class V2CreateModelRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    @JsonProperty("async")
+    public Optional<Boolean> getAsync() {
+        return async;
+    }
+
     @JsonProperty("additional_fields")
-    public Optional<List<V2ModelFieldRequest>> getAdditionalFields() {
+    public Optional<List<ModelModelFieldRequest>> getAdditionalFields() {
         return additionalFields;
     }
 
@@ -120,7 +129,7 @@ public final class V2CreateModelRequest {
     }
 
     @JsonProperty("relations")
-    public Optional<List<V2Relation>> getRelations() {
+    public Optional<List<ModelRelation>> getRelations() {
         return relations;
     }
 
@@ -141,7 +150,8 @@ public final class V2CreateModelRequest {
     }
 
     private boolean equalTo(V2CreateModelRequest other) {
-        return additionalFields.equals(other.additionalFields)
+        return async.equals(other.async)
+                && additionalFields.equals(other.additionalFields)
                 && configuration.equals(other.configuration)
                 && connectionId.equals(other.connectionId)
                 && fields.equals(other.fields)
@@ -157,6 +167,7 @@ public final class V2CreateModelRequest {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.async,
                 this.additionalFields,
                 this.configuration,
                 this.connectionId,
@@ -192,9 +203,13 @@ public final class V2CreateModelRequest {
     public interface _FinalStage {
         V2CreateModelRequest build();
 
-        _FinalStage additionalFields(Optional<List<V2ModelFieldRequest>> additionalFields);
+        _FinalStage async(Optional<Boolean> async);
 
-        _FinalStage additionalFields(List<V2ModelFieldRequest> additionalFields);
+        _FinalStage async(Boolean async);
+
+        _FinalStage additionalFields(Optional<List<ModelModelFieldRequest>> additionalFields);
+
+        _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields);
 
         _FinalStage configuration(Optional<Map<String, Object>> configuration);
 
@@ -220,9 +235,9 @@ public final class V2CreateModelRequest {
 
         _FinalStage policies(List<String> policies);
 
-        _FinalStage relations(Optional<List<V2Relation>> relations);
+        _FinalStage relations(Optional<List<ModelRelation>> relations);
 
-        _FinalStage relations(List<V2Relation> relations);
+        _FinalStage relations(List<ModelRelation> relations);
 
         _FinalStage trackingColumns(Optional<List<String>> trackingColumns);
 
@@ -237,7 +252,7 @@ public final class V2CreateModelRequest {
 
         private Optional<List<String>> trackingColumns = Optional.empty();
 
-        private Optional<List<V2Relation>> relations = Optional.empty();
+        private Optional<List<ModelRelation>> relations = Optional.empty();
 
         private Optional<List<String>> policies = Optional.empty();
 
@@ -251,7 +266,9 @@ public final class V2CreateModelRequest {
 
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
-        private Optional<List<V2ModelFieldRequest>> additionalFields = Optional.empty();
+        private Optional<List<ModelModelFieldRequest>> additionalFields = Optional.empty();
+
+        private Optional<Boolean> async = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -260,6 +277,7 @@ public final class V2CreateModelRequest {
 
         @java.lang.Override
         public Builder from(V2CreateModelRequest other) {
+            async(other.getAsync());
             additionalFields(other.getAdditionalFields());
             configuration(other.getConfiguration());
             connectionId(other.getConnectionId());
@@ -302,14 +320,14 @@ public final class V2CreateModelRequest {
         }
 
         @java.lang.Override
-        public _FinalStage relations(List<V2Relation> relations) {
+        public _FinalStage relations(List<ModelRelation> relations) {
             this.relations = Optional.of(relations);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "relations", nulls = Nulls.SKIP)
-        public _FinalStage relations(Optional<List<V2Relation>> relations) {
+        public _FinalStage relations(Optional<List<ModelRelation>> relations) {
             this.relations = relations;
             return this;
         }
@@ -393,21 +411,35 @@ public final class V2CreateModelRequest {
         }
 
         @java.lang.Override
-        public _FinalStage additionalFields(List<V2ModelFieldRequest> additionalFields) {
+        public _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields) {
             this.additionalFields = Optional.of(additionalFields);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "additional_fields", nulls = Nulls.SKIP)
-        public _FinalStage additionalFields(Optional<List<V2ModelFieldRequest>> additionalFields) {
+        public _FinalStage additionalFields(Optional<List<ModelModelFieldRequest>> additionalFields) {
             this.additionalFields = additionalFields;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage async(Boolean async) {
+            this.async = Optional.of(async);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "async", nulls = Nulls.SKIP)
+        public _FinalStage async(Optional<Boolean> async) {
+            this.async = async;
             return this;
         }
 
         @java.lang.Override
         public V2CreateModelRequest build() {
             return new V2CreateModelRequest(
+                    async,
                     additionalFields,
                     configuration,
                     connectionId,
