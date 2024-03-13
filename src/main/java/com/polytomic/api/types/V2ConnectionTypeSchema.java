@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,12 +25,18 @@ public final class V2ConnectionTypeSchema {
 
     private final Optional<String> name;
 
+    private final Optional<List<String>> operations;
+
     private final Map<String, Object> additionalProperties;
 
     private V2ConnectionTypeSchema(
-            Optional<String> id, Optional<String> name, Map<String, Object> additionalProperties) {
+            Optional<String> id,
+            Optional<String> name,
+            Optional<List<String>> operations,
+            Map<String, Object> additionalProperties) {
         this.id = id;
         this.name = name;
+        this.operations = operations;
         this.additionalProperties = additionalProperties;
     }
 
@@ -41,6 +48,11 @@ public final class V2ConnectionTypeSchema {
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
+    }
+
+    @JsonProperty("operations")
+    public Optional<List<String>> getOperations() {
+        return operations;
     }
 
     @java.lang.Override
@@ -55,12 +67,12 @@ public final class V2ConnectionTypeSchema {
     }
 
     private boolean equalTo(V2ConnectionTypeSchema other) {
-        return id.equals(other.id) && name.equals(other.name);
+        return id.equals(other.id) && name.equals(other.name) && operations.equals(other.operations);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name);
+        return Objects.hash(this.id, this.name, this.operations);
     }
 
     @java.lang.Override
@@ -78,6 +90,8 @@ public final class V2ConnectionTypeSchema {
 
         private Optional<String> name = Optional.empty();
 
+        private Optional<List<String>> operations = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -86,6 +100,7 @@ public final class V2ConnectionTypeSchema {
         public Builder from(V2ConnectionTypeSchema other) {
             id(other.getId());
             name(other.getName());
+            operations(other.getOperations());
             return this;
         }
 
@@ -111,8 +126,19 @@ public final class V2ConnectionTypeSchema {
             return this;
         }
 
+        @JsonSetter(value = "operations", nulls = Nulls.SKIP)
+        public Builder operations(Optional<List<String>> operations) {
+            this.operations = operations;
+            return this;
+        }
+
+        public Builder operations(List<String> operations) {
+            this.operations = Optional.of(operations);
+            return this;
+        }
+
         public V2ConnectionTypeSchema build() {
-            return new V2ConnectionTypeSchema(id, name, additionalProperties);
+            return new V2ConnectionTypeSchema(id, name, operations, additionalProperties);
         }
     }
 }
