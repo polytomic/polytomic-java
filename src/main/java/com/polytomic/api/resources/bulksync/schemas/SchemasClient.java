@@ -8,7 +8,6 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.bulksync.schemas.requests.SchemasListRequest;
 import com.polytomic.api.resources.bulksync.schemas.requests.V3UpdateBulkSchema;
 import com.polytomic.api.types.V3BulkSchemaEnvelope;
 import com.polytomic.api.types.V3ListBulkSchemaEnvelope;
@@ -27,26 +26,22 @@ public class SchemasClient {
     }
 
     public V3ListBulkSchemaEnvelope list(String id) {
-        return list(id, SchemasListRequest.builder().build());
+        return list(id, null);
     }
 
-    public V3ListBulkSchemaEnvelope list(String id, SchemasListRequest request) {
-        return list(id, request, null);
-    }
-
-    public V3ListBulkSchemaEnvelope list(String id, SchemasListRequest request, RequestOptions requestOptions) {
+    public V3ListBulkSchemaEnvelope list(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
                 .addPathSegment(id)
                 .addPathSegments("schemas")
                 .build();
-        Request.Builder _requestBuilder = new Request.Builder()
+        Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Content-Type", "application/json")
+                .build();
         try {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();

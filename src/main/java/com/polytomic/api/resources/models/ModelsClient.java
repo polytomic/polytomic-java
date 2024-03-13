@@ -13,8 +13,6 @@ import com.polytomic.api.resources.models.requests.V2UpdateModelRequest;
 import com.polytomic.api.types.V2ModelListResponseEnvelope;
 import com.polytomic.api.types.V2ModelResponseEnvelope;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -62,55 +60,23 @@ public class ModelsClient {
     }
 
     public V2ModelResponseEnvelope create(V2CreateModelRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("api/models");
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        Map<String, Object> properties = new HashMap<>();
-        if (request.getAdditionalFields().isPresent()) {
-            properties.put("additional_fields", request.getAdditionalFields());
-        }
-        if (request.getConfiguration().isPresent()) {
-            properties.put("configuration", request.getConfiguration());
-        }
-        properties.put("connection_id", request.getConnectionId());
-        if (request.getFields().isPresent()) {
-            properties.put("fields", request.getFields());
-        }
-        if (request.getIdentifier().isPresent()) {
-            properties.put("identifier", request.getIdentifier());
-        }
-        if (request.getLabels().isPresent()) {
-            properties.put("labels", request.getLabels());
-        }
-        properties.put("name", request.getName());
-        if (request.getOrganizationId().isPresent()) {
-            properties.put("organization_id", request.getOrganizationId());
-        }
-        if (request.getPolicies().isPresent()) {
-            properties.put("policies", request.getPolicies());
-        }
-        if (request.getRelations().isPresent()) {
-            properties.put("relations", request.getRelations());
-        }
-        if (request.getTrackingColumns().isPresent()) {
-            properties.put("tracking_columns", request.getTrackingColumns());
-        }
+                .addPathSegments("api/models")
+                .build();
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Content-Type", "application/json")
+                .build();
         try {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
@@ -189,56 +155,24 @@ public class ModelsClient {
     }
 
     public V2ModelResponseEnvelope update(String id, V2UpdateModelRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models")
-                .addPathSegment(id);
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        Map<String, Object> properties = new HashMap<>();
-        if (request.getAdditionalFields().isPresent()) {
-            properties.put("additional_fields", request.getAdditionalFields());
-        }
-        if (request.getConfiguration().isPresent()) {
-            properties.put("configuration", request.getConfiguration());
-        }
-        properties.put("connection_id", request.getConnectionId());
-        if (request.getFields().isPresent()) {
-            properties.put("fields", request.getFields());
-        }
-        if (request.getIdentifier().isPresent()) {
-            properties.put("identifier", request.getIdentifier());
-        }
-        if (request.getLabels().isPresent()) {
-            properties.put("labels", request.getLabels());
-        }
-        properties.put("name", request.getName());
-        if (request.getOrganizationId().isPresent()) {
-            properties.put("organization_id", request.getOrganizationId());
-        }
-        if (request.getPolicies().isPresent()) {
-            properties.put("policies", request.getPolicies());
-        }
-        if (request.getRelations().isPresent()) {
-            properties.put("relations", request.getRelations());
-        }
-        if (request.getTrackingColumns().isPresent()) {
-            properties.put("tracking_columns", request.getTrackingColumns());
-        }
+                .addPathSegment(id)
+                .build();
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
                 .method("PATCH", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
+                .addHeader("Content-Type", "application/json")
+                .build();
         try {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();

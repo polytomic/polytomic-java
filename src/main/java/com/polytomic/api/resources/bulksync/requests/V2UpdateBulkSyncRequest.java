@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.BulkDiscover;
 import com.polytomic.api.types.BulkSchedule;
 import java.util.HashMap;
 import java.util.List;
@@ -25,19 +24,13 @@ import java.util.Optional;
 public final class V2UpdateBulkSyncRequest {
     private final Optional<Boolean> active;
 
-    private final Optional<BulkDiscover> automaticallyAddNewFields;
-
-    private final Optional<BulkDiscover> automaticallyAddNewObjects;
-
     private final Optional<Map<String, Object>> destinationConfiguration;
 
     private final String destinationConnectionId;
 
-    private final Optional<Boolean> disableRecordTimestamps;
-
     private final Optional<Boolean> discover;
 
-    private final Optional<String> mode;
+    private final String mode;
 
     private final String name;
 
@@ -47,8 +40,6 @@ public final class V2UpdateBulkSyncRequest {
 
     private final BulkSchedule schedule;
 
-    private final Optional<List<String>> schemas;
-
     private final Optional<Map<String, Object>> sourceConfiguration;
 
     private final String sourceConnectionId;
@@ -57,34 +48,26 @@ public final class V2UpdateBulkSyncRequest {
 
     private V2UpdateBulkSyncRequest(
             Optional<Boolean> active,
-            Optional<BulkDiscover> automaticallyAddNewFields,
-            Optional<BulkDiscover> automaticallyAddNewObjects,
             Optional<Map<String, Object>> destinationConfiguration,
             String destinationConnectionId,
-            Optional<Boolean> disableRecordTimestamps,
             Optional<Boolean> discover,
-            Optional<String> mode,
+            String mode,
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
             BulkSchedule schedule,
-            Optional<List<String>> schemas,
             Optional<Map<String, Object>> sourceConfiguration,
             String sourceConnectionId,
             Map<String, Object> additionalProperties) {
         this.active = active;
-        this.automaticallyAddNewFields = automaticallyAddNewFields;
-        this.automaticallyAddNewObjects = automaticallyAddNewObjects;
         this.destinationConfiguration = destinationConfiguration;
         this.destinationConnectionId = destinationConnectionId;
-        this.disableRecordTimestamps = disableRecordTimestamps;
         this.discover = discover;
         this.mode = mode;
         this.name = name;
         this.organizationId = organizationId;
         this.policies = policies;
         this.schedule = schedule;
-        this.schemas = schemas;
         this.sourceConfiguration = sourceConfiguration;
         this.sourceConnectionId = sourceConnectionId;
         this.additionalProperties = additionalProperties;
@@ -93,16 +76,6 @@ public final class V2UpdateBulkSyncRequest {
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
-    }
-
-    @JsonProperty("automatically_add_new_fields")
-    public Optional<BulkDiscover> getAutomaticallyAddNewFields() {
-        return automaticallyAddNewFields;
-    }
-
-    @JsonProperty("automatically_add_new_objects")
-    public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
-        return automaticallyAddNewObjects;
     }
 
     @JsonProperty("destination_configuration")
@@ -115,24 +88,13 @@ public final class V2UpdateBulkSyncRequest {
         return destinationConnectionId;
     }
 
-    @JsonProperty("disable_record_timestamps")
-    public Optional<Boolean> getDisableRecordTimestamps() {
-        return disableRecordTimestamps;
-    }
-
-    /**
-     * @return DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead
-     */
     @JsonProperty("discover")
     public Optional<Boolean> getDiscover() {
         return discover;
     }
 
-    /**
-     * @return
-     */
     @JsonProperty("mode")
-    public Optional<String> getMode() {
+    public String getMode() {
         return mode;
     }
 
@@ -154,11 +116,6 @@ public final class V2UpdateBulkSyncRequest {
     @JsonProperty("schedule")
     public BulkSchedule getSchedule() {
         return schedule;
-    }
-
-    @JsonProperty("schemas")
-    public Optional<List<String>> getSchemas() {
-        return schemas;
     }
 
     @JsonProperty("source_configuration")
@@ -184,18 +141,14 @@ public final class V2UpdateBulkSyncRequest {
 
     private boolean equalTo(V2UpdateBulkSyncRequest other) {
         return active.equals(other.active)
-                && automaticallyAddNewFields.equals(other.automaticallyAddNewFields)
-                && automaticallyAddNewObjects.equals(other.automaticallyAddNewObjects)
                 && destinationConfiguration.equals(other.destinationConfiguration)
                 && destinationConnectionId.equals(other.destinationConnectionId)
-                && disableRecordTimestamps.equals(other.disableRecordTimestamps)
                 && discover.equals(other.discover)
                 && mode.equals(other.mode)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
                 && schedule.equals(other.schedule)
-                && schemas.equals(other.schemas)
                 && sourceConfiguration.equals(other.sourceConfiguration)
                 && sourceConnectionId.equals(other.sourceConnectionId);
     }
@@ -204,18 +157,14 @@ public final class V2UpdateBulkSyncRequest {
     public int hashCode() {
         return Objects.hash(
                 this.active,
-                this.automaticallyAddNewFields,
-                this.automaticallyAddNewObjects,
                 this.destinationConfiguration,
                 this.destinationConnectionId,
-                this.disableRecordTimestamps,
                 this.discover,
                 this.mode,
                 this.name,
                 this.organizationId,
                 this.policies,
                 this.schedule,
-                this.schemas,
                 this.sourceConfiguration,
                 this.sourceConnectionId);
     }
@@ -230,9 +179,13 @@ public final class V2UpdateBulkSyncRequest {
     }
 
     public interface DestinationConnectionIdStage {
-        NameStage destinationConnectionId(String destinationConnectionId);
+        ModeStage destinationConnectionId(String destinationConnectionId);
 
         Builder from(V2UpdateBulkSyncRequest other);
+    }
+
+    public interface ModeStage {
+        NameStage mode(String mode);
     }
 
     public interface NameStage {
@@ -254,29 +207,13 @@ public final class V2UpdateBulkSyncRequest {
 
         _FinalStage active(Boolean active);
 
-        _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields);
-
-        _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields);
-
-        _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects);
-
-        _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
-
         _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration);
 
         _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration);
 
-        _FinalStage disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps);
-
-        _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps);
-
         _FinalStage discover(Optional<Boolean> discover);
 
         _FinalStage discover(Boolean discover);
-
-        _FinalStage mode(Optional<String> mode);
-
-        _FinalStage mode(String mode);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
@@ -286,10 +223,6 @@ public final class V2UpdateBulkSyncRequest {
 
         _FinalStage policies(List<String> policies);
 
-        _FinalStage schemas(Optional<List<String>> schemas);
-
-        _FinalStage schemas(List<String> schemas);
-
         _FinalStage sourceConfiguration(Optional<Map<String, Object>> sourceConfiguration);
 
         _FinalStage sourceConfiguration(Map<String, Object> sourceConfiguration);
@@ -297,8 +230,15 @@ public final class V2UpdateBulkSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements DestinationConnectionIdStage, NameStage, ScheduleStage, SourceConnectionIdStage, _FinalStage {
+            implements DestinationConnectionIdStage,
+                    ModeStage,
+                    NameStage,
+                    ScheduleStage,
+                    SourceConnectionIdStage,
+                    _FinalStage {
         private String destinationConnectionId;
+
+        private String mode;
 
         private String name;
 
@@ -308,23 +248,13 @@ public final class V2UpdateBulkSyncRequest {
 
         private Optional<Map<String, Object>> sourceConfiguration = Optional.empty();
 
-        private Optional<List<String>> schemas = Optional.empty();
-
         private Optional<List<String>> policies = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
 
-        private Optional<String> mode = Optional.empty();
-
         private Optional<Boolean> discover = Optional.empty();
 
-        private Optional<Boolean> disableRecordTimestamps = Optional.empty();
-
         private Optional<Map<String, Object>> destinationConfiguration = Optional.empty();
-
-        private Optional<BulkDiscover> automaticallyAddNewObjects = Optional.empty();
-
-        private Optional<BulkDiscover> automaticallyAddNewFields = Optional.empty();
 
         private Optional<Boolean> active = Optional.empty();
 
@@ -336,18 +266,14 @@ public final class V2UpdateBulkSyncRequest {
         @java.lang.Override
         public Builder from(V2UpdateBulkSyncRequest other) {
             active(other.getActive());
-            automaticallyAddNewFields(other.getAutomaticallyAddNewFields());
-            automaticallyAddNewObjects(other.getAutomaticallyAddNewObjects());
             destinationConfiguration(other.getDestinationConfiguration());
             destinationConnectionId(other.getDestinationConnectionId());
-            disableRecordTimestamps(other.getDisableRecordTimestamps());
             discover(other.getDiscover());
             mode(other.getMode());
             name(other.getName());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
             schedule(other.getSchedule());
-            schemas(other.getSchemas());
             sourceConfiguration(other.getSourceConfiguration());
             sourceConnectionId(other.getSourceConnectionId());
             return this;
@@ -355,8 +281,15 @@ public final class V2UpdateBulkSyncRequest {
 
         @java.lang.Override
         @JsonSetter("destination_connection_id")
-        public NameStage destinationConnectionId(String destinationConnectionId) {
+        public ModeStage destinationConnectionId(String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("mode")
+        public NameStage mode(String mode) {
+            this.mode = mode;
             return this;
         }
 
@@ -395,19 +328,6 @@ public final class V2UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
-        public _FinalStage schemas(List<String> schemas) {
-            this.schemas = Optional.of(schemas);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
-        public _FinalStage schemas(Optional<List<String>> schemas) {
-            this.schemas = schemas;
-            return this;
-        }
-
-        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.of(policies);
             return this;
@@ -433,26 +353,6 @@ public final class V2UpdateBulkSyncRequest {
             return this;
         }
 
-        /**
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage mode(String mode) {
-            this.mode = Optional.of(mode);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public _FinalStage mode(Optional<String> mode) {
-            this.mode = mode;
-            return this;
-        }
-
-        /**
-         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
         public _FinalStage discover(Boolean discover) {
             this.discover = Optional.of(discover);
@@ -467,19 +367,6 @@ public final class V2UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
-        public _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps) {
-            this.disableRecordTimestamps = Optional.of(disableRecordTimestamps);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "disable_record_timestamps", nulls = Nulls.SKIP)
-        public _FinalStage disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps) {
-            this.disableRecordTimestamps = disableRecordTimestamps;
-            return this;
-        }
-
-        @java.lang.Override
         public _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration) {
             this.destinationConfiguration = Optional.of(destinationConfiguration);
             return this;
@@ -489,32 +376,6 @@ public final class V2UpdateBulkSyncRequest {
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
         public _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration) {
             this.destinationConfiguration = destinationConfiguration;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
-            this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "automatically_add_new_objects", nulls = Nulls.SKIP)
-        public _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects) {
-            this.automaticallyAddNewObjects = automaticallyAddNewObjects;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
-            this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "automatically_add_new_fields", nulls = Nulls.SKIP)
-        public _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields) {
-            this.automaticallyAddNewFields = automaticallyAddNewFields;
             return this;
         }
 
@@ -535,18 +396,14 @@ public final class V2UpdateBulkSyncRequest {
         public V2UpdateBulkSyncRequest build() {
             return new V2UpdateBulkSyncRequest(
                     active,
-                    automaticallyAddNewFields,
-                    automaticallyAddNewObjects,
                     destinationConfiguration,
                     destinationConnectionId,
-                    disableRecordTimestamps,
                     discover,
                     mode,
                     name,
                     organizationId,
                     policies,
                     schedule,
-                    schemas,
                     sourceConfiguration,
                     sourceConnectionId,
                     additionalProperties);

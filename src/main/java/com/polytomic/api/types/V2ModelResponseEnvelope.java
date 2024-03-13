@@ -22,25 +22,16 @@ import java.util.Optional;
 public final class V2ModelResponseEnvelope {
     private final Optional<V2ModelResponse> data;
 
-    private final Optional<V2JobResponse> job;
-
     private final Map<String, Object> additionalProperties;
 
-    private V2ModelResponseEnvelope(
-            Optional<V2ModelResponse> data, Optional<V2JobResponse> job, Map<String, Object> additionalProperties) {
+    private V2ModelResponseEnvelope(Optional<V2ModelResponse> data, Map<String, Object> additionalProperties) {
         this.data = data;
-        this.job = job;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
     public Optional<V2ModelResponse> getData() {
         return data;
-    }
-
-    @JsonProperty("job")
-    public Optional<V2JobResponse> getJob() {
-        return job;
     }
 
     @java.lang.Override
@@ -55,12 +46,12 @@ public final class V2ModelResponseEnvelope {
     }
 
     private boolean equalTo(V2ModelResponseEnvelope other) {
-        return data.equals(other.data) && job.equals(other.job);
+        return data.equals(other.data);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.data, this.job);
+        return Objects.hash(this.data);
     }
 
     @java.lang.Override
@@ -76,8 +67,6 @@ public final class V2ModelResponseEnvelope {
     public static final class Builder {
         private Optional<V2ModelResponse> data = Optional.empty();
 
-        private Optional<V2JobResponse> job = Optional.empty();
-
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -85,7 +74,6 @@ public final class V2ModelResponseEnvelope {
 
         public Builder from(V2ModelResponseEnvelope other) {
             data(other.getData());
-            job(other.getJob());
             return this;
         }
 
@@ -100,19 +88,8 @@ public final class V2ModelResponseEnvelope {
             return this;
         }
 
-        @JsonSetter(value = "job", nulls = Nulls.SKIP)
-        public Builder job(Optional<V2JobResponse> job) {
-            this.job = job;
-            return this;
-        }
-
-        public Builder job(V2JobResponse job) {
-            this.job = Optional.of(job);
-            return this;
-        }
-
         public V2ModelResponseEnvelope build() {
-            return new V2ModelResponseEnvelope(data, job, additionalProperties);
+            return new V2ModelResponseEnvelope(data, additionalProperties);
         }
     }
 }

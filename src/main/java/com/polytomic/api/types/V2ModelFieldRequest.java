@@ -18,8 +18,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = ModelModelFieldRequest.Builder.class)
-public final class ModelModelFieldRequest {
+@JsonDeserialize(builder = V2ModelFieldRequest.Builder.class)
+public final class V2ModelFieldRequest {
     private final Optional<String> example;
 
     private final String label;
@@ -30,7 +30,7 @@ public final class ModelModelFieldRequest {
 
     private final Map<String, Object> additionalProperties;
 
-    private ModelModelFieldRequest(
+    private V2ModelFieldRequest(
             Optional<String> example,
             String label,
             String name,
@@ -66,7 +66,7 @@ public final class ModelModelFieldRequest {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ModelModelFieldRequest && equalTo((ModelModelFieldRequest) other);
+        return other instanceof V2ModelFieldRequest && equalTo((V2ModelFieldRequest) other);
     }
 
     @JsonAnyGetter
@@ -74,7 +74,7 @@ public final class ModelModelFieldRequest {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ModelModelFieldRequest other) {
+    private boolean equalTo(V2ModelFieldRequest other) {
         return example.equals(other.example)
                 && label.equals(other.label)
                 && name.equals(other.name)
@@ -98,7 +98,7 @@ public final class ModelModelFieldRequest {
     public interface LabelStage {
         NameStage label(String label);
 
-        Builder from(ModelModelFieldRequest other);
+        Builder from(V2ModelFieldRequest other);
     }
 
     public interface NameStage {
@@ -110,7 +110,7 @@ public final class ModelModelFieldRequest {
     }
 
     public interface _FinalStage {
-        ModelModelFieldRequest build();
+        V2ModelFieldRequest build();
 
         _FinalStage example(Optional<String> example);
 
@@ -133,7 +133,7 @@ public final class ModelModelFieldRequest {
         private Builder() {}
 
         @java.lang.Override
-        public Builder from(ModelModelFieldRequest other) {
+        public Builder from(V2ModelFieldRequest other) {
             example(other.getExample());
             label(other.getLabel());
             name(other.getName());
@@ -176,8 +176,8 @@ public final class ModelModelFieldRequest {
         }
 
         @java.lang.Override
-        public ModelModelFieldRequest build() {
-            return new ModelModelFieldRequest(example, label, name, type, additionalProperties);
+        public V2ModelFieldRequest build() {
+            return new V2ModelFieldRequest(example, label, name, type, additionalProperties);
         }
     }
 }
