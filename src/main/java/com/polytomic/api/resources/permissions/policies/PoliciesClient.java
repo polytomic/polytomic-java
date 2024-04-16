@@ -8,10 +8,10 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.permissions.policies.requests.V2CreatePolicyRequest;
-import com.polytomic.api.resources.permissions.policies.requests.V2UpdatePolicyRequest;
-import com.polytomic.api.types.V2ListPoliciesResponseEnvelope;
-import com.polytomic.api.types.V2PolicyResponseEnvelope;
+import com.polytomic.api.resources.permissions.policies.requests.CreatePolicyRequest;
+import com.polytomic.api.resources.permissions.policies.requests.UpdatePolicyRequest;
+import com.polytomic.api.types.ListPoliciesResponseEnvelope;
+import com.polytomic.api.types.PolicyResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -26,11 +26,11 @@ public class PoliciesClient {
         this.clientOptions = clientOptions;
     }
 
-    public V2ListPoliciesResponseEnvelope list() {
+    public ListPoliciesResponseEnvelope list() {
         return list(null);
     }
 
-    public V2ListPoliciesResponseEnvelope list(RequestOptions requestOptions) {
+    public ListPoliciesResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/policies")
@@ -46,7 +46,7 @@ public class PoliciesClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V2ListPoliciesResponseEnvelope.class);
+                        response.body().string(), ListPoliciesResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -56,11 +56,11 @@ public class PoliciesClient {
         }
     }
 
-    public V2PolicyResponseEnvelope create(V2CreatePolicyRequest request) {
+    public PolicyResponseEnvelope create(CreatePolicyRequest request) {
         return create(request, null);
     }
 
-    public V2PolicyResponseEnvelope create(V2CreatePolicyRequest request, RequestOptions requestOptions) {
+    public PolicyResponseEnvelope create(CreatePolicyRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/policies")
@@ -82,7 +82,7 @@ public class PoliciesClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2PolicyResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), PolicyResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -92,11 +92,11 @@ public class PoliciesClient {
         }
     }
 
-    public V2PolicyResponseEnvelope get(String id) {
+    public PolicyResponseEnvelope get(String id) {
         return get(id, null);
     }
 
-    public V2PolicyResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public PolicyResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/policies")
@@ -112,7 +112,7 @@ public class PoliciesClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2PolicyResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), PolicyResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -122,11 +122,48 @@ public class PoliciesClient {
         }
     }
 
-    public void delete(String id) {
-        delete(id, null);
+    public PolicyResponseEnvelope update(String id, UpdatePolicyRequest request) {
+        return update(id, request, null);
     }
 
-    public void delete(String id, RequestOptions requestOptions) {
+    public PolicyResponseEnvelope update(String id, UpdatePolicyRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/permissions/policies")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), PolicyResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void remove(String id) {
+        remove(id, null);
+    }
+
+    public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/policies")
@@ -142,43 +179,6 @@ public class PoliciesClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2PolicyResponseEnvelope update(String id, V2UpdatePolicyRequest request) {
-        return update(id, request, null);
-    }
-
-    public V2PolicyResponseEnvelope update(String id, V2UpdatePolicyRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/permissions/policies")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2PolicyResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

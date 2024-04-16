@@ -24,7 +24,7 @@ public final class BulkSchedule {
 
     private final Optional<String> dayOfWeek;
 
-    private final String frequency;
+    private final ScheduleFrequency frequency;
 
     private final Optional<String> hour;
 
@@ -39,7 +39,7 @@ public final class BulkSchedule {
     private BulkSchedule(
             Optional<String> dayOfMonth,
             Optional<String> dayOfWeek,
-            String frequency,
+            ScheduleFrequency frequency,
             Optional<String> hour,
             Optional<String> minute,
             Optional<String> month,
@@ -66,7 +66,7 @@ public final class BulkSchedule {
     }
 
     @JsonProperty("frequency")
-    public String getFrequency() {
+    public ScheduleFrequency getFrequency() {
         return frequency;
     }
 
@@ -127,7 +127,7 @@ public final class BulkSchedule {
     }
 
     public interface FrequencyStage {
-        _FinalStage frequency(String frequency);
+        _FinalStage frequency(ScheduleFrequency frequency);
 
         Builder from(BulkSchedule other);
     }
@@ -162,7 +162,7 @@ public final class BulkSchedule {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements FrequencyStage, _FinalStage {
-        private String frequency;
+        private ScheduleFrequency frequency;
 
         private Optional<BulkMultiScheduleConfiguration> multi = Optional.empty();
 
@@ -195,7 +195,7 @@ public final class BulkSchedule {
 
         @java.lang.Override
         @JsonSetter("frequency")
-        public _FinalStage frequency(String frequency) {
+        public _FinalStage frequency(ScheduleFrequency frequency) {
             this.frequency = frequency;
             return this;
         }

@@ -8,6 +8,7 @@ import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.BulkSyncClient;
 import com.polytomic.api.resources.connections.ConnectionsClient;
 import com.polytomic.api.resources.events.EventsClient;
+import com.polytomic.api.resources.identity.IdentityClient;
 import com.polytomic.api.resources.jobs.JobsClient;
 import com.polytomic.api.resources.models.ModelsClient;
 import com.polytomic.api.resources.modelsync.ModelSyncClient;
@@ -25,11 +26,15 @@ public class Polytomic {
 
     protected final Supplier<ConnectionsClient> connectionsClient;
 
+    protected final Supplier<ModelSyncClient> modelSyncClient;
+
     protected final Supplier<SchemasClient> schemasClient;
 
     protected final Supplier<EventsClient> eventsClient;
 
     protected final Supplier<JobsClient> jobsClient;
+
+    protected final Supplier<IdentityClient> identityClient;
 
     protected final Supplier<ModelsClient> modelsClient;
 
@@ -39,22 +44,21 @@ public class Polytomic {
 
     protected final Supplier<PermissionsClient> permissionsClient;
 
-    protected final Supplier<ModelSyncClient> modelSyncClient;
-
     protected final Supplier<WebhooksClient> webhooksClient;
 
     public Polytomic(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.bulkSyncClient = Suppliers.memoize(() -> new BulkSyncClient(clientOptions));
         this.connectionsClient = Suppliers.memoize(() -> new ConnectionsClient(clientOptions));
+        this.modelSyncClient = Suppliers.memoize(() -> new ModelSyncClient(clientOptions));
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
         this.eventsClient = Suppliers.memoize(() -> new EventsClient(clientOptions));
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
+        this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
         this.modelsClient = Suppliers.memoize(() -> new ModelsClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new OrganizationClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new UsersClient(clientOptions));
         this.permissionsClient = Suppliers.memoize(() -> new PermissionsClient(clientOptions));
-        this.modelSyncClient = Suppliers.memoize(() -> new ModelSyncClient(clientOptions));
         this.webhooksClient = Suppliers.memoize(() -> new WebhooksClient(clientOptions));
     }
 
@@ -64,6 +68,10 @@ public class Polytomic {
 
     public ConnectionsClient connections() {
         return this.connectionsClient.get();
+    }
+
+    public ModelSyncClient modelSync() {
+        return this.modelSyncClient.get();
     }
 
     public SchemasClient schemas() {
@@ -76,6 +84,10 @@ public class Polytomic {
 
     public JobsClient jobs() {
         return this.jobsClient.get();
+    }
+
+    public IdentityClient identity() {
+        return this.identityClient.get();
     }
 
     public ModelsClient models() {
@@ -92,10 +104,6 @@ public class Polytomic {
 
     public PermissionsClient permissions() {
         return this.permissionsClient.get();
-    }
-
-    public ModelSyncClient modelSync() {
-        return this.modelSyncClient.get();
     }
 
     public WebhooksClient webhooks() {

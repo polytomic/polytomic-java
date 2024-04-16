@@ -7,11 +7,14 @@ import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.types.V3SchemaRecordsResponseEnvelope;
+import com.polytomic.api.types.BulkSyncSourceSchemaEnvelope;
+import com.polytomic.api.types.BulkSyncSourceStatusEnvelope;
+import com.polytomic.api.types.SchemaRecordsResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SchemasClient {
@@ -21,16 +24,111 @@ public class SchemasClient {
         this.clientOptions = clientOptions;
     }
 
-    public V3SchemaRecordsResponseEnvelope getRecords(String connectionId, String schemaId) {
-        return getRecords(connectionId, schemaId, null);
+    public void refresh(String id) {
+        refresh(id, null);
     }
 
-    public V3SchemaRecordsResponseEnvelope getRecords(
-            String connectionId, String schemaId, RequestOptions requestOptions) {
+    public void refresh(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(id)
+                .addPathSegments("schemas/refresh")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BulkSyncSourceStatusEnvelope getStatus(String id) {
+        return getStatus(id, null);
+    }
+
+    public BulkSyncSourceStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("schemas/status")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        response.body().string(), BulkSyncSourceStatusEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BulkSyncSourceSchemaEnvelope get(String id, String schemaId) {
+        return get(id, schemaId, null);
+    }
+
+    public BulkSyncSourceSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        response.body().string(), BulkSyncSourceSchemaEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId) {
+        return getRecords(id, schemaId, null);
+    }
+
+    public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("schemas")
                 .addPathSegment(schemaId)
                 .addPathSegments("records")
                 .build();
@@ -45,7 +143,7 @@ public class SchemasClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V3SchemaRecordsResponseEnvelope.class);
+                        response.body().string(), SchemaRecordsResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

@@ -8,10 +8,10 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.permissions.roles.requests.V2CreateRoleRequest;
-import com.polytomic.api.resources.permissions.roles.requests.V2UpdateRoleRequest;
-import com.polytomic.api.types.V2RoleListResponseEnvelope;
-import com.polytomic.api.types.V2RoleResponseEnvelope;
+import com.polytomic.api.resources.permissions.roles.requests.CreateRoleRequest;
+import com.polytomic.api.resources.permissions.roles.requests.UpdateRoleRequest;
+import com.polytomic.api.types.RoleListResponseEnvelope;
+import com.polytomic.api.types.RoleResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -26,11 +26,11 @@ public class RolesClient {
         this.clientOptions = clientOptions;
     }
 
-    public V2RoleListResponseEnvelope list() {
+    public RoleListResponseEnvelope list() {
         return list(null);
     }
 
-    public V2RoleListResponseEnvelope list(RequestOptions requestOptions) {
+    public RoleListResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/roles")
@@ -45,7 +45,7 @@ public class RolesClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2RoleListResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), RoleListResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -55,11 +55,11 @@ public class RolesClient {
         }
     }
 
-    public V2RoleResponseEnvelope create(V2CreateRoleRequest request) {
+    public RoleResponseEnvelope create(CreateRoleRequest request) {
         return create(request, null);
     }
 
-    public V2RoleResponseEnvelope create(V2CreateRoleRequest request, RequestOptions requestOptions) {
+    public RoleResponseEnvelope create(CreateRoleRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/roles")
@@ -81,7 +81,7 @@ public class RolesClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2RoleResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), RoleResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -91,11 +91,11 @@ public class RolesClient {
         }
     }
 
-    public V2RoleResponseEnvelope get(String id) {
+    public RoleResponseEnvelope get(String id) {
         return get(id, null);
     }
 
-    public V2RoleResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public RoleResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/roles")
@@ -111,7 +111,7 @@ public class RolesClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2RoleResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), RoleResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -121,11 +121,48 @@ public class RolesClient {
         }
     }
 
-    public void delete(String id) {
-        delete(id, null);
+    public RoleResponseEnvelope update(String id, UpdateRoleRequest request) {
+        return update(id, request, null);
     }
 
-    public void delete(String id, RequestOptions requestOptions) {
+    public RoleResponseEnvelope update(String id, UpdateRoleRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/permissions/roles")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), RoleResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void remove(String id) {
+        remove(id, null);
+    }
+
+    public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/roles")
@@ -141,43 +178,6 @@ public class RolesClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2RoleResponseEnvelope update(String id, V2UpdateRoleRequest request) {
-        return update(id, request, null);
-    }
-
-    public V2RoleResponseEnvelope update(String id, V2UpdateRoleRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/permissions/roles")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2RoleResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

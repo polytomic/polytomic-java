@@ -8,10 +8,10 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.models.requests.V2CreateModelRequest;
-import com.polytomic.api.resources.models.requests.V2UpdateModelRequest;
-import com.polytomic.api.types.V2ModelListResponseEnvelope;
-import com.polytomic.api.types.V2ModelResponseEnvelope;
+import com.polytomic.api.resources.models.requests.CreateModelRequest;
+import com.polytomic.api.resources.models.requests.UpdateModelRequest;
+import com.polytomic.api.types.ModelListResponseEnvelope;
+import com.polytomic.api.types.ModelResponseEnvelope;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,11 +28,11 @@ public class ModelsClient {
         this.clientOptions = clientOptions;
     }
 
-    public V2ModelListResponseEnvelope list() {
+    public ModelListResponseEnvelope list() {
         return list(null);
     }
 
-    public V2ModelListResponseEnvelope list(RequestOptions requestOptions) {
+    public ModelListResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models")
@@ -47,7 +47,7 @@ public class ModelsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ModelListResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelListResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -57,11 +57,11 @@ public class ModelsClient {
         }
     }
 
-    public V2ModelResponseEnvelope create(V2CreateModelRequest request) {
+    public ModelResponseEnvelope create(CreateModelRequest request) {
         return create(request, null);
     }
 
-    public V2ModelResponseEnvelope create(V2CreateModelRequest request, RequestOptions requestOptions) {
+    public ModelResponseEnvelope create(CreateModelRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models");
@@ -115,7 +115,7 @@ public class ModelsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ModelResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -125,11 +125,11 @@ public class ModelsClient {
         }
     }
 
-    public V2ModelResponseEnvelope get(String id) {
+    public ModelResponseEnvelope get(String id) {
         return get(id, null);
     }
 
-    public V2ModelResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public ModelResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models")
@@ -145,7 +145,7 @@ public class ModelsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ModelResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -155,40 +155,11 @@ public class ModelsClient {
         }
     }
 
-    public void remove(String id) {
-        remove(id, null);
-    }
-
-    public void remove(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/models")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2ModelResponseEnvelope update(String id, V2UpdateModelRequest request) {
+    public ModelResponseEnvelope update(String id, UpdateModelRequest request) {
         return update(id, request, null);
     }
 
-    public V2ModelResponseEnvelope update(String id, V2UpdateModelRequest request, RequestOptions requestOptions) {
+    public ModelResponseEnvelope update(String id, UpdateModelRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models")
@@ -235,7 +206,7 @@ public class ModelsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("PATCH", body)
+                .method("PUT", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -243,7 +214,36 @@ public class ModelsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ModelResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void remove(String id) {
+        remove(id, null);
+    }
+
+    public void remove(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/models")
+                .addPathSegment(id)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return;
             }
             throw new ApiError(
                     response.code(),

@@ -10,15 +10,23 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
-import com.polytomic.api.resources.modelsync.requests.V2CreateSyncRequest;
-import com.polytomic.api.resources.modelsync.requests.V2StartSyncRequest;
-import com.polytomic.api.resources.modelsync.requests.V2UpdateSyncRequest;
-import com.polytomic.api.types.V2ActivateSyncEnvelope;
-import com.polytomic.api.types.V2ActivateSyncInput;
-import com.polytomic.api.types.V2ListSyncResponseEnvelope;
-import com.polytomic.api.types.V2StartSyncResponseEnvelope;
-import com.polytomic.api.types.V2SyncResponseEnvelope;
-import com.polytomic.api.types.V2SyncStatusEnvelope;
+import com.polytomic.api.resources.modelsync.requests.CreateModelSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetFieldsRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetRequest;
+import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncRequest;
+import com.polytomic.api.types.ActivateSyncEnvelope;
+import com.polytomic.api.types.ActivateSyncInput;
+import com.polytomic.api.types.GetConnectionMetaEnvelope;
+import com.polytomic.api.types.GetModelSyncSourceMetaEnvelope;
+import com.polytomic.api.types.ListModelSyncResponseEnvelope;
+import com.polytomic.api.types.ModelFieldResponse;
+import com.polytomic.api.types.ModelSyncResponseEnvelope;
+import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
+import com.polytomic.api.types.StartModelSyncResponseEnvelope;
+import com.polytomic.api.types.SyncStatusEnvelope;
+import com.polytomic.api.types.TargetResponseEnvelope;
 import java.io.IOException;
 import java.util.function.Supplier;
 import okhttp3.Headers;
@@ -37,11 +45,157 @@ public class ModelSyncClient {
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
     }
 
-    public V2ListSyncResponseEnvelope list() {
+    public GetModelSyncSourceMetaEnvelope getSource(String id) {
+        return getSource(id, ModelSyncGetSourceRequest.builder().build());
+    }
+
+    public GetModelSyncSourceMetaEnvelope getSource(String id, ModelSyncGetSourceRequest request) {
+        return getSource(id, request, null);
+    }
+
+    public GetModelSyncSourceMetaEnvelope getSource(
+            String id, ModelSyncGetSourceRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("modelsync/source");
+        if (request.getParams().isPresent()) {
+            httpUrl.addQueryParameter("params", request.getParams().get());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        response.body().string(), GetModelSyncSourceMetaEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ModelFieldResponse getSourceFields(String id) {
+        return getSourceFields(id, null);
+    }
+
+    public ModelFieldResponse getSourceFields(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("modelsync/source/fields")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelFieldResponse.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public GetConnectionMetaEnvelope getTarget(String id) {
+        return getTarget(id, ModelSyncGetTargetRequest.builder().build());
+    }
+
+    public GetConnectionMetaEnvelope getTarget(String id, ModelSyncGetTargetRequest request) {
+        return getTarget(id, request, null);
+    }
+
+    public GetConnectionMetaEnvelope getTarget(
+            String id, ModelSyncGetTargetRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("modelsync/target");
+        if (request.getType().isPresent()) {
+            httpUrl.addQueryParameter("type", request.getType().get());
+        }
+        if (request.getSearch().isPresent()) {
+            httpUrl.addQueryParameter("search", request.getSearch().get());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), GetConnectionMetaEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TargetResponseEnvelope getTargetFields(String id, ModelSyncGetTargetFieldsRequest request) {
+        return getTargetFields(id, request, null);
+    }
+
+    public TargetResponseEnvelope getTargetFields(
+            String id, ModelSyncGetTargetFieldsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("modelsync/target/fields");
+        httpUrl.addQueryParameter("target", request.getTarget());
+        if (request.getRefresh().isPresent()) {
+            httpUrl.addQueryParameter("refresh", request.getRefresh().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), TargetResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ListModelSyncResponseEnvelope list() {
         return list(null);
     }
 
-    public V2ListSyncResponseEnvelope list(RequestOptions requestOptions) {
+    public ListModelSyncResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -56,7 +210,8 @@ public class ModelSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ListSyncResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        response.body().string(), ListModelSyncResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -66,11 +221,11 @@ public class ModelSyncClient {
         }
     }
 
-    public V2SyncResponseEnvelope create(V2CreateSyncRequest request) {
+    public ModelSyncResponseEnvelope create(CreateModelSyncRequest request) {
         return create(request, null);
     }
 
-    public V2SyncResponseEnvelope create(V2CreateSyncRequest request, RequestOptions requestOptions) {
+    public ModelSyncResponseEnvelope create(CreateModelSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -92,7 +247,7 @@ public class ModelSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2SyncResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelSyncResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -102,11 +257,41 @@ public class ModelSyncClient {
         }
     }
 
-    public V2SyncResponseEnvelope get(String id) {
+    public ScheduleOptionResponseEnvelope getScheduleOptions() {
+        return getScheduleOptions(null);
+    }
+
+    public ScheduleOptionResponseEnvelope getScheduleOptions(RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs/schedules")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        response.body().string(), ScheduleOptionResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ModelSyncResponseEnvelope get(String id) {
         return get(id, null);
     }
 
-    public V2SyncResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public ModelSyncResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -122,7 +307,44 @@ public class ModelSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2SyncResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelSyncResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request) {
+        return update(id, request, null);
+    }
+
+    public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelSyncResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -161,48 +383,11 @@ public class ModelSyncClient {
         }
     }
 
-    public V2SyncResponseEnvelope update(String id, V2UpdateSyncRequest request) {
-        return update(id, request, null);
-    }
-
-    public V2SyncResponseEnvelope update(String id, V2UpdateSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2SyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request) {
+    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
         return activate(id, request, null);
     }
 
-    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request, RequestOptions requestOptions) {
+    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -226,7 +411,7 @@ public class ModelSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ActivateSyncEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ActivateSyncEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -236,15 +421,16 @@ public class ModelSyncClient {
         }
     }
 
-    public V2StartSyncResponseEnvelope start(String id) {
-        return start(id, V2StartSyncRequest.builder().build());
+    public StartModelSyncResponseEnvelope start(String id) {
+        return start(id, StartModelSyncRequest.builder().build());
     }
 
-    public V2StartSyncResponseEnvelope start(String id, V2StartSyncRequest request) {
+    public StartModelSyncResponseEnvelope start(String id, StartModelSyncRequest request) {
         return start(id, request, null);
     }
 
-    public V2StartSyncResponseEnvelope start(String id, V2StartSyncRequest request, RequestOptions requestOptions) {
+    public StartModelSyncResponseEnvelope start(
+            String id, StartModelSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -268,7 +454,8 @@ public class ModelSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2StartSyncResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        response.body().string(), StartModelSyncResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -278,11 +465,11 @@ public class ModelSyncClient {
         }
     }
 
-    public V2SyncStatusEnvelope getStatus(String id) {
+    public SyncStatusEnvelope getStatus(String id) {
         return getStatus(id, null);
     }
 
-    public V2SyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
+    public SyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -299,139 +486,7 @@ public class ModelSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2SyncStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void apiV2GetExecutionLogs4(String syncId, String id, String filename) {
-        apiV2GetExecutionLogs4(syncId, id, filename, null);
-    }
-
-    public void apiV2GetExecutionLogs4(String syncId, String id, String filename, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegments("errors")
-                .addPathSegment(filename)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void apiV2GetExecutionLogs2(String syncId, String id, String filename) {
-        apiV2GetExecutionLogs2(syncId, id, filename, null);
-    }
-
-    public void apiV2GetExecutionLogs2(String syncId, String id, String filename, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegments("inserts")
-                .addPathSegment(filename)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void apiV2GetExecutionLogs(String syncId, String id, String filename) {
-        apiV2GetExecutionLogs(syncId, id, filename, null);
-    }
-
-    public void apiV2GetExecutionLogs(String syncId, String id, String filename, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegments("records")
-                .addPathSegment(filename)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void apiV2GetExecutionLogs3(String syncId, String id, String filename) {
-        apiV2GetExecutionLogs3(syncId, id, filename, null);
-    }
-
-    public void apiV2GetExecutionLogs3(String syncId, String id, String filename, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegments("updates")
-                .addPathSegment(filename)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return;
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), SyncStatusEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

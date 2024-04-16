@@ -8,10 +8,11 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.bulksync.schemas.requests.BulkSyncSchemasRequest;
 import com.polytomic.api.resources.bulksync.schemas.requests.SchemasListRequest;
-import com.polytomic.api.resources.bulksync.schemas.requests.V3UpdateBulkSchema;
-import com.polytomic.api.types.V3BulkSchemaEnvelope;
-import com.polytomic.api.types.V3ListBulkSchemaEnvelope;
+import com.polytomic.api.resources.bulksync.schemas.requests.UpdateBulkSchema;
+import com.polytomic.api.types.BulkSchemaEnvelope;
+import com.polytomic.api.types.ListBulkSchema;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -26,15 +27,15 @@ public class SchemasClient {
         this.clientOptions = clientOptions;
     }
 
-    public V3ListBulkSchemaEnvelope list(String id) {
+    public ListBulkSchema list(String id) {
         return list(id, SchemasListRequest.builder().build());
     }
 
-    public V3ListBulkSchemaEnvelope list(String id, SchemasListRequest request) {
+    public ListBulkSchema list(String id, SchemasListRequest request) {
         return list(id, request, null);
     }
 
-    public V3ListBulkSchemaEnvelope list(String id, SchemasListRequest request, RequestOptions requestOptions) {
+    public ListBulkSchema list(String id, SchemasListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -53,7 +54,7 @@ public class SchemasClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V3ListBulkSchemaEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ListBulkSchema.class);
             }
             throw new ApiError(
                     response.code(),
@@ -63,22 +64,20 @@ public class SchemasClient {
         }
     }
 
-    public V3BulkSchemaEnvelope update(String id, String schemaId) {
-        return update(id, schemaId, V3UpdateBulkSchema.builder().build());
+    public ListBulkSchema patch(String id) {
+        return patch(id, BulkSyncSchemasRequest.builder().build());
     }
 
-    public V3BulkSchemaEnvelope update(String id, String schemaId, V3UpdateBulkSchema request) {
-        return update(id, schemaId, request, null);
+    public ListBulkSchema patch(String id, BulkSyncSchemasRequest request) {
+        return patch(id, request, null);
     }
 
-    public V3BulkSchemaEnvelope update(
-            String id, String schemaId, V3UpdateBulkSchema request, RequestOptions requestOptions) {
+    public ListBulkSchema patch(String id, BulkSyncSchemasRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
                 .addPathSegment(id)
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId)
                 .build();
         RequestBody body;
         try {
@@ -97,7 +96,7 @@ public class SchemasClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V3BulkSchemaEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ListBulkSchema.class);
             }
             throw new ApiError(
                     response.code(),
@@ -107,11 +106,11 @@ public class SchemasClient {
         }
     }
 
-    public V3BulkSchemaEnvelope get(String id, String schemaId) {
+    public BulkSchemaEnvelope get(String id, String schemaId) {
         return get(id, schemaId, null);
     }
 
-    public V3BulkSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
+    public BulkSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -129,7 +128,51 @@ public class SchemasClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V3BulkSchemaEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSchemaEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BulkSchemaEnvelope update(String id, String schemaId) {
+        return update(id, schemaId, UpdateBulkSchema.builder().build());
+    }
+
+    public BulkSchemaEnvelope update(String id, String schemaId, UpdateBulkSchema request) {
+        return update(id, schemaId, request, null);
+    }
+
+    public BulkSchemaEnvelope update(
+            String id, String schemaId, UpdateBulkSchema request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/bulk/syncs")
+                .addPathSegment(id)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSchemaEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

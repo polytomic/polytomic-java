@@ -7,7 +7,7 @@ import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.types.V2JobResponseEnvelope;
+import com.polytomic.api.types.JobResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -21,11 +21,11 @@ public class JobsClient {
         this.clientOptions = clientOptions;
     }
 
-    public V2JobResponseEnvelope apiV2GetJob(String id, String type) {
-        return apiV2GetJob(id, type, null);
+    public JobResponseEnvelope get(String id, String type) {
+        return get(id, type, null);
     }
 
-    public V2JobResponseEnvelope apiV2GetJob(String id, String type, RequestOptions requestOptions) {
+    public JobResponseEnvelope get(String id, String type, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/jobs")
@@ -42,7 +42,7 @@ public class JobsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2JobResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), JobResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

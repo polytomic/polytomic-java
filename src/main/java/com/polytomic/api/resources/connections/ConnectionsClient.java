@@ -8,22 +8,16 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.connections.requests.ConnectionsGetTargetRequest;
+import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
 import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
-import com.polytomic.api.resources.connections.requests.V2CreateConnectionRequestSchema;
-import com.polytomic.api.resources.connections.requests.V2ModelFieldsRequest;
-import com.polytomic.api.resources.connections.requests.V2TargetRequest;
-import com.polytomic.api.resources.connections.requests.V2UpdateConnectionRequestSchema;
-import com.polytomic.api.resources.connections.requests.V3ConnectCardRequest;
-import com.polytomic.api.types.V2ConnectionListResponseEnvelope;
-import com.polytomic.api.types.V2ConnectionParameterValuesResponseEnvelope;
-import com.polytomic.api.types.V2ConnectionResponseEnvelope;
-import com.polytomic.api.types.V2ConnectionTypeResponseEnvelope;
-import com.polytomic.api.types.V2CreateConnectionResponseEnvelope;
-import com.polytomic.api.types.V2GetConnectionMetaEnvelope;
-import com.polytomic.api.types.V2ModelFieldResponse;
-import com.polytomic.api.types.V2TargetResponseEnvelope;
-import com.polytomic.api.types.V3ConnectCardResponseEnvelope;
+import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
+import com.polytomic.api.resources.connections.requests.UpdateConnectionRequestSchema;
+import com.polytomic.api.types.ConnectCardResponseEnvelope;
+import com.polytomic.api.types.ConnectionListResponseEnvelope;
+import com.polytomic.api.types.ConnectionParameterValuesResponseEnvelope;
+import com.polytomic.api.types.ConnectionResponseEnvelope;
+import com.polytomic.api.types.ConnectionTypeResponseEnvelope;
+import com.polytomic.api.types.CreateConnectionResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -38,11 +32,11 @@ public class ConnectionsClient {
         this.clientOptions = clientOptions;
     }
 
-    public V2ConnectionTypeResponseEnvelope getTypes() {
+    public ConnectionTypeResponseEnvelope getTypes() {
         return getTypes(null);
     }
 
-    public V2ConnectionTypeResponseEnvelope getTypes(RequestOptions requestOptions) {
+    public ConnectionTypeResponseEnvelope getTypes(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connection_types")
@@ -58,7 +52,7 @@ public class ConnectionsClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V2ConnectionTypeResponseEnvelope.class);
+                        response.body().string(), ConnectionTypeResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -68,11 +62,11 @@ public class ConnectionsClient {
         }
     }
 
-    public V2ConnectionListResponseEnvelope list() {
+    public ConnectionListResponseEnvelope list() {
         return list(null);
     }
 
-    public V2ConnectionListResponseEnvelope list(RequestOptions requestOptions) {
+    public ConnectionListResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -88,7 +82,7 @@ public class ConnectionsClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V2ConnectionListResponseEnvelope.class);
+                        response.body().string(), ConnectionListResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -98,12 +92,12 @@ public class ConnectionsClient {
         }
     }
 
-    public V2CreateConnectionResponseEnvelope create(V2CreateConnectionRequestSchema request) {
+    public CreateConnectionResponseEnvelope create(CreateConnectionRequestSchema request) {
         return create(request, null);
     }
 
-    public V2CreateConnectionResponseEnvelope create(
-            V2CreateConnectionRequestSchema request, RequestOptions requestOptions) {
+    public CreateConnectionResponseEnvelope create(
+            CreateConnectionRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -126,7 +120,7 @@ public class ConnectionsClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V2CreateConnectionResponseEnvelope.class);
+                        response.body().string(), CreateConnectionResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -136,11 +130,11 @@ public class ConnectionsClient {
         }
     }
 
-    public V3ConnectCardResponseEnvelope apiV3Connect(V3ConnectCardRequest request) {
-        return apiV3Connect(request, null);
+    public ConnectCardResponseEnvelope connect(ConnectCardRequest request) {
+        return connect(request, null);
     }
 
-    public V3ConnectCardResponseEnvelope apiV3Connect(V3ConnectCardRequest request, RequestOptions requestOptions) {
+    public ConnectCardResponseEnvelope connect(ConnectCardRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections/connect")
@@ -162,8 +156,7 @@ public class ConnectionsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V3ConnectCardResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ConnectCardResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -173,11 +166,11 @@ public class ConnectionsClient {
         }
     }
 
-    public V2ConnectionResponseEnvelope get(String id) {
+    public ConnectionResponseEnvelope get(String id) {
         return get(id, null);
     }
 
-    public V2ConnectionResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public ConnectionResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -193,8 +186,46 @@ public class ConnectionsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ConnectionResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public CreateConnectionResponseEnvelope update(String id, UpdateConnectionRequestSchema request) {
+        return update(id, request, null);
+    }
+
+    public CreateConnectionResponseEnvelope update(
+            String id, UpdateConnectionRequestSchema request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V2ConnectionResponseEnvelope.class);
+                        response.body().string(), CreateConnectionResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -239,51 +270,11 @@ public class ConnectionsClient {
         }
     }
 
-    public V2CreateConnectionResponseEnvelope update(String id, V2UpdateConnectionRequestSchema request) {
-        return update(id, request, null);
+    public ConnectionParameterValuesResponseEnvelope getParameterValues(String id) {
+        return getParameterValues(id, null);
     }
 
-    public V2CreateConnectionResponseEnvelope update(
-            String id, V2UpdateConnectionRequestSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V2CreateConnectionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameterValues(String id) {
-        return apiV2ConnectionParameterValues(id, null);
-    }
-
-    public V2ConnectionParameterValuesResponseEnvelope apiV2ConnectionParameterValues(
-            String id, RequestOptions requestOptions) {
+    public ConnectionParameterValuesResponseEnvelope getParameterValues(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -301,188 +292,7 @@ public class ConnectionsClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V2ConnectionParameterValuesResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2GetConnectionMetaEnvelope getSource(String id) {
-        return getSource(id, null);
-    }
-
-    public V2GetConnectionMetaEnvelope getSource(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("source")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2GetConnectionMetaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2ModelFieldResponse getSourceFields(String id) {
-        return getSourceFields(id, V2ModelFieldsRequest.builder().build());
-    }
-
-    public V2ModelFieldResponse getSourceFields(String id, V2ModelFieldsRequest request) {
-        return getSourceFields(id, request, null);
-    }
-
-    public V2ModelFieldResponse getSourceFields(
-            String id, V2ModelFieldsRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("source/fields")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ModelFieldResponse.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2GetConnectionMetaEnvelope getTarget(String id) {
-        return getTarget(id, ConnectionsGetTargetRequest.builder().build());
-    }
-
-    public V2GetConnectionMetaEnvelope getTarget(String id, ConnectionsGetTargetRequest request) {
-        return getTarget(id, request, null);
-    }
-
-    public V2GetConnectionMetaEnvelope getTarget(
-            String id, ConnectionsGetTargetRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("target");
-        if (request.getType().isPresent()) {
-            httpUrl.addQueryParameter("type", request.getType().get());
-        }
-        if (request.getSearch().isPresent()) {
-            httpUrl.addQueryParameter("search", request.getSearch().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2GetConnectionMetaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2TargetResponseEnvelope getTargetFields(String id, V2TargetRequest request) {
-        return getTargetFields(id, request, null);
-    }
-
-    public V2TargetResponseEnvelope getTargetFields(String id, V2TargetRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("target/fields")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2TargetResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void connect() {
-        connect(null);
-    }
-
-    public void connect(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections/connect")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return;
+                        response.body().string(), ConnectionParameterValuesResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

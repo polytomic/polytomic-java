@@ -7,9 +7,9 @@ import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.events.requests.EventsApiV2GetEventsRequest;
-import com.polytomic.api.types.V2EventTypesEnvelope;
-import com.polytomic.api.types.V2EventsEnvelope;
+import com.polytomic.api.resources.events.requests.EventsListRequest;
+import com.polytomic.api.types.EventTypesEnvelope;
+import com.polytomic.api.types.EventsEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -23,15 +23,15 @@ public class EventsClient {
         this.clientOptions = clientOptions;
     }
 
-    public V2EventsEnvelope apiV2GetEvents() {
-        return apiV2GetEvents(EventsApiV2GetEventsRequest.builder().build());
+    public EventsEnvelope list() {
+        return list(EventsListRequest.builder().build());
     }
 
-    public V2EventsEnvelope apiV2GetEvents(EventsApiV2GetEventsRequest request) {
-        return apiV2GetEvents(request, null);
+    public EventsEnvelope list(EventsListRequest request) {
+        return list(request, null);
     }
 
-    public V2EventsEnvelope apiV2GetEvents(EventsApiV2GetEventsRequest request, RequestOptions requestOptions) {
+    public EventsEnvelope list(EventsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/events");
@@ -63,7 +63,7 @@ public class EventsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2EventsEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), EventsEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -73,11 +73,11 @@ public class EventsClient {
         }
     }
 
-    public V2EventTypesEnvelope apiV2GetEventTypes() {
-        return apiV2GetEventTypes(null);
+    public EventTypesEnvelope getTypes() {
+        return getTypes(null);
     }
 
-    public V2EventTypesEnvelope apiV2GetEventTypes(RequestOptions requestOptions) {
+    public EventTypesEnvelope getTypes(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/events_types")
@@ -92,7 +92,7 @@ public class EventsClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2EventTypesEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), EventTypesEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

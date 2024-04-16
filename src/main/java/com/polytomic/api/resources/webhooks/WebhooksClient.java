@@ -8,10 +8,10 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.webhooks.requests.V2CreateWebhooksSchema;
-import com.polytomic.api.resources.webhooks.requests.V2UpdateWebhooksSchema;
-import com.polytomic.api.types.V2WebhookEnvelope;
-import com.polytomic.api.types.V2WebhookListEnvelope;
+import com.polytomic.api.resources.webhooks.requests.CreateWebhooksSchema;
+import com.polytomic.api.resources.webhooks.requests.UpdateWebhooksSchema;
+import com.polytomic.api.types.WebhookEnvelope;
+import com.polytomic.api.types.WebhookListEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -32,7 +32,7 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookListEnvelope list() {
+    public WebhookListEnvelope list() {
         return list(null);
     }
 
@@ -42,7 +42,7 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookListEnvelope list(RequestOptions requestOptions) {
+    public WebhookListEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
@@ -57,7 +57,7 @@ public class WebhooksClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2WebhookListEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), WebhookListEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -73,7 +73,7 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookEnvelope create(V2CreateWebhooksSchema request) {
+    public WebhookEnvelope create(CreateWebhooksSchema request) {
         return create(request, null);
     }
 
@@ -83,7 +83,7 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookEnvelope create(V2CreateWebhooksSchema request, RequestOptions requestOptions) {
+    public WebhookEnvelope create(CreateWebhooksSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
@@ -105,7 +105,7 @@ public class WebhooksClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2WebhookEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), WebhookEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -121,7 +121,7 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookEnvelope get(String id) {
+    public WebhookEnvelope get(String id) {
         return get(id, null);
     }
 
@@ -131,7 +131,7 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
      */
-    public V2WebhookEnvelope get(String id, RequestOptions requestOptions) {
+    public WebhookEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
@@ -147,7 +147,7 @@ public class WebhooksClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2WebhookEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), WebhookEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -157,11 +157,60 @@ public class WebhooksClient {
         }
     }
 
-    public void delete(String id) {
-        delete(id, null);
+    /**
+     * Webooks can be set up using the webhook API endpoints. Currently, only one
+     * webhook may be created per organization. The webhook will be called for events
+     * in that organization.
+     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     */
+    public WebhookEnvelope update(String id, UpdateWebhooksSchema request) {
+        return update(id, request, null);
     }
 
-    public void delete(String id, RequestOptions requestOptions) {
+    /**
+     * Webooks can be set up using the webhook API endpoints. Currently, only one
+     * webhook may be created per organization. The webhook will be called for events
+     * in that organization.
+     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     */
+    public WebhookEnvelope update(String id, UpdateWebhooksSchema request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/webhooks")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), WebhookEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void remove(String id) {
+        remove(id, null);
+    }
+
+    public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
@@ -177,55 +226,6 @@ public class WebhooksClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
-     */
-    public V2WebhookEnvelope update(String id, V2UpdateWebhooksSchema request) {
-        return update(id, request, null);
-    }
-
-    /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
-     */
-    public V2WebhookEnvelope update(String id, V2UpdateWebhooksSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/webhooks")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2WebhookEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

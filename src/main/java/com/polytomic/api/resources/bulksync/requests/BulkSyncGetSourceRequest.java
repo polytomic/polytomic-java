@@ -20,24 +20,13 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = BulkSyncGetSourceRequest.Builder.class)
 public final class BulkSyncGetSourceRequest {
-    private final Optional<Boolean> refreshSchemas;
-
     private final Optional<Boolean> includeFields;
 
     private final Map<String, Object> additionalProperties;
 
-    private BulkSyncGetSourceRequest(
-            Optional<Boolean> refreshSchemas,
-            Optional<Boolean> includeFields,
-            Map<String, Object> additionalProperties) {
-        this.refreshSchemas = refreshSchemas;
+    private BulkSyncGetSourceRequest(Optional<Boolean> includeFields, Map<String, Object> additionalProperties) {
         this.includeFields = includeFields;
         this.additionalProperties = additionalProperties;
-    }
-
-    @JsonProperty("refresh_schemas")
-    public Optional<Boolean> getRefreshSchemas() {
-        return refreshSchemas;
     }
 
     @JsonProperty("include_fields")
@@ -57,12 +46,12 @@ public final class BulkSyncGetSourceRequest {
     }
 
     private boolean equalTo(BulkSyncGetSourceRequest other) {
-        return refreshSchemas.equals(other.refreshSchemas) && includeFields.equals(other.includeFields);
+        return includeFields.equals(other.includeFields);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.refreshSchemas, this.includeFields);
+        return Objects.hash(this.includeFields);
     }
 
     @java.lang.Override
@@ -76,8 +65,6 @@ public final class BulkSyncGetSourceRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Boolean> refreshSchemas = Optional.empty();
-
         private Optional<Boolean> includeFields = Optional.empty();
 
         @JsonAnySetter
@@ -86,19 +73,7 @@ public final class BulkSyncGetSourceRequest {
         private Builder() {}
 
         public Builder from(BulkSyncGetSourceRequest other) {
-            refreshSchemas(other.getRefreshSchemas());
             includeFields(other.getIncludeFields());
-            return this;
-        }
-
-        @JsonSetter(value = "refresh_schemas", nulls = Nulls.SKIP)
-        public Builder refreshSchemas(Optional<Boolean> refreshSchemas) {
-            this.refreshSchemas = refreshSchemas;
-            return this;
-        }
-
-        public Builder refreshSchemas(Boolean refreshSchemas) {
-            this.refreshSchemas = Optional.of(refreshSchemas);
             return this;
         }
 
@@ -114,7 +89,7 @@ public final class BulkSyncGetSourceRequest {
         }
 
         public BulkSyncGetSourceRequest build() {
-            return new BulkSyncGetSourceRequest(refreshSchemas, includeFields, additionalProperties);
+            return new BulkSyncGetSourceRequest(includeFields, additionalProperties);
         }
     }
 }

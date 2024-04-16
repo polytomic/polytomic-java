@@ -8,10 +8,10 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.organization.requests.V2CreateOrganizationRequestSchema;
-import com.polytomic.api.resources.organization.requests.V2UpdateOrganizationRequestSchema;
-import com.polytomic.api.types.V2OrganizationEnvelope;
-import com.polytomic.api.types.V2OrganizationsEnvelope;
+import com.polytomic.api.resources.organization.requests.CreateOrganizationRequestSchema;
+import com.polytomic.api.resources.organization.requests.UpdateOrganizationRequestSchema;
+import com.polytomic.api.types.OrganizationEnvelope;
+import com.polytomic.api.types.OrganizationsEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -32,7 +32,7 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationsEnvelope list() {
+    public OrganizationsEnvelope list() {
         return list(null);
     }
 
@@ -42,7 +42,7 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationsEnvelope list(RequestOptions requestOptions) {
+    public OrganizationsEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
@@ -57,7 +57,7 @@ public class OrganizationClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2OrganizationsEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), OrganizationsEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -73,7 +73,7 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationEnvelope create(V2CreateOrganizationRequestSchema request) {
+    public OrganizationEnvelope create(CreateOrganizationRequestSchema request) {
         return create(request, null);
     }
 
@@ -83,7 +83,7 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationEnvelope create(V2CreateOrganizationRequestSchema request, RequestOptions requestOptions) {
+    public OrganizationEnvelope create(CreateOrganizationRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
@@ -105,7 +105,7 @@ public class OrganizationClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2OrganizationEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), OrganizationEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -121,7 +121,7 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationEnvelope get(String id) {
+    public OrganizationEnvelope get(String id) {
         return get(id, null);
     }
 
@@ -131,7 +131,7 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
      * </blockquote>
      */
-    public V2OrganizationEnvelope get(String id, RequestOptions requestOptions) {
+    public OrganizationEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
@@ -147,7 +147,57 @@ public class OrganizationClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2OrganizationEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), OrganizationEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * </blockquote>
+     */
+    public OrganizationEnvelope update(String id, UpdateOrganizationRequestSchema request) {
+        return update(id, request, null);
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * </blockquote>
+     */
+    public OrganizationEnvelope update(
+            String id, UpdateOrganizationRequestSchema request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/organizations")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), OrganizationEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -189,56 +239,6 @@ public class OrganizationClient {
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
-     * </blockquote>
-     */
-    public V2OrganizationEnvelope update(String id, V2UpdateOrganizationRequestSchema request) {
-        return update(id, request, null);
-    }
-
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
-     * </blockquote>
-     */
-    public V2OrganizationEnvelope update(
-            String id, V2UpdateOrganizationRequestSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2OrganizationEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

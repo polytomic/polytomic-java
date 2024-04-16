@@ -13,18 +13,18 @@ import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncRemoveRequest;
-import com.polytomic.api.resources.bulksync.requests.V2CreateBulkSyncRequest;
-import com.polytomic.api.resources.bulksync.requests.V2UpdateBulkSyncRequest;
+import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
+import com.polytomic.api.resources.bulksync.requests.StartBulkSyncRequest;
+import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.schemas.SchemasClient;
-import com.polytomic.api.types.V2ActivateSyncEnvelope;
-import com.polytomic.api.types.V2ActivateSyncInput;
-import com.polytomic.api.types.V2BulkSyncDestEnvelope;
-import com.polytomic.api.types.V2BulkSyncListEnvelope;
-import com.polytomic.api.types.V2BulkSyncResponseEnvelope;
-import com.polytomic.api.types.V3BulkSyncSourceEnvelope;
-import com.polytomic.api.types.V3BulkSyncSourceSchemaEnvelope;
-import com.polytomic.api.types.V3BulkSyncSourceStatusEnvelope;
-import com.polytomic.api.types.V3BulkSyncStatusEnvelope;
+import com.polytomic.api.types.ActivateSyncEnvelope;
+import com.polytomic.api.types.ActivateSyncInput;
+import com.polytomic.api.types.BulkSyncDestEnvelope;
+import com.polytomic.api.types.BulkSyncExecutionEnvelope;
+import com.polytomic.api.types.BulkSyncListEnvelope;
+import com.polytomic.api.types.BulkSyncResponseEnvelope;
+import com.polytomic.api.types.BulkSyncSourceEnvelope;
+import com.polytomic.api.types.BulkSyncStatusEnvelope;
 import java.io.IOException;
 import java.util.function.Supplier;
 import okhttp3.Headers;
@@ -46,149 +46,11 @@ public class BulkSyncClient {
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
     }
 
-    public V2BulkSyncDestEnvelope getDestination(String id) {
-        return getDestination(id, null);
-    }
-
-    public V2BulkSyncDestEnvelope getDestination(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/dest")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2BulkSyncDestEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V3BulkSyncSourceEnvelope getSource(String connectionId) {
-        return getSource(connectionId, BulkSyncGetSourceRequest.builder().build());
-    }
-
-    public V3BulkSyncSourceEnvelope getSource(String connectionId, BulkSyncGetSourceRequest request) {
-        return getSource(connectionId, request, null);
-    }
-
-    public V3BulkSyncSourceEnvelope getSource(
-            String connectionId, BulkSyncGetSourceRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/source")
-                .addPathSegment(connectionId);
-        if (request.getRefreshSchemas().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "refresh_schemas", request.getRefreshSchemas().get().toString());
-        }
-        if (request.getIncludeFields().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "include_fields", request.getIncludeFields().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V3BulkSyncSourceEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V3BulkSyncSourceSchemaEnvelope getSourceSchema(String connectionId, String schemaId) {
-        return getSourceSchema(connectionId, schemaId, null);
-    }
-
-    public V3BulkSyncSourceSchemaEnvelope getSourceSchema(
-            String connectionId, String schemaId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/source")
-                .addPathSegment(connectionId)
-                .addPathSegments("schema")
-                .addPathSegment(schemaId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V3BulkSyncSourceSchemaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V3BulkSyncSourceStatusEnvelope apiV3GetBulkSourceStatus(String connectionId) {
-        return apiV3GetBulkSourceStatus(connectionId, null);
-    }
-
-    public V3BulkSyncSourceStatusEnvelope apiV3GetBulkSourceStatus(String connectionId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/source")
-                .addPathSegment(connectionId)
-                .addPathSegments("status")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        response.body().string(), V3BulkSyncSourceStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2BulkSyncListEnvelope list() {
+    public BulkSyncListEnvelope list() {
         return list(null);
     }
 
-    public V2BulkSyncListEnvelope list(RequestOptions requestOptions) {
+    public BulkSyncListEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -203,7 +65,7 @@ public class BulkSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2BulkSyncListEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncListEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -213,11 +75,11 @@ public class BulkSyncClient {
         }
     }
 
-    public V2BulkSyncResponseEnvelope create(V2CreateBulkSyncRequest request) {
+    public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request) {
         return create(request, null);
     }
 
-    public V2BulkSyncResponseEnvelope create(V2CreateBulkSyncRequest request, RequestOptions requestOptions) {
+    public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -239,7 +101,7 @@ public class BulkSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2BulkSyncResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -249,15 +111,15 @@ public class BulkSyncClient {
         }
     }
 
-    public V2BulkSyncResponseEnvelope get(String id) {
+    public BulkSyncResponseEnvelope get(String id) {
         return get(id, BulkSyncGetRequest.builder().build());
     }
 
-    public V2BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request) {
+    public BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request) {
         return get(id, request, null);
     }
 
-    public V2BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request, RequestOptions requestOptions) {
+    public BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -276,7 +138,56 @@ public class BulkSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2BulkSyncResponseEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * <blockquote>
+     * 📘 Updating schemas
+     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
+     * </blockquote>
+     */
+    public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request) {
+        return update(id, request, null);
+    }
+
+    /**
+     * <blockquote>
+     * 📘 Updating schemas
+     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
+     * </blockquote>
+     */
+    public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/bulk/syncs")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -322,61 +233,11 @@ public class BulkSyncClient {
         }
     }
 
-    /**
-     * <blockquote>
-     * 📘 Updating schemas
-     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
-     * </blockquote>
-     */
-    public V2BulkSyncResponseEnvelope update(String id, V2UpdateBulkSyncRequest request) {
-        return update(id, request, null);
-    }
-
-    /**
-     * <blockquote>
-     * 📘 Updating schemas
-     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
-     * </blockquote>
-     */
-    public V2BulkSyncResponseEnvelope update(
-            String id, V2UpdateBulkSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            Response response =
-                    clientOptions.httpClient().newCall(okhttpRequest).execute();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2BulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request) {
+    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
         return activate(id, request, null);
     }
 
-    public V2ActivateSyncEnvelope activate(String id, V2ActivateSyncInput request, RequestOptions requestOptions) {
+    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -400,7 +261,7 @@ public class BulkSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V2ActivateSyncEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ActivateSyncEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -410,11 +271,53 @@ public class BulkSyncClient {
         }
     }
 
-    public V3BulkSyncStatusEnvelope getStatus(String id) {
+    public BulkSyncExecutionEnvelope start(String id) {
+        return start(id, StartBulkSyncRequest.builder().build());
+    }
+
+    public BulkSyncExecutionEnvelope start(String id, StartBulkSyncRequest request) {
+        return start(id, request, null);
+    }
+
+    public BulkSyncExecutionEnvelope start(String id, StartBulkSyncRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/bulk/syncs")
+                .addPathSegment(id)
+                .addPathSegments("executions")
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncExecutionEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BulkSyncStatusEnvelope getStatus(String id) {
         return getStatus(id, null);
     }
 
-    public V3BulkSyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
+    public BulkSyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -431,7 +334,77 @@ public class BulkSyncClient {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), V3BulkSyncStatusEnvelope.class);
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncStatusEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BulkSyncSourceEnvelope getSource(String id) {
+        return getSource(id, BulkSyncGetSourceRequest.builder().build());
+    }
+
+    public BulkSyncSourceEnvelope getSource(String id, BulkSyncGetSourceRequest request) {
+        return getSource(id, request, null);
+    }
+
+    public BulkSyncSourceEnvelope getSource(
+            String id, BulkSyncGetSourceRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("bulksync/source");
+        if (request.getIncludeFields().isPresent()) {
+            httpUrl.addQueryParameter(
+                    "include_fields", request.getIncludeFields().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncSourceEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BulkSyncDestEnvelope getDestination(String id) {
+        return getDestination(id, null);
+    }
+
+    public BulkSyncDestEnvelope getDestination(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("bulksync/target")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), BulkSyncDestEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
