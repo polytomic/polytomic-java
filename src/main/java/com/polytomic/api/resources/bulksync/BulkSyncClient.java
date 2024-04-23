@@ -151,7 +151,7 @@ public class BulkSyncClient {
     /**
      * <blockquote>
      * 📘 Updating schemas
-     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
+     * <p>Schema updates can be performed using the <a href="https://apidocs.polytomic.com/api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a> endpoint.</p>
      * </blockquote>
      */
     public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request) {
@@ -161,7 +161,7 @@ public class BulkSyncClient {
     /**
      * <blockquote>
      * 📘 Updating schemas
-     * <p>Schema updates can be performed using the <a href="https://docs.polytomic.com/reference/apiv3updatebulksyncschemas">Update Bulk Sync Schemas</a> endpoint.</p>
+     * <p>Schema updates can be performed using the <a href="https://apidocs.polytomic.com/api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a> endpoint.</p>
      * </blockquote>
      */
     public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request, RequestOptions requestOptions) {

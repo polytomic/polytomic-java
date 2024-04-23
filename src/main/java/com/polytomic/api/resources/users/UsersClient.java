@@ -31,7 +31,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public ListUsersEnvelope list(String orgId) {
@@ -41,7 +41,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public ListUsersEnvelope list(String orgId, RequestOptions requestOptions) {
@@ -74,7 +74,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope create(String orgId, CreateUserRequestSchema request) {
@@ -84,7 +84,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope create(String orgId, CreateUserRequestSchema request, RequestOptions requestOptions) {
@@ -124,7 +124,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope get(String id, String orgId) {
@@ -134,7 +134,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope get(String id, String orgId, RequestOptions requestOptions) {
@@ -168,7 +168,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope update(String id, String orgId, UpdateUserRequestSchema request) {
@@ -178,7 +178,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope update(
@@ -220,7 +220,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope remove(String id, String orgId) {
@@ -230,7 +230,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public UserEnvelope remove(String id, String orgId, RequestOptions requestOptions) {
@@ -264,7 +264,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(String orgId, String id) {
@@ -274,7 +274,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(String orgId, String id, UsersCreateApiKeyRequest request) {
@@ -284,7 +284,7 @@ public class UsersClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(

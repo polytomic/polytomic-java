@@ -29,7 +29,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationsEnvelope list() {
@@ -39,7 +39,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationsEnvelope list(RequestOptions requestOptions) {
@@ -70,7 +70,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationEnvelope create(CreateOrganizationRequestSchema request) {
@@ -80,7 +80,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationEnvelope create(CreateOrganizationRequestSchema request, RequestOptions requestOptions) {
@@ -118,7 +118,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationEnvelope get(String id) {
@@ -128,7 +128,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationEnvelope get(String id, RequestOptions requestOptions) {
@@ -160,7 +160,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationEnvelope update(String id, UpdateOrganizationRequestSchema request) {
@@ -170,7 +170,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public OrganizationEnvelope update(
@@ -210,7 +210,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public void remove(String id) {
@@ -220,7 +220,7 @@ public class OrganizationClient {
     /**
      * <blockquote>
      * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://docs.polytomic.com/reference/authentication#partner-keys">partner keys</a></p>
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/getting-started/obtaining-api-keys#partner-keys">partner keys</a></p>
      * </blockquote>
      */
     public void remove(String id, RequestOptions requestOptions) {

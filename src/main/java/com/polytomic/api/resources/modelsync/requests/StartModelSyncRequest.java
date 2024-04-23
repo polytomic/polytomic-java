@@ -23,16 +23,25 @@ import java.util.Optional;
 public final class StartModelSyncRequest {
     private final Optional<List<String>> identities;
 
+    private final Optional<Boolean> resync;
+
     private final Map<String, Object> additionalProperties;
 
-    private StartModelSyncRequest(Optional<List<String>> identities, Map<String, Object> additionalProperties) {
+    private StartModelSyncRequest(
+            Optional<List<String>> identities, Optional<Boolean> resync, Map<String, Object> additionalProperties) {
         this.identities = identities;
+        this.resync = resync;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("identities")
     public Optional<List<String>> getIdentities() {
         return identities;
+    }
+
+    @JsonProperty("resync")
+    public Optional<Boolean> getResync() {
+        return resync;
     }
 
     @java.lang.Override
@@ -47,12 +56,12 @@ public final class StartModelSyncRequest {
     }
 
     private boolean equalTo(StartModelSyncRequest other) {
-        return identities.equals(other.identities);
+        return identities.equals(other.identities) && resync.equals(other.resync);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.identities);
+        return Objects.hash(this.identities, this.resync);
     }
 
     @java.lang.Override
@@ -68,6 +77,8 @@ public final class StartModelSyncRequest {
     public static final class Builder {
         private Optional<List<String>> identities = Optional.empty();
 
+        private Optional<Boolean> resync = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -75,6 +86,7 @@ public final class StartModelSyncRequest {
 
         public Builder from(StartModelSyncRequest other) {
             identities(other.getIdentities());
+            resync(other.getResync());
             return this;
         }
 
@@ -89,8 +101,19 @@ public final class StartModelSyncRequest {
             return this;
         }
 
+        @JsonSetter(value = "resync", nulls = Nulls.SKIP)
+        public Builder resync(Optional<Boolean> resync) {
+            this.resync = resync;
+            return this;
+        }
+
+        public Builder resync(Boolean resync) {
+            this.resync = Optional.of(resync);
+            return this;
+        }
+
         public StartModelSyncRequest build() {
-            return new StartModelSyncRequest(identities, additionalProperties);
+            return new StartModelSyncRequest(identities, resync, additionalProperties);
         }
     }
 }

@@ -421,14 +421,32 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * <blockquote>
+     * 🚧 Force full resync
+     * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
+     * </blockquote>
+     */
     public StartModelSyncResponseEnvelope start(String id) {
         return start(id, StartModelSyncRequest.builder().build());
     }
 
+    /**
+     * <blockquote>
+     * 🚧 Force full resync
+     * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
+     * </blockquote>
+     */
     public StartModelSyncResponseEnvelope start(String id, StartModelSyncRequest request) {
         return start(id, request, null);
     }
 
+    /**
+     * <blockquote>
+     * 🚧 Force full resync
+     * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
+     * </blockquote>
+     */
     public StartModelSyncResponseEnvelope start(
             String id, StartModelSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

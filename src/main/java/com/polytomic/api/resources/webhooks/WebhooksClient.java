@@ -30,7 +30,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookListEnvelope list() {
         return list(null);
@@ -40,7 +40,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookListEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -71,7 +71,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope create(CreateWebhooksSchema request) {
         return create(request, null);
@@ -81,7 +81,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope create(CreateWebhooksSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -119,7 +119,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope get(String id) {
         return get(id, null);
@@ -129,7 +129,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -161,7 +161,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope update(String id, UpdateWebhooksSchema request) {
         return update(id, request, null);
@@ -171,7 +171,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://docs.polytomic.com/reference/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope update(String id, UpdateWebhooksSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
