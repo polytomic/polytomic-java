@@ -25,6 +25,8 @@ public final class ModelResponse {
 
     private final Optional<String> connectionId;
 
+    private final Optional<Enrichment> enricher;
+
     private final Optional<List<ModelField>> fields;
 
     private final Optional<String> id;
@@ -52,6 +54,7 @@ public final class ModelResponse {
     private ModelResponse(
             Optional<Map<String, Object>> configuration,
             Optional<String> connectionId,
+            Optional<Enrichment> enricher,
             Optional<List<ModelField>> fields,
             Optional<String> id,
             Optional<String> identifier,
@@ -66,6 +69,7 @@ public final class ModelResponse {
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
         this.connectionId = connectionId;
+        this.enricher = enricher;
         this.fields = fields;
         this.id = id;
         this.identifier = identifier;
@@ -88,6 +92,11 @@ public final class ModelResponse {
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
+    }
+
+    @JsonProperty("enricher")
+    public Optional<Enrichment> getEnricher() {
+        return enricher;
     }
 
     @JsonProperty("fields")
@@ -159,6 +168,7 @@ public final class ModelResponse {
     private boolean equalTo(ModelResponse other) {
         return configuration.equals(other.configuration)
                 && connectionId.equals(other.connectionId)
+                && enricher.equals(other.enricher)
                 && fields.equals(other.fields)
                 && id.equals(other.id)
                 && identifier.equals(other.identifier)
@@ -177,6 +187,7 @@ public final class ModelResponse {
         return Objects.hash(
                 this.configuration,
                 this.connectionId,
+                this.enricher,
                 this.fields,
                 this.id,
                 this.identifier,
@@ -204,6 +215,8 @@ public final class ModelResponse {
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
         private Optional<String> connectionId = Optional.empty();
+
+        private Optional<Enrichment> enricher = Optional.empty();
 
         private Optional<List<ModelField>> fields = Optional.empty();
 
@@ -235,6 +248,7 @@ public final class ModelResponse {
         public Builder from(ModelResponse other) {
             configuration(other.getConfiguration());
             connectionId(other.getConnectionId());
+            enricher(other.getEnricher());
             fields(other.getFields());
             id(other.getId());
             identifier(other.getIdentifier());
@@ -268,6 +282,17 @@ public final class ModelResponse {
 
         public Builder connectionId(String connectionId) {
             this.connectionId = Optional.of(connectionId);
+            return this;
+        }
+
+        @JsonSetter(value = "enricher", nulls = Nulls.SKIP)
+        public Builder enricher(Optional<Enrichment> enricher) {
+            this.enricher = enricher;
+            return this;
+        }
+
+        public Builder enricher(Enrichment enricher) {
+            this.enricher = Optional.of(enricher);
             return this;
         }
 
@@ -396,6 +421,7 @@ public final class ModelResponse {
             return new ModelResponse(
                     configuration,
                     connectionId,
+                    enricher,
                     fields,
                     id,
                     identifier,

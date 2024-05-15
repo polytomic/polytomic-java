@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.Enrichment;
 import com.polytomic.api.types.Filter;
 import com.polytomic.api.types.Identity;
 import com.polytomic.api.types.ModelSyncField;
@@ -28,6 +29,8 @@ import java.util.Optional;
 @JsonDeserialize(builder = CreateModelSyncRequest.Builder.class)
 public final class CreateModelSyncRequest {
     private final Optional<Boolean> active;
+
+    private final Optional<Enrichment> enricher;
 
     private final Optional<List<ModelSyncField>> fields;
 
@@ -59,6 +62,7 @@ public final class CreateModelSyncRequest {
 
     private CreateModelSyncRequest(
             Optional<Boolean> active,
+            Optional<Enrichment> enricher,
             Optional<List<ModelSyncField>> fields,
             Optional<String> filterLogic,
             Optional<List<Filter>> filters,
@@ -74,6 +78,7 @@ public final class CreateModelSyncRequest {
             Target target,
             Map<String, Object> additionalProperties) {
         this.active = active;
+        this.enricher = enricher;
         this.fields = fields;
         this.filterLogic = filterLogic;
         this.filters = filters;
@@ -93,6 +98,11 @@ public final class CreateModelSyncRequest {
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
+    }
+
+    @JsonProperty("enricher")
+    public Optional<Enrichment> getEnricher() {
+        return enricher;
     }
 
     @JsonProperty("fields")
@@ -173,6 +183,7 @@ public final class CreateModelSyncRequest {
 
     private boolean equalTo(CreateModelSyncRequest other) {
         return active.equals(other.active)
+                && enricher.equals(other.enricher)
                 && fields.equals(other.fields)
                 && filterLogic.equals(other.filterLogic)
                 && filters.equals(other.filters)
@@ -192,6 +203,7 @@ public final class CreateModelSyncRequest {
     public int hashCode() {
         return Objects.hash(
                 this.active,
+                this.enricher,
                 this.fields,
                 this.filterLogic,
                 this.filters,
@@ -240,6 +252,10 @@ public final class CreateModelSyncRequest {
         _FinalStage active(Optional<Boolean> active);
 
         _FinalStage active(Boolean active);
+
+        _FinalStage enricher(Optional<Enrichment> enricher);
+
+        _FinalStage enricher(Enrichment enricher);
 
         _FinalStage fields(Optional<List<ModelSyncField>> fields);
 
@@ -306,6 +322,8 @@ public final class CreateModelSyncRequest {
 
         private Optional<List<ModelSyncField>> fields = Optional.empty();
 
+        private Optional<Enrichment> enricher = Optional.empty();
+
         private Optional<Boolean> active = Optional.empty();
 
         @JsonAnySetter
@@ -316,6 +334,7 @@ public final class CreateModelSyncRequest {
         @java.lang.Override
         public Builder from(CreateModelSyncRequest other) {
             active(other.getActive());
+            enricher(other.getEnricher());
             fields(other.getFields());
             filterLogic(other.getFilterLogic());
             filters(other.getFilters());
@@ -478,6 +497,19 @@ public final class CreateModelSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage enricher(Enrichment enricher) {
+            this.enricher = Optional.of(enricher);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "enricher", nulls = Nulls.SKIP)
+        public _FinalStage enricher(Optional<Enrichment> enricher) {
+            this.enricher = enricher;
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage active(Boolean active) {
             this.active = Optional.of(active);
             return this;
@@ -494,6 +526,7 @@ public final class CreateModelSyncRequest {
         public CreateModelSyncRequest build() {
             return new CreateModelSyncRequest(
                     active,
+                    enricher,
                     fields,
                     filterLogic,
                     filters,

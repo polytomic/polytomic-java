@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.Enrichment;
 import com.polytomic.api.types.ModelModelFieldRequest;
 import com.polytomic.api.types.ModelRelation;
 import java.util.HashMap;
@@ -30,6 +31,8 @@ public final class UpdateModelRequest {
     private final Optional<Map<String, Object>> configuration;
 
     private final String connectionId;
+
+    private final Optional<Enrichment> enricher;
 
     private final Optional<List<String>> fields;
 
@@ -54,6 +57,7 @@ public final class UpdateModelRequest {
             Optional<List<ModelModelFieldRequest>> additionalFields,
             Optional<Map<String, Object>> configuration,
             String connectionId,
+            Optional<Enrichment> enricher,
             Optional<List<String>> fields,
             Optional<String> identifier,
             Optional<List<String>> labels,
@@ -67,6 +71,7 @@ public final class UpdateModelRequest {
         this.additionalFields = additionalFields;
         this.configuration = configuration;
         this.connectionId = connectionId;
+        this.enricher = enricher;
         this.fields = fields;
         this.identifier = identifier;
         this.labels = labels;
@@ -96,6 +101,11 @@ public final class UpdateModelRequest {
     @JsonProperty("connection_id")
     public String getConnectionId() {
         return connectionId;
+    }
+
+    @JsonProperty("enricher")
+    public Optional<Enrichment> getEnricher() {
+        return enricher;
     }
 
     @JsonProperty("fields")
@@ -154,6 +164,7 @@ public final class UpdateModelRequest {
                 && additionalFields.equals(other.additionalFields)
                 && configuration.equals(other.configuration)
                 && connectionId.equals(other.connectionId)
+                && enricher.equals(other.enricher)
                 && fields.equals(other.fields)
                 && identifier.equals(other.identifier)
                 && labels.equals(other.labels)
@@ -171,6 +182,7 @@ public final class UpdateModelRequest {
                 this.additionalFields,
                 this.configuration,
                 this.connectionId,
+                this.enricher,
                 this.fields,
                 this.identifier,
                 this.labels,
@@ -214,6 +226,10 @@ public final class UpdateModelRequest {
         _FinalStage configuration(Optional<Map<String, Object>> configuration);
 
         _FinalStage configuration(Map<String, Object> configuration);
+
+        _FinalStage enricher(Optional<Enrichment> enricher);
+
+        _FinalStage enricher(Enrichment enricher);
 
         _FinalStage fields(Optional<List<String>> fields);
 
@@ -264,6 +280,8 @@ public final class UpdateModelRequest {
 
         private Optional<List<String>> fields = Optional.empty();
 
+        private Optional<Enrichment> enricher = Optional.empty();
+
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
         private Optional<List<ModelModelFieldRequest>> additionalFields = Optional.empty();
@@ -281,6 +299,7 @@ public final class UpdateModelRequest {
             additionalFields(other.getAdditionalFields());
             configuration(other.getConfiguration());
             connectionId(other.getConnectionId());
+            enricher(other.getEnricher());
             fields(other.getFields());
             identifier(other.getIdentifier());
             labels(other.getLabels());
@@ -398,6 +417,19 @@ public final class UpdateModelRequest {
         }
 
         @java.lang.Override
+        public _FinalStage enricher(Enrichment enricher) {
+            this.enricher = Optional.of(enricher);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "enricher", nulls = Nulls.SKIP)
+        public _FinalStage enricher(Optional<Enrichment> enricher) {
+            this.enricher = enricher;
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration = Optional.of(configuration);
             return this;
@@ -443,6 +475,7 @@ public final class UpdateModelRequest {
                     additionalFields,
                     configuration,
                     connectionId,
+                    enricher,
                     fields,
                     identifier,
                     labels,

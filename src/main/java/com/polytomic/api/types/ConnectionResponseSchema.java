@@ -21,6 +21,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ConnectionResponseSchema.Builder.class)
 public final class ConnectionResponseSchema {
+    private final Optional<Integer> apiCallsLast24Hours;
+
     private final Optional<Map<String, Object>> configuration;
 
     private final Optional<String> id;
@@ -40,6 +42,7 @@ public final class ConnectionResponseSchema {
     private final Map<String, Object> additionalProperties;
 
     private ConnectionResponseSchema(
+            Optional<Integer> apiCallsLast24Hours,
             Optional<Map<String, Object>> configuration,
             Optional<String> id,
             Optional<String> name,
@@ -49,6 +52,7 @@ public final class ConnectionResponseSchema {
             Optional<String> statusError,
             Optional<ConnectionTypeSchema> type,
             Map<String, Object> additionalProperties) {
+        this.apiCallsLast24Hours = apiCallsLast24Hours;
         this.configuration = configuration;
         this.id = id;
         this.name = name;
@@ -58,6 +62,14 @@ public final class ConnectionResponseSchema {
         this.statusError = statusError;
         this.type = type;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return API calls made to service in the last 24h (supported integrations only).
+     */
+    @JsonProperty("api_calls_last_24_hours")
+    public Optional<Integer> getApiCallsLast24Hours() {
+        return apiCallsLast24Hours;
     }
 
     @JsonProperty("configuration")
@@ -112,7 +124,8 @@ public final class ConnectionResponseSchema {
     }
 
     private boolean equalTo(ConnectionResponseSchema other) {
-        return configuration.equals(other.configuration)
+        return apiCallsLast24Hours.equals(other.apiCallsLast24Hours)
+                && configuration.equals(other.configuration)
                 && id.equals(other.id)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
@@ -125,6 +138,7 @@ public final class ConnectionResponseSchema {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.apiCallsLast24Hours,
                 this.configuration,
                 this.id,
                 this.name,
@@ -146,6 +160,8 @@ public final class ConnectionResponseSchema {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Integer> apiCallsLast24Hours = Optional.empty();
+
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
         private Optional<String> id = Optional.empty();
@@ -168,6 +184,7 @@ public final class ConnectionResponseSchema {
         private Builder() {}
 
         public Builder from(ConnectionResponseSchema other) {
+            apiCallsLast24Hours(other.getApiCallsLast24Hours());
             configuration(other.getConfiguration());
             id(other.getId());
             name(other.getName());
@@ -176,6 +193,17 @@ public final class ConnectionResponseSchema {
             status(other.getStatus());
             statusError(other.getStatusError());
             type(other.getType());
+            return this;
+        }
+
+        @JsonSetter(value = "api_calls_last_24_hours", nulls = Nulls.SKIP)
+        public Builder apiCallsLast24Hours(Optional<Integer> apiCallsLast24Hours) {
+            this.apiCallsLast24Hours = apiCallsLast24Hours;
+            return this;
+        }
+
+        public Builder apiCallsLast24Hours(Integer apiCallsLast24Hours) {
+            this.apiCallsLast24Hours = Optional.of(apiCallsLast24Hours);
             return this;
         }
 
@@ -269,7 +297,16 @@ public final class ConnectionResponseSchema {
 
         public ConnectionResponseSchema build() {
             return new ConnectionResponseSchema(
-                    configuration, id, name, organizationId, policies, status, statusError, type, additionalProperties);
+                    apiCallsLast24Hours,
+                    configuration,
+                    id,
+                    name,
+                    organizationId,
+                    policies,
+                    status,
+                    statusError,
+                    type,
+                    additionalProperties);
         }
     }
 }

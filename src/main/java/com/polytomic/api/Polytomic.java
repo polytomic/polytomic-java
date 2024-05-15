@@ -30,13 +30,13 @@ public class Polytomic {
 
     protected final Supplier<SchemasClient> schemasClient;
 
+    protected final Supplier<ModelsClient> modelsClient;
+
     protected final Supplier<EventsClient> eventsClient;
 
     protected final Supplier<JobsClient> jobsClient;
 
     protected final Supplier<IdentityClient> identityClient;
-
-    protected final Supplier<ModelsClient> modelsClient;
 
     protected final Supplier<OrganizationClient> organizationClient;
 
@@ -52,10 +52,10 @@ public class Polytomic {
         this.connectionsClient = Suppliers.memoize(() -> new ConnectionsClient(clientOptions));
         this.modelSyncClient = Suppliers.memoize(() -> new ModelSyncClient(clientOptions));
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
+        this.modelsClient = Suppliers.memoize(() -> new ModelsClient(clientOptions));
         this.eventsClient = Suppliers.memoize(() -> new EventsClient(clientOptions));
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
         this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
-        this.modelsClient = Suppliers.memoize(() -> new ModelsClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new OrganizationClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new UsersClient(clientOptions));
         this.permissionsClient = Suppliers.memoize(() -> new PermissionsClient(clientOptions));
@@ -78,6 +78,10 @@ public class Polytomic {
         return this.schemasClient.get();
     }
 
+    public ModelsClient models() {
+        return this.modelsClient.get();
+    }
+
     public EventsClient events() {
         return this.eventsClient.get();
     }
@@ -88,10 +92,6 @@ public class Polytomic {
 
     public IdentityClient identity() {
         return this.identityClient.get();
-    }
-
-    public ModelsClient models() {
-        return this.modelsClient.get();
     }
 
     public OrganizationClient organization() {
