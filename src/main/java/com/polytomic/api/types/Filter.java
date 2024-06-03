@@ -20,11 +20,13 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = Filter.Builder.class)
 public final class Filter {
-    private final String fieldId;
+    private final Optional<Source> field;
 
-    private final String fieldType;
+    private final Optional<String> fieldId;
 
-    private final String function;
+    private final Optional<FilterFieldReferenceType> fieldType;
+
+    private final FilterFunction function;
 
     private final Optional<String> label;
 
@@ -33,12 +35,14 @@ public final class Filter {
     private final Map<String, Object> additionalProperties;
 
     private Filter(
-            String fieldId,
-            String fieldType,
-            String function,
+            Optional<Source> field,
+            Optional<String> fieldId,
+            Optional<FilterFieldReferenceType> fieldType,
+            FilterFunction function,
             Optional<String> label,
             Optional<Object> value,
             Map<String, Object> additionalProperties) {
+        this.field = field;
         this.fieldId = fieldId;
         this.fieldType = fieldType;
         this.function = function;
@@ -47,18 +51,26 @@ public final class Filter {
         this.additionalProperties = additionalProperties;
     }
 
+    @JsonProperty("field")
+    public Optional<Source> getField() {
+        return field;
+    }
+
+    /**
+     * @return Model or Target field name to filter on.
+     */
     @JsonProperty("field_id")
-    public String getFieldId() {
+    public Optional<String> getFieldId() {
         return fieldId;
     }
 
     @JsonProperty("field_type")
-    public String getFieldType() {
+    public Optional<FilterFieldReferenceType> getFieldType() {
         return fieldType;
     }
 
     @JsonProperty("function")
-    public String getFunction() {
+    public FilterFunction getFunction() {
         return function;
     }
 
@@ -84,7 +96,8 @@ public final class Filter {
     }
 
     private boolean equalTo(Filter other) {
-        return fieldId.equals(other.fieldId)
+        return field.equals(other.field)
+                && fieldId.equals(other.fieldId)
                 && fieldType.equals(other.fieldType)
                 && function.equals(other.function)
                 && label.equals(other.label)
@@ -93,7 +106,7 @@ public final class Filter {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.fieldId, this.fieldType, this.function, this.label, this.value);
+        return Objects.hash(this.field, this.fieldId, this.fieldType, this.function, this.label, this.value);
     }
 
     @java.lang.Override
@@ -101,26 +114,30 @@ public final class Filter {
         return ObjectMappers.stringify(this);
     }
 
-    public static FieldIdStage builder() {
+    public static FunctionStage builder() {
         return new Builder();
     }
 
-    public interface FieldIdStage {
-        FieldTypeStage fieldId(String fieldId);
+    public interface FunctionStage {
+        _FinalStage function(FilterFunction function);
 
         Builder from(Filter other);
     }
 
-    public interface FieldTypeStage {
-        FunctionStage fieldType(String fieldType);
-    }
-
-    public interface FunctionStage {
-        _FinalStage function(String function);
-    }
-
     public interface _FinalStage {
         Filter build();
+
+        _FinalStage field(Optional<Source> field);
+
+        _FinalStage field(Source field);
+
+        _FinalStage fieldId(Optional<String> fieldId);
+
+        _FinalStage fieldId(String fieldId);
+
+        _FinalStage fieldType(Optional<FilterFieldReferenceType> fieldType);
+
+        _FinalStage fieldType(FilterFieldReferenceType fieldType);
 
         _FinalStage label(Optional<String> label);
 
@@ -132,16 +149,18 @@ public final class Filter {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements FieldIdStage, FieldTypeStage, FunctionStage, _FinalStage {
-        private String fieldId;
-
-        private String fieldType;
-
-        private String function;
+    public static final class Builder implements FunctionStage, _FinalStage {
+        private FilterFunction function;
 
         private Optional<Object> value = Optional.empty();
 
         private Optional<String> label = Optional.empty();
+
+        private Optional<FilterFieldReferenceType> fieldType = Optional.empty();
+
+        private Optional<String> fieldId = Optional.empty();
+
+        private Optional<Source> field = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -150,6 +169,7 @@ public final class Filter {
 
         @java.lang.Override
         public Builder from(Filter other) {
+            field(other.getField());
             fieldId(other.getFieldId());
             fieldType(other.getFieldType());
             function(other.getFunction());
@@ -159,22 +179,8 @@ public final class Filter {
         }
 
         @java.lang.Override
-        @JsonSetter("field_id")
-        public FieldTypeStage fieldId(String fieldId) {
-            this.fieldId = fieldId;
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter("field_type")
-        public FunctionStage fieldType(String fieldType) {
-            this.fieldType = fieldType;
-            return this;
-        }
-
-        @java.lang.Override
         @JsonSetter("function")
-        public _FinalStage function(String function) {
+        public _FinalStage function(FilterFunction function) {
             this.function = function;
             return this;
         }
@@ -206,8 +212,51 @@ public final class Filter {
         }
 
         @java.lang.Override
+        public _FinalStage fieldType(FilterFieldReferenceType fieldType) {
+            this.fieldType = Optional.of(fieldType);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "field_type", nulls = Nulls.SKIP)
+        public _FinalStage fieldType(Optional<FilterFieldReferenceType> fieldType) {
+            this.fieldType = fieldType;
+            return this;
+        }
+
+        /**
+         * <p>Model or Target field name to filter on.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage fieldId(String fieldId) {
+            this.fieldId = Optional.of(fieldId);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
+        public _FinalStage fieldId(Optional<String> fieldId) {
+            this.fieldId = fieldId;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage field(Source field) {
+            this.field = Optional.of(field);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "field", nulls = Nulls.SKIP)
+        public _FinalStage field(Optional<Source> field) {
+            this.field = field;
+            return this;
+        }
+
+        @java.lang.Override
         public Filter build() {
-            return new Filter(fieldId, fieldType, function, label, value, additionalProperties);
+            return new Filter(field, fieldId, fieldType, function, label, value, additionalProperties);
         }
     }
 }

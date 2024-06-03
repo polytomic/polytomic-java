@@ -20,7 +20,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = Identity.Builder.class)
 public final class Identity {
-    private final String function;
+    private final SchemaIdentityFunction function;
 
     private final Optional<Boolean> newField;
 
@@ -33,7 +33,7 @@ public final class Identity {
     private final Map<String, Object> additionalProperties;
 
     private Identity(
-            String function,
+            SchemaIdentityFunction function,
             Optional<Boolean> newField,
             Optional<String> remoteFieldTypeId,
             Source source,
@@ -48,7 +48,7 @@ public final class Identity {
     }
 
     @JsonProperty("function")
-    public String getFunction() {
+    public SchemaIdentityFunction getFunction() {
         return function;
     }
 
@@ -106,7 +106,7 @@ public final class Identity {
     }
 
     public interface FunctionStage {
-        SourceStage function(String function);
+        SourceStage function(SchemaIdentityFunction function);
 
         Builder from(Identity other);
     }
@@ -133,7 +133,7 @@ public final class Identity {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements FunctionStage, SourceStage, TargetStage, _FinalStage {
-        private String function;
+        private SchemaIdentityFunction function;
 
         private Source source;
 
@@ -160,7 +160,7 @@ public final class Identity {
 
         @java.lang.Override
         @JsonSetter("function")
-        public SourceStage function(String function) {
+        public SourceStage function(SchemaIdentityFunction function) {
             this.function = function;
             return this;
         }

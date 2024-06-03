@@ -24,6 +24,8 @@ public final class ModelField {
 
     private final Optional<Object> example;
 
+    private final Optional<String> id;
+
     private final Optional<String> label;
 
     private final Optional<String> name;
@@ -41,6 +43,7 @@ public final class ModelField {
     private ModelField(
             Optional<String> description,
             Optional<Object> example,
+            Optional<String> id,
             Optional<String> label,
             Optional<String> name,
             Optional<String> remoteType,
@@ -50,6 +53,7 @@ public final class ModelField {
             Map<String, Object> additionalProperties) {
         this.description = description;
         this.example = example;
+        this.id = id;
         this.label = label;
         this.name = name;
         this.remoteType = remoteType;
@@ -67,6 +71,11 @@ public final class ModelField {
     @JsonProperty("example")
     public Optional<Object> getExample() {
         return example;
+    }
+
+    @JsonProperty("id")
+    public Optional<String> getId() {
+        return id;
     }
 
     @JsonProperty("label")
@@ -113,6 +122,7 @@ public final class ModelField {
     private boolean equalTo(ModelField other) {
         return description.equals(other.description)
                 && example.equals(other.example)
+                && id.equals(other.id)
                 && label.equals(other.label)
                 && name.equals(other.name)
                 && remoteType.equals(other.remoteType)
@@ -126,6 +136,7 @@ public final class ModelField {
         return Objects.hash(
                 this.description,
                 this.example,
+                this.id,
                 this.label,
                 this.name,
                 this.remoteType,
@@ -149,6 +160,8 @@ public final class ModelField {
 
         private Optional<Object> example = Optional.empty();
 
+        private Optional<String> id = Optional.empty();
+
         private Optional<String> label = Optional.empty();
 
         private Optional<String> name = Optional.empty();
@@ -169,6 +182,7 @@ public final class ModelField {
         public Builder from(ModelField other) {
             description(other.getDescription());
             example(other.getExample());
+            id(other.getId());
             label(other.getLabel());
             name(other.getName());
             remoteType(other.getRemoteType());
@@ -197,6 +211,17 @@ public final class ModelField {
 
         public Builder example(Object example) {
             this.example = Optional.of(example);
+            return this;
+        }
+
+        @JsonSetter(value = "id", nulls = Nulls.SKIP)
+        public Builder id(Optional<String> id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder id(String id) {
+            this.id = Optional.of(id);
             return this;
         }
 
@@ -268,7 +293,7 @@ public final class ModelField {
 
         public ModelField build() {
             return new ModelField(
-                    description, example, label, name, remoteType, type, unique, userAdded, additionalProperties);
+                    description, example, id, label, name, remoteType, type, unique, userAdded, additionalProperties);
         }
     }
 }

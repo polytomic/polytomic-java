@@ -20,9 +20,11 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = Override.Builder.class)
 public final class Override {
+    private final Optional<Source> field;
+
     private final Optional<String> fieldId;
 
-    private final Optional<String> function;
+    private final Optional<FilterFunction> function;
 
     private final Optional<Object> override;
 
@@ -31,11 +33,13 @@ public final class Override {
     private final Map<String, Object> additionalProperties;
 
     private Override(
+            Optional<Source> field,
             Optional<String> fieldId,
-            Optional<String> function,
+            Optional<FilterFunction> function,
             Optional<Object> override,
             Optional<Object> value,
             Map<String, Object> additionalProperties) {
+        this.field = field;
         this.fieldId = fieldId;
         this.function = function;
         this.override = override;
@@ -43,13 +47,21 @@ public final class Override {
         this.additionalProperties = additionalProperties;
     }
 
+    @JsonProperty("field")
+    public Optional<Source> getField() {
+        return field;
+    }
+
+    /**
+     * @return Field ID of the model field to override.
+     */
     @JsonProperty("field_id")
     public Optional<String> getFieldId() {
         return fieldId;
     }
 
     @JsonProperty("function")
-    public Optional<String> getFunction() {
+    public Optional<FilterFunction> getFunction() {
         return function;
     }
 
@@ -75,7 +87,8 @@ public final class Override {
     }
 
     private boolean equalTo(Override other) {
-        return fieldId.equals(other.fieldId)
+        return field.equals(other.field)
+                && fieldId.equals(other.fieldId)
                 && function.equals(other.function)
                 && override.equals(other.override)
                 && value.equals(other.value);
@@ -83,7 +96,7 @@ public final class Override {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.fieldId, this.function, this.override, this.value);
+        return Objects.hash(this.field, this.fieldId, this.function, this.override, this.value);
     }
 
     @java.lang.Override
@@ -97,9 +110,11 @@ public final class Override {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Source> field = Optional.empty();
+
         private Optional<String> fieldId = Optional.empty();
 
-        private Optional<String> function = Optional.empty();
+        private Optional<FilterFunction> function = Optional.empty();
 
         private Optional<Object> override = Optional.empty();
 
@@ -111,10 +126,22 @@ public final class Override {
         private Builder() {}
 
         public Builder from(Override other) {
+            field(other.getField());
             fieldId(other.getFieldId());
             function(other.getFunction());
             override(other.getOverride());
             value(other.getValue());
+            return this;
+        }
+
+        @JsonSetter(value = "field", nulls = Nulls.SKIP)
+        public Builder field(Optional<Source> field) {
+            this.field = field;
+            return this;
+        }
+
+        public Builder field(Source field) {
+            this.field = Optional.of(field);
             return this;
         }
 
@@ -130,12 +157,12 @@ public final class Override {
         }
 
         @JsonSetter(value = "function", nulls = Nulls.SKIP)
-        public Builder function(Optional<String> function) {
+        public Builder function(Optional<FilterFunction> function) {
             this.function = function;
             return this;
         }
 
-        public Builder function(String function) {
+        public Builder function(FilterFunction function) {
             this.function = Optional.of(function);
             return this;
         }
@@ -163,7 +190,7 @@ public final class Override {
         }
 
         public Override build() {
-            return new Override(fieldId, function, override, value, additionalProperties);
+            return new Override(field, fieldId, function, override, value, additionalProperties);
         }
     }
 }

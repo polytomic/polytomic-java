@@ -140,11 +140,17 @@ public final class CreateModelSyncRequest {
         return organizationId;
     }
 
+    /**
+     * @return Values to set as sync target fields.
+     */
     @JsonProperty("override_fields")
     public Optional<List<ModelSyncField>> getOverrideFields() {
         return overrideFields;
     }
 
+    /**
+     * @return Conditional value replacement for field mappings.
+     */
     @JsonProperty("overrides")
     public Optional<List<Override>> getOverrides() {
         return overrides;
@@ -405,6 +411,10 @@ public final class CreateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Conditional value replacement for field mappings.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage overrides(List<Override> overrides) {
             this.overrides = Optional.of(overrides);
@@ -418,6 +428,10 @@ public final class CreateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Values to set as sync target fields.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage overrideFields(List<ModelSyncField> overrideFields) {
             this.overrideFields = Optional.of(overrideFields);

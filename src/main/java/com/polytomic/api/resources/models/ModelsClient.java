@@ -10,10 +10,14 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.models.requests.GetEnrichmentInputFieldsRequest;
 import com.polytomic.api.resources.models.requests.ModelsCreateRequest;
+import com.polytomic.api.resources.models.requests.ModelsGetRequest;
 import com.polytomic.api.resources.models.requests.ModelsPreviewRequest;
+import com.polytomic.api.resources.models.requests.ModelsRemoveRequest;
+import com.polytomic.api.resources.models.requests.ModelsSampleRequest;
 import com.polytomic.api.resources.models.requests.UpdateModelRequest;
 import com.polytomic.api.types.ModelListResponseEnvelope;
 import com.polytomic.api.types.ModelResponseEnvelope;
+import com.polytomic.api.types.ModelSampleResponseEnvelope;
 import com.polytomic.api.types.V2GetEnrichmentInputFieldsResponseEnvelope;
 import java.io.IOException;
 import java.util.HashMap;
@@ -191,21 +195,27 @@ public class ModelsClient {
     }
 
     public ModelResponseEnvelope get(String id) {
-        return get(id, null);
+        return get(id, ModelsGetRequest.builder().build());
     }
 
-    public ModelResponseEnvelope get(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public ModelResponseEnvelope get(String id, ModelsGetRequest request) {
+        return get(id, request, null);
+    }
+
+    public ModelResponseEnvelope get(String id, ModelsGetRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegment(id);
+        if (request.getAsync().isPresent()) {
+            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
@@ -293,25 +303,77 @@ public class ModelsClient {
     }
 
     public void remove(String id) {
-        remove(id, null);
+        remove(id, ModelsRemoveRequest.builder().build());
     }
 
-    public void remove(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public void remove(String id, ModelsRemoveRequest request) {
+        remove(id, request, null);
+    }
+
+    public void remove(String id, ModelsRemoveRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegment(id);
+        if (request.getAsync().isPresent()) {
+            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             Response response =
                     clientOptions.httpClient().newCall(okhttpRequest).execute();
             if (response.isSuccessful()) {
                 return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(response.body().string(), Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
+     */
+    public ModelSampleResponseEnvelope sample(String id) {
+        return sample(id, ModelsSampleRequest.builder().build());
+    }
+
+    /**
+     * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
+     */
+    public ModelSampleResponseEnvelope sample(String id, ModelsSampleRequest request) {
+        return sample(id, request, null);
+    }
+
+    /**
+     * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
+     */
+    public ModelSampleResponseEnvelope sample(String id, ModelsSampleRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/models")
+                .addPathSegment(id)
+                .addPathSegments("sample");
+        if (request.getAsync().isPresent()) {
+            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        try {
+            Response response =
+                    clientOptions.httpClient().newCall(okhttpRequest).execute();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(response.body().string(), ModelSampleResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

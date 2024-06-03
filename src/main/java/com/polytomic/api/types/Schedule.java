@@ -26,7 +26,7 @@ public final class Schedule {
 
     private final Optional<String> dayOfWeek;
 
-    private final Optional<String> frequency;
+    private final Optional<ScheduleFrequency> frequency;
 
     private final Optional<String> hour;
 
@@ -44,7 +44,7 @@ public final class Schedule {
             Optional<String> connectionId,
             Optional<String> dayOfMonth,
             Optional<String> dayOfWeek,
-            Optional<String> frequency,
+            Optional<ScheduleFrequency> frequency,
             Optional<String> hour,
             Optional<Integer> jobId,
             Optional<String> minute,
@@ -79,7 +79,7 @@ public final class Schedule {
     }
 
     @JsonProperty("frequency")
-    public Optional<String> getFrequency() {
+    public Optional<ScheduleFrequency> getFrequency() {
         return frequency;
     }
 
@@ -162,7 +162,7 @@ public final class Schedule {
 
         private Optional<String> dayOfWeek = Optional.empty();
 
-        private Optional<String> frequency = Optional.empty();
+        private Optional<ScheduleFrequency> frequency = Optional.empty();
 
         private Optional<String> hour = Optional.empty();
 
@@ -226,12 +226,12 @@ public final class Schedule {
         }
 
         @JsonSetter(value = "frequency", nulls = Nulls.SKIP)
-        public Builder frequency(Optional<String> frequency) {
+        public Builder frequency(Optional<ScheduleFrequency> frequency) {
             this.frequency = frequency;
             return this;
         }
 
-        public Builder frequency(String frequency) {
+        public Builder frequency(ScheduleFrequency frequency) {
             this.frequency = Optional.of(frequency);
             return this;
         }
