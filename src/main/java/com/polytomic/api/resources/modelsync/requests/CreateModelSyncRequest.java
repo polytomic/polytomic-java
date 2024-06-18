@@ -19,6 +19,7 @@ import com.polytomic.api.types.ModelSyncField;
 import com.polytomic.api.types.Override;
 import com.polytomic.api.types.Schedule;
 import com.polytomic.api.types.Target;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public final class CreateModelSyncRequest {
 
     private final Optional<Enrichment> enricher;
 
-    private final Optional<List<ModelSyncField>> fields;
+    private final List<ModelSyncField> fields;
 
     private final Optional<String> filterLogic;
 
@@ -63,7 +64,7 @@ public final class CreateModelSyncRequest {
     private CreateModelSyncRequest(
             Optional<Boolean> active,
             Optional<Enrichment> enricher,
-            Optional<List<ModelSyncField>> fields,
+            List<ModelSyncField> fields,
             Optional<String> filterLogic,
             Optional<List<Filter>> filters,
             Optional<Identity> identity,
@@ -106,7 +107,7 @@ public final class CreateModelSyncRequest {
     }
 
     @JsonProperty("fields")
-    public Optional<List<ModelSyncField>> getFields() {
+    public List<ModelSyncField> getFields() {
         return fields;
     }
 
@@ -263,9 +264,11 @@ public final class CreateModelSyncRequest {
 
         _FinalStage enricher(Enrichment enricher);
 
-        _FinalStage fields(Optional<List<ModelSyncField>> fields);
-
         _FinalStage fields(List<ModelSyncField> fields);
+
+        _FinalStage addFields(ModelSyncField fields);
+
+        _FinalStage addAllFields(List<ModelSyncField> fields);
 
         _FinalStage filterLogic(Optional<String> filterLogic);
 
@@ -326,7 +329,7 @@ public final class CreateModelSyncRequest {
 
         private Optional<String> filterLogic = Optional.empty();
 
-        private Optional<List<ModelSyncField>> fields = Optional.empty();
+        private List<ModelSyncField> fields = new ArrayList<>();
 
         private Optional<Enrichment> enricher = Optional.empty();
 
@@ -498,15 +501,22 @@ public final class CreateModelSyncRequest {
         }
 
         @java.lang.Override
-        public _FinalStage fields(List<ModelSyncField> fields) {
-            this.fields = Optional.of(fields);
+        public _FinalStage addAllFields(List<ModelSyncField> fields) {
+            this.fields.addAll(fields);
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage addFields(ModelSyncField fields) {
+            this.fields.add(fields);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
-        public _FinalStage fields(Optional<List<ModelSyncField>> fields) {
-            this.fields = fields;
+        public _FinalStage fields(List<ModelSyncField> fields) {
+            this.fields.clear();
+            this.fields.addAll(fields);
             return this;
         }
 

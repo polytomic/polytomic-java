@@ -20,6 +20,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ExecutionCounts.Builder.class)
 public final class ExecutionCounts {
+    private final Optional<Integer> delete;
+
     private final Optional<Integer> error;
 
     private final Optional<Integer> insert;
@@ -31,16 +33,23 @@ public final class ExecutionCounts {
     private final Map<String, Object> additionalProperties;
 
     private ExecutionCounts(
+            Optional<Integer> delete,
             Optional<Integer> error,
             Optional<Integer> insert,
             Optional<Integer> total,
             Optional<Integer> update,
             Map<String, Object> additionalProperties) {
+        this.delete = delete;
         this.error = error;
         this.insert = insert;
         this.total = total;
         this.update = update;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("delete")
+    public Optional<Integer> getDelete() {
+        return delete;
     }
 
     @JsonProperty("error")
@@ -75,7 +84,8 @@ public final class ExecutionCounts {
     }
 
     private boolean equalTo(ExecutionCounts other) {
-        return error.equals(other.error)
+        return delete.equals(other.delete)
+                && error.equals(other.error)
                 && insert.equals(other.insert)
                 && total.equals(other.total)
                 && update.equals(other.update);
@@ -83,7 +93,7 @@ public final class ExecutionCounts {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.error, this.insert, this.total, this.update);
+        return Objects.hash(this.delete, this.error, this.insert, this.total, this.update);
     }
 
     @java.lang.Override
@@ -97,6 +107,8 @@ public final class ExecutionCounts {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Integer> delete = Optional.empty();
+
         private Optional<Integer> error = Optional.empty();
 
         private Optional<Integer> insert = Optional.empty();
@@ -111,10 +123,22 @@ public final class ExecutionCounts {
         private Builder() {}
 
         public Builder from(ExecutionCounts other) {
+            delete(other.getDelete());
             error(other.getError());
             insert(other.getInsert());
             total(other.getTotal());
             update(other.getUpdate());
+            return this;
+        }
+
+        @JsonSetter(value = "delete", nulls = Nulls.SKIP)
+        public Builder delete(Optional<Integer> delete) {
+            this.delete = delete;
+            return this;
+        }
+
+        public Builder delete(Integer delete) {
+            this.delete = Optional.of(delete);
             return this;
         }
 
@@ -163,7 +187,7 @@ public final class ExecutionCounts {
         }
 
         public ExecutionCounts build() {
-            return new ExecutionCounts(error, insert, total, update, additionalProperties);
+            return new ExecutionCounts(delete, error, insert, total, update, additionalProperties);
         }
     }
 }

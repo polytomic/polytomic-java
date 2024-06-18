@@ -246,9 +246,7 @@ public class ModelsClient {
         if (request.getAdditionalFields().isPresent()) {
             properties.put("additional_fields", request.getAdditionalFields());
         }
-        if (request.getConfiguration().isPresent()) {
-            properties.put("configuration", request.getConfiguration());
-        }
+        properties.put("configuration", request.getConfiguration());
         properties.put("connection_id", request.getConnectionId());
         if (request.getEnricher().isPresent()) {
             properties.put("enricher", request.getEnricher());

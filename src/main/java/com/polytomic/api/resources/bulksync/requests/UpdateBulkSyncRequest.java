@@ -37,7 +37,7 @@ public final class UpdateBulkSyncRequest {
 
     private final Optional<Boolean> discover;
 
-    private final Optional<String> mode;
+    private final String mode;
 
     private final String name;
 
@@ -63,7 +63,7 @@ public final class UpdateBulkSyncRequest {
             String destinationConnectionId,
             Optional<Boolean> disableRecordTimestamps,
             Optional<Boolean> discover,
-            Optional<String> mode,
+            String mode,
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
@@ -129,10 +129,10 @@ public final class UpdateBulkSyncRequest {
     }
 
     /**
-     * @return
+     * @return Either 'replicate' or 'snapshot'.
      */
     @JsonProperty("mode")
-    public Optional<String> getMode() {
+    public String getMode() {
         return mode;
     }
 
@@ -230,9 +230,13 @@ public final class UpdateBulkSyncRequest {
     }
 
     public interface DestinationConnectionIdStage {
-        NameStage destinationConnectionId(String destinationConnectionId);
+        ModeStage destinationConnectionId(String destinationConnectionId);
 
         Builder from(UpdateBulkSyncRequest other);
+    }
+
+    public interface ModeStage {
+        NameStage mode(String mode);
     }
 
     public interface NameStage {
@@ -274,10 +278,6 @@ public final class UpdateBulkSyncRequest {
 
         _FinalStage discover(Boolean discover);
 
-        _FinalStage mode(Optional<String> mode);
-
-        _FinalStage mode(String mode);
-
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
@@ -297,8 +297,15 @@ public final class UpdateBulkSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements DestinationConnectionIdStage, NameStage, ScheduleStage, SourceConnectionIdStage, _FinalStage {
+            implements DestinationConnectionIdStage,
+                    ModeStage,
+                    NameStage,
+                    ScheduleStage,
+                    SourceConnectionIdStage,
+                    _FinalStage {
         private String destinationConnectionId;
+
+        private String mode;
 
         private String name;
 
@@ -313,8 +320,6 @@ public final class UpdateBulkSyncRequest {
         private Optional<List<String>> policies = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
-
-        private Optional<String> mode = Optional.empty();
 
         private Optional<Boolean> discover = Optional.empty();
 
@@ -355,8 +360,19 @@ public final class UpdateBulkSyncRequest {
 
         @java.lang.Override
         @JsonSetter("destination_connection_id")
-        public NameStage destinationConnectionId(String destinationConnectionId) {
+        public ModeStage destinationConnectionId(String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
+            return this;
+        }
+
+        /**
+         * <p>Either 'replicate' or 'snapshot'.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("mode")
+        public NameStage mode(String mode) {
+            this.mode = mode;
             return this;
         }
 
@@ -430,22 +446,6 @@ public final class UpdateBulkSyncRequest {
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
-            return this;
-        }
-
-        /**
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage mode(String mode) {
-            this.mode = Optional.of(mode);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public _FinalStage mode(Optional<String> mode) {
-            this.mode = mode;
             return this;
         }
 

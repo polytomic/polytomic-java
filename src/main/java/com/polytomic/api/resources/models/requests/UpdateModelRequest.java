@@ -16,6 +16,7 @@ import com.polytomic.api.types.Enrichment;
 import com.polytomic.api.types.ModelModelFieldRequest;
 import com.polytomic.api.types.ModelRelation;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,7 +29,7 @@ public final class UpdateModelRequest {
 
     private final Optional<List<ModelModelFieldRequest>> additionalFields;
 
-    private final Optional<Map<String, Object>> configuration;
+    private final Map<String, Object> configuration;
 
     private final String connectionId;
 
@@ -55,7 +56,7 @@ public final class UpdateModelRequest {
     private UpdateModelRequest(
             Optional<Boolean> async,
             Optional<List<ModelModelFieldRequest>> additionalFields,
-            Optional<Map<String, Object>> configuration,
+            Map<String, Object> configuration,
             String connectionId,
             Optional<Enrichment> enricher,
             Optional<List<String>> fields,
@@ -94,7 +95,7 @@ public final class UpdateModelRequest {
     }
 
     @JsonProperty("configuration")
-    public Optional<Map<String, Object>> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
         return configuration;
     }
 
@@ -223,9 +224,11 @@ public final class UpdateModelRequest {
 
         _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields);
 
-        _FinalStage configuration(Optional<Map<String, Object>> configuration);
-
         _FinalStage configuration(Map<String, Object> configuration);
+
+        _FinalStage putAllConfiguration(Map<String, Object> configuration);
+
+        _FinalStage configuration(String key, Object value);
 
         _FinalStage enricher(Optional<Enrichment> enricher);
 
@@ -282,7 +285,7 @@ public final class UpdateModelRequest {
 
         private Optional<Enrichment> enricher = Optional.empty();
 
-        private Optional<Map<String, Object>> configuration = Optional.empty();
+        private Map<String, Object> configuration = new LinkedHashMap<>();
 
         private Optional<List<ModelModelFieldRequest>> additionalFields = Optional.empty();
 
@@ -430,15 +433,22 @@ public final class UpdateModelRequest {
         }
 
         @java.lang.Override
-        public _FinalStage configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+        public _FinalStage configuration(String key, Object value) {
+            this.configuration.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage putAllConfiguration(Map<String, Object> configuration) {
+            this.configuration.putAll(configuration);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
-        public _FinalStage configuration(Optional<Map<String, Object>> configuration) {
-            this.configuration = configuration;
+        public _FinalStage configuration(Map<String, Object> configuration) {
+            this.configuration.clear();
+            this.configuration.putAll(configuration);
             return this;
         }
 

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = UpdateConnectionRequestSchema.Builder.class)
 public final class UpdateConnectionRequestSchema {
-    private final Optional<Map<String, Object>> configuration;
+    private final Map<String, Object> configuration;
 
     private final String name;
 
@@ -38,7 +39,7 @@ public final class UpdateConnectionRequestSchema {
     private final Map<String, Object> additionalProperties;
 
     private UpdateConnectionRequestSchema(
-            Optional<Map<String, Object>> configuration,
+            Map<String, Object> configuration,
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
@@ -57,7 +58,7 @@ public final class UpdateConnectionRequestSchema {
     }
 
     @JsonProperty("configuration")
-    public Optional<Map<String, Object>> getConfiguration() {
+    public Map<String, Object> getConfiguration() {
         return configuration;
     }
 
@@ -145,9 +146,11 @@ public final class UpdateConnectionRequestSchema {
     public interface _FinalStage {
         UpdateConnectionRequestSchema build();
 
-        _FinalStage configuration(Optional<Map<String, Object>> configuration);
-
         _FinalStage configuration(Map<String, Object> configuration);
+
+        _FinalStage putAllConfiguration(Map<String, Object> configuration);
+
+        _FinalStage configuration(String key, Object value);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
@@ -184,7 +187,7 @@ public final class UpdateConnectionRequestSchema {
 
         private Optional<String> organizationId = Optional.empty();
 
-        private Optional<Map<String, Object>> configuration = Optional.empty();
+        private Map<String, Object> configuration = new LinkedHashMap<>();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -280,15 +283,22 @@ public final class UpdateConnectionRequestSchema {
         }
 
         @java.lang.Override
-        public _FinalStage configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+        public _FinalStage configuration(String key, Object value) {
+            this.configuration.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage putAllConfiguration(Map<String, Object> configuration) {
+            this.configuration.putAll(configuration);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
-        public _FinalStage configuration(Optional<Map<String, Object>> configuration) {
-            this.configuration = configuration;
+        public _FinalStage configuration(Map<String, Object> configuration) {
+            this.configuration.clear();
+            this.configuration.putAll(configuration);
             return this;
         }
 
