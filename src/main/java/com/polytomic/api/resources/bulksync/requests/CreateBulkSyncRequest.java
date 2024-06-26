@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.resources.bulksync.types.V2CreateBulkSyncRequestSchemasItem;
 import com.polytomic.api.types.BulkDiscover;
 import com.polytomic.api.types.BulkSchedule;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public final class CreateBulkSyncRequest {
 
     private final BulkSchedule schedule;
 
-    private final Optional<List<String>> schemas;
+    private final Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas;
 
     private final Optional<Map<String, Object>> sourceConfiguration;
 
@@ -68,7 +69,7 @@ public final class CreateBulkSyncRequest {
             Optional<String> organizationId,
             Optional<List<String>> policies,
             BulkSchedule schedule,
-            Optional<List<String>> schemas,
+            Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas,
             Optional<Map<String, Object>> sourceConfiguration,
             String sourceConnectionId,
             Map<String, Object> additionalProperties) {
@@ -156,8 +157,11 @@ public final class CreateBulkSyncRequest {
         return schedule;
     }
 
+    /**
+     * @return List of schemas to sync; if omitted, all schemas will be selected for syncing.
+     */
     @JsonProperty("schemas")
-    public Optional<List<String>> getSchemas() {
+    public Optional<List<V2CreateBulkSyncRequestSchemasItem>> getSchemas() {
         return schemas;
     }
 
@@ -286,9 +290,9 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage policies(List<String> policies);
 
-        _FinalStage schemas(Optional<List<String>> schemas);
+        _FinalStage schemas(Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas);
 
-        _FinalStage schemas(List<String> schemas);
+        _FinalStage schemas(List<V2CreateBulkSyncRequestSchemasItem> schemas);
 
         _FinalStage sourceConfiguration(Optional<Map<String, Object>> sourceConfiguration);
 
@@ -315,7 +319,7 @@ public final class CreateBulkSyncRequest {
 
         private Optional<Map<String, Object>> sourceConfiguration = Optional.empty();
 
-        private Optional<List<String>> schemas = Optional.empty();
+        private Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas = Optional.empty();
 
         private Optional<List<String>> policies = Optional.empty();
 
@@ -410,15 +414,19 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage schemas(List<String> schemas) {
+        public _FinalStage schemas(List<V2CreateBulkSyncRequestSchemasItem> schemas) {
             this.schemas = Optional.of(schemas);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
-        public _FinalStage schemas(Optional<List<String>> schemas) {
+        public _FinalStage schemas(Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas) {
             this.schemas = schemas;
             return this;
         }
