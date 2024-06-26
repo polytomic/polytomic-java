@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.BulkField;
+import com.polytomic.api.types.BulkFilter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ public final class UpdateBulkSchema {
 
     private final Optional<List<BulkField>> fields;
 
+    private final Optional<List<BulkFilter>> filters;
+
     private final Optional<String> partitionKey;
 
     private final Map<String, Object> additionalProperties;
@@ -33,10 +36,12 @@ public final class UpdateBulkSchema {
     private UpdateBulkSchema(
             Optional<Boolean> enabled,
             Optional<List<BulkField>> fields,
+            Optional<List<BulkFilter>> filters,
             Optional<String> partitionKey,
             Map<String, Object> additionalProperties) {
         this.enabled = enabled;
         this.fields = fields;
+        this.filters = filters;
         this.partitionKey = partitionKey;
         this.additionalProperties = additionalProperties;
     }
@@ -49,6 +54,11 @@ public final class UpdateBulkSchema {
     @JsonProperty("fields")
     public Optional<List<BulkField>> getFields() {
         return fields;
+    }
+
+    @JsonProperty("filters")
+    public Optional<List<BulkFilter>> getFilters() {
+        return filters;
     }
 
     @JsonProperty("partition_key")
@@ -68,12 +78,15 @@ public final class UpdateBulkSchema {
     }
 
     private boolean equalTo(UpdateBulkSchema other) {
-        return enabled.equals(other.enabled) && fields.equals(other.fields) && partitionKey.equals(other.partitionKey);
+        return enabled.equals(other.enabled)
+                && fields.equals(other.fields)
+                && filters.equals(other.filters)
+                && partitionKey.equals(other.partitionKey);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.fields, this.partitionKey);
+        return Objects.hash(this.enabled, this.fields, this.filters, this.partitionKey);
     }
 
     @java.lang.Override
@@ -91,6 +104,8 @@ public final class UpdateBulkSchema {
 
         private Optional<List<BulkField>> fields = Optional.empty();
 
+        private Optional<List<BulkFilter>> filters = Optional.empty();
+
         private Optional<String> partitionKey = Optional.empty();
 
         @JsonAnySetter
@@ -101,6 +116,7 @@ public final class UpdateBulkSchema {
         public Builder from(UpdateBulkSchema other) {
             enabled(other.getEnabled());
             fields(other.getFields());
+            filters(other.getFilters());
             partitionKey(other.getPartitionKey());
             return this;
         }
@@ -127,6 +143,17 @@ public final class UpdateBulkSchema {
             return this;
         }
 
+        @JsonSetter(value = "filters", nulls = Nulls.SKIP)
+        public Builder filters(Optional<List<BulkFilter>> filters) {
+            this.filters = filters;
+            return this;
+        }
+
+        public Builder filters(List<BulkFilter> filters) {
+            this.filters = Optional.of(filters);
+            return this;
+        }
+
         @JsonSetter(value = "partition_key", nulls = Nulls.SKIP)
         public Builder partitionKey(Optional<String> partitionKey) {
             this.partitionKey = partitionKey;
@@ -139,7 +166,7 @@ public final class UpdateBulkSchema {
         }
 
         public UpdateBulkSchema build() {
-            return new UpdateBulkSchema(enabled, fields, partitionKey, additionalProperties);
+            return new UpdateBulkSchema(enabled, fields, filters, partitionKey, additionalProperties);
         }
     }
 }

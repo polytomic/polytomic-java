@@ -25,6 +25,8 @@ public final class BulkSchema {
 
     private final Optional<List<BulkField>> fields;
 
+    private final Optional<List<BulkFilter>> filters;
+
     private final Optional<String> id;
 
     private final Optional<String> outputName;
@@ -36,12 +38,14 @@ public final class BulkSchema {
     private BulkSchema(
             Optional<Boolean> enabled,
             Optional<List<BulkField>> fields,
+            Optional<List<BulkFilter>> filters,
             Optional<String> id,
             Optional<String> outputName,
             Optional<String> partitionKey,
             Map<String, Object> additionalProperties) {
         this.enabled = enabled;
         this.fields = fields;
+        this.filters = filters;
         this.id = id;
         this.outputName = outputName;
         this.partitionKey = partitionKey;
@@ -56,6 +60,11 @@ public final class BulkSchema {
     @JsonProperty("fields")
     public Optional<List<BulkField>> getFields() {
         return fields;
+    }
+
+    @JsonProperty("filters")
+    public Optional<List<BulkFilter>> getFilters() {
+        return filters;
     }
 
     @JsonProperty("id")
@@ -87,6 +96,7 @@ public final class BulkSchema {
     private boolean equalTo(BulkSchema other) {
         return enabled.equals(other.enabled)
                 && fields.equals(other.fields)
+                && filters.equals(other.filters)
                 && id.equals(other.id)
                 && outputName.equals(other.outputName)
                 && partitionKey.equals(other.partitionKey);
@@ -94,7 +104,7 @@ public final class BulkSchema {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.fields, this.id, this.outputName, this.partitionKey);
+        return Objects.hash(this.enabled, this.fields, this.filters, this.id, this.outputName, this.partitionKey);
     }
 
     @java.lang.Override
@@ -112,6 +122,8 @@ public final class BulkSchema {
 
         private Optional<List<BulkField>> fields = Optional.empty();
 
+        private Optional<List<BulkFilter>> filters = Optional.empty();
+
         private Optional<String> id = Optional.empty();
 
         private Optional<String> outputName = Optional.empty();
@@ -126,6 +138,7 @@ public final class BulkSchema {
         public Builder from(BulkSchema other) {
             enabled(other.getEnabled());
             fields(other.getFields());
+            filters(other.getFilters());
             id(other.getId());
             outputName(other.getOutputName());
             partitionKey(other.getPartitionKey());
@@ -151,6 +164,17 @@ public final class BulkSchema {
 
         public Builder fields(List<BulkField> fields) {
             this.fields = Optional.of(fields);
+            return this;
+        }
+
+        @JsonSetter(value = "filters", nulls = Nulls.SKIP)
+        public Builder filters(Optional<List<BulkFilter>> filters) {
+            this.filters = filters;
+            return this;
+        }
+
+        public Builder filters(List<BulkFilter> filters) {
+            this.filters = Optional.of(filters);
             return this;
         }
 
@@ -188,7 +212,7 @@ public final class BulkSchema {
         }
 
         public BulkSchema build() {
-            return new BulkSchema(enabled, fields, id, outputName, partitionKey, additionalProperties);
+            return new BulkSchema(enabled, fields, filters, id, outputName, partitionKey, additionalProperties);
         }
     }
 }

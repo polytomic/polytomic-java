@@ -23,12 +23,14 @@ import java.util.Optional;
 public final class BulkMultiScheduleConfiguration {
     private final Optional<List<BulkItemizedSchedule>> schedules;
 
-    private final String type;
+    private final Optional<String> type;
 
     private final Map<String, Object> additionalProperties;
 
     private BulkMultiScheduleConfiguration(
-            Optional<List<BulkItemizedSchedule>> schedules, String type, Map<String, Object> additionalProperties) {
+            Optional<List<BulkItemizedSchedule>> schedules,
+            Optional<String> type,
+            Map<String, Object> additionalProperties) {
         this.schedules = schedules;
         this.type = type;
         this.additionalProperties = additionalProperties;
@@ -40,7 +42,7 @@ public final class BulkMultiScheduleConfiguration {
     }
 
     @JsonProperty("type")
-    public String getType() {
+    public Optional<String> getType() {
         return type;
     }
 
@@ -69,63 +71,49 @@ public final class BulkMultiScheduleConfiguration {
         return ObjectMappers.stringify(this);
     }
 
-    public static TypeStage builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public interface TypeStage {
-        _FinalStage type(String type);
-
-        Builder from(BulkMultiScheduleConfiguration other);
-    }
-
-    public interface _FinalStage {
-        BulkMultiScheduleConfiguration build();
-
-        _FinalStage schedules(Optional<List<BulkItemizedSchedule>> schedules);
-
-        _FinalStage schedules(List<BulkItemizedSchedule> schedules);
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements TypeStage, _FinalStage {
-        private String type;
-
+    public static final class Builder {
         private Optional<List<BulkItemizedSchedule>> schedules = Optional.empty();
+
+        private Optional<String> type = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        @java.lang.Override
         public Builder from(BulkMultiScheduleConfiguration other) {
             schedules(other.getSchedules());
             type(other.getType());
             return this;
         }
 
-        @java.lang.Override
-        @JsonSetter("type")
-        public _FinalStage type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        @java.lang.Override
-        public _FinalStage schedules(List<BulkItemizedSchedule> schedules) {
-            this.schedules = Optional.of(schedules);
-            return this;
-        }
-
-        @java.lang.Override
         @JsonSetter(value = "schedules", nulls = Nulls.SKIP)
-        public _FinalStage schedules(Optional<List<BulkItemizedSchedule>> schedules) {
+        public Builder schedules(Optional<List<BulkItemizedSchedule>> schedules) {
             this.schedules = schedules;
             return this;
         }
 
-        @java.lang.Override
+        public Builder schedules(List<BulkItemizedSchedule> schedules) {
+            this.schedules = Optional.of(schedules);
+            return this;
+        }
+
+        @JsonSetter(value = "type", nulls = Nulls.SKIP)
+        public Builder type(Optional<String> type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder type(String type) {
+            this.type = Optional.of(type);
+            return this;
+        }
+
         public BulkMultiScheduleConfiguration build() {
             return new BulkMultiScheduleConfiguration(schedules, type, additionalProperties);
         }
