@@ -6,6 +6,8 @@ package com.polytomic.api.types;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum WorkTaskStatus {
+    CREATED("created"),
+
     RUNNING("running"),
 
     DONE("done"),

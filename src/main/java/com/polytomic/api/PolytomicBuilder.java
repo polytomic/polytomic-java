@@ -11,7 +11,7 @@ public final class PolytomicBuilder {
 
     private String token = null;
 
-    private String xPolytomicVersion = null;
+    private String version = null;
 
     private Environment environment = Environment.DEFAULT;
 
@@ -24,10 +24,10 @@ public final class PolytomicBuilder {
     }
 
     /**
-     * Sets xPolytomicVersion
+     * Sets version
      */
-    public PolytomicBuilder xPolytomicVersion(String xPolytomicVersion) {
-        this.xPolytomicVersion = xPolytomicVersion;
+    public PolytomicBuilder version(String version) {
+        this.version = version;
         return this;
     }
 
@@ -46,10 +46,10 @@ public final class PolytomicBuilder {
             throw new RuntimeException("Please provide token");
         }
         this.clientOptionsBuilder.addHeader("Authorization", "Bearer " + this.token);
-        if (xPolytomicVersion == null) {
-            throw new RuntimeException("Please provide xPolytomicVersion");
+        if (version == null) {
+            throw new RuntimeException("Please provide version");
         }
-        this.clientOptionsBuilder.addHeader("X-Polytomic-Version", this.xPolytomicVersion);
+        this.clientOptionsBuilder.addHeader("X-Polytomic-Version", this.version);
         clientOptionsBuilder.environment(this.environment);
         return new Polytomic(clientOptionsBuilder.build());
     }

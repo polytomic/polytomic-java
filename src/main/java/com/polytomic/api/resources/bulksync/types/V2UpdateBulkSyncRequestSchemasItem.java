@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.SchemaConfiguration;
 import java.io.IOException;
 import java.util.Objects;
 

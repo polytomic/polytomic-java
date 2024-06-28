@@ -9,11 +9,11 @@ import java.util.Map;
 public final class RequestOptions {
     private final String token;
 
-    private final String xPolytomicVersion;
+    private final String version;
 
-    private RequestOptions(String token, String xPolytomicVersion) {
+    private RequestOptions(String token, String version) {
         this.token = token;
-        this.xPolytomicVersion = xPolytomicVersion;
+        this.version = version;
     }
 
     public Map<String, String> getHeaders() {
@@ -21,8 +21,8 @@ public final class RequestOptions {
         if (this.token != null) {
             headers.put("Authorization", "Bearer " + this.token);
         }
-        if (this.xPolytomicVersion != null) {
-            headers.put("X-Polytomic-Version", this.xPolytomicVersion);
+        if (this.version != null) {
+            headers.put("X-Polytomic-Version", this.version);
         }
         return headers;
     }
@@ -34,20 +34,20 @@ public final class RequestOptions {
     public static final class Builder {
         private String token = null;
 
-        private String xPolytomicVersion = null;
+        private String version = null;
 
         public Builder token(String token) {
             this.token = token;
             return this;
         }
 
-        public Builder xPolytomicVersion(String xPolytomicVersion) {
-            this.xPolytomicVersion = xPolytomicVersion;
+        public Builder version(String version) {
+            this.version = version;
             return this;
         }
 
         public RequestOptions build() {
-            return new RequestOptions(token, xPolytomicVersion);
+            return new RequestOptions(token, version);
         }
     }
 }

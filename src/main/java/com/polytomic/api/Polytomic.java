@@ -14,6 +14,7 @@ import com.polytomic.api.resources.models.ModelsClient;
 import com.polytomic.api.resources.modelsync.ModelSyncClient;
 import com.polytomic.api.resources.organization.OrganizationClient;
 import com.polytomic.api.resources.permissions.PermissionsClient;
+import com.polytomic.api.resources.queryrunner.QueryRunnerClient;
 import com.polytomic.api.resources.schemas.SchemasClient;
 import com.polytomic.api.resources.users.UsersClient;
 import com.polytomic.api.resources.webhooks.WebhooksClient;
@@ -25,6 +26,8 @@ public class Polytomic {
     protected final Supplier<BulkSyncClient> bulkSyncClient;
 
     protected final Supplier<ConnectionsClient> connectionsClient;
+
+    protected final Supplier<QueryRunnerClient> queryRunnerClient;
 
     protected final Supplier<ModelSyncClient> modelSyncClient;
 
@@ -50,6 +53,7 @@ public class Polytomic {
         this.clientOptions = clientOptions;
         this.bulkSyncClient = Suppliers.memoize(() -> new BulkSyncClient(clientOptions));
         this.connectionsClient = Suppliers.memoize(() -> new ConnectionsClient(clientOptions));
+        this.queryRunnerClient = Suppliers.memoize(() -> new QueryRunnerClient(clientOptions));
         this.modelSyncClient = Suppliers.memoize(() -> new ModelSyncClient(clientOptions));
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
         this.modelsClient = Suppliers.memoize(() -> new ModelsClient(clientOptions));
@@ -68,6 +72,10 @@ public class Polytomic {
 
     public ConnectionsClient connections() {
         return this.connectionsClient.get();
+    }
+
+    public QueryRunnerClient queryRunner() {
+        return this.queryRunnerClient.get();
     }
 
     public ModelSyncClient modelSync() {
