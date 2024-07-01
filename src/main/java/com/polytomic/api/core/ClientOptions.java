@@ -29,7 +29,7 @@ public final class ClientOptions {
                 "X-Fern-SDK-Name",
                 "com.polytomic.fern:api-sdk",
                 "X-Fern-SDK-Version",
-                "1.6.0",
+                "1.6.1",
                 "X-Fern-Language",
                 "JAVA"));
         this.headerSuppliers = headerSuppliers;
