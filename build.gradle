@@ -46,8 +46,20 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.polytomic'
             artifactId = 'polytomic-java'
-            version = '1.6.1'
+            version = '1.6.2'
             from components.java
+            pom {
+                licenses {
+                    license {
+                        name = 'MIT'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/polytomic/polytomic-java.git'
+                    developerConnection = 'scm:git:git://github.com/polytomic/polytomic-java.git'
+                    url = 'https://github.com/polytomic/polytomic-java'
+                }
+            }
         }
     }
     repositories {

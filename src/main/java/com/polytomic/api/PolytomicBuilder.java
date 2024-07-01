@@ -46,10 +46,9 @@ public final class PolytomicBuilder {
             throw new RuntimeException("Please provide token");
         }
         this.clientOptionsBuilder.addHeader("Authorization", "Bearer " + this.token);
-        if (version == null) {
-            throw new RuntimeException("Please provide version");
+        if (version != null) {
+            this.clientOptionsBuilder.addHeader("X-Polytomic-Version", this.version);
         }
-        this.clientOptionsBuilder.addHeader("X-Polytomic-Version", this.version);
         clientOptionsBuilder.environment(this.environment);
         return new Polytomic(clientOptionsBuilder.build());
     }
