@@ -24,7 +24,7 @@ public final class ModelSyncField {
 
     private final Optional<String> overrideValue;
 
-    private final Source source;
+    private final Optional<Source> source;
 
     private final Optional<String> syncMode;
 
@@ -35,7 +35,7 @@ public final class ModelSyncField {
     private ModelSyncField(
             Optional<Boolean> new_,
             Optional<String> overrideValue,
-            Source source,
+            Optional<Source> source,
             Optional<String> syncMode,
             String target,
             Map<String, Object> additionalProperties) {
@@ -47,26 +47,38 @@ public final class ModelSyncField {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return New is set to true if the target field should be created by Polytomic. This is not supported by all backends.
+     */
     @JsonProperty("new")
     public Optional<Boolean> getNew() {
         return new_;
     }
 
+    /**
+     * @return Value to set in the target field; if provided, 'source' is ignored.
+     */
     @JsonProperty("override_value")
     public Optional<String> getOverrideValue() {
         return overrideValue;
     }
 
     @JsonProperty("source")
-    public Source getSource() {
+    public Optional<Source> getSource() {
         return source;
     }
 
+    /**
+     * @return Sync mode for the field; defaults to 'updateOrCreate'. If set to 'create', the field will not be synced if it already has a value. This is not supported by all backends.
+     */
     @JsonProperty("sync_mode")
     public Optional<String> getSyncMode() {
         return syncMode;
     }
 
+    /**
+     * @return Target field ID the source field value will be written to.
+     */
     @JsonProperty("target")
     public String getTarget() {
         return target;
@@ -101,18 +113,14 @@ public final class ModelSyncField {
         return ObjectMappers.stringify(this);
     }
 
-    public static SourceStage builder() {
+    public static TargetStage builder() {
         return new Builder();
-    }
-
-    public interface SourceStage {
-        TargetStage source(Source source);
-
-        Builder from(ModelSyncField other);
     }
 
     public interface TargetStage {
         _FinalStage target(String target);
+
+        Builder from(ModelSyncField other);
     }
 
     public interface _FinalStage {
@@ -126,18 +134,22 @@ public final class ModelSyncField {
 
         _FinalStage overrideValue(String overrideValue);
 
+        _FinalStage source(Optional<Source> source);
+
+        _FinalStage source(Source source);
+
         _FinalStage syncMode(Optional<String> syncMode);
 
         _FinalStage syncMode(String syncMode);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements SourceStage, TargetStage, _FinalStage {
-        private Source source;
-
+    public static final class Builder implements TargetStage, _FinalStage {
         private String target;
 
         private Optional<String> syncMode = Optional.empty();
+
+        private Optional<Source> source = Optional.empty();
 
         private Optional<String> overrideValue = Optional.empty();
 
@@ -158,13 +170,10 @@ public final class ModelSyncField {
             return this;
         }
 
-        @java.lang.Override
-        @JsonSetter("source")
-        public TargetStage source(Source source) {
-            this.source = source;
-            return this;
-        }
-
+        /**
+         * <p>Target field ID the source field value will be written to.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(String target) {
@@ -172,6 +181,10 @@ public final class ModelSyncField {
             return this;
         }
 
+        /**
+         * <p>Sync mode for the field; defaults to 'updateOrCreate'. If set to 'create', the field will not be synced if it already has a value. This is not supported by all backends.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage syncMode(String syncMode) {
             this.syncMode = Optional.of(syncMode);
@@ -186,6 +199,23 @@ public final class ModelSyncField {
         }
 
         @java.lang.Override
+        public _FinalStage source(Source source) {
+            this.source = Optional.of(source);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "source", nulls = Nulls.SKIP)
+        public _FinalStage source(Optional<Source> source) {
+            this.source = source;
+            return this;
+        }
+
+        /**
+         * <p>Value to set in the target field; if provided, 'source' is ignored.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         public _FinalStage overrideValue(String overrideValue) {
             this.overrideValue = Optional.of(overrideValue);
             return this;
@@ -198,6 +228,10 @@ public final class ModelSyncField {
             return this;
         }
 
+        /**
+         * <p>New is set to true if the target field should be created by Polytomic. This is not supported by all backends.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage new_(Boolean new_) {
             this.new_ = Optional.of(new_);

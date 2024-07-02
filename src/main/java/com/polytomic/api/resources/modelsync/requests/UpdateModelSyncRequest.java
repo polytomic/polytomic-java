@@ -106,6 +106,9 @@ public final class UpdateModelSyncRequest {
         return enricher;
     }
 
+    /**
+     * @return Fields to sync from source to target.
+     */
     @JsonProperty("fields")
     public List<ModelSyncField> getFields() {
         return fields;
@@ -142,7 +145,7 @@ public final class UpdateModelSyncRequest {
     }
 
     /**
-     * @return Values to set as sync target fields.
+     * @return Values to set in the target unconditionally.
      */
     @JsonProperty("override_fields")
     public Optional<List<ModelSyncField>> getOverrideFields() {
@@ -150,7 +153,7 @@ public final class UpdateModelSyncRequest {
     }
 
     /**
-     * @return Conditional value replacement for field mappings.
+     * @return Conditional value replacement for fields.
      */
     @JsonProperty("overrides")
     public Optional<List<Override>> getOverrides() {
@@ -415,7 +418,7 @@ public final class UpdateModelSyncRequest {
         }
 
         /**
-         * <p>Conditional value replacement for field mappings.</p>
+         * <p>Conditional value replacement for fields.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -432,7 +435,7 @@ public final class UpdateModelSyncRequest {
         }
 
         /**
-         * <p>Values to set as sync target fields.</p>
+         * <p>Values to set in the target unconditionally.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -500,12 +503,20 @@ public final class UpdateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Fields to sync from source to target.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage addAllFields(List<ModelSyncField> fields) {
             this.fields.addAll(fields);
             return this;
         }
 
+        /**
+         * <p>Fields to sync from source to target.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage addFields(ModelSyncField fields) {
             this.fields.add(fields);
