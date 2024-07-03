@@ -23,7 +23,7 @@ import java.util.Optional;
 public final class Event {
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<Object> event;
+    private final Optional<EventBody> event;
 
     private final Optional<String> id;
 
@@ -35,7 +35,7 @@ public final class Event {
 
     private Event(
             Optional<OffsetDateTime> createdAt,
-            Optional<Object> event,
+            Optional<EventBody> event,
             Optional<String> id,
             Optional<String> organizationId,
             Optional<String> type,
@@ -54,7 +54,7 @@ public final class Event {
     }
 
     @JsonProperty("event")
-    public Optional<Object> getEvent() {
+    public Optional<EventBody> getEvent() {
         return event;
     }
 
@@ -110,7 +110,7 @@ public final class Event {
     public static final class Builder {
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<Object> event = Optional.empty();
+        private Optional<EventBody> event = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -144,12 +144,12 @@ public final class Event {
         }
 
         @JsonSetter(value = "event", nulls = Nulls.SKIP)
-        public Builder event(Optional<Object> event) {
+        public Builder event(Optional<EventBody> event) {
             this.event = event;
             return this;
         }
 
-        public Builder event(Object event) {
+        public Builder event(EventBody event) {
             this.event = Optional.of(event);
             return this;
         }
