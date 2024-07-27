@@ -81,6 +81,9 @@ public final class BulkSyncResponse {
         return active;
     }
 
+    /**
+     * @return Destination-specific bulk sync configuration. e.g. output schema name, s3 file format, etc.
+     */
     @JsonProperty("destination_configuration")
     public Optional<Map<String, Object>> getDestinationConfiguration() {
         return destinationConfiguration;
@@ -106,6 +109,9 @@ public final class BulkSyncResponse {
         return mode;
     }
 
+    /**
+     * @return Name of the bulk sync
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
@@ -116,6 +122,9 @@ public final class BulkSyncResponse {
         return organizationId;
     }
 
+    /**
+     * @return List of permissions policies applied to the bulk sync.
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
@@ -126,6 +135,9 @@ public final class BulkSyncResponse {
         return schedule;
     }
 
+    /**
+     * @return Source-specific bulk sync configuration. e.g. replication slot name, sync lookback, etc.
+     */
     @JsonProperty("source_configuration")
     public Optional<Map<String, Object>> getSourceConfiguration() {
         return sourceConfiguration;

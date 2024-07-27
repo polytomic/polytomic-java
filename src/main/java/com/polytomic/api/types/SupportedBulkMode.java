@@ -18,29 +18,42 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = SupportedMode.Builder.class)
-public final class SupportedMode {
+@JsonDeserialize(builder = SupportedBulkMode.Builder.class)
+public final class SupportedBulkMode {
+    private final Optional<String> description;
+
     private final Optional<SyncMode> id;
+
+    private final Optional<String> label;
 
     private final Optional<Boolean> requiresIdentity;
 
-    private final Optional<Boolean> supportsPerFieldMode;
+    private final Optional<Boolean> supportsFieldSyncMode;
 
     private final Optional<Boolean> supportsTargetFilters;
 
     private final Map<String, Object> additionalProperties;
 
-    private SupportedMode(
+    private SupportedBulkMode(
+            Optional<String> description,
             Optional<SyncMode> id,
+            Optional<String> label,
             Optional<Boolean> requiresIdentity,
-            Optional<Boolean> supportsPerFieldMode,
+            Optional<Boolean> supportsFieldSyncMode,
             Optional<Boolean> supportsTargetFilters,
             Map<String, Object> additionalProperties) {
+        this.description = description;
         this.id = id;
+        this.label = label;
         this.requiresIdentity = requiresIdentity;
-        this.supportsPerFieldMode = supportsPerFieldMode;
+        this.supportsFieldSyncMode = supportsFieldSyncMode;
         this.supportsTargetFilters = supportsTargetFilters;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("description")
+    public Optional<String> getDescription() {
+        return description;
     }
 
     @JsonProperty("id")
@@ -48,25 +61,21 @@ public final class SupportedMode {
         return id;
     }
 
-    /**
-     * @return True if the sync mode requires an identity field mapping.
-     */
+    @JsonProperty("label")
+    public Optional<String> getLabel() {
+        return label;
+    }
+
     @JsonProperty("requires_identity")
     public Optional<Boolean> getRequiresIdentity() {
         return requiresIdentity;
     }
 
-    /**
-     * @return True if the target supports per-field sync modes.
-     */
-    @JsonProperty("supports_per_field_mode")
-    public Optional<Boolean> getSupportsPerFieldMode() {
-        return supportsPerFieldMode;
+    @JsonProperty("supports_field_sync_mode")
+    public Optional<Boolean> getSupportsFieldSyncMode() {
+        return supportsFieldSyncMode;
     }
 
-    /**
-     * @return True if the sync mode supports target filters.
-     */
     @JsonProperty("supports_target_filters")
     public Optional<Boolean> getSupportsTargetFilters() {
         return supportsTargetFilters;
@@ -75,7 +84,7 @@ public final class SupportedMode {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof SupportedMode && equalTo((SupportedMode) other);
+        return other instanceof SupportedBulkMode && equalTo((SupportedBulkMode) other);
     }
 
     @JsonAnyGetter
@@ -83,16 +92,24 @@ public final class SupportedMode {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(SupportedMode other) {
-        return id.equals(other.id)
+    private boolean equalTo(SupportedBulkMode other) {
+        return description.equals(other.description)
+                && id.equals(other.id)
+                && label.equals(other.label)
                 && requiresIdentity.equals(other.requiresIdentity)
-                && supportsPerFieldMode.equals(other.supportsPerFieldMode)
+                && supportsFieldSyncMode.equals(other.supportsFieldSyncMode)
                 && supportsTargetFilters.equals(other.supportsTargetFilters);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.requiresIdentity, this.supportsPerFieldMode, this.supportsTargetFilters);
+        return Objects.hash(
+                this.description,
+                this.id,
+                this.label,
+                this.requiresIdentity,
+                this.supportsFieldSyncMode,
+                this.supportsTargetFilters);
     }
 
     @java.lang.Override
@@ -106,11 +123,15 @@ public final class SupportedMode {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<String> description = Optional.empty();
+
         private Optional<SyncMode> id = Optional.empty();
+
+        private Optional<String> label = Optional.empty();
 
         private Optional<Boolean> requiresIdentity = Optional.empty();
 
-        private Optional<Boolean> supportsPerFieldMode = Optional.empty();
+        private Optional<Boolean> supportsFieldSyncMode = Optional.empty();
 
         private Optional<Boolean> supportsTargetFilters = Optional.empty();
 
@@ -119,11 +140,24 @@ public final class SupportedMode {
 
         private Builder() {}
 
-        public Builder from(SupportedMode other) {
+        public Builder from(SupportedBulkMode other) {
+            description(other.getDescription());
             id(other.getId());
+            label(other.getLabel());
             requiresIdentity(other.getRequiresIdentity());
-            supportsPerFieldMode(other.getSupportsPerFieldMode());
+            supportsFieldSyncMode(other.getSupportsFieldSyncMode());
             supportsTargetFilters(other.getSupportsTargetFilters());
+            return this;
+        }
+
+        @JsonSetter(value = "description", nulls = Nulls.SKIP)
+        public Builder description(Optional<String> description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = Optional.of(description);
             return this;
         }
 
@@ -138,6 +172,17 @@ public final class SupportedMode {
             return this;
         }
 
+        @JsonSetter(value = "label", nulls = Nulls.SKIP)
+        public Builder label(Optional<String> label) {
+            this.label = label;
+            return this;
+        }
+
+        public Builder label(String label) {
+            this.label = Optional.of(label);
+            return this;
+        }
+
         @JsonSetter(value = "requires_identity", nulls = Nulls.SKIP)
         public Builder requiresIdentity(Optional<Boolean> requiresIdentity) {
             this.requiresIdentity = requiresIdentity;
@@ -149,14 +194,14 @@ public final class SupportedMode {
             return this;
         }
 
-        @JsonSetter(value = "supports_per_field_mode", nulls = Nulls.SKIP)
-        public Builder supportsPerFieldMode(Optional<Boolean> supportsPerFieldMode) {
-            this.supportsPerFieldMode = supportsPerFieldMode;
+        @JsonSetter(value = "supports_field_sync_mode", nulls = Nulls.SKIP)
+        public Builder supportsFieldSyncMode(Optional<Boolean> supportsFieldSyncMode) {
+            this.supportsFieldSyncMode = supportsFieldSyncMode;
             return this;
         }
 
-        public Builder supportsPerFieldMode(Boolean supportsPerFieldMode) {
-            this.supportsPerFieldMode = Optional.of(supportsPerFieldMode);
+        public Builder supportsFieldSyncMode(Boolean supportsFieldSyncMode) {
+            this.supportsFieldSyncMode = Optional.of(supportsFieldSyncMode);
             return this;
         }
 
@@ -171,9 +216,15 @@ public final class SupportedMode {
             return this;
         }
 
-        public SupportedMode build() {
-            return new SupportedMode(
-                    id, requiresIdentity, supportsPerFieldMode, supportsTargetFilters, additionalProperties);
+        public SupportedBulkMode build() {
+            return new SupportedBulkMode(
+                    description,
+                    id,
+                    label,
+                    requiresIdentity,
+                    supportsFieldSyncMode,
+                    supportsTargetFilters,
+                    additionalProperties);
         }
     }
 }

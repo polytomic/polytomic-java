@@ -15,6 +15,7 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.resources.bulksync.types.V2CreateBulkSyncRequestSchemasItem;
 import com.polytomic.api.types.BulkDiscover;
 import com.polytomic.api.types.BulkSchedule;
+import com.polytomic.api.types.SyncMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public final class CreateBulkSyncRequest {
 
     private final Optional<Boolean> discover;
 
-    private final String mode;
+    private final Optional<SyncMode> mode;
 
     private final String name;
 
@@ -64,7 +65,7 @@ public final class CreateBulkSyncRequest {
             String destinationConnectionId,
             Optional<Boolean> disableRecordTimestamps,
             Optional<Boolean> discover,
-            String mode,
+            Optional<SyncMode> mode,
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
@@ -129,11 +130,8 @@ public final class CreateBulkSyncRequest {
         return discover;
     }
 
-    /**
-     * @return Either 'replicate' or 'snapshot'.
-     */
     @JsonProperty("mode")
-    public String getMode() {
+    public Optional<SyncMode> getMode() {
         return mode;
     }
 
@@ -234,13 +232,9 @@ public final class CreateBulkSyncRequest {
     }
 
     public interface DestinationConnectionIdStage {
-        ModeStage destinationConnectionId(String destinationConnectionId);
+        NameStage destinationConnectionId(String destinationConnectionId);
 
         Builder from(CreateBulkSyncRequest other);
-    }
-
-    public interface ModeStage {
-        NameStage mode(String mode);
     }
 
     public interface NameStage {
@@ -282,6 +276,10 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage discover(Boolean discover);
 
+        _FinalStage mode(Optional<SyncMode> mode);
+
+        _FinalStage mode(SyncMode mode);
+
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
@@ -301,15 +299,8 @@ public final class CreateBulkSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements DestinationConnectionIdStage,
-                    ModeStage,
-                    NameStage,
-                    ScheduleStage,
-                    SourceConnectionIdStage,
-                    _FinalStage {
+            implements DestinationConnectionIdStage, NameStage, ScheduleStage, SourceConnectionIdStage, _FinalStage {
         private String destinationConnectionId;
-
-        private String mode;
 
         private String name;
 
@@ -324,6 +315,8 @@ public final class CreateBulkSyncRequest {
         private Optional<List<String>> policies = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
+
+        private Optional<SyncMode> mode = Optional.empty();
 
         private Optional<Boolean> discover = Optional.empty();
 
@@ -364,19 +357,8 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         @JsonSetter("destination_connection_id")
-        public ModeStage destinationConnectionId(String destinationConnectionId) {
+        public NameStage destinationConnectionId(String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
-            return this;
-        }
-
-        /**
-         * <p>Either 'replicate' or 'snapshot'.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("mode")
-        public NameStage mode(String mode) {
-            this.mode = mode;
             return this;
         }
 
@@ -454,6 +436,19 @@ public final class CreateBulkSyncRequest {
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage mode(SyncMode mode) {
+            this.mode = Optional.of(mode);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "mode", nulls = Nulls.SKIP)
+        public _FinalStage mode(Optional<SyncMode> mode) {
+            this.mode = mode;
             return this;
         }
 

@@ -19,37 +19,41 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = BulkSyncDest.Builder.class)
-public final class BulkSyncDest {
-    private final Optional<Map<String, Object>> configuration;
+@JsonDeserialize(builder = TargetObject.Builder.class)
+public final class TargetObject {
+    private final Optional<String> id;
 
-    private final Optional<List<SupportedBulkMode>> modes;
+    private final Optional<List<SupportedMode>> modes;
 
     private final Map<String, Object> additionalProperties;
 
-    private BulkSyncDest(
-            Optional<Map<String, Object>> configuration,
-            Optional<List<SupportedBulkMode>> modes,
-            Map<String, Object> additionalProperties) {
-        this.configuration = configuration;
+    private TargetObject(
+            Optional<String> id, Optional<List<SupportedMode>> modes, Map<String, Object> additionalProperties) {
+        this.id = id;
         this.modes = modes;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("configuration")
-    public Optional<Map<String, Object>> getConfiguration() {
-        return configuration;
+    /**
+     * @return The identifier of the target object.
+     */
+    @JsonProperty("id")
+    public Optional<String> getId() {
+        return id;
     }
 
+    /**
+     * @return The supported sync modes and their properties for the target object.
+     */
     @JsonProperty("modes")
-    public Optional<List<SupportedBulkMode>> getModes() {
+    public Optional<List<SupportedMode>> getModes() {
         return modes;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof BulkSyncDest && equalTo((BulkSyncDest) other);
+        return other instanceof TargetObject && equalTo((TargetObject) other);
     }
 
     @JsonAnyGetter
@@ -57,13 +61,13 @@ public final class BulkSyncDest {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(BulkSyncDest other) {
-        return configuration.equals(other.configuration) && modes.equals(other.modes);
+    private boolean equalTo(TargetObject other) {
+        return id.equals(other.id) && modes.equals(other.modes);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.configuration, this.modes);
+        return Objects.hash(this.id, this.modes);
     }
 
     @java.lang.Override
@@ -77,45 +81,45 @@ public final class BulkSyncDest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Object>> configuration = Optional.empty();
+        private Optional<String> id = Optional.empty();
 
-        private Optional<List<SupportedBulkMode>> modes = Optional.empty();
+        private Optional<List<SupportedMode>> modes = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        public Builder from(BulkSyncDest other) {
-            configuration(other.getConfiguration());
+        public Builder from(TargetObject other) {
+            id(other.getId());
             modes(other.getModes());
             return this;
         }
 
-        @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
-        public Builder configuration(Optional<Map<String, Object>> configuration) {
-            this.configuration = configuration;
+        @JsonSetter(value = "id", nulls = Nulls.SKIP)
+        public Builder id(Optional<String> id) {
+            this.id = id;
             return this;
         }
 
-        public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+        public Builder id(String id) {
+            this.id = Optional.of(id);
             return this;
         }
 
         @JsonSetter(value = "modes", nulls = Nulls.SKIP)
-        public Builder modes(Optional<List<SupportedBulkMode>> modes) {
+        public Builder modes(Optional<List<SupportedMode>> modes) {
             this.modes = modes;
             return this;
         }
 
-        public Builder modes(List<SupportedBulkMode> modes) {
+        public Builder modes(List<SupportedMode> modes) {
             this.modes = Optional.of(modes);
             return this;
         }
 
-        public BulkSyncDest build() {
-            return new BulkSyncDest(configuration, modes, additionalProperties);
+        public TargetObject build() {
+            return new TargetObject(id, modes, additionalProperties);
         }
     }
 }

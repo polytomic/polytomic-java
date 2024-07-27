@@ -48,9 +48,6 @@ public class QueryRunnerClient {
             httpUrl.addQueryParameter("query", request.getQuery().get());
         }
         Map<String, Object> properties = new HashMap<>();
-        if (request.getV4RunQueryRequestQuery().isPresent()) {
-            properties.put("query", request.getV4RunQueryRequestQuery());
-        }
         RequestBody body;
         try {
             body = RequestBody.create(

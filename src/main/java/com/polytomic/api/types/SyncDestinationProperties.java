@@ -22,6 +22,8 @@ import java.util.Optional;
 public final class SyncDestinationProperties {
     private final Optional<Boolean> doesNotReportOperationCounts;
 
+    private final Optional<Boolean> mappingsNotRequired;
+
     private final Optional<String> newTargetLabel;
 
     private final Optional<Boolean> optionalTargetMappings;
@@ -44,6 +46,7 @@ public final class SyncDestinationProperties {
 
     private SyncDestinationProperties(
             Optional<Boolean> doesNotReportOperationCounts,
+            Optional<Boolean> mappingsNotRequired,
             Optional<String> newTargetLabel,
             Optional<Boolean> optionalTargetMappings,
             Optional<String> primaryMetadataObject,
@@ -55,6 +58,7 @@ public final class SyncDestinationProperties {
             Optional<Boolean> useFieldNamesAsLabels,
             Map<String, Object> additionalProperties) {
         this.doesNotReportOperationCounts = doesNotReportOperationCounts;
+        this.mappingsNotRequired = mappingsNotRequired;
         this.newTargetLabel = newTargetLabel;
         this.optionalTargetMappings = optionalTargetMappings;
         this.primaryMetadataObject = primaryMetadataObject;
@@ -70,6 +74,11 @@ public final class SyncDestinationProperties {
     @JsonProperty("does_not_report_operation_counts")
     public Optional<Boolean> getDoesNotReportOperationCounts() {
         return doesNotReportOperationCounts;
+    }
+
+    @JsonProperty("mappings_not_required")
+    public Optional<Boolean> getMappingsNotRequired() {
+        return mappingsNotRequired;
     }
 
     @JsonProperty("new_target_label")
@@ -130,6 +139,7 @@ public final class SyncDestinationProperties {
 
     private boolean equalTo(SyncDestinationProperties other) {
         return doesNotReportOperationCounts.equals(other.doesNotReportOperationCounts)
+                && mappingsNotRequired.equals(other.mappingsNotRequired)
                 && newTargetLabel.equals(other.newTargetLabel)
                 && optionalTargetMappings.equals(other.optionalTargetMappings)
                 && primaryMetadataObject.equals(other.primaryMetadataObject)
@@ -145,6 +155,7 @@ public final class SyncDestinationProperties {
     public int hashCode() {
         return Objects.hash(
                 this.doesNotReportOperationCounts,
+                this.mappingsNotRequired,
                 this.newTargetLabel,
                 this.optionalTargetMappings,
                 this.primaryMetadataObject,
@@ -168,6 +179,8 @@ public final class SyncDestinationProperties {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
         private Optional<Boolean> doesNotReportOperationCounts = Optional.empty();
+
+        private Optional<Boolean> mappingsNotRequired = Optional.empty();
 
         private Optional<String> newTargetLabel = Optional.empty();
 
@@ -194,6 +207,7 @@ public final class SyncDestinationProperties {
 
         public Builder from(SyncDestinationProperties other) {
             doesNotReportOperationCounts(other.getDoesNotReportOperationCounts());
+            mappingsNotRequired(other.getMappingsNotRequired());
             newTargetLabel(other.getNewTargetLabel());
             optionalTargetMappings(other.getOptionalTargetMappings());
             primaryMetadataObject(other.getPrimaryMetadataObject());
@@ -214,6 +228,17 @@ public final class SyncDestinationProperties {
 
         public Builder doesNotReportOperationCounts(Boolean doesNotReportOperationCounts) {
             this.doesNotReportOperationCounts = Optional.of(doesNotReportOperationCounts);
+            return this;
+        }
+
+        @JsonSetter(value = "mappings_not_required", nulls = Nulls.SKIP)
+        public Builder mappingsNotRequired(Optional<Boolean> mappingsNotRequired) {
+            this.mappingsNotRequired = mappingsNotRequired;
+            return this;
+        }
+
+        public Builder mappingsNotRequired(Boolean mappingsNotRequired) {
+            this.mappingsNotRequired = Optional.of(mappingsNotRequired);
             return this;
         }
 
@@ -319,6 +344,7 @@ public final class SyncDestinationProperties {
         public SyncDestinationProperties build() {
             return new SyncDestinationProperties(
                     doesNotReportOperationCounts,
+                    mappingsNotRequired,
                     newTargetLabel,
                     optionalTargetMappings,
                     primaryMetadataObject,

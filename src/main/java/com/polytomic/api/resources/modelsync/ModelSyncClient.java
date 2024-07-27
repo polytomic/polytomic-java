@@ -27,6 +27,7 @@ import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
 import com.polytomic.api.types.StartModelSyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
 import com.polytomic.api.types.TargetResponseEnvelope;
+import com.polytomic.api.types.V4TargetObjectsResponseEnvelope;
 import java.io.IOException;
 import java.util.function.Supplier;
 import okhttp3.Headers;
@@ -202,6 +203,43 @@ public class ModelSyncClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), TargetResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public V4TargetObjectsResponseEnvelope getTargetObjects(String id) {
+        return getTargetObjects(id, null);
+    }
+
+    public V4TargetObjectsResponseEnvelope getTargetObjects(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("modelsync/targetobjects")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        responseBody.string(), V4TargetObjectsResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
