@@ -35,6 +35,8 @@ public final class BulkSyncSchemaExecution {
 
     private final Optional<String> statusMessage;
 
+    private final Optional<Integer> warningCount;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncSchemaExecution(
@@ -45,6 +47,7 @@ public final class BulkSyncSchemaExecution {
             Optional<OffsetDateTime> startedAt,
             Optional<BulkSchemaExecutionStatus> status,
             Optional<String> statusMessage,
+            Optional<Integer> warningCount,
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
         this.errorCount = errorCount;
@@ -53,6 +56,7 @@ public final class BulkSyncSchemaExecution {
         this.startedAt = startedAt;
         this.status = status;
         this.statusMessage = statusMessage;
+        this.warningCount = warningCount;
         this.additionalProperties = additionalProperties;
     }
 
@@ -91,6 +95,11 @@ public final class BulkSyncSchemaExecution {
         return statusMessage;
     }
 
+    @JsonProperty("warning_count")
+    public Optional<Integer> getWarningCount() {
+        return warningCount;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -109,7 +118,8 @@ public final class BulkSyncSchemaExecution {
                 && schema.equals(other.schema)
                 && startedAt.equals(other.startedAt)
                 && status.equals(other.status)
-                && statusMessage.equals(other.statusMessage);
+                && statusMessage.equals(other.statusMessage)
+                && warningCount.equals(other.warningCount);
     }
 
     @java.lang.Override
@@ -121,7 +131,8 @@ public final class BulkSyncSchemaExecution {
                 this.schema,
                 this.startedAt,
                 this.status,
-                this.statusMessage);
+                this.statusMessage,
+                this.warningCount);
     }
 
     @java.lang.Override
@@ -149,6 +160,8 @@ public final class BulkSyncSchemaExecution {
 
         private Optional<String> statusMessage = Optional.empty();
 
+        private Optional<Integer> warningCount = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -162,6 +175,7 @@ public final class BulkSyncSchemaExecution {
             startedAt(other.getStartedAt());
             status(other.getStatus());
             statusMessage(other.getStatusMessage());
+            warningCount(other.getWarningCount());
             return this;
         }
 
@@ -242,6 +256,17 @@ public final class BulkSyncSchemaExecution {
             return this;
         }
 
+        @JsonSetter(value = "warning_count", nulls = Nulls.SKIP)
+        public Builder warningCount(Optional<Integer> warningCount) {
+            this.warningCount = warningCount;
+            return this;
+        }
+
+        public Builder warningCount(Integer warningCount) {
+            this.warningCount = Optional.of(warningCount);
+            return this;
+        }
+
         public BulkSyncSchemaExecution build() {
             return new BulkSyncSchemaExecution(
                     completedAt,
@@ -251,6 +276,7 @@ public final class BulkSyncSchemaExecution {
                     startedAt,
                     status,
                     statusMessage,
+                    warningCount,
                     additionalProperties);
         }
     }

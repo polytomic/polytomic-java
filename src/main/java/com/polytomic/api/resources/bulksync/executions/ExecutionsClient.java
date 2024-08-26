@@ -7,15 +7,19 @@ import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsExportLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListStatusRequest;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
 import com.polytomic.api.types.ListBulkSyncExecutionStatusEnvelope;
 import com.polytomic.api.types.ListBulkSyncExecutionsEnvelope;
+import com.polytomic.api.types.V4BulkSyncExecutionLogsEnvelope;
+import com.polytomic.api.types.V4ExportSyncLogsEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -137,6 +141,91 @@ public class ExecutionsClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncExecutionEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId) {
+        return getLogs(syncId, executionId, null);
+    }
+
+    public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/bulk/syncs")
+                .addPathSegment(syncId)
+                .addPathSegments("executions")
+                .addPathSegment(executionId)
+                .addPathSegments("logs")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        responseBody.string(), V4BulkSyncExecutionLogsEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId) {
+        return exportLogs(
+                syncId, executionId, ExecutionsExportLogsRequest.builder().build());
+    }
+
+    public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId, ExecutionsExportLogsRequest request) {
+        return exportLogs(syncId, executionId, request, null);
+    }
+
+    public V4ExportSyncLogsEnvelope exportLogs(
+            String syncId, String executionId, ExecutionsExportLogsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/bulk/syncs")
+                .addPathSegment(syncId)
+                .addPathSegments("executions")
+                .addPathSegment(executionId)
+                .addPathSegments("logs/export");
+        if (request.getNotify().isPresent()) {
+            httpUrl.addQueryParameter("notify", request.getNotify().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), V4ExportSyncLogsEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

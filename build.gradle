@@ -46,7 +46,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.polytomic'
             artifactId = 'polytomic-java'
-            version = '1.9.0'
+            version = '1.9.1'
             from components.java
             pom {
                 licenses {

@@ -12,6 +12,7 @@ import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncListRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncRemoveRequest;
 import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.StartBulkSyncRequest;
@@ -49,20 +50,26 @@ public class BulkSyncClient {
     }
 
     public BulkSyncListEnvelope list() {
-        return list(null);
+        return list(BulkSyncListRequest.builder().build());
     }
 
-    public BulkSyncListEnvelope list(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public BulkSyncListEnvelope list(BulkSyncListRequest request) {
+        return list(request, null);
+    }
+
+    public BulkSyncListEnvelope list(BulkSyncListRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegments("api/bulk/syncs");
+        if (request.getActive().isPresent()) {
+            httpUrl.addQueryParameter("active", request.getActive().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

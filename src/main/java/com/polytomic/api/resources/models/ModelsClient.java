@@ -10,11 +10,13 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.models.requests.GetEnrichmentInputFieldsRequest;
 import com.polytomic.api.resources.models.requests.ModelsCreateRequest;
+import com.polytomic.api.resources.models.requests.ModelsGetEnrichmentSourceRequest;
 import com.polytomic.api.resources.models.requests.ModelsGetRequest;
 import com.polytomic.api.resources.models.requests.ModelsPreviewRequest;
 import com.polytomic.api.resources.models.requests.ModelsRemoveRequest;
 import com.polytomic.api.resources.models.requests.ModelsSampleRequest;
 import com.polytomic.api.resources.models.requests.UpdateModelRequest;
+import com.polytomic.api.types.GetModelSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ModelListResponseEnvelope;
 import com.polytomic.api.types.ModelResponseEnvelope;
 import com.polytomic.api.types.ModelSampleResponseEnvelope;
@@ -35,6 +37,50 @@ public class ModelsClient {
 
     public ModelsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public GetModelSyncSourceMetaEnvelope getEnrichmentSource(String id) {
+        return getEnrichmentSource(
+                id, ModelsGetEnrichmentSourceRequest.builder().build());
+    }
+
+    public GetModelSyncSourceMetaEnvelope getEnrichmentSource(String id, ModelsGetEnrichmentSourceRequest request) {
+        return getEnrichmentSource(id, request, null);
+    }
+
+    public GetModelSyncSourceMetaEnvelope getEnrichmentSource(
+            String id, ModelsGetEnrichmentSourceRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("modelsync/enrichment-source");
+        if (request.getParams().isPresent()) {
+            httpUrl.addQueryParameter("params", request.getParams().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetModelSyncSourceMetaEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

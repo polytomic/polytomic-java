@@ -29,7 +29,9 @@ public final class SchemaField {
 
     private final Optional<String> remoteType;
 
-    private final Optional<String> type;
+    private final Optional<UtilFieldType> type;
+
+    private final Optional<Object> typeSpec;
 
     private final Optional<List<PickValue>> values;
 
@@ -40,7 +42,8 @@ public final class SchemaField {
             Optional<String> id,
             Optional<String> name,
             Optional<String> remoteType,
-            Optional<String> type,
+            Optional<UtilFieldType> type,
+            Optional<Object> typeSpec,
             Optional<List<PickValue>> values,
             Map<String, Object> additionalProperties) {
         this.association = association;
@@ -48,6 +51,7 @@ public final class SchemaField {
         this.name = name;
         this.remoteType = remoteType;
         this.type = type;
+        this.typeSpec = typeSpec;
         this.values = values;
         this.additionalProperties = additionalProperties;
     }
@@ -67,14 +71,22 @@ public final class SchemaField {
         return name;
     }
 
+    /**
+     * @return The type of the field from the remote system.
+     */
     @JsonProperty("remote_type")
     public Optional<String> getRemoteType() {
         return remoteType;
     }
 
     @JsonProperty("type")
-    public Optional<String> getType() {
+    public Optional<UtilFieldType> getType() {
         return type;
+    }
+
+    @JsonProperty("type_spec")
+    public Optional<Object> getTypeSpec() {
+        return typeSpec;
     }
 
     @JsonProperty("values")
@@ -99,12 +111,14 @@ public final class SchemaField {
                 && name.equals(other.name)
                 && remoteType.equals(other.remoteType)
                 && type.equals(other.type)
+                && typeSpec.equals(other.typeSpec)
                 && values.equals(other.values);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.association, this.id, this.name, this.remoteType, this.type, this.values);
+        return Objects.hash(
+                this.association, this.id, this.name, this.remoteType, this.type, this.typeSpec, this.values);
     }
 
     @java.lang.Override
@@ -126,7 +140,9 @@ public final class SchemaField {
 
         private Optional<String> remoteType = Optional.empty();
 
-        private Optional<String> type = Optional.empty();
+        private Optional<UtilFieldType> type = Optional.empty();
+
+        private Optional<Object> typeSpec = Optional.empty();
 
         private Optional<List<PickValue>> values = Optional.empty();
 
@@ -141,6 +157,7 @@ public final class SchemaField {
             name(other.getName());
             remoteType(other.getRemoteType());
             type(other.getType());
+            typeSpec(other.getTypeSpec());
             values(other.getValues());
             return this;
         }
@@ -190,13 +207,24 @@ public final class SchemaField {
         }
 
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public Builder type(Optional<String> type) {
+        public Builder type(Optional<UtilFieldType> type) {
             this.type = type;
             return this;
         }
 
-        public Builder type(String type) {
+        public Builder type(UtilFieldType type) {
             this.type = Optional.of(type);
+            return this;
+        }
+
+        @JsonSetter(value = "type_spec", nulls = Nulls.SKIP)
+        public Builder typeSpec(Optional<Object> typeSpec) {
+            this.typeSpec = typeSpec;
+            return this;
+        }
+
+        public Builder typeSpec(Object typeSpec) {
+            this.typeSpec = Optional.of(typeSpec);
             return this;
         }
 
@@ -212,7 +240,7 @@ public final class SchemaField {
         }
 
         public SchemaField build() {
-            return new SchemaField(association, id, name, remoteType, type, values, additionalProperties);
+            return new SchemaField(association, id, name, remoteType, type, typeSpec, values, additionalProperties);
         }
     }
 }

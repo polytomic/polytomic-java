@@ -14,6 +14,7 @@ import com.polytomic.api.resources.modelsync.requests.CreateModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
 import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncRequest;
 import com.polytomic.api.types.ActivateSyncEnvelope;
@@ -251,20 +252,33 @@ public class ModelSyncClient {
     }
 
     public ListModelSyncResponseEnvelope list() {
-        return list(null);
+        return list(ModelSyncListRequest.builder().build());
     }
 
-    public ListModelSyncResponseEnvelope list(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public ListModelSyncResponseEnvelope list(ModelSyncListRequest request) {
+        return list(request, null);
+    }
+
+    public ListModelSyncResponseEnvelope list(ModelSyncListRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
-                .addPathSegments("api/syncs")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegments("api/syncs");
+        if (request.getActive().isPresent()) {
+            httpUrl.addQueryParameter("active", request.getActive().get().toString());
+        }
+        if (request.getMode().isPresent()) {
+            httpUrl.addQueryParameter("mode", request.getMode().get().toString());
+        }
+        if (request.getTargetConnectionId().isPresent()) {
+            httpUrl.addQueryParameter(
+                    "target_connection_id", request.getTargetConnectionId().get());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

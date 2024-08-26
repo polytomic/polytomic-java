@@ -10,6 +10,7 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.types.ExecutionLogsResponseEnvelope;
 import com.polytomic.api.types.GetExecutionResponseEnvelope;
 import com.polytomic.api.types.ListExecutionResponseEnvelope;
+import com.polytomic.api.types.V2ExecutionLogType;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -98,19 +99,19 @@ public class ExecutionsClient {
         }
     }
 
-    public ExecutionLogsResponseEnvelope getLogUrls(String syncId, String id, String type) {
+    public ExecutionLogsResponseEnvelope getLogUrls(String syncId, String id, V2ExecutionLogType type) {
         return getLogUrls(syncId, id, type, null);
     }
 
     public ExecutionLogsResponseEnvelope getLogUrls(
-            String syncId, String id, String type, RequestOptions requestOptions) {
+            String syncId, String id, V2ExecutionLogType type, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
                 .addPathSegment(syncId)
                 .addPathSegments("executions")
                 .addPathSegment(id)
-                .addPathSegment(type)
+                .addPathSegment(type.toString())
                 .build();
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
@@ -137,18 +138,19 @@ public class ExecutionsClient {
         }
     }
 
-    public void getLogs(String syncId, String id, String type, String filename) {
+    public void getLogs(String syncId, String id, V2ExecutionLogType type, String filename) {
         getLogs(syncId, id, type, filename, null);
     }
 
-    public void getLogs(String syncId, String id, String type, String filename, RequestOptions requestOptions) {
+    public void getLogs(
+            String syncId, String id, V2ExecutionLogType type, String filename, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
                 .addPathSegment(syncId)
                 .addPathSegments("executions")
                 .addPathSegment(id)
-                .addPathSegment(type)
+                .addPathSegment(type.toString())
                 .addPathSegment(filename)
                 .build();
         Request okhttpRequest = new Request.Builder()
