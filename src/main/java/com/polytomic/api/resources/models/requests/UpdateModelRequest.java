@@ -47,6 +47,8 @@ public final class UpdateModelRequest {
 
     private final Optional<List<String>> policies;
 
+    private final Optional<Boolean> refresh;
+
     private final Optional<List<ModelRelation>> relations;
 
     private final Optional<List<String>> trackingColumns;
@@ -65,6 +67,7 @@ public final class UpdateModelRequest {
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
+            Optional<Boolean> refresh,
             Optional<List<ModelRelation>> relations,
             Optional<List<String>> trackingColumns,
             Map<String, Object> additionalProperties) {
@@ -79,6 +82,7 @@ public final class UpdateModelRequest {
         this.name = name;
         this.organizationId = organizationId;
         this.policies = policies;
+        this.refresh = refresh;
         this.relations = relations;
         this.trackingColumns = trackingColumns;
         this.additionalProperties = additionalProperties;
@@ -139,6 +143,11 @@ public final class UpdateModelRequest {
         return policies;
     }
 
+    @JsonProperty("refresh")
+    public Optional<Boolean> getRefresh() {
+        return refresh;
+    }
+
     @JsonProperty("relations")
     public Optional<List<ModelRelation>> getRelations() {
         return relations;
@@ -172,6 +181,7 @@ public final class UpdateModelRequest {
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
+                && refresh.equals(other.refresh)
                 && relations.equals(other.relations)
                 && trackingColumns.equals(other.trackingColumns);
     }
@@ -190,6 +200,7 @@ public final class UpdateModelRequest {
                 this.name,
                 this.organizationId,
                 this.policies,
+                this.refresh,
                 this.relations,
                 this.trackingColumns);
     }
@@ -254,6 +265,10 @@ public final class UpdateModelRequest {
 
         _FinalStage policies(List<String> policies);
 
+        _FinalStage refresh(Optional<Boolean> refresh);
+
+        _FinalStage refresh(Boolean refresh);
+
         _FinalStage relations(Optional<List<ModelRelation>> relations);
 
         _FinalStage relations(List<ModelRelation> relations);
@@ -272,6 +287,8 @@ public final class UpdateModelRequest {
         private Optional<List<String>> trackingColumns = Optional.empty();
 
         private Optional<List<ModelRelation>> relations = Optional.empty();
+
+        private Optional<Boolean> refresh = Optional.empty();
 
         private Optional<List<String>> policies = Optional.empty();
 
@@ -309,6 +326,7 @@ public final class UpdateModelRequest {
             name(other.getName());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
+            refresh(other.getRefresh());
             relations(other.getRelations());
             trackingColumns(other.getTrackingColumns());
             return this;
@@ -351,6 +369,19 @@ public final class UpdateModelRequest {
         @JsonSetter(value = "relations", nulls = Nulls.SKIP)
         public _FinalStage relations(Optional<List<ModelRelation>> relations) {
             this.relations = relations;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage refresh(Boolean refresh) {
+            this.refresh = Optional.of(refresh);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "refresh", nulls = Nulls.SKIP)
+        public _FinalStage refresh(Optional<Boolean> refresh) {
+            this.refresh = refresh;
             return this;
         }
 
@@ -492,6 +523,7 @@ public final class UpdateModelRequest {
                     name,
                     organizationId,
                     policies,
+                    refresh,
                     relations,
                     trackingColumns,
                     additionalProperties);

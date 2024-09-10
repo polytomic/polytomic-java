@@ -340,6 +340,9 @@ public class ModelsClient {
         if (request.getPolicies().isPresent()) {
             properties.put("policies", request.getPolicies());
         }
+        if (request.getRefresh().isPresent()) {
+            properties.put("refresh", request.getRefresh());
+        }
         if (request.getRelations().isPresent()) {
             properties.put("relations", request.getRelations());
         }
