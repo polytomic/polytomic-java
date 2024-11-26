@@ -50,6 +50,10 @@ public enum FilterFunction {
 
     IN_THE_LAST("InTheLast"),
 
+    RELATIVE_ON_OR_BEFORE("RelativeOnOrBefore"),
+
+    RELATIVE_ON_OR_AFTER("RelativeOnOrAfter"),
+
     STRING_LIKE("StringLike"),
 
     STRING_NOT_LIKE("StringNotLike"),

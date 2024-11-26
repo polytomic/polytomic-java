@@ -38,6 +38,8 @@ public final class Schedule {
 
     private final Optional<RunAfter> runAfter;
 
+    private final Optional<Boolean> runAfterSuccessOnly;
+
     private final Map<String, Object> additionalProperties;
 
     private Schedule(
@@ -50,6 +52,7 @@ public final class Schedule {
             Optional<String> minute,
             Optional<String> month,
             Optional<RunAfter> runAfter,
+            Optional<Boolean> runAfterSuccessOnly,
             Map<String, Object> additionalProperties) {
         this.connectionId = connectionId;
         this.dayOfMonth = dayOfMonth;
@@ -60,6 +63,7 @@ public final class Schedule {
         this.minute = minute;
         this.month = month;
         this.runAfter = runAfter;
+        this.runAfterSuccessOnly = runAfterSuccessOnly;
         this.additionalProperties = additionalProperties;
     }
 
@@ -108,6 +112,14 @@ public final class Schedule {
         return runAfter;
     }
 
+    /**
+     * @return If true, the sync will only run if the dependent syncs completed successfully.
+     */
+    @JsonProperty("run_after_success_only")
+    public Optional<Boolean> getRunAfterSuccessOnly() {
+        return runAfterSuccessOnly;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -128,7 +140,8 @@ public final class Schedule {
                 && jobId.equals(other.jobId)
                 && minute.equals(other.minute)
                 && month.equals(other.month)
-                && runAfter.equals(other.runAfter);
+                && runAfter.equals(other.runAfter)
+                && runAfterSuccessOnly.equals(other.runAfterSuccessOnly);
     }
 
     @java.lang.Override
@@ -142,7 +155,8 @@ public final class Schedule {
                 this.jobId,
                 this.minute,
                 this.month,
-                this.runAfter);
+                this.runAfter,
+                this.runAfterSuccessOnly);
     }
 
     @java.lang.Override
@@ -174,6 +188,8 @@ public final class Schedule {
 
         private Optional<RunAfter> runAfter = Optional.empty();
 
+        private Optional<Boolean> runAfterSuccessOnly = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -189,6 +205,7 @@ public final class Schedule {
             minute(other.getMinute());
             month(other.getMonth());
             runAfter(other.getRunAfter());
+            runAfterSuccessOnly(other.getRunAfterSuccessOnly());
             return this;
         }
 
@@ -291,6 +308,17 @@ public final class Schedule {
             return this;
         }
 
+        @JsonSetter(value = "run_after_success_only", nulls = Nulls.SKIP)
+        public Builder runAfterSuccessOnly(Optional<Boolean> runAfterSuccessOnly) {
+            this.runAfterSuccessOnly = runAfterSuccessOnly;
+            return this;
+        }
+
+        public Builder runAfterSuccessOnly(Boolean runAfterSuccessOnly) {
+            this.runAfterSuccessOnly = Optional.of(runAfterSuccessOnly);
+            return this;
+        }
+
         public Schedule build() {
             return new Schedule(
                     connectionId,
@@ -302,6 +330,7 @@ public final class Schedule {
                     minute,
                     month,
                     runAfter,
+                    runAfterSuccessOnly,
                     additionalProperties);
         }
     }

@@ -34,6 +34,8 @@ public final class BulkSyncFailedEvent {
 
     private final Optional<String> syncId;
 
+    private final Optional<String> triggerSource;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncFailedEvent(
@@ -44,6 +46,7 @@ public final class BulkSyncFailedEvent {
             Optional<String> organizationId,
             Optional<String> sourceConnectionId,
             Optional<String> syncId,
+            Optional<String> triggerSource,
             Map<String, Object> additionalProperties) {
         this.destinationConnectionId = destinationConnectionId;
         this.error = error;
@@ -52,6 +55,7 @@ public final class BulkSyncFailedEvent {
         this.organizationId = organizationId;
         this.sourceConnectionId = sourceConnectionId;
         this.syncId = syncId;
+        this.triggerSource = triggerSource;
         this.additionalProperties = additionalProperties;
     }
 
@@ -90,6 +94,11 @@ public final class BulkSyncFailedEvent {
         return syncId;
     }
 
+    @JsonProperty("trigger_source")
+    public Optional<String> getTriggerSource() {
+        return triggerSource;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -108,7 +117,8 @@ public final class BulkSyncFailedEvent {
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && sourceConnectionId.equals(other.sourceConnectionId)
-                && syncId.equals(other.syncId);
+                && syncId.equals(other.syncId)
+                && triggerSource.equals(other.triggerSource);
     }
 
     @java.lang.Override
@@ -120,7 +130,8 @@ public final class BulkSyncFailedEvent {
                 this.name,
                 this.organizationId,
                 this.sourceConnectionId,
-                this.syncId);
+                this.syncId,
+                this.triggerSource);
     }
 
     @java.lang.Override
@@ -148,6 +159,8 @@ public final class BulkSyncFailedEvent {
 
         private Optional<String> syncId = Optional.empty();
 
+        private Optional<String> triggerSource = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -161,6 +174,7 @@ public final class BulkSyncFailedEvent {
             organizationId(other.getOrganizationId());
             sourceConnectionId(other.getSourceConnectionId());
             syncId(other.getSyncId());
+            triggerSource(other.getTriggerSource());
             return this;
         }
 
@@ -241,6 +255,17 @@ public final class BulkSyncFailedEvent {
             return this;
         }
 
+        @JsonSetter(value = "trigger_source", nulls = Nulls.SKIP)
+        public Builder triggerSource(Optional<String> triggerSource) {
+            this.triggerSource = triggerSource;
+            return this;
+        }
+
+        public Builder triggerSource(String triggerSource) {
+            this.triggerSource = Optional.of(triggerSource);
+            return this;
+        }
+
         public BulkSyncFailedEvent build() {
             return new BulkSyncFailedEvent(
                     destinationConnectionId,
@@ -250,6 +275,7 @@ public final class BulkSyncFailedEvent {
                     organizationId,
                     sourceConnectionId,
                     syncId,
+                    triggerSource,
                     additionalProperties);
         }
     }

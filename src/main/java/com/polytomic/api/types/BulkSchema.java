@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,10 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = BulkSchema.Builder.class)
 public final class BulkSchema {
+    private final Optional<OffsetDateTime> dataCutoffTimestamp;
+
+    private final Optional<Boolean> disableDataCutoff;
+
     private final Optional<Boolean> enabled;
 
     private final Optional<List<BulkField>> fields;
@@ -33,23 +38,41 @@ public final class BulkSchema {
 
     private final Optional<String> partitionKey;
 
+    private final Optional<String> trackingField;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSchema(
+            Optional<OffsetDateTime> dataCutoffTimestamp,
+            Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
             Optional<List<BulkField>> fields,
             Optional<List<BulkFilter>> filters,
             Optional<String> id,
             Optional<String> outputName,
             Optional<String> partitionKey,
+            Optional<String> trackingField,
             Map<String, Object> additionalProperties) {
+        this.dataCutoffTimestamp = dataCutoffTimestamp;
+        this.disableDataCutoff = disableDataCutoff;
         this.enabled = enabled;
         this.fields = fields;
         this.filters = filters;
         this.id = id;
         this.outputName = outputName;
         this.partitionKey = partitionKey;
+        this.trackingField = trackingField;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("data_cutoff_timestamp")
+    public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
+    }
+
+    @JsonProperty("disable_data_cutoff")
+    public Optional<Boolean> getDisableDataCutoff() {
+        return disableDataCutoff;
     }
 
     @JsonProperty("enabled")
@@ -82,6 +105,11 @@ public final class BulkSchema {
         return partitionKey;
     }
 
+    @JsonProperty("tracking_field")
+    public Optional<String> getTrackingField() {
+        return trackingField;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -94,17 +122,29 @@ public final class BulkSchema {
     }
 
     private boolean equalTo(BulkSchema other) {
-        return enabled.equals(other.enabled)
+        return dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
+                && disableDataCutoff.equals(other.disableDataCutoff)
+                && enabled.equals(other.enabled)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
                 && id.equals(other.id)
                 && outputName.equals(other.outputName)
-                && partitionKey.equals(other.partitionKey);
+                && partitionKey.equals(other.partitionKey)
+                && trackingField.equals(other.trackingField);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.fields, this.filters, this.id, this.outputName, this.partitionKey);
+        return Objects.hash(
+                this.dataCutoffTimestamp,
+                this.disableDataCutoff,
+                this.enabled,
+                this.fields,
+                this.filters,
+                this.id,
+                this.outputName,
+                this.partitionKey,
+                this.trackingField);
     }
 
     @java.lang.Override
@@ -118,6 +158,10 @@ public final class BulkSchema {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
+
+        private Optional<Boolean> disableDataCutoff = Optional.empty();
+
         private Optional<Boolean> enabled = Optional.empty();
 
         private Optional<List<BulkField>> fields = Optional.empty();
@@ -130,18 +174,45 @@ public final class BulkSchema {
 
         private Optional<String> partitionKey = Optional.empty();
 
+        private Optional<String> trackingField = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
         public Builder from(BulkSchema other) {
+            dataCutoffTimestamp(other.getDataCutoffTimestamp());
+            disableDataCutoff(other.getDisableDataCutoff());
             enabled(other.getEnabled());
             fields(other.getFields());
             filters(other.getFilters());
             id(other.getId());
             outputName(other.getOutputName());
             partitionKey(other.getPartitionKey());
+            trackingField(other.getTrackingField());
+            return this;
+        }
+
+        @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
+        public Builder dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = dataCutoffTimestamp;
+            return this;
+        }
+
+        public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            return this;
+        }
+
+        @JsonSetter(value = "disable_data_cutoff", nulls = Nulls.SKIP)
+        public Builder disableDataCutoff(Optional<Boolean> disableDataCutoff) {
+            this.disableDataCutoff = disableDataCutoff;
+            return this;
+        }
+
+        public Builder disableDataCutoff(Boolean disableDataCutoff) {
+            this.disableDataCutoff = Optional.of(disableDataCutoff);
             return this;
         }
 
@@ -211,8 +282,29 @@ public final class BulkSchema {
             return this;
         }
 
+        @JsonSetter(value = "tracking_field", nulls = Nulls.SKIP)
+        public Builder trackingField(Optional<String> trackingField) {
+            this.trackingField = trackingField;
+            return this;
+        }
+
+        public Builder trackingField(String trackingField) {
+            this.trackingField = Optional.of(trackingField);
+            return this;
+        }
+
         public BulkSchema build() {
-            return new BulkSchema(enabled, fields, filters, id, outputName, partitionKey, additionalProperties);
+            return new BulkSchema(
+                    dataCutoffTimestamp,
+                    disableDataCutoff,
+                    enabled,
+                    fields,
+                    filters,
+                    id,
+                    outputName,
+                    partitionKey,
+                    trackingField,
+                    additionalProperties);
         }
     }
 }

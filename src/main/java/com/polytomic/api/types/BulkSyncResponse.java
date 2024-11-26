@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,17 @@ import java.util.Optional;
 public final class BulkSyncResponse {
     private final Optional<Boolean> active;
 
+    private final Optional<BulkDiscover> automaticallyAddNewFields;
+
+    private final Optional<BulkDiscover> automaticallyAddNewObjects;
+
+    private final Optional<OffsetDateTime> dataCutoffTimestamp;
+
     private final Optional<Map<String, Object>> destinationConfiguration;
 
     private final Optional<String> destinationConnectionId;
+
+    private final Optional<Boolean> disableRecordTimestamps;
 
     private final Optional<Boolean> discover;
 
@@ -49,8 +58,12 @@ public final class BulkSyncResponse {
 
     private BulkSyncResponse(
             Optional<Boolean> active,
+            Optional<BulkDiscover> automaticallyAddNewFields,
+            Optional<BulkDiscover> automaticallyAddNewObjects,
+            Optional<OffsetDateTime> dataCutoffTimestamp,
             Optional<Map<String, Object>> destinationConfiguration,
             Optional<String> destinationConnectionId,
+            Optional<Boolean> disableRecordTimestamps,
             Optional<Boolean> discover,
             Optional<String> id,
             Optional<String> mode,
@@ -62,8 +75,12 @@ public final class BulkSyncResponse {
             Optional<String> sourceConnectionId,
             Map<String, Object> additionalProperties) {
         this.active = active;
+        this.automaticallyAddNewFields = automaticallyAddNewFields;
+        this.automaticallyAddNewObjects = automaticallyAddNewObjects;
+        this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.destinationConfiguration = destinationConfiguration;
         this.destinationConnectionId = destinationConnectionId;
+        this.disableRecordTimestamps = disableRecordTimestamps;
         this.discover = discover;
         this.id = id;
         this.mode = mode;
@@ -81,6 +98,21 @@ public final class BulkSyncResponse {
         return active;
     }
 
+    @JsonProperty("automatically_add_new_fields")
+    public Optional<BulkDiscover> getAutomaticallyAddNewFields() {
+        return automaticallyAddNewFields;
+    }
+
+    @JsonProperty("automatically_add_new_objects")
+    public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
+        return automaticallyAddNewObjects;
+    }
+
+    @JsonProperty("data_cutoff_timestamp")
+    public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
+    }
+
     /**
      * @return Destination-specific bulk sync configuration. e.g. output schema name, s3 file format, etc.
      */
@@ -94,6 +126,14 @@ public final class BulkSyncResponse {
         return destinationConnectionId;
     }
 
+    @JsonProperty("disable_record_timestamps")
+    public Optional<Boolean> getDisableRecordTimestamps() {
+        return disableRecordTimestamps;
+    }
+
+    /**
+     * @return DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead
+     */
     @JsonProperty("discover")
     public Optional<Boolean> getDiscover() {
         return discover;
@@ -161,8 +201,12 @@ public final class BulkSyncResponse {
 
     private boolean equalTo(BulkSyncResponse other) {
         return active.equals(other.active)
+                && automaticallyAddNewFields.equals(other.automaticallyAddNewFields)
+                && automaticallyAddNewObjects.equals(other.automaticallyAddNewObjects)
+                && dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
                 && destinationConfiguration.equals(other.destinationConfiguration)
                 && destinationConnectionId.equals(other.destinationConnectionId)
+                && disableRecordTimestamps.equals(other.disableRecordTimestamps)
                 && discover.equals(other.discover)
                 && id.equals(other.id)
                 && mode.equals(other.mode)
@@ -178,8 +222,12 @@ public final class BulkSyncResponse {
     public int hashCode() {
         return Objects.hash(
                 this.active,
+                this.automaticallyAddNewFields,
+                this.automaticallyAddNewObjects,
+                this.dataCutoffTimestamp,
                 this.destinationConfiguration,
                 this.destinationConnectionId,
+                this.disableRecordTimestamps,
                 this.discover,
                 this.id,
                 this.mode,
@@ -204,9 +252,17 @@ public final class BulkSyncResponse {
     public static final class Builder {
         private Optional<Boolean> active = Optional.empty();
 
+        private Optional<BulkDiscover> automaticallyAddNewFields = Optional.empty();
+
+        private Optional<BulkDiscover> automaticallyAddNewObjects = Optional.empty();
+
+        private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
+
         private Optional<Map<String, Object>> destinationConfiguration = Optional.empty();
 
         private Optional<String> destinationConnectionId = Optional.empty();
+
+        private Optional<Boolean> disableRecordTimestamps = Optional.empty();
 
         private Optional<Boolean> discover = Optional.empty();
 
@@ -233,8 +289,12 @@ public final class BulkSyncResponse {
 
         public Builder from(BulkSyncResponse other) {
             active(other.getActive());
+            automaticallyAddNewFields(other.getAutomaticallyAddNewFields());
+            automaticallyAddNewObjects(other.getAutomaticallyAddNewObjects());
+            dataCutoffTimestamp(other.getDataCutoffTimestamp());
             destinationConfiguration(other.getDestinationConfiguration());
             destinationConnectionId(other.getDestinationConnectionId());
+            disableRecordTimestamps(other.getDisableRecordTimestamps());
             discover(other.getDiscover());
             id(other.getId());
             mode(other.getMode());
@@ -258,6 +318,39 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        @JsonSetter(value = "automatically_add_new_fields", nulls = Nulls.SKIP)
+        public Builder automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields) {
+            this.automaticallyAddNewFields = automaticallyAddNewFields;
+            return this;
+        }
+
+        public Builder automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
+            this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
+            return this;
+        }
+
+        @JsonSetter(value = "automatically_add_new_objects", nulls = Nulls.SKIP)
+        public Builder automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects) {
+            this.automaticallyAddNewObjects = automaticallyAddNewObjects;
+            return this;
+        }
+
+        public Builder automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
+            this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
+            return this;
+        }
+
+        @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
+        public Builder dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = dataCutoffTimestamp;
+            return this;
+        }
+
+        public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            return this;
+        }
+
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
         public Builder destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration) {
             this.destinationConfiguration = destinationConfiguration;
@@ -277,6 +370,17 @@ public final class BulkSyncResponse {
 
         public Builder destinationConnectionId(String destinationConnectionId) {
             this.destinationConnectionId = Optional.of(destinationConnectionId);
+            return this;
+        }
+
+        @JsonSetter(value = "disable_record_timestamps", nulls = Nulls.SKIP)
+        public Builder disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps) {
+            this.disableRecordTimestamps = disableRecordTimestamps;
+            return this;
+        }
+
+        public Builder disableRecordTimestamps(Boolean disableRecordTimestamps) {
+            this.disableRecordTimestamps = Optional.of(disableRecordTimestamps);
             return this;
         }
 
@@ -382,8 +486,12 @@ public final class BulkSyncResponse {
         public BulkSyncResponse build() {
             return new BulkSyncResponse(
                     active,
+                    automaticallyAddNewFields,
+                    automaticallyAddNewObjects,
+                    dataCutoffTimestamp,
                     destinationConfiguration,
                     destinationConnectionId,
+                    disableRecordTimestamps,
                     discover,
                     id,
                     mode,

@@ -11,6 +11,7 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
 import com.polytomic.api.resources.modelsync.requests.CreateModelSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetRequest;
@@ -93,22 +94,29 @@ public class ModelSyncClient {
     }
 
     public ModelFieldResponse getSourceFields(String id) {
-        return getSourceFields(id, null);
+        return getSourceFields(id, ModelSyncGetSourceFieldsRequest.builder().build());
     }
 
-    public ModelFieldResponse getSourceFields(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public ModelFieldResponse getSourceFields(String id, ModelSyncGetSourceFieldsRequest request) {
+        return getSourceFields(id, request, null);
+    }
+
+    public ModelFieldResponse getSourceFields(
+            String id, ModelSyncGetSourceFieldsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
-                .addPathSegments("modelsync/source/fields")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegments("modelsync/source/fields");
+        if (request.getParams().isPresent()) {
+            httpUrl.addQueryParameter("params", request.getParams().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

@@ -20,23 +20,32 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ApiError.Builder.class)
 public final class ApiError {
+    private final Optional<String> key;
+
     private final Optional<String> message;
 
-    private final Optional<Object> metadata;
+    private final Optional<Map<String, Object>> metadata;
 
     private final Optional<Integer> status;
 
     private final Map<String, Object> additionalProperties;
 
     private ApiError(
+            Optional<String> key,
             Optional<String> message,
-            Optional<Object> metadata,
+            Optional<Map<String, Object>> metadata,
             Optional<Integer> status,
             Map<String, Object> additionalProperties) {
+        this.key = key;
         this.message = message;
         this.metadata = metadata;
         this.status = status;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("key")
+    public Optional<String> getKey() {
+        return key;
     }
 
     @JsonProperty("message")
@@ -45,7 +54,7 @@ public final class ApiError {
     }
 
     @JsonProperty("metadata")
-    public Optional<Object> getMetadata() {
+    public Optional<Map<String, Object>> getMetadata() {
         return metadata;
     }
 
@@ -66,12 +75,15 @@ public final class ApiError {
     }
 
     private boolean equalTo(ApiError other) {
-        return message.equals(other.message) && metadata.equals(other.metadata) && status.equals(other.status);
+        return key.equals(other.key)
+                && message.equals(other.message)
+                && metadata.equals(other.metadata)
+                && status.equals(other.status);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.message, this.metadata, this.status);
+        return Objects.hash(this.key, this.message, this.metadata, this.status);
     }
 
     @java.lang.Override
@@ -85,9 +97,11 @@ public final class ApiError {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<String> key = Optional.empty();
+
         private Optional<String> message = Optional.empty();
 
-        private Optional<Object> metadata = Optional.empty();
+        private Optional<Map<String, Object>> metadata = Optional.empty();
 
         private Optional<Integer> status = Optional.empty();
 
@@ -97,9 +111,21 @@ public final class ApiError {
         private Builder() {}
 
         public Builder from(ApiError other) {
+            key(other.getKey());
             message(other.getMessage());
             metadata(other.getMetadata());
             status(other.getStatus());
+            return this;
+        }
+
+        @JsonSetter(value = "key", nulls = Nulls.SKIP)
+        public Builder key(Optional<String> key) {
+            this.key = key;
+            return this;
+        }
+
+        public Builder key(String key) {
+            this.key = Optional.of(key);
             return this;
         }
 
@@ -115,12 +141,12 @@ public final class ApiError {
         }
 
         @JsonSetter(value = "metadata", nulls = Nulls.SKIP)
-        public Builder metadata(Optional<Object> metadata) {
+        public Builder metadata(Optional<Map<String, Object>> metadata) {
             this.metadata = metadata;
             return this;
         }
 
-        public Builder metadata(Object metadata) {
+        public Builder metadata(Map<String, Object> metadata) {
             this.metadata = Optional.of(metadata);
             return this;
         }
@@ -137,7 +163,7 @@ public final class ApiError {
         }
 
         public ApiError build() {
-            return new ApiError(message, metadata, status, additionalProperties);
+            return new ApiError(key, message, metadata, status, additionalProperties);
         }
     }
 }

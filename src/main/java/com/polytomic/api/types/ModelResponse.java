@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,10 @@ public final class ModelResponse {
     private final Optional<Map<String, Object>> configuration;
 
     private final Optional<String> connectionId;
+
+    private final Optional<OffsetDateTime> createdAt;
+
+    private final Optional<CommonOutputActor> createdBy;
 
     private final Optional<Enrichment> enricher;
 
@@ -47,6 +52,10 @@ public final class ModelResponse {
 
     private final Optional<String> type;
 
+    private final Optional<OffsetDateTime> updatedAt;
+
+    private final Optional<CommonOutputActor> updatedBy;
+
     private final Optional<Integer> version;
 
     private final Map<String, Object> additionalProperties;
@@ -54,6 +63,8 @@ public final class ModelResponse {
     private ModelResponse(
             Optional<Map<String, Object>> configuration,
             Optional<String> connectionId,
+            Optional<OffsetDateTime> createdAt,
+            Optional<CommonOutputActor> createdBy,
             Optional<Enrichment> enricher,
             Optional<List<ModelField>> fields,
             Optional<String> id,
@@ -65,10 +76,14 @@ public final class ModelResponse {
             Optional<List<Relation>> relations,
             Optional<List<String>> trackingColumns,
             Optional<String> type,
+            Optional<OffsetDateTime> updatedAt,
+            Optional<CommonOutputActor> updatedBy,
             Optional<Integer> version,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
         this.connectionId = connectionId;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
         this.enricher = enricher;
         this.fields = fields;
         this.id = id;
@@ -80,6 +95,8 @@ public final class ModelResponse {
         this.relations = relations;
         this.trackingColumns = trackingColumns;
         this.type = type;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
         this.version = version;
         this.additionalProperties = additionalProperties;
     }
@@ -92,6 +109,16 @@ public final class ModelResponse {
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
+    }
+
+    @JsonProperty("created_at")
+    public Optional<OffsetDateTime> getCreatedAt() {
+        return createdAt;
+    }
+
+    @JsonProperty("created_by")
+    public Optional<CommonOutputActor> getCreatedBy() {
+        return createdBy;
     }
 
     @JsonProperty("enricher")
@@ -149,6 +176,16 @@ public final class ModelResponse {
         return type;
     }
 
+    @JsonProperty("updated_at")
+    public Optional<OffsetDateTime> getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @JsonProperty("updated_by")
+    public Optional<CommonOutputActor> getUpdatedBy() {
+        return updatedBy;
+    }
+
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
         return version;
@@ -168,6 +205,8 @@ public final class ModelResponse {
     private boolean equalTo(ModelResponse other) {
         return configuration.equals(other.configuration)
                 && connectionId.equals(other.connectionId)
+                && createdAt.equals(other.createdAt)
+                && createdBy.equals(other.createdBy)
                 && enricher.equals(other.enricher)
                 && fields.equals(other.fields)
                 && id.equals(other.id)
@@ -179,6 +218,8 @@ public final class ModelResponse {
                 && relations.equals(other.relations)
                 && trackingColumns.equals(other.trackingColumns)
                 && type.equals(other.type)
+                && updatedAt.equals(other.updatedAt)
+                && updatedBy.equals(other.updatedBy)
                 && version.equals(other.version);
     }
 
@@ -187,6 +228,8 @@ public final class ModelResponse {
         return Objects.hash(
                 this.configuration,
                 this.connectionId,
+                this.createdAt,
+                this.createdBy,
                 this.enricher,
                 this.fields,
                 this.id,
@@ -198,6 +241,8 @@ public final class ModelResponse {
                 this.relations,
                 this.trackingColumns,
                 this.type,
+                this.updatedAt,
+                this.updatedBy,
                 this.version);
     }
 
@@ -215,6 +260,10 @@ public final class ModelResponse {
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
         private Optional<String> connectionId = Optional.empty();
+
+        private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<CommonOutputActor> createdBy = Optional.empty();
 
         private Optional<Enrichment> enricher = Optional.empty();
 
@@ -238,6 +287,10 @@ public final class ModelResponse {
 
         private Optional<String> type = Optional.empty();
 
+        private Optional<OffsetDateTime> updatedAt = Optional.empty();
+
+        private Optional<CommonOutputActor> updatedBy = Optional.empty();
+
         private Optional<Integer> version = Optional.empty();
 
         @JsonAnySetter
@@ -248,6 +301,8 @@ public final class ModelResponse {
         public Builder from(ModelResponse other) {
             configuration(other.getConfiguration());
             connectionId(other.getConnectionId());
+            createdAt(other.getCreatedAt());
+            createdBy(other.getCreatedBy());
             enricher(other.getEnricher());
             fields(other.getFields());
             id(other.getId());
@@ -259,6 +314,8 @@ public final class ModelResponse {
             relations(other.getRelations());
             trackingColumns(other.getTrackingColumns());
             type(other.getType());
+            updatedAt(other.getUpdatedAt());
+            updatedBy(other.getUpdatedBy());
             version(other.getVersion());
             return this;
         }
@@ -282,6 +339,28 @@ public final class ModelResponse {
 
         public Builder connectionId(String connectionId) {
             this.connectionId = Optional.of(connectionId);
+            return this;
+        }
+
+        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
+        public Builder createdAt(Optional<OffsetDateTime> createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = Optional.of(createdAt);
+            return this;
+        }
+
+        @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
+        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+            this.createdBy = createdBy;
+            return this;
+        }
+
+        public Builder createdBy(CommonOutputActor createdBy) {
+            this.createdBy = Optional.of(createdBy);
             return this;
         }
 
@@ -406,6 +485,28 @@ public final class ModelResponse {
             return this;
         }
 
+        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
+        public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Builder updatedAt(OffsetDateTime updatedAt) {
+            this.updatedAt = Optional.of(updatedAt);
+            return this;
+        }
+
+        @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
+        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+            this.updatedBy = updatedBy;
+            return this;
+        }
+
+        public Builder updatedBy(CommonOutputActor updatedBy) {
+            this.updatedBy = Optional.of(updatedBy);
+            return this;
+        }
+
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
             this.version = version;
@@ -421,6 +522,8 @@ public final class ModelResponse {
             return new ModelResponse(
                     configuration,
                     connectionId,
+                    createdAt,
+                    createdBy,
                     enricher,
                     fields,
                     id,
@@ -432,6 +535,8 @@ public final class ModelResponse {
                     relations,
                     trackingColumns,
                     type,
+                    updatedAt,
+                    updatedBy,
                     version,
                     additionalProperties);
         }

@@ -16,6 +16,7 @@ import com.polytomic.api.resources.bulksync.types.V2UpdateBulkSyncRequestSchemas
 import com.polytomic.api.types.BulkDiscover;
 import com.polytomic.api.types.BulkSchedule;
 import com.polytomic.api.types.SyncMode;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,8 @@ public final class UpdateBulkSyncRequest {
     private final Optional<BulkDiscover> automaticallyAddNewFields;
 
     private final Optional<BulkDiscover> automaticallyAddNewObjects;
+
+    private final Optional<OffsetDateTime> dataCutoffTimestamp;
 
     private final Optional<Map<String, Object>> destinationConfiguration;
 
@@ -61,6 +64,7 @@ public final class UpdateBulkSyncRequest {
             Optional<Boolean> active,
             Optional<BulkDiscover> automaticallyAddNewFields,
             Optional<BulkDiscover> automaticallyAddNewObjects,
+            Optional<OffsetDateTime> dataCutoffTimestamp,
             Optional<Map<String, Object>> destinationConfiguration,
             String destinationConnectionId,
             Optional<Boolean> disableRecordTimestamps,
@@ -77,6 +81,7 @@ public final class UpdateBulkSyncRequest {
         this.active = active;
         this.automaticallyAddNewFields = automaticallyAddNewFields;
         this.automaticallyAddNewObjects = automaticallyAddNewObjects;
+        this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.destinationConfiguration = destinationConfiguration;
         this.destinationConnectionId = destinationConnectionId;
         this.disableRecordTimestamps = disableRecordTimestamps;
@@ -105,6 +110,11 @@ public final class UpdateBulkSyncRequest {
     @JsonProperty("automatically_add_new_objects")
     public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
         return automaticallyAddNewObjects;
+    }
+
+    @JsonProperty("data_cutoff_timestamp")
+    public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
     }
 
     @JsonProperty("destination_configuration")
@@ -188,6 +198,7 @@ public final class UpdateBulkSyncRequest {
         return active.equals(other.active)
                 && automaticallyAddNewFields.equals(other.automaticallyAddNewFields)
                 && automaticallyAddNewObjects.equals(other.automaticallyAddNewObjects)
+                && dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
                 && destinationConfiguration.equals(other.destinationConfiguration)
                 && destinationConnectionId.equals(other.destinationConnectionId)
                 && disableRecordTimestamps.equals(other.disableRecordTimestamps)
@@ -208,6 +219,7 @@ public final class UpdateBulkSyncRequest {
                 this.active,
                 this.automaticallyAddNewFields,
                 this.automaticallyAddNewObjects,
+                this.dataCutoffTimestamp,
                 this.destinationConfiguration,
                 this.destinationConnectionId,
                 this.disableRecordTimestamps,
@@ -263,6 +275,10 @@ public final class UpdateBulkSyncRequest {
         _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects);
 
         _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
+
+        _FinalStage dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp);
+
+        _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp);
 
         _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration);
 
@@ -324,6 +340,8 @@ public final class UpdateBulkSyncRequest {
 
         private Optional<Map<String, Object>> destinationConfiguration = Optional.empty();
 
+        private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
+
         private Optional<BulkDiscover> automaticallyAddNewObjects = Optional.empty();
 
         private Optional<BulkDiscover> automaticallyAddNewFields = Optional.empty();
@@ -340,6 +358,7 @@ public final class UpdateBulkSyncRequest {
             active(other.getActive());
             automaticallyAddNewFields(other.getAutomaticallyAddNewFields());
             automaticallyAddNewObjects(other.getAutomaticallyAddNewObjects());
+            dataCutoffTimestamp(other.getDataCutoffTimestamp());
             destinationConfiguration(other.getDestinationConfiguration());
             destinationConnectionId(other.getDestinationConnectionId());
             disableRecordTimestamps(other.getDisableRecordTimestamps());
@@ -496,6 +515,19 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
+        public _FinalStage dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = dataCutoffTimestamp;
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
             this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
             return this;
@@ -540,6 +572,7 @@ public final class UpdateBulkSyncRequest {
                     active,
                     automaticallyAddNewFields,
                     automaticallyAddNewObjects,
+                    dataCutoffTimestamp,
                     destinationConfiguration,
                     destinationConnectionId,
                     disableRecordTimestamps,

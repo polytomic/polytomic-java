@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,10 @@ import java.util.Optional;
 @JsonDeserialize(builder = ModelSyncResponse.Builder.class)
 public final class ModelSyncResponse {
     private final Optional<Boolean> active;
+
+    private final Optional<OffsetDateTime> createdAt;
+
+    private final Optional<CommonOutputActor> createdBy;
 
     private final Optional<List<ModelSyncField>> fields;
 
@@ -51,10 +56,16 @@ public final class ModelSyncResponse {
 
     private final Optional<Target> target;
 
+    private final Optional<OffsetDateTime> updatedAt;
+
+    private final Optional<CommonOutputActor> updatedBy;
+
     private final Map<String, Object> additionalProperties;
 
     private ModelSyncResponse(
             Optional<Boolean> active,
+            Optional<OffsetDateTime> createdAt,
+            Optional<CommonOutputActor> createdBy,
             Optional<List<ModelSyncField>> fields,
             Optional<String> filterLogic,
             Optional<List<Filter>> filters,
@@ -69,8 +80,12 @@ public final class ModelSyncResponse {
             Optional<Schedule> schedule,
             Optional<Boolean> syncAllRecords,
             Optional<Target> target,
+            Optional<OffsetDateTime> updatedAt,
+            Optional<CommonOutputActor> updatedBy,
             Map<String, Object> additionalProperties) {
         this.active = active;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
         this.fields = fields;
         this.filterLogic = filterLogic;
         this.filters = filters;
@@ -85,12 +100,24 @@ public final class ModelSyncResponse {
         this.schedule = schedule;
         this.syncAllRecords = syncAllRecords;
         this.target = target;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
+    }
+
+    @JsonProperty("created_at")
+    public Optional<OffsetDateTime> getCreatedAt() {
+        return createdAt;
+    }
+
+    @JsonProperty("created_by")
+    public Optional<CommonOutputActor> getCreatedBy() {
+        return createdBy;
     }
 
     @JsonProperty("fields")
@@ -163,6 +190,16 @@ public final class ModelSyncResponse {
         return target;
     }
 
+    @JsonProperty("updated_at")
+    public Optional<OffsetDateTime> getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @JsonProperty("updated_by")
+    public Optional<CommonOutputActor> getUpdatedBy() {
+        return updatedBy;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -176,6 +213,8 @@ public final class ModelSyncResponse {
 
     private boolean equalTo(ModelSyncResponse other) {
         return active.equals(other.active)
+                && createdAt.equals(other.createdAt)
+                && createdBy.equals(other.createdBy)
                 && fields.equals(other.fields)
                 && filterLogic.equals(other.filterLogic)
                 && filters.equals(other.filters)
@@ -189,13 +228,17 @@ public final class ModelSyncResponse {
                 && policies.equals(other.policies)
                 && schedule.equals(other.schedule)
                 && syncAllRecords.equals(other.syncAllRecords)
-                && target.equals(other.target);
+                && target.equals(other.target)
+                && updatedAt.equals(other.updatedAt)
+                && updatedBy.equals(other.updatedBy);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
                 this.active,
+                this.createdAt,
+                this.createdBy,
                 this.fields,
                 this.filterLogic,
                 this.filters,
@@ -209,7 +252,9 @@ public final class ModelSyncResponse {
                 this.policies,
                 this.schedule,
                 this.syncAllRecords,
-                this.target);
+                this.target,
+                this.updatedAt,
+                this.updatedBy);
     }
 
     @java.lang.Override
@@ -224,6 +269,10 @@ public final class ModelSyncResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
         private Optional<Boolean> active = Optional.empty();
+
+        private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<CommonOutputActor> createdBy = Optional.empty();
 
         private Optional<List<ModelSyncField>> fields = Optional.empty();
 
@@ -253,6 +302,10 @@ public final class ModelSyncResponse {
 
         private Optional<Target> target = Optional.empty();
 
+        private Optional<OffsetDateTime> updatedAt = Optional.empty();
+
+        private Optional<CommonOutputActor> updatedBy = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -260,6 +313,8 @@ public final class ModelSyncResponse {
 
         public Builder from(ModelSyncResponse other) {
             active(other.getActive());
+            createdAt(other.getCreatedAt());
+            createdBy(other.getCreatedBy());
             fields(other.getFields());
             filterLogic(other.getFilterLogic());
             filters(other.getFilters());
@@ -274,6 +329,8 @@ public final class ModelSyncResponse {
             schedule(other.getSchedule());
             syncAllRecords(other.getSyncAllRecords());
             target(other.getTarget());
+            updatedAt(other.getUpdatedAt());
+            updatedBy(other.getUpdatedBy());
             return this;
         }
 
@@ -285,6 +342,28 @@ public final class ModelSyncResponse {
 
         public Builder active(Boolean active) {
             this.active = Optional.of(active);
+            return this;
+        }
+
+        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
+        public Builder createdAt(Optional<OffsetDateTime> createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = Optional.of(createdAt);
+            return this;
+        }
+
+        @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
+        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+            this.createdBy = createdBy;
+            return this;
+        }
+
+        public Builder createdBy(CommonOutputActor createdBy) {
+            this.createdBy = Optional.of(createdBy);
             return this;
         }
 
@@ -442,9 +521,33 @@ public final class ModelSyncResponse {
             return this;
         }
 
+        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
+        public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Builder updatedAt(OffsetDateTime updatedAt) {
+            this.updatedAt = Optional.of(updatedAt);
+            return this;
+        }
+
+        @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
+        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+            this.updatedBy = updatedBy;
+            return this;
+        }
+
+        public Builder updatedBy(CommonOutputActor updatedBy) {
+            this.updatedBy = Optional.of(updatedBy);
+            return this;
+        }
+
         public ModelSyncResponse build() {
             return new ModelSyncResponse(
                     active,
+                    createdAt,
+                    createdBy,
                     fields,
                     filterLogic,
                     filters,
@@ -459,6 +562,8 @@ public final class ModelSyncResponse {
                     schedule,
                     syncAllRecords,
                     target,
+                    updatedAt,
+                    updatedBy,
                     additionalProperties);
         }
     }

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.BulkField;
 import com.polytomic.api.types.BulkFilter;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,10 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = UpdateBulkSchema.Builder.class)
 public final class UpdateBulkSchema {
+    private final Optional<OffsetDateTime> dataCutoffTimestamp;
+
+    private final Optional<Boolean> disableDataCutoff;
+
     private final Optional<Boolean> enabled;
 
     private final Optional<List<BulkField>> fields;
@@ -34,16 +39,30 @@ public final class UpdateBulkSchema {
     private final Map<String, Object> additionalProperties;
 
     private UpdateBulkSchema(
+            Optional<OffsetDateTime> dataCutoffTimestamp,
+            Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
             Optional<List<BulkField>> fields,
             Optional<List<BulkFilter>> filters,
             Optional<String> partitionKey,
             Map<String, Object> additionalProperties) {
+        this.dataCutoffTimestamp = dataCutoffTimestamp;
+        this.disableDataCutoff = disableDataCutoff;
         this.enabled = enabled;
         this.fields = fields;
         this.filters = filters;
         this.partitionKey = partitionKey;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("data_cutoff_timestamp")
+    public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
+    }
+
+    @JsonProperty("disable_data_cutoff")
+    public Optional<Boolean> getDisableDataCutoff() {
+        return disableDataCutoff;
     }
 
     @JsonProperty("enabled")
@@ -78,7 +97,9 @@ public final class UpdateBulkSchema {
     }
 
     private boolean equalTo(UpdateBulkSchema other) {
-        return enabled.equals(other.enabled)
+        return dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
+                && disableDataCutoff.equals(other.disableDataCutoff)
+                && enabled.equals(other.enabled)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
                 && partitionKey.equals(other.partitionKey);
@@ -86,7 +107,13 @@ public final class UpdateBulkSchema {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.fields, this.filters, this.partitionKey);
+        return Objects.hash(
+                this.dataCutoffTimestamp,
+                this.disableDataCutoff,
+                this.enabled,
+                this.fields,
+                this.filters,
+                this.partitionKey);
     }
 
     @java.lang.Override
@@ -100,6 +127,10 @@ public final class UpdateBulkSchema {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
+
+        private Optional<Boolean> disableDataCutoff = Optional.empty();
+
         private Optional<Boolean> enabled = Optional.empty();
 
         private Optional<List<BulkField>> fields = Optional.empty();
@@ -114,10 +145,34 @@ public final class UpdateBulkSchema {
         private Builder() {}
 
         public Builder from(UpdateBulkSchema other) {
+            dataCutoffTimestamp(other.getDataCutoffTimestamp());
+            disableDataCutoff(other.getDisableDataCutoff());
             enabled(other.getEnabled());
             fields(other.getFields());
             filters(other.getFilters());
             partitionKey(other.getPartitionKey());
+            return this;
+        }
+
+        @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
+        public Builder dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = dataCutoffTimestamp;
+            return this;
+        }
+
+        public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            return this;
+        }
+
+        @JsonSetter(value = "disable_data_cutoff", nulls = Nulls.SKIP)
+        public Builder disableDataCutoff(Optional<Boolean> disableDataCutoff) {
+            this.disableDataCutoff = disableDataCutoff;
+            return this;
+        }
+
+        public Builder disableDataCutoff(Boolean disableDataCutoff) {
+            this.disableDataCutoff = Optional.of(disableDataCutoff);
             return this;
         }
 
@@ -166,7 +221,14 @@ public final class UpdateBulkSchema {
         }
 
         public UpdateBulkSchema build() {
-            return new UpdateBulkSchema(enabled, fields, filters, partitionKey, additionalProperties);
+            return new UpdateBulkSchema(
+                    dataCutoffTimestamp,
+                    disableDataCutoff,
+                    enabled,
+                    fields,
+                    filters,
+                    partitionKey,
+                    additionalProperties);
         }
     }
 }

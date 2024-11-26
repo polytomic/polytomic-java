@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,10 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = SchemaConfiguration.Builder.class)
 public final class SchemaConfiguration {
+    private final Optional<OffsetDateTime> dataCutoffTimestamp;
+
+    private final Optional<Boolean> disableDataCutoff;
+
     private final Optional<Boolean> enabled;
 
     private final Optional<List<V2SchemaConfigurationFieldsItem>> fields;
@@ -36,6 +41,8 @@ public final class SchemaConfiguration {
     private final Map<String, Object> additionalProperties;
 
     private SchemaConfiguration(
+            Optional<OffsetDateTime> dataCutoffTimestamp,
+            Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
             Optional<List<V2SchemaConfigurationFieldsItem>> fields,
             Optional<List<BulkFilter>> filters,
@@ -43,6 +50,8 @@ public final class SchemaConfiguration {
             Optional<String> partitionKey,
             Optional<String> trackingField,
             Map<String, Object> additionalProperties) {
+        this.dataCutoffTimestamp = dataCutoffTimestamp;
+        this.disableDataCutoff = disableDataCutoff;
         this.enabled = enabled;
         this.fields = fields;
         this.filters = filters;
@@ -50,6 +59,19 @@ public final class SchemaConfiguration {
         this.partitionKey = partitionKey;
         this.trackingField = trackingField;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("data_cutoff_timestamp")
+    public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
+    }
+
+    /**
+     * @return Whether data cutoff is disabled for this schema.
+     */
+    @JsonProperty("disable_data_cutoff")
+    public Optional<Boolean> getDisableDataCutoff() {
+        return disableDataCutoff;
     }
 
     /**
@@ -75,12 +97,12 @@ public final class SchemaConfiguration {
         return id;
     }
 
-    @JsonProperty("partitionKey")
+    @JsonProperty("partition_key")
     public Optional<String> getPartitionKey() {
         return partitionKey;
     }
 
-    @JsonProperty("trackingField")
+    @JsonProperty("tracking_field")
     public Optional<String> getTrackingField() {
         return trackingField;
     }
@@ -97,7 +119,9 @@ public final class SchemaConfiguration {
     }
 
     private boolean equalTo(SchemaConfiguration other) {
-        return enabled.equals(other.enabled)
+        return dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
+                && disableDataCutoff.equals(other.disableDataCutoff)
+                && enabled.equals(other.enabled)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
                 && id.equals(other.id)
@@ -107,7 +131,15 @@ public final class SchemaConfiguration {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.fields, this.filters, this.id, this.partitionKey, this.trackingField);
+        return Objects.hash(
+                this.dataCutoffTimestamp,
+                this.disableDataCutoff,
+                this.enabled,
+                this.fields,
+                this.filters,
+                this.id,
+                this.partitionKey,
+                this.trackingField);
     }
 
     @java.lang.Override
@@ -121,6 +153,10 @@ public final class SchemaConfiguration {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
+
+        private Optional<Boolean> disableDataCutoff = Optional.empty();
+
         private Optional<Boolean> enabled = Optional.empty();
 
         private Optional<List<V2SchemaConfigurationFieldsItem>> fields = Optional.empty();
@@ -139,12 +175,36 @@ public final class SchemaConfiguration {
         private Builder() {}
 
         public Builder from(SchemaConfiguration other) {
+            dataCutoffTimestamp(other.getDataCutoffTimestamp());
+            disableDataCutoff(other.getDisableDataCutoff());
             enabled(other.getEnabled());
             fields(other.getFields());
             filters(other.getFilters());
             id(other.getId());
             partitionKey(other.getPartitionKey());
             trackingField(other.getTrackingField());
+            return this;
+        }
+
+        @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
+        public Builder dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = dataCutoffTimestamp;
+            return this;
+        }
+
+        public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
+            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            return this;
+        }
+
+        @JsonSetter(value = "disable_data_cutoff", nulls = Nulls.SKIP)
+        public Builder disableDataCutoff(Optional<Boolean> disableDataCutoff) {
+            this.disableDataCutoff = disableDataCutoff;
+            return this;
+        }
+
+        public Builder disableDataCutoff(Boolean disableDataCutoff) {
+            this.disableDataCutoff = Optional.of(disableDataCutoff);
             return this;
         }
 
@@ -192,7 +252,7 @@ public final class SchemaConfiguration {
             return this;
         }
 
-        @JsonSetter(value = "partitionKey", nulls = Nulls.SKIP)
+        @JsonSetter(value = "partition_key", nulls = Nulls.SKIP)
         public Builder partitionKey(Optional<String> partitionKey) {
             this.partitionKey = partitionKey;
             return this;
@@ -203,7 +263,7 @@ public final class SchemaConfiguration {
             return this;
         }
 
-        @JsonSetter(value = "trackingField", nulls = Nulls.SKIP)
+        @JsonSetter(value = "tracking_field", nulls = Nulls.SKIP)
         public Builder trackingField(Optional<String> trackingField) {
             this.trackingField = trackingField;
             return this;
@@ -216,7 +276,15 @@ public final class SchemaConfiguration {
 
         public SchemaConfiguration build() {
             return new SchemaConfiguration(
-                    enabled, fields, filters, id, partitionKey, trackingField, additionalProperties);
+                    dataCutoffTimestamp,
+                    disableDataCutoff,
+                    enabled,
+                    fields,
+                    filters,
+                    id,
+                    partitionKey,
+                    trackingField,
+                    additionalProperties);
         }
     }
 }
