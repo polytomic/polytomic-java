@@ -24,30 +24,30 @@ public final class BulkSyncRunningEvent {
 
     private final Optional<String> executionId;
 
-    private final Optional<String> name;
-
     private final Optional<String> organizationId;
 
     private final Optional<String> sourceConnectionId;
 
     private final Optional<String> syncId;
 
+    private final Optional<String> syncName;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncRunningEvent(
             Optional<String> destinationConnectionId,
             Optional<String> executionId,
-            Optional<String> name,
             Optional<String> organizationId,
             Optional<String> sourceConnectionId,
             Optional<String> syncId,
+            Optional<String> syncName,
             Map<String, Object> additionalProperties) {
         this.destinationConnectionId = destinationConnectionId;
         this.executionId = executionId;
-        this.name = name;
         this.organizationId = organizationId;
         this.sourceConnectionId = sourceConnectionId;
         this.syncId = syncId;
+        this.syncName = syncName;
         this.additionalProperties = additionalProperties;
     }
 
@@ -59,11 +59,6 @@ public final class BulkSyncRunningEvent {
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
         return executionId;
-    }
-
-    @JsonProperty("name")
-    public Optional<String> getName() {
-        return name;
     }
 
     @JsonProperty("organization_id")
@@ -81,6 +76,11 @@ public final class BulkSyncRunningEvent {
         return syncId;
     }
 
+    @JsonProperty("sync_name")
+    public Optional<String> getSyncName() {
+        return syncName;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -95,10 +95,10 @@ public final class BulkSyncRunningEvent {
     private boolean equalTo(BulkSyncRunningEvent other) {
         return destinationConnectionId.equals(other.destinationConnectionId)
                 && executionId.equals(other.executionId)
-                && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && sourceConnectionId.equals(other.sourceConnectionId)
-                && syncId.equals(other.syncId);
+                && syncId.equals(other.syncId)
+                && syncName.equals(other.syncName);
     }
 
     @java.lang.Override
@@ -106,10 +106,10 @@ public final class BulkSyncRunningEvent {
         return Objects.hash(
                 this.destinationConnectionId,
                 this.executionId,
-                this.name,
                 this.organizationId,
                 this.sourceConnectionId,
-                this.syncId);
+                this.syncId,
+                this.syncName);
     }
 
     @java.lang.Override
@@ -127,13 +127,13 @@ public final class BulkSyncRunningEvent {
 
         private Optional<String> executionId = Optional.empty();
 
-        private Optional<String> name = Optional.empty();
-
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<String> sourceConnectionId = Optional.empty();
 
         private Optional<String> syncId = Optional.empty();
+
+        private Optional<String> syncName = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -143,10 +143,10 @@ public final class BulkSyncRunningEvent {
         public Builder from(BulkSyncRunningEvent other) {
             destinationConnectionId(other.getDestinationConnectionId());
             executionId(other.getExecutionId());
-            name(other.getName());
             organizationId(other.getOrganizationId());
             sourceConnectionId(other.getSourceConnectionId());
             syncId(other.getSyncId());
+            syncName(other.getSyncName());
             return this;
         }
 
@@ -169,17 +169,6 @@ public final class BulkSyncRunningEvent {
 
         public Builder executionId(String executionId) {
             this.executionId = Optional.of(executionId);
-            return this;
-        }
-
-        @JsonSetter(value = "name", nulls = Nulls.SKIP)
-        public Builder name(Optional<String> name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = Optional.of(name);
             return this;
         }
 
@@ -216,14 +205,25 @@ public final class BulkSyncRunningEvent {
             return this;
         }
 
+        @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
+        public Builder syncName(Optional<String> syncName) {
+            this.syncName = syncName;
+            return this;
+        }
+
+        public Builder syncName(String syncName) {
+            this.syncName = Optional.of(syncName);
+            return this;
+        }
+
         public BulkSyncRunningEvent build() {
             return new BulkSyncRunningEvent(
                     destinationConnectionId,
                     executionId,
-                    name,
                     organizationId,
                     sourceConnectionId,
                     syncId,
+                    syncName,
                     additionalProperties);
         }
     }

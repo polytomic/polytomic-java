@@ -22,11 +22,11 @@ import java.util.Optional;
 public final class SyncRunningEvent {
     private final Optional<String> executionId;
 
-    private final Optional<String> name;
-
     private final Optional<String> organizationId;
 
     private final Optional<String> syncId;
+
+    private final Optional<String> syncName;
 
     private final Optional<String> targetConnectionId;
 
@@ -34,15 +34,15 @@ public final class SyncRunningEvent {
 
     private SyncRunningEvent(
             Optional<String> executionId,
-            Optional<String> name,
             Optional<String> organizationId,
             Optional<String> syncId,
+            Optional<String> syncName,
             Optional<String> targetConnectionId,
             Map<String, Object> additionalProperties) {
         this.executionId = executionId;
-        this.name = name;
         this.organizationId = organizationId;
         this.syncId = syncId;
+        this.syncName = syncName;
         this.targetConnectionId = targetConnectionId;
         this.additionalProperties = additionalProperties;
     }
@@ -50,11 +50,6 @@ public final class SyncRunningEvent {
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
         return executionId;
-    }
-
-    @JsonProperty("name")
-    public Optional<String> getName() {
-        return name;
     }
 
     @JsonProperty("organization_id")
@@ -65,6 +60,11 @@ public final class SyncRunningEvent {
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;
+    }
+
+    @JsonProperty("sync_name")
+    public Optional<String> getSyncName() {
+        return syncName;
     }
 
     @JsonProperty("target_connection_id")
@@ -85,15 +85,15 @@ public final class SyncRunningEvent {
 
     private boolean equalTo(SyncRunningEvent other) {
         return executionId.equals(other.executionId)
-                && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && syncId.equals(other.syncId)
+                && syncName.equals(other.syncName)
                 && targetConnectionId.equals(other.targetConnectionId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.executionId, this.name, this.organizationId, this.syncId, this.targetConnectionId);
+        return Objects.hash(this.executionId, this.organizationId, this.syncId, this.syncName, this.targetConnectionId);
     }
 
     @java.lang.Override
@@ -109,11 +109,11 @@ public final class SyncRunningEvent {
     public static final class Builder {
         private Optional<String> executionId = Optional.empty();
 
-        private Optional<String> name = Optional.empty();
-
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<String> syncId = Optional.empty();
+
+        private Optional<String> syncName = Optional.empty();
 
         private Optional<String> targetConnectionId = Optional.empty();
 
@@ -124,9 +124,9 @@ public final class SyncRunningEvent {
 
         public Builder from(SyncRunningEvent other) {
             executionId(other.getExecutionId());
-            name(other.getName());
             organizationId(other.getOrganizationId());
             syncId(other.getSyncId());
+            syncName(other.getSyncName());
             targetConnectionId(other.getTargetConnectionId());
             return this;
         }
@@ -139,17 +139,6 @@ public final class SyncRunningEvent {
 
         public Builder executionId(String executionId) {
             this.executionId = Optional.of(executionId);
-            return this;
-        }
-
-        @JsonSetter(value = "name", nulls = Nulls.SKIP)
-        public Builder name(Optional<String> name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = Optional.of(name);
             return this;
         }
 
@@ -175,6 +164,17 @@ public final class SyncRunningEvent {
             return this;
         }
 
+        @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
+        public Builder syncName(Optional<String> syncName) {
+            this.syncName = syncName;
+            return this;
+        }
+
+        public Builder syncName(String syncName) {
+            this.syncName = Optional.of(syncName);
+            return this;
+        }
+
         @JsonSetter(value = "target_connection_id", nulls = Nulls.SKIP)
         public Builder targetConnectionId(Optional<String> targetConnectionId) {
             this.targetConnectionId = targetConnectionId;
@@ -188,7 +188,7 @@ public final class SyncRunningEvent {
 
         public SyncRunningEvent build() {
             return new SyncRunningEvent(
-                    executionId, name, organizationId, syncId, targetConnectionId, additionalProperties);
+                    executionId, organizationId, syncId, syncName, targetConnectionId, additionalProperties);
         }
     }
 }

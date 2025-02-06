@@ -26,6 +26,8 @@ public final class BulkSyncExecution {
 
     private final Optional<OffsetDateTime> createdAt;
 
+    private final Optional<BulkFetchMode> fetchMode;
+
     private final Optional<String> id;
 
     private final Optional<Boolean> isResync;
@@ -45,6 +47,7 @@ public final class BulkSyncExecution {
     private BulkSyncExecution(
             Optional<OffsetDateTime> completedAt,
             Optional<OffsetDateTime> createdAt,
+            Optional<BulkFetchMode> fetchMode,
             Optional<String> id,
             Optional<Boolean> isResync,
             Optional<Boolean> isTest,
@@ -55,6 +58,7 @@ public final class BulkSyncExecution {
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
         this.createdAt = createdAt;
+        this.fetchMode = fetchMode;
         this.id = id;
         this.isResync = isResync;
         this.isTest = isTest;
@@ -73,6 +77,11 @@ public final class BulkSyncExecution {
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
+    }
+
+    @JsonProperty("fetch_mode")
+    public Optional<BulkFetchMode> getFetchMode() {
+        return fetchMode;
     }
 
     @JsonProperty("id")
@@ -124,6 +133,7 @@ public final class BulkSyncExecution {
     private boolean equalTo(BulkSyncExecution other) {
         return completedAt.equals(other.completedAt)
                 && createdAt.equals(other.createdAt)
+                && fetchMode.equals(other.fetchMode)
                 && id.equals(other.id)
                 && isResync.equals(other.isResync)
                 && isTest.equals(other.isTest)
@@ -138,6 +148,7 @@ public final class BulkSyncExecution {
         return Objects.hash(
                 this.completedAt,
                 this.createdAt,
+                this.fetchMode,
                 this.id,
                 this.isResync,
                 this.isTest,
@@ -162,6 +173,8 @@ public final class BulkSyncExecution {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
+        private Optional<BulkFetchMode> fetchMode = Optional.empty();
+
         private Optional<String> id = Optional.empty();
 
         private Optional<Boolean> isResync = Optional.empty();
@@ -184,6 +197,7 @@ public final class BulkSyncExecution {
         public Builder from(BulkSyncExecution other) {
             completedAt(other.getCompletedAt());
             createdAt(other.getCreatedAt());
+            fetchMode(other.getFetchMode());
             id(other.getId());
             isResync(other.getIsResync());
             isTest(other.getIsTest());
@@ -213,6 +227,17 @@ public final class BulkSyncExecution {
 
         public Builder createdAt(OffsetDateTime createdAt) {
             this.createdAt = Optional.of(createdAt);
+            return this;
+        }
+
+        @JsonSetter(value = "fetch_mode", nulls = Nulls.SKIP)
+        public Builder fetchMode(Optional<BulkFetchMode> fetchMode) {
+            this.fetchMode = fetchMode;
+            return this;
+        }
+
+        public Builder fetchMode(BulkFetchMode fetchMode) {
+            this.fetchMode = Optional.of(fetchMode);
             return this;
         }
 
@@ -297,6 +322,7 @@ public final class BulkSyncExecution {
             return new BulkSyncExecution(
                     completedAt,
                     createdAt,
+                    fetchMode,
                     id,
                     isResync,
                     isTest,

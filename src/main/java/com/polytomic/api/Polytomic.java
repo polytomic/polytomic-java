@@ -45,9 +45,9 @@ public class Polytomic {
 
     protected final Supplier<UsersClient> usersClient;
 
-    protected final Supplier<PermissionsClient> permissionsClient;
-
     protected final Supplier<WebhooksClient> webhooksClient;
+
+    protected final Supplier<PermissionsClient> permissionsClient;
 
     public Polytomic(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
@@ -62,8 +62,8 @@ public class Polytomic {
         this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new OrganizationClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new UsersClient(clientOptions));
-        this.permissionsClient = Suppliers.memoize(() -> new PermissionsClient(clientOptions));
         this.webhooksClient = Suppliers.memoize(() -> new WebhooksClient(clientOptions));
+        this.permissionsClient = Suppliers.memoize(() -> new PermissionsClient(clientOptions));
     }
 
     public BulkSyncClient bulkSync() {
@@ -110,12 +110,12 @@ public class Polytomic {
         return this.usersClient.get();
     }
 
-    public PermissionsClient permissions() {
-        return this.permissionsClient.get();
-    }
-
     public WebhooksClient webhooks() {
         return this.webhooksClient.get();
+    }
+
+    public PermissionsClient permissions() {
+        return this.permissionsClient.get();
     }
 
     public static PolytomicBuilder builder() {

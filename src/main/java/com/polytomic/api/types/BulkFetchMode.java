@@ -5,26 +5,16 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum UtilFieldType {
-    UNKNOWN("unknown"),
+public enum BulkFetchMode {
+    NONE("none"),
 
-    STRING("string"),
+    INCREMENTAL("incremental"),
 
-    NUMBER("number"),
-
-    BOOLEAN("boolean"),
-
-    DATETIME("datetime"),
-
-    ARRAY("array"),
-
-    OBJECT("object"),
-
-    BINARY("binary");
+    FULL("full");
 
     private final String value;
 
-    UtilFieldType(String value) {
+    BulkFetchMode(String value) {
         this.value = value;
     }
 

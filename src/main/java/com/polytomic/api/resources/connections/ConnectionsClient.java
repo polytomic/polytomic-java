@@ -18,6 +18,7 @@ import com.polytomic.api.types.ConnectionParameterValuesResponseEnvelope;
 import com.polytomic.api.types.ConnectionResponseEnvelope;
 import com.polytomic.api.types.ConnectionTypeResponseEnvelope;
 import com.polytomic.api.types.CreateConnectionResponseEnvelope;
+import com.polytomic.api.types.JsonschemaSchema;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -58,6 +59,41 @@ public class ConnectionsClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectionTypeResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public JsonschemaSchema getConnectionTypeSchema(String id) {
+        return getConnectionTypeSchema(id, null);
+    }
+
+    public JsonschemaSchema getConnectionTypeSchema(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connection_types")
+                .addPathSegment(id)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), JsonschemaSchema.class);
             }
             throw new ApiError(
                     response.code(),

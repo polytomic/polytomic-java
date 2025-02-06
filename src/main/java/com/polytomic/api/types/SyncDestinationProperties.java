@@ -36,6 +36,8 @@ public final class SyncDestinationProperties {
 
     private final Optional<Boolean> supportsFieldTypeSelection;
 
+    private final Optional<Boolean> supportsIdentityFieldCreation;
+
     private final Optional<Boolean> supportsTargetFilters;
 
     private final Optional<Boolean> targetCreator;
@@ -53,6 +55,7 @@ public final class SyncDestinationProperties {
             Optional<Boolean> requiresConfiguration,
             Optional<Boolean> supportsFieldCreation,
             Optional<Boolean> supportsFieldTypeSelection,
+            Optional<Boolean> supportsIdentityFieldCreation,
             Optional<Boolean> supportsTargetFilters,
             Optional<Boolean> targetCreator,
             Optional<Boolean> useFieldNamesAsLabels,
@@ -65,6 +68,7 @@ public final class SyncDestinationProperties {
         this.requiresConfiguration = requiresConfiguration;
         this.supportsFieldCreation = supportsFieldCreation;
         this.supportsFieldTypeSelection = supportsFieldTypeSelection;
+        this.supportsIdentityFieldCreation = supportsIdentityFieldCreation;
         this.supportsTargetFilters = supportsTargetFilters;
         this.targetCreator = targetCreator;
         this.useFieldNamesAsLabels = useFieldNamesAsLabels;
@@ -111,6 +115,11 @@ public final class SyncDestinationProperties {
         return supportsFieldTypeSelection;
     }
 
+    @JsonProperty("supports_identity_field_creation")
+    public Optional<Boolean> getSupportsIdentityFieldCreation() {
+        return supportsIdentityFieldCreation;
+    }
+
     @JsonProperty("supports_target_filters")
     public Optional<Boolean> getSupportsTargetFilters() {
         return supportsTargetFilters;
@@ -146,6 +155,7 @@ public final class SyncDestinationProperties {
                 && requiresConfiguration.equals(other.requiresConfiguration)
                 && supportsFieldCreation.equals(other.supportsFieldCreation)
                 && supportsFieldTypeSelection.equals(other.supportsFieldTypeSelection)
+                && supportsIdentityFieldCreation.equals(other.supportsIdentityFieldCreation)
                 && supportsTargetFilters.equals(other.supportsTargetFilters)
                 && targetCreator.equals(other.targetCreator)
                 && useFieldNamesAsLabels.equals(other.useFieldNamesAsLabels);
@@ -162,6 +172,7 @@ public final class SyncDestinationProperties {
                 this.requiresConfiguration,
                 this.supportsFieldCreation,
                 this.supportsFieldTypeSelection,
+                this.supportsIdentityFieldCreation,
                 this.supportsTargetFilters,
                 this.targetCreator,
                 this.useFieldNamesAsLabels);
@@ -194,6 +205,8 @@ public final class SyncDestinationProperties {
 
         private Optional<Boolean> supportsFieldTypeSelection = Optional.empty();
 
+        private Optional<Boolean> supportsIdentityFieldCreation = Optional.empty();
+
         private Optional<Boolean> supportsTargetFilters = Optional.empty();
 
         private Optional<Boolean> targetCreator = Optional.empty();
@@ -214,6 +227,7 @@ public final class SyncDestinationProperties {
             requiresConfiguration(other.getRequiresConfiguration());
             supportsFieldCreation(other.getSupportsFieldCreation());
             supportsFieldTypeSelection(other.getSupportsFieldTypeSelection());
+            supportsIdentityFieldCreation(other.getSupportsIdentityFieldCreation());
             supportsTargetFilters(other.getSupportsTargetFilters());
             targetCreator(other.getTargetCreator());
             useFieldNamesAsLabels(other.getUseFieldNamesAsLabels());
@@ -308,6 +322,17 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        @JsonSetter(value = "supports_identity_field_creation", nulls = Nulls.SKIP)
+        public Builder supportsIdentityFieldCreation(Optional<Boolean> supportsIdentityFieldCreation) {
+            this.supportsIdentityFieldCreation = supportsIdentityFieldCreation;
+            return this;
+        }
+
+        public Builder supportsIdentityFieldCreation(Boolean supportsIdentityFieldCreation) {
+            this.supportsIdentityFieldCreation = Optional.of(supportsIdentityFieldCreation);
+            return this;
+        }
+
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
         public Builder supportsTargetFilters(Optional<Boolean> supportsTargetFilters) {
             this.supportsTargetFilters = supportsTargetFilters;
@@ -351,6 +376,7 @@ public final class SyncDestinationProperties {
                     requiresConfiguration,
                     supportsFieldCreation,
                     supportsFieldTypeSelection,
+                    supportsIdentityFieldCreation,
                     supportsTargetFilters,
                     targetCreator,
                     useFieldNamesAsLabels,

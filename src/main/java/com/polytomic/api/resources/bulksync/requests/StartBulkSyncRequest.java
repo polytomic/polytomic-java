@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.BulkFetchMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = StartBulkSyncRequest.Builder.class)
 public final class StartBulkSyncRequest {
+    private final Optional<BulkFetchMode> fetchMode;
+
     private final Optional<Boolean> resync;
 
     private final Optional<List<String>> schemas;
@@ -30,14 +33,21 @@ public final class StartBulkSyncRequest {
     private final Map<String, Object> additionalProperties;
 
     private StartBulkSyncRequest(
+            Optional<BulkFetchMode> fetchMode,
             Optional<Boolean> resync,
             Optional<List<String>> schemas,
             Optional<Boolean> test,
             Map<String, Object> additionalProperties) {
+        this.fetchMode = fetchMode;
         this.resync = resync;
         this.schemas = schemas;
         this.test = test;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("fetch_mode")
+    public Optional<BulkFetchMode> getFetchMode() {
+        return fetchMode;
     }
 
     @JsonProperty("resync")
@@ -67,12 +77,15 @@ public final class StartBulkSyncRequest {
     }
 
     private boolean equalTo(StartBulkSyncRequest other) {
-        return resync.equals(other.resync) && schemas.equals(other.schemas) && test.equals(other.test);
+        return fetchMode.equals(other.fetchMode)
+                && resync.equals(other.resync)
+                && schemas.equals(other.schemas)
+                && test.equals(other.test);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.resync, this.schemas, this.test);
+        return Objects.hash(this.fetchMode, this.resync, this.schemas, this.test);
     }
 
     @java.lang.Override
@@ -86,6 +99,8 @@ public final class StartBulkSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<BulkFetchMode> fetchMode = Optional.empty();
+
         private Optional<Boolean> resync = Optional.empty();
 
         private Optional<List<String>> schemas = Optional.empty();
@@ -98,9 +113,21 @@ public final class StartBulkSyncRequest {
         private Builder() {}
 
         public Builder from(StartBulkSyncRequest other) {
+            fetchMode(other.getFetchMode());
             resync(other.getResync());
             schemas(other.getSchemas());
             test(other.getTest());
+            return this;
+        }
+
+        @JsonSetter(value = "fetch_mode", nulls = Nulls.SKIP)
+        public Builder fetchMode(Optional<BulkFetchMode> fetchMode) {
+            this.fetchMode = fetchMode;
+            return this;
+        }
+
+        public Builder fetchMode(BulkFetchMode fetchMode) {
+            this.fetchMode = Optional.of(fetchMode);
             return this;
         }
 
@@ -138,7 +165,7 @@ public final class StartBulkSyncRequest {
         }
 
         public StartBulkSyncRequest build() {
-            return new StartBulkSyncRequest(resync, schemas, test, additionalProperties);
+            return new StartBulkSyncRequest(fetchMode, resync, schemas, test, additionalProperties);
         }
     }
 }

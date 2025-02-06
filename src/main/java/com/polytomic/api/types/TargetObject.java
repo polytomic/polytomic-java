@@ -25,12 +25,18 @@ public final class TargetObject {
 
     private final Optional<List<SupportedMode>> modes;
 
+    private final Optional<String> name;
+
     private final Map<String, Object> additionalProperties;
 
     private TargetObject(
-            Optional<String> id, Optional<List<SupportedMode>> modes, Map<String, Object> additionalProperties) {
+            Optional<String> id,
+            Optional<List<SupportedMode>> modes,
+            Optional<String> name,
+            Map<String, Object> additionalProperties) {
         this.id = id;
         this.modes = modes;
+        this.name = name;
         this.additionalProperties = additionalProperties;
     }
 
@@ -50,6 +56,14 @@ public final class TargetObject {
         return modes;
     }
 
+    /**
+     * @return The name of the target object.
+     */
+    @JsonProperty("name")
+    public Optional<String> getName() {
+        return name;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -62,12 +76,12 @@ public final class TargetObject {
     }
 
     private boolean equalTo(TargetObject other) {
-        return id.equals(other.id) && modes.equals(other.modes);
+        return id.equals(other.id) && modes.equals(other.modes) && name.equals(other.name);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.modes);
+        return Objects.hash(this.id, this.modes, this.name);
     }
 
     @java.lang.Override
@@ -85,6 +99,8 @@ public final class TargetObject {
 
         private Optional<List<SupportedMode>> modes = Optional.empty();
 
+        private Optional<String> name = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -93,6 +109,7 @@ public final class TargetObject {
         public Builder from(TargetObject other) {
             id(other.getId());
             modes(other.getModes());
+            name(other.getName());
             return this;
         }
 
@@ -118,8 +135,19 @@ public final class TargetObject {
             return this;
         }
 
+        @JsonSetter(value = "name", nulls = Nulls.SKIP)
+        public Builder name(Optional<String> name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = Optional.of(name);
+            return this;
+        }
+
         public TargetObject build() {
-            return new TargetObject(id, modes, additionalProperties);
+            return new TargetObject(id, modes, name, additionalProperties);
         }
     }
 }

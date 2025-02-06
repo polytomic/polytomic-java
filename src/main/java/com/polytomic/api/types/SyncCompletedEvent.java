@@ -33,8 +33,6 @@ public final class SyncCompletedEvent {
 
     private final Optional<List<String>> insertedRecords;
 
-    private final Optional<String> name;
-
     private final Optional<String> organizationId;
 
     private final Optional<Integer> recordCount;
@@ -42,6 +40,8 @@ public final class SyncCompletedEvent {
     private final Optional<ExecutionStatus> status;
 
     private final Optional<String> syncId;
+
+    private final Optional<String> syncName;
 
     private final Optional<String> targetConnectionId;
 
@@ -68,11 +68,11 @@ public final class SyncCompletedEvent {
             Optional<String> executionId,
             Optional<Integer> insertedCount,
             Optional<List<String>> insertedRecords,
-            Optional<String> name,
             Optional<String> organizationId,
             Optional<Integer> recordCount,
             Optional<ExecutionStatus> status,
             Optional<String> syncId,
+            Optional<String> syncName,
             Optional<String> targetConnectionId,
             Optional<List<String>> totalRecords,
             Optional<String> trigger,
@@ -88,11 +88,11 @@ public final class SyncCompletedEvent {
         this.executionId = executionId;
         this.insertedCount = insertedCount;
         this.insertedRecords = insertedRecords;
-        this.name = name;
         this.organizationId = organizationId;
         this.recordCount = recordCount;
         this.status = status;
         this.syncId = syncId;
+        this.syncName = syncName;
         this.targetConnectionId = targetConnectionId;
         this.totalRecords = totalRecords;
         this.trigger = trigger;
@@ -134,11 +134,6 @@ public final class SyncCompletedEvent {
         return insertedRecords;
     }
 
-    @JsonProperty("name")
-    public Optional<String> getName() {
-        return name;
-    }
-
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
@@ -157,6 +152,11 @@ public final class SyncCompletedEvent {
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;
+    }
+
+    @JsonProperty("sync_name")
+    public Optional<String> getSyncName() {
+        return syncName;
     }
 
     @JsonProperty("target_connection_id")
@@ -217,11 +217,11 @@ public final class SyncCompletedEvent {
                 && executionId.equals(other.executionId)
                 && insertedCount.equals(other.insertedCount)
                 && insertedRecords.equals(other.insertedRecords)
-                && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && recordCount.equals(other.recordCount)
                 && status.equals(other.status)
                 && syncId.equals(other.syncId)
+                && syncName.equals(other.syncName)
                 && targetConnectionId.equals(other.targetConnectionId)
                 && totalRecords.equals(other.totalRecords)
                 && trigger.equals(other.trigger)
@@ -241,11 +241,11 @@ public final class SyncCompletedEvent {
                 this.executionId,
                 this.insertedCount,
                 this.insertedRecords,
-                this.name,
                 this.organizationId,
                 this.recordCount,
                 this.status,
                 this.syncId,
+                this.syncName,
                 this.targetConnectionId,
                 this.totalRecords,
                 this.trigger,
@@ -279,8 +279,6 @@ public final class SyncCompletedEvent {
 
         private Optional<List<String>> insertedRecords = Optional.empty();
 
-        private Optional<String> name = Optional.empty();
-
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<Integer> recordCount = Optional.empty();
@@ -288,6 +286,8 @@ public final class SyncCompletedEvent {
         private Optional<ExecutionStatus> status = Optional.empty();
 
         private Optional<String> syncId = Optional.empty();
+
+        private Optional<String> syncName = Optional.empty();
 
         private Optional<String> targetConnectionId = Optional.empty();
 
@@ -317,11 +317,11 @@ public final class SyncCompletedEvent {
             executionId(other.getExecutionId());
             insertedCount(other.getInsertedCount());
             insertedRecords(other.getInsertedRecords());
-            name(other.getName());
             organizationId(other.getOrganizationId());
             recordCount(other.getRecordCount());
             status(other.getStatus());
             syncId(other.getSyncId());
+            syncName(other.getSyncName());
             targetConnectionId(other.getTargetConnectionId());
             totalRecords(other.getTotalRecords());
             trigger(other.getTrigger());
@@ -399,17 +399,6 @@ public final class SyncCompletedEvent {
             return this;
         }
 
-        @JsonSetter(value = "name", nulls = Nulls.SKIP)
-        public Builder name(Optional<String> name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = Optional.of(name);
-            return this;
-        }
-
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -451,6 +440,17 @@ public final class SyncCompletedEvent {
 
         public Builder syncId(String syncId) {
             this.syncId = Optional.of(syncId);
+            return this;
+        }
+
+        @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
+        public Builder syncName(Optional<String> syncName) {
+            this.syncName = syncName;
+            return this;
+        }
+
+        public Builder syncName(String syncName) {
+            this.syncName = Optional.of(syncName);
             return this;
         }
 
@@ -550,11 +550,11 @@ public final class SyncCompletedEvent {
                     executionId,
                     insertedCount,
                     insertedRecords,
-                    name,
                     organizationId,
                     recordCount,
                     status,
                     syncId,
+                    syncName,
                     targetConnectionId,
                     totalRecords,
                     trigger,
