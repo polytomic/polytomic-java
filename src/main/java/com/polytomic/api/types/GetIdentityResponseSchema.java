@@ -63,21 +63,33 @@ public final class GetIdentityResponseSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The email of the caller.
+     */
     @JsonProperty("email")
     public Optional<String> getEmail() {
         return email;
     }
 
+    /**
+     * @return The ID of the caller; this will be omitted for non-user callers.
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Whether the caller is using an organization key.
+     */
     @JsonProperty("is_organization")
     public Optional<Boolean> getIsOrganization() {
         return isOrganization;
     }
 
+    /**
+     * @return Whether the caller is using a partner key.
+     */
     @JsonProperty("is_partner")
     public Optional<Boolean> getIsPartner() {
         return isPartner;
@@ -88,16 +100,25 @@ public final class GetIdentityResponseSchema {
         return isSystem;
     }
 
+    /**
+     * @return Whether the caller is a user.
+     */
     @JsonProperty("is_user")
     public Optional<Boolean> getIsUser() {
         return isUser;
     }
 
+    /**
+     * @return The ID of the organization the caller belongs to.
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return The name of the organization the caller belongs to.
+     */
     @JsonProperty("organization_name")
     public Optional<String> getOrganizationName() {
         return organizationName;

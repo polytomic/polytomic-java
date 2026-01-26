@@ -27,6 +27,8 @@ public final class CreateConnectionResponseSchema {
 
     private final Optional<Map<String, Object>> configuration;
 
+    private final Optional<String> healthcheckInterval;
+
     private final Optional<String> id;
 
     private final Optional<String> name;
@@ -34,6 +36,8 @@ public final class CreateConnectionResponseSchema {
     private final Optional<String> organizationId;
 
     private final Optional<List<String>> policies;
+
+    private final Optional<Boolean> saved;
 
     private final Optional<String> status;
 
@@ -47,10 +51,12 @@ public final class CreateConnectionResponseSchema {
             Optional<String> authCode,
             Optional<String> authUrl,
             Optional<Map<String, Object>> configuration,
+            Optional<String> healthcheckInterval,
             Optional<String> id,
             Optional<String> name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
+            Optional<Boolean> saved,
             Optional<String> status,
             Optional<String> statusError,
             Optional<ConnectionTypeSchema> type,
@@ -58,10 +64,12 @@ public final class CreateConnectionResponseSchema {
         this.authCode = authCode;
         this.authUrl = authUrl;
         this.configuration = configuration;
+        this.healthcheckInterval = healthcheckInterval;
         this.id = id;
         this.name = name;
         this.organizationId = organizationId;
         this.policies = policies;
+        this.saved = saved;
         this.status = status;
         this.statusError = statusError;
         this.type = type;
@@ -89,6 +97,14 @@ public final class CreateConnectionResponseSchema {
         return configuration;
     }
 
+    /**
+     * @return Interval for connection health checking.
+     */
+    @JsonProperty("healthcheck_interval")
+    public Optional<String> getHealthcheckInterval() {
+        return healthcheckInterval;
+    }
+
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
@@ -107,6 +123,11 @@ public final class CreateConnectionResponseSchema {
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
+    }
+
+    @JsonProperty("saved")
+    public Optional<Boolean> getSaved() {
+        return saved;
     }
 
     @JsonProperty("status")
@@ -139,10 +160,12 @@ public final class CreateConnectionResponseSchema {
         return authCode.equals(other.authCode)
                 && authUrl.equals(other.authUrl)
                 && configuration.equals(other.configuration)
+                && healthcheckInterval.equals(other.healthcheckInterval)
                 && id.equals(other.id)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
+                && saved.equals(other.saved)
                 && status.equals(other.status)
                 && statusError.equals(other.statusError)
                 && type.equals(other.type);
@@ -154,10 +177,12 @@ public final class CreateConnectionResponseSchema {
                 this.authCode,
                 this.authUrl,
                 this.configuration,
+                this.healthcheckInterval,
                 this.id,
                 this.name,
                 this.organizationId,
                 this.policies,
+                this.saved,
                 this.status,
                 this.statusError,
                 this.type);
@@ -180,6 +205,8 @@ public final class CreateConnectionResponseSchema {
 
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
+        private Optional<String> healthcheckInterval = Optional.empty();
+
         private Optional<String> id = Optional.empty();
 
         private Optional<String> name = Optional.empty();
@@ -187,6 +214,8 @@ public final class CreateConnectionResponseSchema {
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<List<String>> policies = Optional.empty();
+
+        private Optional<Boolean> saved = Optional.empty();
 
         private Optional<String> status = Optional.empty();
 
@@ -203,10 +232,12 @@ public final class CreateConnectionResponseSchema {
             authCode(other.getAuthCode());
             authUrl(other.getAuthUrl());
             configuration(other.getConfiguration());
+            healthcheckInterval(other.getHealthcheckInterval());
             id(other.getId());
             name(other.getName());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
+            saved(other.getSaved());
             status(other.getStatus());
             statusError(other.getStatusError());
             type(other.getType());
@@ -243,6 +274,17 @@ public final class CreateConnectionResponseSchema {
 
         public Builder configuration(Map<String, Object> configuration) {
             this.configuration = Optional.of(configuration);
+            return this;
+        }
+
+        @JsonSetter(value = "healthcheck_interval", nulls = Nulls.SKIP)
+        public Builder healthcheckInterval(Optional<String> healthcheckInterval) {
+            this.healthcheckInterval = healthcheckInterval;
+            return this;
+        }
+
+        public Builder healthcheckInterval(String healthcheckInterval) {
+            this.healthcheckInterval = Optional.of(healthcheckInterval);
             return this;
         }
 
@@ -290,6 +332,17 @@ public final class CreateConnectionResponseSchema {
             return this;
         }
 
+        @JsonSetter(value = "saved", nulls = Nulls.SKIP)
+        public Builder saved(Optional<Boolean> saved) {
+            this.saved = saved;
+            return this;
+        }
+
+        public Builder saved(Boolean saved) {
+            this.saved = Optional.of(saved);
+            return this;
+        }
+
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<String> status) {
             this.status = status;
@@ -328,10 +381,12 @@ public final class CreateConnectionResponseSchema {
                     authCode,
                     authUrl,
                     configuration,
+                    healthcheckInterval,
                     id,
                     name,
                     organizationId,
                     policies,
+                    saved,
                     status,
                     statusError,
                     type,

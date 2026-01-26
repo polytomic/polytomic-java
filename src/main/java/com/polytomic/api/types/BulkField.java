@@ -26,16 +26,24 @@ public final class BulkField {
 
     private final Optional<Boolean> obfuscated;
 
+    private final Optional<String> outputName;
+
+    private final Optional<String> userOutputName;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkField(
             Optional<Boolean> enabled,
             Optional<String> id,
             Optional<Boolean> obfuscated,
+            Optional<String> outputName,
+            Optional<String> userOutputName,
             Map<String, Object> additionalProperties) {
         this.enabled = enabled;
         this.id = id;
         this.obfuscated = obfuscated;
+        this.outputName = outputName;
+        this.userOutputName = userOutputName;
         this.additionalProperties = additionalProperties;
     }
 
@@ -54,6 +62,16 @@ public final class BulkField {
         return obfuscated;
     }
 
+    @JsonProperty("output_name")
+    public Optional<String> getOutputName() {
+        return outputName;
+    }
+
+    @JsonProperty("user_output_name")
+    public Optional<String> getUserOutputName() {
+        return userOutputName;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -66,12 +84,16 @@ public final class BulkField {
     }
 
     private boolean equalTo(BulkField other) {
-        return enabled.equals(other.enabled) && id.equals(other.id) && obfuscated.equals(other.obfuscated);
+        return enabled.equals(other.enabled)
+                && id.equals(other.id)
+                && obfuscated.equals(other.obfuscated)
+                && outputName.equals(other.outputName)
+                && userOutputName.equals(other.userOutputName);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.id, this.obfuscated);
+        return Objects.hash(this.enabled, this.id, this.obfuscated, this.outputName, this.userOutputName);
     }
 
     @java.lang.Override
@@ -91,6 +113,10 @@ public final class BulkField {
 
         private Optional<Boolean> obfuscated = Optional.empty();
 
+        private Optional<String> outputName = Optional.empty();
+
+        private Optional<String> userOutputName = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -100,6 +126,8 @@ public final class BulkField {
             enabled(other.getEnabled());
             id(other.getId());
             obfuscated(other.getObfuscated());
+            outputName(other.getOutputName());
+            userOutputName(other.getUserOutputName());
             return this;
         }
 
@@ -136,8 +164,30 @@ public final class BulkField {
             return this;
         }
 
+        @JsonSetter(value = "output_name", nulls = Nulls.SKIP)
+        public Builder outputName(Optional<String> outputName) {
+            this.outputName = outputName;
+            return this;
+        }
+
+        public Builder outputName(String outputName) {
+            this.outputName = Optional.of(outputName);
+            return this;
+        }
+
+        @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
+        public Builder userOutputName(Optional<String> userOutputName) {
+            this.userOutputName = userOutputName;
+            return this;
+        }
+
+        public Builder userOutputName(String userOutputName) {
+            this.userOutputName = Optional.of(userOutputName);
+            return this;
+        }
+
         public BulkField build() {
-            return new BulkField(enabled, id, obfuscated, additionalProperties);
+            return new BulkField(enabled, id, obfuscated, outputName, userOutputName, additionalProperties);
         }
     }
 }

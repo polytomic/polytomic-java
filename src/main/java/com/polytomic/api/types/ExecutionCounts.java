@@ -30,6 +30,10 @@ public final class ExecutionCounts {
 
     private final Optional<Integer> update;
 
+    private final Optional<Integer> upserts;
+
+    private final Optional<Integer> warnings;
+
     private final Map<String, Object> additionalProperties;
 
     private ExecutionCounts(
@@ -38,12 +42,16 @@ public final class ExecutionCounts {
             Optional<Integer> insert,
             Optional<Integer> total,
             Optional<Integer> update,
+            Optional<Integer> upserts,
+            Optional<Integer> warnings,
             Map<String, Object> additionalProperties) {
         this.delete = delete;
         this.error = error;
         this.insert = insert;
         this.total = total;
         this.update = update;
+        this.upserts = upserts;
+        this.warnings = warnings;
         this.additionalProperties = additionalProperties;
     }
 
@@ -72,6 +80,16 @@ public final class ExecutionCounts {
         return update;
     }
 
+    @JsonProperty("upserts")
+    public Optional<Integer> getUpserts() {
+        return upserts;
+    }
+
+    @JsonProperty("warnings")
+    public Optional<Integer> getWarnings() {
+        return warnings;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -88,12 +106,14 @@ public final class ExecutionCounts {
                 && error.equals(other.error)
                 && insert.equals(other.insert)
                 && total.equals(other.total)
-                && update.equals(other.update);
+                && update.equals(other.update)
+                && upserts.equals(other.upserts)
+                && warnings.equals(other.warnings);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.delete, this.error, this.insert, this.total, this.update);
+        return Objects.hash(this.delete, this.error, this.insert, this.total, this.update, this.upserts, this.warnings);
     }
 
     @java.lang.Override
@@ -117,6 +137,10 @@ public final class ExecutionCounts {
 
         private Optional<Integer> update = Optional.empty();
 
+        private Optional<Integer> upserts = Optional.empty();
+
+        private Optional<Integer> warnings = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -128,6 +152,8 @@ public final class ExecutionCounts {
             insert(other.getInsert());
             total(other.getTotal());
             update(other.getUpdate());
+            upserts(other.getUpserts());
+            warnings(other.getWarnings());
             return this;
         }
 
@@ -186,8 +212,30 @@ public final class ExecutionCounts {
             return this;
         }
 
+        @JsonSetter(value = "upserts", nulls = Nulls.SKIP)
+        public Builder upserts(Optional<Integer> upserts) {
+            this.upserts = upserts;
+            return this;
+        }
+
+        public Builder upserts(Integer upserts) {
+            this.upserts = Optional.of(upserts);
+            return this;
+        }
+
+        @JsonSetter(value = "warnings", nulls = Nulls.SKIP)
+        public Builder warnings(Optional<Integer> warnings) {
+            this.warnings = warnings;
+            return this;
+        }
+
+        public Builder warnings(Integer warnings) {
+            this.warnings = Optional.of(warnings);
+            return this;
+        }
+
         public ExecutionCounts build() {
-            return new ExecutionCounts(delete, error, insert, total, update, additionalProperties);
+            return new ExecutionCounts(delete, error, insert, total, update, upserts, warnings, additionalProperties);
         }
     }
 }

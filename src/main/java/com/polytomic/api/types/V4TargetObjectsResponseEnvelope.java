@@ -23,17 +23,27 @@ import java.util.Optional;
 public final class V4TargetObjectsResponseEnvelope {
     private final Optional<List<TargetObject>> data;
 
+    private final Optional<V4TargetCreator> targetCreation;
+
     private final Map<String, Object> additionalProperties;
 
     private V4TargetObjectsResponseEnvelope(
-            Optional<List<TargetObject>> data, Map<String, Object> additionalProperties) {
+            Optional<List<TargetObject>> data,
+            Optional<V4TargetCreator> targetCreation,
+            Map<String, Object> additionalProperties) {
         this.data = data;
+        this.targetCreation = targetCreation;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
     public Optional<List<TargetObject>> getData() {
         return data;
+    }
+
+    @JsonProperty("target_creation")
+    public Optional<V4TargetCreator> getTargetCreation() {
+        return targetCreation;
     }
 
     @java.lang.Override
@@ -48,12 +58,12 @@ public final class V4TargetObjectsResponseEnvelope {
     }
 
     private boolean equalTo(V4TargetObjectsResponseEnvelope other) {
-        return data.equals(other.data);
+        return data.equals(other.data) && targetCreation.equals(other.targetCreation);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.data);
+        return Objects.hash(this.data, this.targetCreation);
     }
 
     @java.lang.Override
@@ -69,6 +79,8 @@ public final class V4TargetObjectsResponseEnvelope {
     public static final class Builder {
         private Optional<List<TargetObject>> data = Optional.empty();
 
+        private Optional<V4TargetCreator> targetCreation = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -76,6 +88,7 @@ public final class V4TargetObjectsResponseEnvelope {
 
         public Builder from(V4TargetObjectsResponseEnvelope other) {
             data(other.getData());
+            targetCreation(other.getTargetCreation());
             return this;
         }
 
@@ -90,8 +103,19 @@ public final class V4TargetObjectsResponseEnvelope {
             return this;
         }
 
+        @JsonSetter(value = "target_creation", nulls = Nulls.SKIP)
+        public Builder targetCreation(Optional<V4TargetCreator> targetCreation) {
+            this.targetCreation = targetCreation;
+            return this;
+        }
+
+        public Builder targetCreation(V4TargetCreator targetCreation) {
+            this.targetCreation = Optional.of(targetCreation);
+            return this;
+        }
+
         public V4TargetObjectsResponseEnvelope build() {
-            return new V4TargetObjectsResponseEnvelope(data, additionalProperties);
+            return new V4TargetObjectsResponseEnvelope(data, targetCreation, additionalProperties);
         }
     }
 }

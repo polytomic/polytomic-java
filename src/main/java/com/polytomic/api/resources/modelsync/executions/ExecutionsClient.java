@@ -5,8 +5,11 @@ package com.polytomic.api.resources.modelsync.executions;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsListRequest;
+import com.polytomic.api.resources.modelsync.executions.requests.UpdateExecutionRequest;
 import com.polytomic.api.types.ExecutionLogsResponseEnvelope;
 import com.polytomic.api.types.GetExecutionResponseEnvelope;
 import com.polytomic.api.types.ListExecutionResponseEnvelope;
@@ -16,6 +19,7 @@ import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -27,22 +31,36 @@ public class ExecutionsClient {
     }
 
     public ListExecutionResponseEnvelope list(String syncId) {
-        return list(syncId, null);
+        return list(syncId, ExecutionsListRequest.builder().build());
     }
 
-    public ListExecutionResponseEnvelope list(String syncId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public ListExecutionResponseEnvelope list(String syncId, ExecutionsListRequest request) {
+        return list(syncId, request, null);
+    }
+
+    public ListExecutionResponseEnvelope list(
+            String syncId, ExecutionsListRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
                 .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegments("executions");
+        if (request.getPageToken().isPresent()) {
+            httpUrl.addQueryParameter("page_token", request.getPageToken().get());
+        }
+        if (request.getOnlyCompleted().isPresent()) {
+            httpUrl.addQueryParameter(
+                    "only_completed", request.getOnlyCompleted().get().toString());
+        }
+        if (request.getAscending().isPresent()) {
+            httpUrl.addQueryParameter("ascending", request.getAscending().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -77,6 +95,51 @@ public class ExecutionsClient {
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetExecutionResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public GetExecutionResponseEnvelope update(String syncId, String id, UpdateExecutionRequest request) {
+        return update(syncId, id, request, null);
+    }
+
+    public GetExecutionResponseEnvelope update(
+            String syncId, String id, UpdateExecutionRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs")
+                .addPathSegment(syncId)
+                .addPathSegments("executions")
+                .addPathSegment(id)
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
                 .build();

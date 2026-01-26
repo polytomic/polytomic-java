@@ -24,7 +24,9 @@ public enum BulkExecutionStatus {
 
     PROCESSING("processing"),
 
-    ERRORS("errors");
+    ERRORS("errors"),
+
+    INTERRUPTED("interrupted");
 
     private final String value;
 

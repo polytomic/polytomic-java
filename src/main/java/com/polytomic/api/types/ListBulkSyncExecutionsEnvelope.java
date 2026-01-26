@@ -23,17 +23,27 @@ import java.util.Optional;
 public final class ListBulkSyncExecutionsEnvelope {
     private final Optional<List<BulkSyncExecution>> data;
 
+    private final Optional<PaginationDetails> pagination;
+
     private final Map<String, Object> additionalProperties;
 
     private ListBulkSyncExecutionsEnvelope(
-            Optional<List<BulkSyncExecution>> data, Map<String, Object> additionalProperties) {
+            Optional<List<BulkSyncExecution>> data,
+            Optional<PaginationDetails> pagination,
+            Map<String, Object> additionalProperties) {
         this.data = data;
+        this.pagination = pagination;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
     public Optional<List<BulkSyncExecution>> getData() {
         return data;
+    }
+
+    @JsonProperty("pagination")
+    public Optional<PaginationDetails> getPagination() {
+        return pagination;
     }
 
     @java.lang.Override
@@ -48,12 +58,12 @@ public final class ListBulkSyncExecutionsEnvelope {
     }
 
     private boolean equalTo(ListBulkSyncExecutionsEnvelope other) {
-        return data.equals(other.data);
+        return data.equals(other.data) && pagination.equals(other.pagination);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.data);
+        return Objects.hash(this.data, this.pagination);
     }
 
     @java.lang.Override
@@ -69,6 +79,8 @@ public final class ListBulkSyncExecutionsEnvelope {
     public static final class Builder {
         private Optional<List<BulkSyncExecution>> data = Optional.empty();
 
+        private Optional<PaginationDetails> pagination = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -76,6 +88,7 @@ public final class ListBulkSyncExecutionsEnvelope {
 
         public Builder from(ListBulkSyncExecutionsEnvelope other) {
             data(other.getData());
+            pagination(other.getPagination());
             return this;
         }
 
@@ -90,8 +103,19 @@ public final class ListBulkSyncExecutionsEnvelope {
             return this;
         }
 
+        @JsonSetter(value = "pagination", nulls = Nulls.SKIP)
+        public Builder pagination(Optional<PaginationDetails> pagination) {
+            this.pagination = pagination;
+            return this;
+        }
+
+        public Builder pagination(PaginationDetails pagination) {
+            this.pagination = Optional.of(pagination);
+            return this;
+        }
+
         public ListBulkSyncExecutionsEnvelope build() {
-            return new ListBulkSyncExecutionsEnvelope(data, additionalProperties);
+            return new ListBulkSyncExecutionsEnvelope(data, pagination, additionalProperties);
         }
     }
 }

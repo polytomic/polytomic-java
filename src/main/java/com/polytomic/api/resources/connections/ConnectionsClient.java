@@ -11,6 +11,7 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
 import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
+import com.polytomic.api.resources.connections.requests.TestConnectionRequest;
 import com.polytomic.api.resources.connections.requests.UpdateConnectionRequestSchema;
 import com.polytomic.api.types.ConnectCardResponseEnvelope;
 import com.polytomic.api.types.ConnectionListResponseEnvelope;
@@ -181,10 +182,30 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Creates a new request for <a href="https://www.polytomic.com/connect">Polytomic Connect</a>.
+     * <p>This endpoint configures a Polytomic Connect request and returns the URL to
+     * redirect users to. This allows embedding Polytomic connection authorization in
+     * other applications.</p>
+     * <p>See also:</p>
+     * <ul>
+     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
+     * </ul>
+     */
     public ConnectCardResponseEnvelope connect(ConnectCardRequest request) {
         return connect(request, null);
     }
 
+    /**
+     * Creates a new request for <a href="https://www.polytomic.com/connect">Polytomic Connect</a>.
+     * <p>This endpoint configures a Polytomic Connect request and returns the URL to
+     * redirect users to. This allows embedding Polytomic connection authorization in
+     * other applications.</p>
+     * <p>See also:</p>
+     * <ul>
+     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
+     * </ul>
+     */
     public ConnectCardResponseEnvelope connect(ConnectCardRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -212,6 +233,53 @@ public class ConnectionsClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectCardResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Tests a connection configuration.
+     */
+    public void testConnection(TestConnectionRequest request) {
+        testConnection(request, null);
+    }
+
+    /**
+     * Tests a connection configuration.
+     */
+    public void testConnection(TestConnectionRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections/test")
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return;
             }
             throw new ApiError(
                     response.code(),

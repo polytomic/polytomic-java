@@ -20,27 +20,48 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ConnectionType.Builder.class)
 public final class ConnectionType {
+    private final Optional<V2ConnectionForm> configurationForm;
+
     private final Optional<Map<String, Object>> envConfig;
 
     private final Optional<String> id;
 
+    private final Optional<Map<String, Object>> initialConfiguration;
+
+    private final Optional<String> logoUrl;
+
     private final Optional<String> name;
+
+    private final Optional<BackendOAuthPrompt> oauthPrompt;
 
     private final Optional<Boolean> useOauth;
 
     private final Map<String, Object> additionalProperties;
 
     private ConnectionType(
+            Optional<V2ConnectionForm> configurationForm,
             Optional<Map<String, Object>> envConfig,
             Optional<String> id,
+            Optional<Map<String, Object>> initialConfiguration,
+            Optional<String> logoUrl,
             Optional<String> name,
+            Optional<BackendOAuthPrompt> oauthPrompt,
             Optional<Boolean> useOauth,
             Map<String, Object> additionalProperties) {
+        this.configurationForm = configurationForm;
         this.envConfig = envConfig;
         this.id = id;
+        this.initialConfiguration = initialConfiguration;
+        this.logoUrl = logoUrl;
         this.name = name;
+        this.oauthPrompt = oauthPrompt;
         this.useOauth = useOauth;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("configurationForm")
+    public Optional<V2ConnectionForm> getConfigurationForm() {
+        return configurationForm;
     }
 
     @JsonProperty("envConfig")
@@ -53,9 +74,24 @@ public final class ConnectionType {
         return id;
     }
 
+    @JsonProperty("initialConfiguration")
+    public Optional<Map<String, Object>> getInitialConfiguration() {
+        return initialConfiguration;
+    }
+
+    @JsonProperty("logo_url")
+    public Optional<String> getLogoUrl() {
+        return logoUrl;
+    }
+
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
+    }
+
+    @JsonProperty("oauth_prompt")
+    public Optional<BackendOAuthPrompt> getOauthPrompt() {
+        return oauthPrompt;
     }
 
     @JsonProperty("use_oauth")
@@ -75,15 +111,27 @@ public final class ConnectionType {
     }
 
     private boolean equalTo(ConnectionType other) {
-        return envConfig.equals(other.envConfig)
+        return configurationForm.equals(other.configurationForm)
+                && envConfig.equals(other.envConfig)
                 && id.equals(other.id)
+                && initialConfiguration.equals(other.initialConfiguration)
+                && logoUrl.equals(other.logoUrl)
                 && name.equals(other.name)
+                && oauthPrompt.equals(other.oauthPrompt)
                 && useOauth.equals(other.useOauth);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.envConfig, this.id, this.name, this.useOauth);
+        return Objects.hash(
+                this.configurationForm,
+                this.envConfig,
+                this.id,
+                this.initialConfiguration,
+                this.logoUrl,
+                this.name,
+                this.oauthPrompt,
+                this.useOauth);
     }
 
     @java.lang.Override
@@ -97,11 +145,19 @@ public final class ConnectionType {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<V2ConnectionForm> configurationForm = Optional.empty();
+
         private Optional<Map<String, Object>> envConfig = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
+        private Optional<Map<String, Object>> initialConfiguration = Optional.empty();
+
+        private Optional<String> logoUrl = Optional.empty();
+
         private Optional<String> name = Optional.empty();
+
+        private Optional<BackendOAuthPrompt> oauthPrompt = Optional.empty();
 
         private Optional<Boolean> useOauth = Optional.empty();
 
@@ -111,10 +167,25 @@ public final class ConnectionType {
         private Builder() {}
 
         public Builder from(ConnectionType other) {
+            configurationForm(other.getConfigurationForm());
             envConfig(other.getEnvConfig());
             id(other.getId());
+            initialConfiguration(other.getInitialConfiguration());
+            logoUrl(other.getLogoUrl());
             name(other.getName());
+            oauthPrompt(other.getOauthPrompt());
             useOauth(other.getUseOauth());
+            return this;
+        }
+
+        @JsonSetter(value = "configurationForm", nulls = Nulls.SKIP)
+        public Builder configurationForm(Optional<V2ConnectionForm> configurationForm) {
+            this.configurationForm = configurationForm;
+            return this;
+        }
+
+        public Builder configurationForm(V2ConnectionForm configurationForm) {
+            this.configurationForm = Optional.of(configurationForm);
             return this;
         }
 
@@ -140,6 +211,28 @@ public final class ConnectionType {
             return this;
         }
 
+        @JsonSetter(value = "initialConfiguration", nulls = Nulls.SKIP)
+        public Builder initialConfiguration(Optional<Map<String, Object>> initialConfiguration) {
+            this.initialConfiguration = initialConfiguration;
+            return this;
+        }
+
+        public Builder initialConfiguration(Map<String, Object> initialConfiguration) {
+            this.initialConfiguration = Optional.of(initialConfiguration);
+            return this;
+        }
+
+        @JsonSetter(value = "logo_url", nulls = Nulls.SKIP)
+        public Builder logoUrl(Optional<String> logoUrl) {
+            this.logoUrl = logoUrl;
+            return this;
+        }
+
+        public Builder logoUrl(String logoUrl) {
+            this.logoUrl = Optional.of(logoUrl);
+            return this;
+        }
+
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -148,6 +241,17 @@ public final class ConnectionType {
 
         public Builder name(String name) {
             this.name = Optional.of(name);
+            return this;
+        }
+
+        @JsonSetter(value = "oauth_prompt", nulls = Nulls.SKIP)
+        public Builder oauthPrompt(Optional<BackendOAuthPrompt> oauthPrompt) {
+            this.oauthPrompt = oauthPrompt;
+            return this;
+        }
+
+        public Builder oauthPrompt(BackendOAuthPrompt oauthPrompt) {
+            this.oauthPrompt = Optional.of(oauthPrompt);
             return this;
         }
 
@@ -163,7 +267,16 @@ public final class ConnectionType {
         }
 
         public ConnectionType build() {
-            return new ConnectionType(envConfig, id, name, useOauth, additionalProperties);
+            return new ConnectionType(
+                    configurationForm,
+                    envConfig,
+                    id,
+                    initialConfiguration,
+                    logoUrl,
+                    name,
+                    oauthPrompt,
+                    useOauth,
+                    additionalProperties);
         }
     }
 }

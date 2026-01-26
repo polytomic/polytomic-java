@@ -12,10 +12,10 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.Enrichment;
 import com.polytomic.api.types.Filter;
 import com.polytomic.api.types.Identity;
 import com.polytomic.api.types.ModelSyncField;
+import com.polytomic.api.types.ModelSyncMode;
 import com.polytomic.api.types.Override;
 import com.polytomic.api.types.Schedule;
 import com.polytomic.api.types.Target;
@@ -31,7 +31,7 @@ import java.util.Optional;
 public final class CreateModelSyncRequest {
     private final Optional<Boolean> active;
 
-    private final Optional<Enrichment> enricher;
+    private final Optional<String> encryptionPassphrase;
 
     private final List<ModelSyncField> fields;
 
@@ -41,9 +41,11 @@ public final class CreateModelSyncRequest {
 
     private final Optional<Identity> identity;
 
-    private final String mode;
+    private final ModelSyncMode mode;
 
     private final String name;
+
+    private final Optional<Boolean> onlyEnrichUpdates;
 
     private final Optional<String> organizationId;
 
@@ -55,6 +57,8 @@ public final class CreateModelSyncRequest {
 
     private final Schedule schedule;
 
+    private final Optional<Boolean> skipInitialBackfill;
+
     private final Optional<Boolean> syncAllRecords;
 
     private final Target target;
@@ -63,62 +67,78 @@ public final class CreateModelSyncRequest {
 
     private CreateModelSyncRequest(
             Optional<Boolean> active,
-            Optional<Enrichment> enricher,
+            Optional<String> encryptionPassphrase,
             List<ModelSyncField> fields,
             Optional<String> filterLogic,
             Optional<List<Filter>> filters,
             Optional<Identity> identity,
-            String mode,
+            ModelSyncMode mode,
             String name,
+            Optional<Boolean> onlyEnrichUpdates,
             Optional<String> organizationId,
             Optional<List<ModelSyncField>> overrideFields,
             Optional<List<Override>> overrides,
             Optional<List<String>> policies,
             Schedule schedule,
+            Optional<Boolean> skipInitialBackfill,
             Optional<Boolean> syncAllRecords,
             Target target,
             Map<String, Object> additionalProperties) {
         this.active = active;
-        this.enricher = enricher;
+        this.encryptionPassphrase = encryptionPassphrase;
         this.fields = fields;
         this.filterLogic = filterLogic;
         this.filters = filters;
         this.identity = identity;
         this.mode = mode;
         this.name = name;
+        this.onlyEnrichUpdates = onlyEnrichUpdates;
         this.organizationId = organizationId;
         this.overrideFields = overrideFields;
         this.overrides = overrides;
         this.policies = policies;
         this.schedule = schedule;
+        this.skipInitialBackfill = skipInitialBackfill;
         this.syncAllRecords = syncAllRecords;
         this.target = target;
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether the sync is enabled and scheduled.
+     */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
     }
 
-    @JsonProperty("enricher")
-    public Optional<Enrichment> getEnricher() {
-        return enricher;
+    /**
+     * @return Passphrase for encrypting the sync data.
+     */
+    @JsonProperty("encryption_passphrase")
+    public Optional<String> getEncryptionPassphrase() {
+        return encryptionPassphrase;
     }
 
     /**
-     * @return Fields to sync from source to target.
+     * @return Fields to sync from source to destination.
      */
     @JsonProperty("fields")
     public List<ModelSyncField> getFields() {
         return fields;
     }
 
+    /**
+     * @return Logical expression to combine filters.
+     */
     @JsonProperty("filter_logic")
     public Optional<String> getFilterLogic() {
         return filterLogic;
     }
 
+    /**
+     * @return Filters to apply to the source data.
+     */
     @JsonProperty("filters")
     public Optional<List<Filter>> getFilters() {
         return filters;
@@ -130,7 +150,7 @@ public final class CreateModelSyncRequest {
     }
 
     @JsonProperty("mode")
-    public String getMode() {
+    public ModelSyncMode getMode() {
         return mode;
     }
 
@@ -139,6 +159,17 @@ public final class CreateModelSyncRequest {
         return name;
     }
 
+    /**
+     * @return Whether to use enrichment models as a source of possible changes to sync. If true, only changes to the base models will cause a record to sync.
+     */
+    @JsonProperty("only_enrich_updates")
+    public Optional<Boolean> getOnlyEnrichUpdates() {
+        return onlyEnrichUpdates;
+    }
+
+    /**
+     * @return Organization ID for the sync; read-only with a partner key.
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
@@ -170,6 +201,17 @@ public final class CreateModelSyncRequest {
         return schedule;
     }
 
+    /**
+     * @return Whether to skip the initial backfill of records; if true only records seen after the sync is enabled will be synced.
+     */
+    @JsonProperty("skip_initial_backfill")
+    public Optional<Boolean> getSkipInitialBackfill() {
+        return skipInitialBackfill;
+    }
+
+    /**
+     * @return Whether to sync all records from the source, regardless of whether they've changed since the previous execution.
+     */
     @JsonProperty("sync_all_records")
     public Optional<Boolean> getSyncAllRecords() {
         return syncAllRecords;
@@ -193,18 +235,20 @@ public final class CreateModelSyncRequest {
 
     private boolean equalTo(CreateModelSyncRequest other) {
         return active.equals(other.active)
-                && enricher.equals(other.enricher)
+                && encryptionPassphrase.equals(other.encryptionPassphrase)
                 && fields.equals(other.fields)
                 && filterLogic.equals(other.filterLogic)
                 && filters.equals(other.filters)
                 && identity.equals(other.identity)
                 && mode.equals(other.mode)
                 && name.equals(other.name)
+                && onlyEnrichUpdates.equals(other.onlyEnrichUpdates)
                 && organizationId.equals(other.organizationId)
                 && overrideFields.equals(other.overrideFields)
                 && overrides.equals(other.overrides)
                 && policies.equals(other.policies)
                 && schedule.equals(other.schedule)
+                && skipInitialBackfill.equals(other.skipInitialBackfill)
                 && syncAllRecords.equals(other.syncAllRecords)
                 && target.equals(other.target);
     }
@@ -213,18 +257,20 @@ public final class CreateModelSyncRequest {
     public int hashCode() {
         return Objects.hash(
                 this.active,
-                this.enricher,
+                this.encryptionPassphrase,
                 this.fields,
                 this.filterLogic,
                 this.filters,
                 this.identity,
                 this.mode,
                 this.name,
+                this.onlyEnrichUpdates,
                 this.organizationId,
                 this.overrideFields,
                 this.overrides,
                 this.policies,
                 this.schedule,
+                this.skipInitialBackfill,
                 this.syncAllRecords,
                 this.target);
     }
@@ -239,7 +285,7 @@ public final class CreateModelSyncRequest {
     }
 
     public interface ModeStage {
-        NameStage mode(String mode);
+        NameStage mode(ModelSyncMode mode);
 
         Builder from(CreateModelSyncRequest other);
     }
@@ -263,9 +309,9 @@ public final class CreateModelSyncRequest {
 
         _FinalStage active(Boolean active);
 
-        _FinalStage enricher(Optional<Enrichment> enricher);
+        _FinalStage encryptionPassphrase(Optional<String> encryptionPassphrase);
 
-        _FinalStage enricher(Enrichment enricher);
+        _FinalStage encryptionPassphrase(String encryptionPassphrase);
 
         _FinalStage fields(List<ModelSyncField> fields);
 
@@ -285,6 +331,10 @@ public final class CreateModelSyncRequest {
 
         _FinalStage identity(Identity identity);
 
+        _FinalStage onlyEnrichUpdates(Optional<Boolean> onlyEnrichUpdates);
+
+        _FinalStage onlyEnrichUpdates(Boolean onlyEnrichUpdates);
+
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
@@ -301,6 +351,10 @@ public final class CreateModelSyncRequest {
 
         _FinalStage policies(List<String> policies);
 
+        _FinalStage skipInitialBackfill(Optional<Boolean> skipInitialBackfill);
+
+        _FinalStage skipInitialBackfill(Boolean skipInitialBackfill);
+
         _FinalStage syncAllRecords(Optional<Boolean> syncAllRecords);
 
         _FinalStage syncAllRecords(Boolean syncAllRecords);
@@ -308,7 +362,7 @@ public final class CreateModelSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements ModeStage, NameStage, ScheduleStage, TargetStage, _FinalStage {
-        private String mode;
+        private ModelSyncMode mode;
 
         private String name;
 
@@ -318,6 +372,8 @@ public final class CreateModelSyncRequest {
 
         private Optional<Boolean> syncAllRecords = Optional.empty();
 
+        private Optional<Boolean> skipInitialBackfill = Optional.empty();
+
         private Optional<List<String>> policies = Optional.empty();
 
         private Optional<List<Override>> overrides = Optional.empty();
@@ -325,6 +381,8 @@ public final class CreateModelSyncRequest {
         private Optional<List<ModelSyncField>> overrideFields = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
+
+        private Optional<Boolean> onlyEnrichUpdates = Optional.empty();
 
         private Optional<Identity> identity = Optional.empty();
 
@@ -334,7 +392,7 @@ public final class CreateModelSyncRequest {
 
         private List<ModelSyncField> fields = new ArrayList<>();
 
-        private Optional<Enrichment> enricher = Optional.empty();
+        private Optional<String> encryptionPassphrase = Optional.empty();
 
         private Optional<Boolean> active = Optional.empty();
 
@@ -346,18 +404,20 @@ public final class CreateModelSyncRequest {
         @java.lang.Override
         public Builder from(CreateModelSyncRequest other) {
             active(other.getActive());
-            enricher(other.getEnricher());
+            encryptionPassphrase(other.getEncryptionPassphrase());
             fields(other.getFields());
             filterLogic(other.getFilterLogic());
             filters(other.getFilters());
             identity(other.getIdentity());
             mode(other.getMode());
             name(other.getName());
+            onlyEnrichUpdates(other.getOnlyEnrichUpdates());
             organizationId(other.getOrganizationId());
             overrideFields(other.getOverrideFields());
             overrides(other.getOverrides());
             policies(other.getPolicies());
             schedule(other.getSchedule());
+            skipInitialBackfill(other.getSkipInitialBackfill());
             syncAllRecords(other.getSyncAllRecords());
             target(other.getTarget());
             return this;
@@ -365,7 +425,7 @@ public final class CreateModelSyncRequest {
 
         @java.lang.Override
         @JsonSetter("mode")
-        public NameStage mode(String mode) {
+        public NameStage mode(ModelSyncMode mode) {
             this.mode = mode;
             return this;
         }
@@ -391,6 +451,10 @@ public final class CreateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage syncAllRecords(Boolean syncAllRecords) {
             this.syncAllRecords = Optional.of(syncAllRecords);
@@ -401,6 +465,23 @@ public final class CreateModelSyncRequest {
         @JsonSetter(value = "sync_all_records", nulls = Nulls.SKIP)
         public _FinalStage syncAllRecords(Optional<Boolean> syncAllRecords) {
             this.syncAllRecords = syncAllRecords;
+            return this;
+        }
+
+        /**
+         * <p>Whether to skip the initial backfill of records; if true only records seen after the sync is enabled will be synced.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage skipInitialBackfill(Boolean skipInitialBackfill) {
+            this.skipInitialBackfill = Optional.of(skipInitialBackfill);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "skip_initial_backfill", nulls = Nulls.SKIP)
+        public _FinalStage skipInitialBackfill(Optional<Boolean> skipInitialBackfill) {
+            this.skipInitialBackfill = skipInitialBackfill;
             return this;
         }
 
@@ -451,6 +532,10 @@ public final class CreateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Organization ID for the sync; read-only with a partner key.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
@@ -461,6 +546,23 @@ public final class CreateModelSyncRequest {
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
+            return this;
+        }
+
+        /**
+         * <p>Whether to use enrichment models as a source of possible changes to sync. If true, only changes to the base models will cause a record to sync.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage onlyEnrichUpdates(Boolean onlyEnrichUpdates) {
+            this.onlyEnrichUpdates = Optional.of(onlyEnrichUpdates);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "only_enrich_updates", nulls = Nulls.SKIP)
+        public _FinalStage onlyEnrichUpdates(Optional<Boolean> onlyEnrichUpdates) {
+            this.onlyEnrichUpdates = onlyEnrichUpdates;
             return this;
         }
 
@@ -477,6 +579,10 @@ public final class CreateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Filters to apply to the source data.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage filters(List<Filter> filters) {
             this.filters = Optional.of(filters);
@@ -490,6 +596,10 @@ public final class CreateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Logical expression to combine filters.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage filterLogic(String filterLogic) {
             this.filterLogic = Optional.of(filterLogic);
@@ -504,7 +614,7 @@ public final class CreateModelSyncRequest {
         }
 
         /**
-         * <p>Fields to sync from source to target.</p>
+         * <p>Fields to sync from source to destination.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -514,7 +624,7 @@ public final class CreateModelSyncRequest {
         }
 
         /**
-         * <p>Fields to sync from source to target.</p>
+         * <p>Fields to sync from source to destination.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -531,19 +641,27 @@ public final class CreateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Passphrase for encrypting the sync data.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage enricher(Enrichment enricher) {
-            this.enricher = Optional.of(enricher);
+        public _FinalStage encryptionPassphrase(String encryptionPassphrase) {
+            this.encryptionPassphrase = Optional.of(encryptionPassphrase);
             return this;
         }
 
         @java.lang.Override
-        @JsonSetter(value = "enricher", nulls = Nulls.SKIP)
-        public _FinalStage enricher(Optional<Enrichment> enricher) {
-            this.enricher = enricher;
+        @JsonSetter(value = "encryption_passphrase", nulls = Nulls.SKIP)
+        public _FinalStage encryptionPassphrase(Optional<String> encryptionPassphrase) {
+            this.encryptionPassphrase = encryptionPassphrase;
             return this;
         }
 
+        /**
+         * <p>Whether the sync is enabled and scheduled.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage active(Boolean active) {
             this.active = Optional.of(active);
@@ -561,18 +679,20 @@ public final class CreateModelSyncRequest {
         public CreateModelSyncRequest build() {
             return new CreateModelSyncRequest(
                     active,
-                    enricher,
+                    encryptionPassphrase,
                     fields,
                     filterLogic,
                     filters,
                     identity,
                     mode,
                     name,
+                    onlyEnrichUpdates,
                     organizationId,
                     overrideFields,
                     overrides,
                     policies,
                     schedule,
+                    skipInitialBackfill,
                     syncAllRecords,
                     target,
                     additionalProperties);

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.SyncMode;
+import com.polytomic.api.types.ModelSyncMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public final class ModelSyncListRequest {
     private final Optional<Boolean> active;
 
-    private final Optional<SyncMode> mode;
+    private final Optional<ModelSyncMode> mode;
 
     private final Optional<String> targetConnectionId;
 
@@ -31,7 +31,7 @@ public final class ModelSyncListRequest {
 
     private ModelSyncListRequest(
             Optional<Boolean> active,
-            Optional<SyncMode> mode,
+            Optional<ModelSyncMode> mode,
             Optional<String> targetConnectionId,
             Map<String, Object> additionalProperties) {
         this.active = active;
@@ -46,7 +46,7 @@ public final class ModelSyncListRequest {
     }
 
     @JsonProperty("mode")
-    public Optional<SyncMode> getMode() {
+    public Optional<ModelSyncMode> getMode() {
         return mode;
     }
 
@@ -90,7 +90,7 @@ public final class ModelSyncListRequest {
     public static final class Builder {
         private Optional<Boolean> active = Optional.empty();
 
-        private Optional<SyncMode> mode = Optional.empty();
+        private Optional<ModelSyncMode> mode = Optional.empty();
 
         private Optional<String> targetConnectionId = Optional.empty();
 
@@ -118,12 +118,12 @@ public final class ModelSyncListRequest {
         }
 
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public Builder mode(Optional<SyncMode> mode) {
+        public Builder mode(Optional<ModelSyncMode> mode) {
             this.mode = mode;
             return this;
         }
 
-        public Builder mode(SyncMode mode) {
+        public Builder mode(ModelSyncMode mode) {
             this.mode = Optional.of(mode);
             return this;
         }

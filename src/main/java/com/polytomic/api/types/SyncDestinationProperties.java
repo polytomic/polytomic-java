@@ -34,6 +34,8 @@ public final class SyncDestinationProperties {
 
     private final Optional<Boolean> supportsFieldCreation;
 
+    private final Optional<Boolean> supportsFieldEncryption;
+
     private final Optional<Boolean> supportsFieldTypeSelection;
 
     private final Optional<Boolean> supportsIdentityFieldCreation;
@@ -54,6 +56,7 @@ public final class SyncDestinationProperties {
             Optional<String> primaryMetadataObject,
             Optional<Boolean> requiresConfiguration,
             Optional<Boolean> supportsFieldCreation,
+            Optional<Boolean> supportsFieldEncryption,
             Optional<Boolean> supportsFieldTypeSelection,
             Optional<Boolean> supportsIdentityFieldCreation,
             Optional<Boolean> supportsTargetFilters,
@@ -67,6 +70,7 @@ public final class SyncDestinationProperties {
         this.primaryMetadataObject = primaryMetadataObject;
         this.requiresConfiguration = requiresConfiguration;
         this.supportsFieldCreation = supportsFieldCreation;
+        this.supportsFieldEncryption = supportsFieldEncryption;
         this.supportsFieldTypeSelection = supportsFieldTypeSelection;
         this.supportsIdentityFieldCreation = supportsIdentityFieldCreation;
         this.supportsTargetFilters = supportsTargetFilters;
@@ -108,6 +112,11 @@ public final class SyncDestinationProperties {
     @JsonProperty("supports_field_creation")
     public Optional<Boolean> getSupportsFieldCreation() {
         return supportsFieldCreation;
+    }
+
+    @JsonProperty("supports_field_encryption")
+    public Optional<Boolean> getSupportsFieldEncryption() {
+        return supportsFieldEncryption;
     }
 
     @JsonProperty("supports_field_type_selection")
@@ -154,6 +163,7 @@ public final class SyncDestinationProperties {
                 && primaryMetadataObject.equals(other.primaryMetadataObject)
                 && requiresConfiguration.equals(other.requiresConfiguration)
                 && supportsFieldCreation.equals(other.supportsFieldCreation)
+                && supportsFieldEncryption.equals(other.supportsFieldEncryption)
                 && supportsFieldTypeSelection.equals(other.supportsFieldTypeSelection)
                 && supportsIdentityFieldCreation.equals(other.supportsIdentityFieldCreation)
                 && supportsTargetFilters.equals(other.supportsTargetFilters)
@@ -171,6 +181,7 @@ public final class SyncDestinationProperties {
                 this.primaryMetadataObject,
                 this.requiresConfiguration,
                 this.supportsFieldCreation,
+                this.supportsFieldEncryption,
                 this.supportsFieldTypeSelection,
                 this.supportsIdentityFieldCreation,
                 this.supportsTargetFilters,
@@ -203,6 +214,8 @@ public final class SyncDestinationProperties {
 
         private Optional<Boolean> supportsFieldCreation = Optional.empty();
 
+        private Optional<Boolean> supportsFieldEncryption = Optional.empty();
+
         private Optional<Boolean> supportsFieldTypeSelection = Optional.empty();
 
         private Optional<Boolean> supportsIdentityFieldCreation = Optional.empty();
@@ -226,6 +239,7 @@ public final class SyncDestinationProperties {
             primaryMetadataObject(other.getPrimaryMetadataObject());
             requiresConfiguration(other.getRequiresConfiguration());
             supportsFieldCreation(other.getSupportsFieldCreation());
+            supportsFieldEncryption(other.getSupportsFieldEncryption());
             supportsFieldTypeSelection(other.getSupportsFieldTypeSelection());
             supportsIdentityFieldCreation(other.getSupportsIdentityFieldCreation());
             supportsTargetFilters(other.getSupportsTargetFilters());
@@ -311,6 +325,17 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        @JsonSetter(value = "supports_field_encryption", nulls = Nulls.SKIP)
+        public Builder supportsFieldEncryption(Optional<Boolean> supportsFieldEncryption) {
+            this.supportsFieldEncryption = supportsFieldEncryption;
+            return this;
+        }
+
+        public Builder supportsFieldEncryption(Boolean supportsFieldEncryption) {
+            this.supportsFieldEncryption = Optional.of(supportsFieldEncryption);
+            return this;
+        }
+
         @JsonSetter(value = "supports_field_type_selection", nulls = Nulls.SKIP)
         public Builder supportsFieldTypeSelection(Optional<Boolean> supportsFieldTypeSelection) {
             this.supportsFieldTypeSelection = supportsFieldTypeSelection;
@@ -375,6 +400,7 @@ public final class SyncDestinationProperties {
                     primaryMetadataObject,
                     requiresConfiguration,
                     supportsFieldCreation,
+                    supportsFieldEncryption,
                     supportsFieldTypeSelection,
                     supportsIdentityFieldCreation,
                     supportsTargetFilters,

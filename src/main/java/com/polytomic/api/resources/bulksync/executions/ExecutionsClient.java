@@ -8,6 +8,7 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsExportLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListStatusRequest;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
 import com.polytomic.api.types.ListBulkSyncExecutionStatusEnvelope;
@@ -79,22 +80,39 @@ public class ExecutionsClient {
     }
 
     public ListBulkSyncExecutionsEnvelope list(String id) {
-        return list(id, null);
+        return list(id, ExecutionsListRequest.builder().build());
     }
 
-    public ListBulkSyncExecutionsEnvelope list(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+    public ListBulkSyncExecutionsEnvelope list(String id, ExecutionsListRequest request) {
+        return list(id, request, null);
+    }
+
+    public ListBulkSyncExecutionsEnvelope list(
+            String id, ExecutionsListRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
                 .addPathSegment(id)
-                .addPathSegments("executions")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
+                .addPathSegments("executions");
+        if (request.getPageToken().isPresent()) {
+            httpUrl.addQueryParameter("page_token", request.getPageToken().get());
+        }
+        if (request.getOnlyTerminal().isPresent()) {
+            httpUrl.addQueryParameter(
+                    "only_terminal", request.getOnlyTerminal().get().toString());
+        }
+        if (request.getAscending().isPresent()) {
+            httpUrl.addQueryParameter("ascending", request.getAscending().get().toString());
+        }
+        if (request.getLimit().isPresent()) {
+            httpUrl.addQueryParameter("limit", request.getLimit().get().toString());
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

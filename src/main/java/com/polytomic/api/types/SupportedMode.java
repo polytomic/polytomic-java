@@ -20,7 +20,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = SupportedMode.Builder.class)
 public final class SupportedMode {
-    private final Optional<SyncMode> id;
+    private final Optional<ModelSyncMode> id;
 
     private final Optional<Boolean> requiresIdentity;
 
@@ -31,7 +31,7 @@ public final class SupportedMode {
     private final Map<String, Object> additionalProperties;
 
     private SupportedMode(
-            Optional<SyncMode> id,
+            Optional<ModelSyncMode> id,
             Optional<Boolean> requiresIdentity,
             Optional<Boolean> supportsPerFieldMode,
             Optional<Boolean> supportsTargetFilters,
@@ -44,7 +44,7 @@ public final class SupportedMode {
     }
 
     @JsonProperty("id")
-    public Optional<SyncMode> getId() {
+    public Optional<ModelSyncMode> getId() {
         return id;
     }
 
@@ -106,7 +106,7 @@ public final class SupportedMode {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<SyncMode> id = Optional.empty();
+        private Optional<ModelSyncMode> id = Optional.empty();
 
         private Optional<Boolean> requiresIdentity = Optional.empty();
 
@@ -128,12 +128,12 @@ public final class SupportedMode {
         }
 
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
-        public Builder id(Optional<SyncMode> id) {
+        public Builder id(Optional<ModelSyncMode> id) {
             this.id = id;
             return this;
         }
 
-        public Builder id(SyncMode id) {
+        public Builder id(ModelSyncMode id) {
             this.id = Optional.of(id);
             return this;
         }

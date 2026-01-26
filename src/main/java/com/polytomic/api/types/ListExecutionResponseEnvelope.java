@@ -23,17 +23,27 @@ import java.util.Optional;
 public final class ListExecutionResponseEnvelope {
     private final Optional<List<GetExecutionResponseSchema>> data;
 
+    private final Optional<PaginationDetails> pagination;
+
     private final Map<String, Object> additionalProperties;
 
     private ListExecutionResponseEnvelope(
-            Optional<List<GetExecutionResponseSchema>> data, Map<String, Object> additionalProperties) {
+            Optional<List<GetExecutionResponseSchema>> data,
+            Optional<PaginationDetails> pagination,
+            Map<String, Object> additionalProperties) {
         this.data = data;
+        this.pagination = pagination;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
     public Optional<List<GetExecutionResponseSchema>> getData() {
         return data;
+    }
+
+    @JsonProperty("pagination")
+    public Optional<PaginationDetails> getPagination() {
+        return pagination;
     }
 
     @java.lang.Override
@@ -48,12 +58,12 @@ public final class ListExecutionResponseEnvelope {
     }
 
     private boolean equalTo(ListExecutionResponseEnvelope other) {
-        return data.equals(other.data);
+        return data.equals(other.data) && pagination.equals(other.pagination);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.data);
+        return Objects.hash(this.data, this.pagination);
     }
 
     @java.lang.Override
@@ -69,6 +79,8 @@ public final class ListExecutionResponseEnvelope {
     public static final class Builder {
         private Optional<List<GetExecutionResponseSchema>> data = Optional.empty();
 
+        private Optional<PaginationDetails> pagination = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -76,6 +88,7 @@ public final class ListExecutionResponseEnvelope {
 
         public Builder from(ListExecutionResponseEnvelope other) {
             data(other.getData());
+            pagination(other.getPagination());
             return this;
         }
 
@@ -90,8 +103,19 @@ public final class ListExecutionResponseEnvelope {
             return this;
         }
 
+        @JsonSetter(value = "pagination", nulls = Nulls.SKIP)
+        public Builder pagination(Optional<PaginationDetails> pagination) {
+            this.pagination = pagination;
+            return this;
+        }
+
+        public Builder pagination(PaginationDetails pagination) {
+            this.pagination = Optional.of(pagination);
+            return this;
+        }
+
         public ListExecutionResponseEnvelope build() {
-            return new ListExecutionResponseEnvelope(data, additionalProperties);
+            return new ListExecutionResponseEnvelope(data, pagination, additionalProperties);
         }
     }
 }

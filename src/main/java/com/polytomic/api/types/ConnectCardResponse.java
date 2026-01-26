@@ -33,6 +33,9 @@ public final class ConnectCardResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return URL to redirect the user to in order to create the new connection.
+     */
     @JsonProperty("redirect_url")
     public Optional<String> getRedirectUrl() {
         return redirectUrl;

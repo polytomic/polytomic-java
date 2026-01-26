@@ -32,7 +32,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookListEnvelope list() {
         return list(null);
@@ -42,7 +42,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookListEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -78,7 +78,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope create(CreateWebhooksSchema request) {
         return create(request, null);
@@ -88,7 +88,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope create(CreateWebhooksSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -131,7 +131,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope get(String id) {
         return get(id, null);
@@ -141,7 +141,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -178,7 +178,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope update(String id, UpdateWebhooksSchema request) {
         return update(id, request, null);
@@ -188,7 +188,7 @@ public class WebhooksClient {
      * Webooks can be set up using the webhook API endpoints. Currently, only one
      * webhook may be created per organization. The webhook will be called for events
      * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/getting-started/events">Events documentation</a> for more information.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope update(String id, UpdateWebhooksSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -252,6 +252,78 @@ public class WebhooksClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public WebhookEnvelope disable(String id) {
+        return disable(id, null);
+    }
+
+    public WebhookEnvelope disable(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/webhooks")
+                .addPathSegment(id)
+                .addPathSegments("disable")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), WebhookEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public WebhookEnvelope enable(String id) {
+        return enable(id, null);
+    }
+
+    public WebhookEnvelope enable(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/webhooks")
+                .addPathSegment(id)
+                .addPathSegments("enable")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), WebhookEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

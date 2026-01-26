@@ -28,6 +28,8 @@ public final class ModelSyncResponse {
 
     private final Optional<CommonOutputActor> createdBy;
 
+    private final Optional<String> encryptionPassphrase;
+
     private final Optional<List<ModelSyncField>> fields;
 
     private final Optional<String> filterLogic;
@@ -38,9 +40,13 @@ public final class ModelSyncResponse {
 
     private final Optional<Identity> identity;
 
-    private final Optional<String> mode;
+    private final Optional<ModelSyncMode> mode;
+
+    private final Optional<List<String>> modelIds;
 
     private final Optional<String> name;
+
+    private final Optional<Boolean> onlyEnrichUpdates;
 
     private final Optional<String> organizationId;
 
@@ -51,6 +57,8 @@ public final class ModelSyncResponse {
     private final Optional<List<String>> policies;
 
     private final Optional<Schedule> schedule;
+
+    private final Optional<Boolean> skipInitialBackfill;
 
     private final Optional<Boolean> syncAllRecords;
 
@@ -66,18 +74,22 @@ public final class ModelSyncResponse {
             Optional<Boolean> active,
             Optional<OffsetDateTime> createdAt,
             Optional<CommonOutputActor> createdBy,
+            Optional<String> encryptionPassphrase,
             Optional<List<ModelSyncField>> fields,
             Optional<String> filterLogic,
             Optional<List<Filter>> filters,
             Optional<String> id,
             Optional<Identity> identity,
-            Optional<String> mode,
+            Optional<ModelSyncMode> mode,
+            Optional<List<String>> modelIds,
             Optional<String> name,
+            Optional<Boolean> onlyEnrichUpdates,
             Optional<String> organizationId,
             Optional<List<ModelSyncField>> overrideFields,
             Optional<List<Override>> overrides,
             Optional<List<String>> policies,
             Optional<Schedule> schedule,
+            Optional<Boolean> skipInitialBackfill,
             Optional<Boolean> syncAllRecords,
             Optional<Target> target,
             Optional<OffsetDateTime> updatedAt,
@@ -86,18 +98,22 @@ public final class ModelSyncResponse {
         this.active = active;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
+        this.encryptionPassphrase = encryptionPassphrase;
         this.fields = fields;
         this.filterLogic = filterLogic;
         this.filters = filters;
         this.id = id;
         this.identity = identity;
         this.mode = mode;
+        this.modelIds = modelIds;
         this.name = name;
+        this.onlyEnrichUpdates = onlyEnrichUpdates;
         this.organizationId = organizationId;
         this.overrideFields = overrideFields;
         this.overrides = overrides;
         this.policies = policies;
         this.schedule = schedule;
+        this.skipInitialBackfill = skipInitialBackfill;
         this.syncAllRecords = syncAllRecords;
         this.target = target;
         this.updatedAt = updatedAt;
@@ -118,6 +134,11 @@ public final class ModelSyncResponse {
     @JsonProperty("created_by")
     public Optional<CommonOutputActor> getCreatedBy() {
         return createdBy;
+    }
+
+    @JsonProperty("encryption_passphrase")
+    public Optional<String> getEncryptionPassphrase() {
+        return encryptionPassphrase;
     }
 
     @JsonProperty("fields")
@@ -146,13 +167,26 @@ public final class ModelSyncResponse {
     }
 
     @JsonProperty("mode")
-    public Optional<String> getMode() {
+    public Optional<ModelSyncMode> getMode() {
         return mode;
+    }
+
+    /**
+     * @return Model IDs used in the sync.
+     */
+    @JsonProperty("model_ids")
+    public Optional<List<String>> getModelIds() {
+        return modelIds;
     }
 
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
+    }
+
+    @JsonProperty("only_enrich_updates")
+    public Optional<Boolean> getOnlyEnrichUpdates() {
+        return onlyEnrichUpdates;
     }
 
     @JsonProperty("organization_id")
@@ -178,6 +212,11 @@ public final class ModelSyncResponse {
     @JsonProperty("schedule")
     public Optional<Schedule> getSchedule() {
         return schedule;
+    }
+
+    @JsonProperty("skip_initial_backfill")
+    public Optional<Boolean> getSkipInitialBackfill() {
+        return skipInitialBackfill;
     }
 
     @JsonProperty("sync_all_records")
@@ -215,18 +254,22 @@ public final class ModelSyncResponse {
         return active.equals(other.active)
                 && createdAt.equals(other.createdAt)
                 && createdBy.equals(other.createdBy)
+                && encryptionPassphrase.equals(other.encryptionPassphrase)
                 && fields.equals(other.fields)
                 && filterLogic.equals(other.filterLogic)
                 && filters.equals(other.filters)
                 && id.equals(other.id)
                 && identity.equals(other.identity)
                 && mode.equals(other.mode)
+                && modelIds.equals(other.modelIds)
                 && name.equals(other.name)
+                && onlyEnrichUpdates.equals(other.onlyEnrichUpdates)
                 && organizationId.equals(other.organizationId)
                 && overrideFields.equals(other.overrideFields)
                 && overrides.equals(other.overrides)
                 && policies.equals(other.policies)
                 && schedule.equals(other.schedule)
+                && skipInitialBackfill.equals(other.skipInitialBackfill)
                 && syncAllRecords.equals(other.syncAllRecords)
                 && target.equals(other.target)
                 && updatedAt.equals(other.updatedAt)
@@ -239,18 +282,22 @@ public final class ModelSyncResponse {
                 this.active,
                 this.createdAt,
                 this.createdBy,
+                this.encryptionPassphrase,
                 this.fields,
                 this.filterLogic,
                 this.filters,
                 this.id,
                 this.identity,
                 this.mode,
+                this.modelIds,
                 this.name,
+                this.onlyEnrichUpdates,
                 this.organizationId,
                 this.overrideFields,
                 this.overrides,
                 this.policies,
                 this.schedule,
+                this.skipInitialBackfill,
                 this.syncAllRecords,
                 this.target,
                 this.updatedAt,
@@ -274,6 +321,8 @@ public final class ModelSyncResponse {
 
         private Optional<CommonOutputActor> createdBy = Optional.empty();
 
+        private Optional<String> encryptionPassphrase = Optional.empty();
+
         private Optional<List<ModelSyncField>> fields = Optional.empty();
 
         private Optional<String> filterLogic = Optional.empty();
@@ -284,9 +333,13 @@ public final class ModelSyncResponse {
 
         private Optional<Identity> identity = Optional.empty();
 
-        private Optional<String> mode = Optional.empty();
+        private Optional<ModelSyncMode> mode = Optional.empty();
+
+        private Optional<List<String>> modelIds = Optional.empty();
 
         private Optional<String> name = Optional.empty();
+
+        private Optional<Boolean> onlyEnrichUpdates = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
 
@@ -297,6 +350,8 @@ public final class ModelSyncResponse {
         private Optional<List<String>> policies = Optional.empty();
 
         private Optional<Schedule> schedule = Optional.empty();
+
+        private Optional<Boolean> skipInitialBackfill = Optional.empty();
 
         private Optional<Boolean> syncAllRecords = Optional.empty();
 
@@ -315,18 +370,22 @@ public final class ModelSyncResponse {
             active(other.getActive());
             createdAt(other.getCreatedAt());
             createdBy(other.getCreatedBy());
+            encryptionPassphrase(other.getEncryptionPassphrase());
             fields(other.getFields());
             filterLogic(other.getFilterLogic());
             filters(other.getFilters());
             id(other.getId());
             identity(other.getIdentity());
             mode(other.getMode());
+            modelIds(other.getModelIds());
             name(other.getName());
+            onlyEnrichUpdates(other.getOnlyEnrichUpdates());
             organizationId(other.getOrganizationId());
             overrideFields(other.getOverrideFields());
             overrides(other.getOverrides());
             policies(other.getPolicies());
             schedule(other.getSchedule());
+            skipInitialBackfill(other.getSkipInitialBackfill());
             syncAllRecords(other.getSyncAllRecords());
             target(other.getTarget());
             updatedAt(other.getUpdatedAt());
@@ -364,6 +423,17 @@ public final class ModelSyncResponse {
 
         public Builder createdBy(CommonOutputActor createdBy) {
             this.createdBy = Optional.of(createdBy);
+            return this;
+        }
+
+        @JsonSetter(value = "encryption_passphrase", nulls = Nulls.SKIP)
+        public Builder encryptionPassphrase(Optional<String> encryptionPassphrase) {
+            this.encryptionPassphrase = encryptionPassphrase;
+            return this;
+        }
+
+        public Builder encryptionPassphrase(String encryptionPassphrase) {
+            this.encryptionPassphrase = Optional.of(encryptionPassphrase);
             return this;
         }
 
@@ -423,13 +493,24 @@ public final class ModelSyncResponse {
         }
 
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public Builder mode(Optional<String> mode) {
+        public Builder mode(Optional<ModelSyncMode> mode) {
             this.mode = mode;
             return this;
         }
 
-        public Builder mode(String mode) {
+        public Builder mode(ModelSyncMode mode) {
             this.mode = Optional.of(mode);
+            return this;
+        }
+
+        @JsonSetter(value = "model_ids", nulls = Nulls.SKIP)
+        public Builder modelIds(Optional<List<String>> modelIds) {
+            this.modelIds = modelIds;
+            return this;
+        }
+
+        public Builder modelIds(List<String> modelIds) {
+            this.modelIds = Optional.of(modelIds);
             return this;
         }
 
@@ -441,6 +522,17 @@ public final class ModelSyncResponse {
 
         public Builder name(String name) {
             this.name = Optional.of(name);
+            return this;
+        }
+
+        @JsonSetter(value = "only_enrich_updates", nulls = Nulls.SKIP)
+        public Builder onlyEnrichUpdates(Optional<Boolean> onlyEnrichUpdates) {
+            this.onlyEnrichUpdates = onlyEnrichUpdates;
+            return this;
+        }
+
+        public Builder onlyEnrichUpdates(Boolean onlyEnrichUpdates) {
+            this.onlyEnrichUpdates = Optional.of(onlyEnrichUpdates);
             return this;
         }
 
@@ -499,6 +591,17 @@ public final class ModelSyncResponse {
             return this;
         }
 
+        @JsonSetter(value = "skip_initial_backfill", nulls = Nulls.SKIP)
+        public Builder skipInitialBackfill(Optional<Boolean> skipInitialBackfill) {
+            this.skipInitialBackfill = skipInitialBackfill;
+            return this;
+        }
+
+        public Builder skipInitialBackfill(Boolean skipInitialBackfill) {
+            this.skipInitialBackfill = Optional.of(skipInitialBackfill);
+            return this;
+        }
+
         @JsonSetter(value = "sync_all_records", nulls = Nulls.SKIP)
         public Builder syncAllRecords(Optional<Boolean> syncAllRecords) {
             this.syncAllRecords = syncAllRecords;
@@ -548,18 +651,22 @@ public final class ModelSyncResponse {
                     active,
                     createdAt,
                     createdBy,
+                    encryptionPassphrase,
                     fields,
                     filterLogic,
                     filters,
                     id,
                     identity,
                     mode,
+                    modelIds,
                     name,
+                    onlyEnrichUpdates,
                     organizationId,
                     overrideFields,
                     overrides,
                     policies,
                     schedule,
+                    skipInitialBackfill,
                     syncAllRecords,
                     target,
                     updatedAt,

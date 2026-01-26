@@ -10,7 +10,11 @@ public enum SchemaIdentityFunction {
 
     I_SUBSTRING("ISubstring"),
 
-    ONE_OF("OneOf");
+    ONE_OF("OneOf"),
+
+    DOMAIN_MATCH("DomainMatch"),
+
+    HOSTNAME_MATCH("HostnameMatch");
 
     private final String value;
 

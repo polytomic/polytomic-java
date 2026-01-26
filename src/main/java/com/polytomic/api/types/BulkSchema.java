@@ -40,6 +40,8 @@ public final class BulkSchema {
 
     private final Optional<String> trackingField;
 
+    private final Optional<String> userOutputName;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSchema(
@@ -52,6 +54,7 @@ public final class BulkSchema {
             Optional<String> outputName,
             Optional<String> partitionKey,
             Optional<String> trackingField,
+            Optional<String> userOutputName,
             Map<String, Object> additionalProperties) {
         this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.disableDataCutoff = disableDataCutoff;
@@ -62,6 +65,7 @@ public final class BulkSchema {
         this.outputName = outputName;
         this.partitionKey = partitionKey;
         this.trackingField = trackingField;
+        this.userOutputName = userOutputName;
         this.additionalProperties = additionalProperties;
     }
 
@@ -110,6 +114,11 @@ public final class BulkSchema {
         return trackingField;
     }
 
+    @JsonProperty("user_output_name")
+    public Optional<String> getUserOutputName() {
+        return userOutputName;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -130,7 +139,8 @@ public final class BulkSchema {
                 && id.equals(other.id)
                 && outputName.equals(other.outputName)
                 && partitionKey.equals(other.partitionKey)
-                && trackingField.equals(other.trackingField);
+                && trackingField.equals(other.trackingField)
+                && userOutputName.equals(other.userOutputName);
     }
 
     @java.lang.Override
@@ -144,7 +154,8 @@ public final class BulkSchema {
                 this.id,
                 this.outputName,
                 this.partitionKey,
-                this.trackingField);
+                this.trackingField,
+                this.userOutputName);
     }
 
     @java.lang.Override
@@ -176,6 +187,8 @@ public final class BulkSchema {
 
         private Optional<String> trackingField = Optional.empty();
 
+        private Optional<String> userOutputName = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -191,6 +204,7 @@ public final class BulkSchema {
             outputName(other.getOutputName());
             partitionKey(other.getPartitionKey());
             trackingField(other.getTrackingField());
+            userOutputName(other.getUserOutputName());
             return this;
         }
 
@@ -293,6 +307,17 @@ public final class BulkSchema {
             return this;
         }
 
+        @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
+        public Builder userOutputName(Optional<String> userOutputName) {
+            this.userOutputName = userOutputName;
+            return this;
+        }
+
+        public Builder userOutputName(String userOutputName) {
+            this.userOutputName = Optional.of(userOutputName);
+            return this;
+        }
+
         public BulkSchema build() {
             return new BulkSchema(
                     dataCutoffTimestamp,
@@ -304,6 +329,7 @@ public final class BulkSchema {
                     outputName,
                     partitionKey,
                     trackingField,
+                    userOutputName,
                     additionalProperties);
         }
     }

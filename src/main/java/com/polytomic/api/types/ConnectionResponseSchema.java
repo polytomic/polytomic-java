@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,10 @@ public final class ConnectionResponseSchema {
 
     private final Optional<Map<String, Object>> configuration;
 
+    private final Optional<OffsetDateTime> createdAt;
+
+    private final Optional<CommonOutputActor> createdBy;
+
     private final Optional<String> id;
 
     private final Optional<String> name;
@@ -33,34 +38,50 @@ public final class ConnectionResponseSchema {
 
     private final Optional<List<String>> policies;
 
+    private final Optional<Boolean> saved;
+
     private final Optional<String> status;
 
     private final Optional<String> statusError;
 
     private final Optional<ConnectionTypeSchema> type;
 
+    private final Optional<OffsetDateTime> updatedAt;
+
+    private final Optional<CommonOutputActor> updatedBy;
+
     private final Map<String, Object> additionalProperties;
 
     private ConnectionResponseSchema(
             Optional<Integer> apiCallsLast24Hours,
             Optional<Map<String, Object>> configuration,
+            Optional<OffsetDateTime> createdAt,
+            Optional<CommonOutputActor> createdBy,
             Optional<String> id,
             Optional<String> name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
+            Optional<Boolean> saved,
             Optional<String> status,
             Optional<String> statusError,
             Optional<ConnectionTypeSchema> type,
+            Optional<OffsetDateTime> updatedAt,
+            Optional<CommonOutputActor> updatedBy,
             Map<String, Object> additionalProperties) {
         this.apiCallsLast24Hours = apiCallsLast24Hours;
         this.configuration = configuration;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
         this.id = id;
         this.name = name;
         this.organizationId = organizationId;
         this.policies = policies;
+        this.saved = saved;
         this.status = status;
         this.statusError = statusError;
         this.type = type;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
         this.additionalProperties = additionalProperties;
     }
 
@@ -75,6 +96,16 @@ public final class ConnectionResponseSchema {
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
+    }
+
+    @JsonProperty("created_at")
+    public Optional<OffsetDateTime> getCreatedAt() {
+        return createdAt;
+    }
+
+    @JsonProperty("created_by")
+    public Optional<CommonOutputActor> getCreatedBy() {
+        return createdBy;
     }
 
     @JsonProperty("id")
@@ -97,6 +128,11 @@ public final class ConnectionResponseSchema {
         return policies;
     }
 
+    @JsonProperty("saved")
+    public Optional<Boolean> getSaved() {
+        return saved;
+    }
+
     @JsonProperty("status")
     public Optional<String> getStatus() {
         return status;
@@ -110,6 +146,16 @@ public final class ConnectionResponseSchema {
     @JsonProperty("type")
     public Optional<ConnectionTypeSchema> getType() {
         return type;
+    }
+
+    @JsonProperty("updated_at")
+    public Optional<OffsetDateTime> getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @JsonProperty("updated_by")
+    public Optional<CommonOutputActor> getUpdatedBy() {
+        return updatedBy;
     }
 
     @java.lang.Override
@@ -126,13 +172,18 @@ public final class ConnectionResponseSchema {
     private boolean equalTo(ConnectionResponseSchema other) {
         return apiCallsLast24Hours.equals(other.apiCallsLast24Hours)
                 && configuration.equals(other.configuration)
+                && createdAt.equals(other.createdAt)
+                && createdBy.equals(other.createdBy)
                 && id.equals(other.id)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
+                && saved.equals(other.saved)
                 && status.equals(other.status)
                 && statusError.equals(other.statusError)
-                && type.equals(other.type);
+                && type.equals(other.type)
+                && updatedAt.equals(other.updatedAt)
+                && updatedBy.equals(other.updatedBy);
     }
 
     @java.lang.Override
@@ -140,13 +191,18 @@ public final class ConnectionResponseSchema {
         return Objects.hash(
                 this.apiCallsLast24Hours,
                 this.configuration,
+                this.createdAt,
+                this.createdBy,
                 this.id,
                 this.name,
                 this.organizationId,
                 this.policies,
+                this.saved,
                 this.status,
                 this.statusError,
-                this.type);
+                this.type,
+                this.updatedAt,
+                this.updatedBy);
     }
 
     @java.lang.Override
@@ -164,6 +220,10 @@ public final class ConnectionResponseSchema {
 
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
+        private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<CommonOutputActor> createdBy = Optional.empty();
+
         private Optional<String> id = Optional.empty();
 
         private Optional<String> name = Optional.empty();
@@ -172,11 +232,17 @@ public final class ConnectionResponseSchema {
 
         private Optional<List<String>> policies = Optional.empty();
 
+        private Optional<Boolean> saved = Optional.empty();
+
         private Optional<String> status = Optional.empty();
 
         private Optional<String> statusError = Optional.empty();
 
         private Optional<ConnectionTypeSchema> type = Optional.empty();
+
+        private Optional<OffsetDateTime> updatedAt = Optional.empty();
+
+        private Optional<CommonOutputActor> updatedBy = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -186,13 +252,18 @@ public final class ConnectionResponseSchema {
         public Builder from(ConnectionResponseSchema other) {
             apiCallsLast24Hours(other.getApiCallsLast24Hours());
             configuration(other.getConfiguration());
+            createdAt(other.getCreatedAt());
+            createdBy(other.getCreatedBy());
             id(other.getId());
             name(other.getName());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
+            saved(other.getSaved());
             status(other.getStatus());
             statusError(other.getStatusError());
             type(other.getType());
+            updatedAt(other.getUpdatedAt());
+            updatedBy(other.getUpdatedBy());
             return this;
         }
 
@@ -215,6 +286,28 @@ public final class ConnectionResponseSchema {
 
         public Builder configuration(Map<String, Object> configuration) {
             this.configuration = Optional.of(configuration);
+            return this;
+        }
+
+        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
+        public Builder createdAt(Optional<OffsetDateTime> createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = Optional.of(createdAt);
+            return this;
+        }
+
+        @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
+        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+            this.createdBy = createdBy;
+            return this;
+        }
+
+        public Builder createdBy(CommonOutputActor createdBy) {
+            this.createdBy = Optional.of(createdBy);
             return this;
         }
 
@@ -262,6 +355,17 @@ public final class ConnectionResponseSchema {
             return this;
         }
 
+        @JsonSetter(value = "saved", nulls = Nulls.SKIP)
+        public Builder saved(Optional<Boolean> saved) {
+            this.saved = saved;
+            return this;
+        }
+
+        public Builder saved(Boolean saved) {
+            this.saved = Optional.of(saved);
+            return this;
+        }
+
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<String> status) {
             this.status = status;
@@ -295,17 +399,44 @@ public final class ConnectionResponseSchema {
             return this;
         }
 
+        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
+        public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Builder updatedAt(OffsetDateTime updatedAt) {
+            this.updatedAt = Optional.of(updatedAt);
+            return this;
+        }
+
+        @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
+        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+            this.updatedBy = updatedBy;
+            return this;
+        }
+
+        public Builder updatedBy(CommonOutputActor updatedBy) {
+            this.updatedBy = Optional.of(updatedBy);
+            return this;
+        }
+
         public ConnectionResponseSchema build() {
             return new ConnectionResponseSchema(
                     apiCallsLast24Hours,
                     configuration,
+                    createdAt,
+                    createdBy,
                     id,
                     name,
                     organizationId,
                     policies,
+                    saved,
                     status,
                     statusError,
                     type,
+                    updatedAt,
+                    updatedBy,
                     additionalProperties);
         }
     }

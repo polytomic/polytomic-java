@@ -32,9 +32,13 @@ public enum FilterFunction {
 
     STRING_CONTAINS("StringContains"),
 
+    STRING_STARTS_WITH("StringStartsWith"),
+
     STRING_ENDS_WITH("StringEndsWith"),
 
     STRING_DOES_NOT_CONTAIN("StringDoesNotContain"),
+
+    STRING_DOES_NOT_START_WITH("StringDoesNotStartWith"),
 
     STRING_DOES_NOT_END_WITH("StringDoesNotEndWith"),
 

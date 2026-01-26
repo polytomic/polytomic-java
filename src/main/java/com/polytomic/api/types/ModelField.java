@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +21,10 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ModelField.Builder.class)
 public final class ModelField {
+    private final Optional<OffsetDateTime> createdAt;
+
+    private final Optional<CommonOutputActor> createdBy;
+
     private final Optional<String> description;
 
     private final Optional<Object> example;
@@ -36,11 +41,15 @@ public final class ModelField {
 
     private final Optional<Boolean> unique;
 
+    private final Optional<OffsetDateTime> updatedAt;
+
     private final Optional<Boolean> userAdded;
 
     private final Map<String, Object> additionalProperties;
 
     private ModelField(
+            Optional<OffsetDateTime> createdAt,
+            Optional<CommonOutputActor> createdBy,
             Optional<String> description,
             Optional<Object> example,
             Optional<String> id,
@@ -49,8 +58,11 @@ public final class ModelField {
             Optional<String> remoteType,
             Optional<String> type,
             Optional<Boolean> unique,
+            Optional<OffsetDateTime> updatedAt,
             Optional<Boolean> userAdded,
             Map<String, Object> additionalProperties) {
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
         this.description = description;
         this.example = example;
         this.id = id;
@@ -59,8 +71,19 @@ public final class ModelField {
         this.remoteType = remoteType;
         this.type = type;
         this.unique = unique;
+        this.updatedAt = updatedAt;
         this.userAdded = userAdded;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("created_at")
+    public Optional<OffsetDateTime> getCreatedAt() {
+        return createdAt;
+    }
+
+    @JsonProperty("created_by")
+    public Optional<CommonOutputActor> getCreatedBy() {
+        return createdBy;
     }
 
     @JsonProperty("description")
@@ -103,6 +126,11 @@ public final class ModelField {
         return unique;
     }
 
+    @JsonProperty("updated_at")
+    public Optional<OffsetDateTime> getUpdatedAt() {
+        return updatedAt;
+    }
+
     @JsonProperty("user_added")
     public Optional<Boolean> getUserAdded() {
         return userAdded;
@@ -120,7 +148,9 @@ public final class ModelField {
     }
 
     private boolean equalTo(ModelField other) {
-        return description.equals(other.description)
+        return createdAt.equals(other.createdAt)
+                && createdBy.equals(other.createdBy)
+                && description.equals(other.description)
                 && example.equals(other.example)
                 && id.equals(other.id)
                 && label.equals(other.label)
@@ -128,12 +158,15 @@ public final class ModelField {
                 && remoteType.equals(other.remoteType)
                 && type.equals(other.type)
                 && unique.equals(other.unique)
+                && updatedAt.equals(other.updatedAt)
                 && userAdded.equals(other.userAdded);
     }
 
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.createdAt,
+                this.createdBy,
                 this.description,
                 this.example,
                 this.id,
@@ -142,6 +175,7 @@ public final class ModelField {
                 this.remoteType,
                 this.type,
                 this.unique,
+                this.updatedAt,
                 this.userAdded);
     }
 
@@ -156,6 +190,10 @@ public final class ModelField {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<CommonOutputActor> createdBy = Optional.empty();
+
         private Optional<String> description = Optional.empty();
 
         private Optional<Object> example = Optional.empty();
@@ -172,6 +210,8 @@ public final class ModelField {
 
         private Optional<Boolean> unique = Optional.empty();
 
+        private Optional<OffsetDateTime> updatedAt = Optional.empty();
+
         private Optional<Boolean> userAdded = Optional.empty();
 
         @JsonAnySetter
@@ -180,6 +220,8 @@ public final class ModelField {
         private Builder() {}
 
         public Builder from(ModelField other) {
+            createdAt(other.getCreatedAt());
+            createdBy(other.getCreatedBy());
             description(other.getDescription());
             example(other.getExample());
             id(other.getId());
@@ -188,7 +230,30 @@ public final class ModelField {
             remoteType(other.getRemoteType());
             type(other.getType());
             unique(other.getUnique());
+            updatedAt(other.getUpdatedAt());
             userAdded(other.getUserAdded());
+            return this;
+        }
+
+        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
+        public Builder createdAt(Optional<OffsetDateTime> createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = Optional.of(createdAt);
+            return this;
+        }
+
+        @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
+        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+            this.createdBy = createdBy;
+            return this;
+        }
+
+        public Builder createdBy(CommonOutputActor createdBy) {
+            this.createdBy = Optional.of(createdBy);
             return this;
         }
 
@@ -280,6 +345,17 @@ public final class ModelField {
             return this;
         }
 
+        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
+        public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Builder updatedAt(OffsetDateTime updatedAt) {
+            this.updatedAt = Optional.of(updatedAt);
+            return this;
+        }
+
         @JsonSetter(value = "user_added", nulls = Nulls.SKIP)
         public Builder userAdded(Optional<Boolean> userAdded) {
             this.userAdded = userAdded;
@@ -293,7 +369,19 @@ public final class ModelField {
 
         public ModelField build() {
             return new ModelField(
-                    description, example, id, label, name, remoteType, type, unique, userAdded, additionalProperties);
+                    createdAt,
+                    createdBy,
+                    description,
+                    example,
+                    id,
+                    label,
+                    name,
+                    remoteType,
+                    type,
+                    unique,
+                    updatedAt,
+                    userAdded,
+                    additionalProperties);
         }
     }
 }

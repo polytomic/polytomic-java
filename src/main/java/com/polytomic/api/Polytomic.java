@@ -29,11 +29,11 @@ public class Polytomic {
 
     protected final Supplier<QueryRunnerClient> queryRunnerClient;
 
+    protected final Supplier<SchemasClient> schemasClient;
+
     protected final Supplier<ModelsClient> modelsClient;
 
     protected final Supplier<ModelSyncClient> modelSyncClient;
-
-    protected final Supplier<SchemasClient> schemasClient;
 
     protected final Supplier<EventsClient> eventsClient;
 
@@ -54,9 +54,9 @@ public class Polytomic {
         this.bulkSyncClient = Suppliers.memoize(() -> new BulkSyncClient(clientOptions));
         this.connectionsClient = Suppliers.memoize(() -> new ConnectionsClient(clientOptions));
         this.queryRunnerClient = Suppliers.memoize(() -> new QueryRunnerClient(clientOptions));
+        this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
         this.modelsClient = Suppliers.memoize(() -> new ModelsClient(clientOptions));
         this.modelSyncClient = Suppliers.memoize(() -> new ModelSyncClient(clientOptions));
-        this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
         this.eventsClient = Suppliers.memoize(() -> new EventsClient(clientOptions));
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
         this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
@@ -78,16 +78,16 @@ public class Polytomic {
         return this.queryRunnerClient.get();
     }
 
+    public SchemasClient schemas() {
+        return this.schemasClient.get();
+    }
+
     public ModelsClient models() {
         return this.modelsClient.get();
     }
 
     public ModelSyncClient modelSync() {
         return this.modelSyncClient.get();
-    }
-
-    public SchemasClient schemas() {
-        return this.schemasClient.get();
     }
 
     public EventsClient events() {

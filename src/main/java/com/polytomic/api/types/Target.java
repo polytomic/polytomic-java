@@ -24,11 +24,13 @@ public final class Target {
 
     private final String connectionId;
 
+    private final Optional<Map<String, String>> create;
+
     private final Optional<String> filterLogic;
 
     private final Optional<String> newName;
 
-    private final String _object;
+    private final Optional<String> _object;
 
     private final Optional<Map<String, Object>> searchValues;
 
@@ -37,13 +39,15 @@ public final class Target {
     private Target(
             Optional<Map<String, Object>> configuration,
             String connectionId,
+            Optional<Map<String, String>> create,
             Optional<String> filterLogic,
             Optional<String> newName,
-            String _object,
+            Optional<String> _object,
             Optional<Map<String, Object>> searchValues,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
         this.connectionId = connectionId;
+        this.create = create;
         this.filterLogic = filterLogic;
         this.newName = newName;
         this._object = _object;
@@ -61,18 +65,29 @@ public final class Target {
         return connectionId;
     }
 
+    /**
+     * @return Create a new target object with these properties.
+     */
+    @JsonProperty("create")
+    public Optional<Map<String, String>> getCreate() {
+        return create;
+    }
+
     @JsonProperty("filter_logic")
     public Optional<String> getFilterLogic() {
         return filterLogic;
     }
 
+    /**
+     * @return Name for a new target object.
+     */
     @JsonProperty("new_name")
     public Optional<String> getNewName() {
         return newName;
     }
 
     @JsonProperty("object")
-    public String getObject() {
+    public Optional<String> getObject() {
         return _object;
     }
 
@@ -95,6 +110,7 @@ public final class Target {
     private boolean equalTo(Target other) {
         return configuration.equals(other.configuration)
                 && connectionId.equals(other.connectionId)
+                && create.equals(other.create)
                 && filterLogic.equals(other.filterLogic)
                 && newName.equals(other.newName)
                 && _object.equals(other._object)
@@ -104,7 +120,13 @@ public final class Target {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.configuration, this.connectionId, this.filterLogic, this.newName, this._object, this.searchValues);
+                this.configuration,
+                this.connectionId,
+                this.create,
+                this.filterLogic,
+                this.newName,
+                this._object,
+                this.searchValues);
     }
 
     @java.lang.Override
@@ -117,13 +139,9 @@ public final class Target {
     }
 
     public interface ConnectionIdStage {
-        ObjectStage connectionId(String connectionId);
+        _FinalStage connectionId(String connectionId);
 
         Builder from(Target other);
-    }
-
-    public interface ObjectStage {
-        _FinalStage _object(String _object);
     }
 
     public interface _FinalStage {
@@ -133,6 +151,10 @@ public final class Target {
 
         _FinalStage configuration(Map<String, Object> configuration);
 
+        _FinalStage create(Optional<Map<String, String>> create);
+
+        _FinalStage create(Map<String, String> create);
+
         _FinalStage filterLogic(Optional<String> filterLogic);
 
         _FinalStage filterLogic(String filterLogic);
@@ -141,22 +163,28 @@ public final class Target {
 
         _FinalStage newName(String newName);
 
+        _FinalStage _object(Optional<String> _object);
+
+        _FinalStage _object(String _object);
+
         _FinalStage searchValues(Optional<Map<String, Object>> searchValues);
 
         _FinalStage searchValues(Map<String, Object> searchValues);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements ConnectionIdStage, ObjectStage, _FinalStage {
+    public static final class Builder implements ConnectionIdStage, _FinalStage {
         private String connectionId;
 
-        private String _object;
-
         private Optional<Map<String, Object>> searchValues = Optional.empty();
+
+        private Optional<String> _object = Optional.empty();
 
         private Optional<String> newName = Optional.empty();
 
         private Optional<String> filterLogic = Optional.empty();
+
+        private Optional<Map<String, String>> create = Optional.empty();
 
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
@@ -169,6 +197,7 @@ public final class Target {
         public Builder from(Target other) {
             configuration(other.getConfiguration());
             connectionId(other.getConnectionId());
+            create(other.getCreate());
             filterLogic(other.getFilterLogic());
             newName(other.getNewName());
             _object(other.getObject());
@@ -178,15 +207,8 @@ public final class Target {
 
         @java.lang.Override
         @JsonSetter("connection_id")
-        public ObjectStage connectionId(String connectionId) {
+        public _FinalStage connectionId(String connectionId) {
             this.connectionId = connectionId;
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter("object")
-        public _FinalStage _object(String _object) {
-            this._object = _object;
             return this;
         }
 
@@ -203,6 +225,23 @@ public final class Target {
             return this;
         }
 
+        @java.lang.Override
+        public _FinalStage _object(String _object) {
+            this._object = Optional.of(_object);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "object", nulls = Nulls.SKIP)
+        public _FinalStage _object(Optional<String> _object) {
+            this._object = _object;
+            return this;
+        }
+
+        /**
+         * <p>Name for a new target object.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage newName(String newName) {
             this.newName = Optional.of(newName);
@@ -229,6 +268,23 @@ public final class Target {
             return this;
         }
 
+        /**
+         * <p>Create a new target object with these properties.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage create(Map<String, String> create) {
+            this.create = Optional.of(create);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "create", nulls = Nulls.SKIP)
+        public _FinalStage create(Optional<Map<String, String>> create) {
+            this.create = create;
+            return this;
+        }
+
         @java.lang.Override
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration = Optional.of(configuration);
@@ -245,7 +301,14 @@ public final class Target {
         @java.lang.Override
         public Target build() {
             return new Target(
-                    configuration, connectionId, filterLogic, newName, _object, searchValues, additionalProperties);
+                    configuration,
+                    connectionId,
+                    create,
+                    filterLogic,
+                    newName,
+                    _object,
+                    searchValues,
+                    additionalProperties);
         }
     }
 }

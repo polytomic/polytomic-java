@@ -23,6 +23,8 @@ import java.util.Optional;
 public final class Webhook {
     private final Optional<OffsetDateTime> createdAt;
 
+    private final Optional<Boolean> disabled;
+
     private final Optional<String> endpoint;
 
     private final Optional<String> id;
@@ -35,12 +37,14 @@ public final class Webhook {
 
     private Webhook(
             Optional<OffsetDateTime> createdAt,
+            Optional<Boolean> disabled,
             Optional<String> endpoint,
             Optional<String> id,
             Optional<String> organizationId,
             Optional<String> secret,
             Map<String, Object> additionalProperties) {
         this.createdAt = createdAt;
+        this.disabled = disabled;
         this.endpoint = endpoint;
         this.id = id;
         this.organizationId = organizationId;
@@ -51,6 +55,11 @@ public final class Webhook {
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
+    }
+
+    @JsonProperty("disabled")
+    public Optional<Boolean> getDisabled() {
+        return disabled;
     }
 
     @JsonProperty("endpoint")
@@ -86,6 +95,7 @@ public final class Webhook {
 
     private boolean equalTo(Webhook other) {
         return createdAt.equals(other.createdAt)
+                && disabled.equals(other.disabled)
                 && endpoint.equals(other.endpoint)
                 && id.equals(other.id)
                 && organizationId.equals(other.organizationId)
@@ -94,7 +104,7 @@ public final class Webhook {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.createdAt, this.endpoint, this.id, this.organizationId, this.secret);
+        return Objects.hash(this.createdAt, this.disabled, this.endpoint, this.id, this.organizationId, this.secret);
     }
 
     @java.lang.Override
@@ -109,6 +119,8 @@ public final class Webhook {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
         private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<Boolean> disabled = Optional.empty();
 
         private Optional<String> endpoint = Optional.empty();
 
@@ -125,6 +137,7 @@ public final class Webhook {
 
         public Builder from(Webhook other) {
             createdAt(other.getCreatedAt());
+            disabled(other.getDisabled());
             endpoint(other.getEndpoint());
             id(other.getId());
             organizationId(other.getOrganizationId());
@@ -140,6 +153,17 @@ public final class Webhook {
 
         public Builder createdAt(OffsetDateTime createdAt) {
             this.createdAt = Optional.of(createdAt);
+            return this;
+        }
+
+        @JsonSetter(value = "disabled", nulls = Nulls.SKIP)
+        public Builder disabled(Optional<Boolean> disabled) {
+            this.disabled = disabled;
+            return this;
+        }
+
+        public Builder disabled(Boolean disabled) {
+            this.disabled = Optional.of(disabled);
             return this;
         }
 
@@ -188,7 +212,7 @@ public final class Webhook {
         }
 
         public Webhook build() {
-            return new Webhook(createdAt, endpoint, id, organizationId, secret, additionalProperties);
+            return new Webhook(createdAt, disabled, endpoint, id, organizationId, secret, additionalProperties);
         }
     }
 }

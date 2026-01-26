@@ -14,10 +14,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.resources.bulksync.types.V2UpdateBulkSyncRequestSchemasItem;
 import com.polytomic.api.types.BulkDiscover;
+import com.polytomic.api.types.BulkNormalizeNames;
 import com.polytomic.api.types.BulkSchedule;
-import com.polytomic.api.types.SyncMode;
+import com.polytomic.api.types.BulkSyncMode;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,9 +34,11 @@ public final class UpdateBulkSyncRequest {
 
     private final Optional<BulkDiscover> automaticallyAddNewObjects;
 
+    private final Optional<Integer> concurrencyLimit;
+
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
 
-    private final Optional<Map<String, Object>> destinationConfiguration;
+    private final Map<String, Object> destinationConfiguration;
 
     private final String destinationConnectionId;
 
@@ -42,13 +46,17 @@ public final class UpdateBulkSyncRequest {
 
     private final Optional<Boolean> discover;
 
-    private final Optional<SyncMode> mode;
+    private final Optional<BulkSyncMode> mode;
 
     private final String name;
+
+    private final Optional<BulkNormalizeNames> normalizeNames;
 
     private final Optional<String> organizationId;
 
     private final Optional<List<String>> policies;
+
+    private final Optional<Integer> resyncConcurrencyLimit;
 
     private final BulkSchedule schedule;
 
@@ -64,15 +72,18 @@ public final class UpdateBulkSyncRequest {
             Optional<Boolean> active,
             Optional<BulkDiscover> automaticallyAddNewFields,
             Optional<BulkDiscover> automaticallyAddNewObjects,
+            Optional<Integer> concurrencyLimit,
             Optional<OffsetDateTime> dataCutoffTimestamp,
-            Optional<Map<String, Object>> destinationConfiguration,
+            Map<String, Object> destinationConfiguration,
             String destinationConnectionId,
             Optional<Boolean> disableRecordTimestamps,
             Optional<Boolean> discover,
-            Optional<SyncMode> mode,
+            Optional<BulkSyncMode> mode,
             String name,
+            Optional<BulkNormalizeNames> normalizeNames,
             Optional<String> organizationId,
             Optional<List<String>> policies,
+            Optional<Integer> resyncConcurrencyLimit,
             BulkSchedule schedule,
             Optional<List<V2UpdateBulkSyncRequestSchemasItem>> schemas,
             Optional<Map<String, Object>> sourceConfiguration,
@@ -81,6 +92,7 @@ public final class UpdateBulkSyncRequest {
         this.active = active;
         this.automaticallyAddNewFields = automaticallyAddNewFields;
         this.automaticallyAddNewObjects = automaticallyAddNewObjects;
+        this.concurrencyLimit = concurrencyLimit;
         this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.destinationConfiguration = destinationConfiguration;
         this.destinationConnectionId = destinationConnectionId;
@@ -88,8 +100,10 @@ public final class UpdateBulkSyncRequest {
         this.discover = discover;
         this.mode = mode;
         this.name = name;
+        this.normalizeNames = normalizeNames;
         this.organizationId = organizationId;
         this.policies = policies;
+        this.resyncConcurrencyLimit = resyncConcurrencyLimit;
         this.schedule = schedule;
         this.schemas = schemas;
         this.sourceConfiguration = sourceConfiguration;
@@ -112,13 +126,21 @@ public final class UpdateBulkSyncRequest {
         return automaticallyAddNewObjects;
     }
 
+    /**
+     * @return Override the default concurrency limit for this sync.
+     */
+    @JsonProperty("concurrency_limit")
+    public Optional<Integer> getConcurrencyLimit() {
+        return concurrencyLimit;
+    }
+
     @JsonProperty("data_cutoff_timestamp")
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
         return dataCutoffTimestamp;
     }
 
     @JsonProperty("destination_configuration")
-    public Optional<Map<String, Object>> getDestinationConfiguration() {
+    public Map<String, Object> getDestinationConfiguration() {
         return destinationConfiguration;
     }
 
@@ -141,13 +163,18 @@ public final class UpdateBulkSyncRequest {
     }
 
     @JsonProperty("mode")
-    public Optional<SyncMode> getMode() {
+    public Optional<BulkSyncMode> getMode() {
         return mode;
     }
 
     @JsonProperty("name")
     public String getName() {
         return name;
+    }
+
+    @JsonProperty("normalize_names")
+    public Optional<BulkNormalizeNames> getNormalizeNames() {
+        return normalizeNames;
     }
 
     @JsonProperty("organization_id")
@@ -158,6 +185,14 @@ public final class UpdateBulkSyncRequest {
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
+    }
+
+    /**
+     * @return Override the default resync concurrency limit for this sync.
+     */
+    @JsonProperty("resync_concurrency_limit")
+    public Optional<Integer> getResyncConcurrencyLimit() {
+        return resyncConcurrencyLimit;
     }
 
     @JsonProperty("schedule")
@@ -198,6 +233,7 @@ public final class UpdateBulkSyncRequest {
         return active.equals(other.active)
                 && automaticallyAddNewFields.equals(other.automaticallyAddNewFields)
                 && automaticallyAddNewObjects.equals(other.automaticallyAddNewObjects)
+                && concurrencyLimit.equals(other.concurrencyLimit)
                 && dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
                 && destinationConfiguration.equals(other.destinationConfiguration)
                 && destinationConnectionId.equals(other.destinationConnectionId)
@@ -205,8 +241,10 @@ public final class UpdateBulkSyncRequest {
                 && discover.equals(other.discover)
                 && mode.equals(other.mode)
                 && name.equals(other.name)
+                && normalizeNames.equals(other.normalizeNames)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
+                && resyncConcurrencyLimit.equals(other.resyncConcurrencyLimit)
                 && schedule.equals(other.schedule)
                 && schemas.equals(other.schemas)
                 && sourceConfiguration.equals(other.sourceConfiguration)
@@ -219,6 +257,7 @@ public final class UpdateBulkSyncRequest {
                 this.active,
                 this.automaticallyAddNewFields,
                 this.automaticallyAddNewObjects,
+                this.concurrencyLimit,
                 this.dataCutoffTimestamp,
                 this.destinationConfiguration,
                 this.destinationConnectionId,
@@ -226,8 +265,10 @@ public final class UpdateBulkSyncRequest {
                 this.discover,
                 this.mode,
                 this.name,
+                this.normalizeNames,
                 this.organizationId,
                 this.policies,
+                this.resyncConcurrencyLimit,
                 this.schedule,
                 this.schemas,
                 this.sourceConfiguration,
@@ -276,13 +317,19 @@ public final class UpdateBulkSyncRequest {
 
         _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
 
+        _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit);
+
+        _FinalStage concurrencyLimit(Integer concurrencyLimit);
+
         _FinalStage dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp);
 
         _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp);
 
-        _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration);
-
         _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration);
+
+        _FinalStage putAllDestinationConfiguration(Map<String, Object> destinationConfiguration);
+
+        _FinalStage destinationConfiguration(String key, Object value);
 
         _FinalStage disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps);
 
@@ -292,9 +339,13 @@ public final class UpdateBulkSyncRequest {
 
         _FinalStage discover(Boolean discover);
 
-        _FinalStage mode(Optional<SyncMode> mode);
+        _FinalStage mode(Optional<BulkSyncMode> mode);
 
-        _FinalStage mode(SyncMode mode);
+        _FinalStage mode(BulkSyncMode mode);
+
+        _FinalStage normalizeNames(Optional<BulkNormalizeNames> normalizeNames);
+
+        _FinalStage normalizeNames(BulkNormalizeNames normalizeNames);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
@@ -303,6 +354,10 @@ public final class UpdateBulkSyncRequest {
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
+
+        _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit);
+
+        _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit);
 
         _FinalStage schemas(Optional<List<V2UpdateBulkSyncRequestSchemasItem>> schemas);
 
@@ -328,19 +383,25 @@ public final class UpdateBulkSyncRequest {
 
         private Optional<List<V2UpdateBulkSyncRequestSchemasItem>> schemas = Optional.empty();
 
+        private Optional<Integer> resyncConcurrencyLimit = Optional.empty();
+
         private Optional<List<String>> policies = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
 
-        private Optional<SyncMode> mode = Optional.empty();
+        private Optional<BulkNormalizeNames> normalizeNames = Optional.empty();
+
+        private Optional<BulkSyncMode> mode = Optional.empty();
 
         private Optional<Boolean> discover = Optional.empty();
 
         private Optional<Boolean> disableRecordTimestamps = Optional.empty();
 
-        private Optional<Map<String, Object>> destinationConfiguration = Optional.empty();
+        private Map<String, Object> destinationConfiguration = new LinkedHashMap<>();
 
         private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
+
+        private Optional<Integer> concurrencyLimit = Optional.empty();
 
         private Optional<BulkDiscover> automaticallyAddNewObjects = Optional.empty();
 
@@ -358,6 +419,7 @@ public final class UpdateBulkSyncRequest {
             active(other.getActive());
             automaticallyAddNewFields(other.getAutomaticallyAddNewFields());
             automaticallyAddNewObjects(other.getAutomaticallyAddNewObjects());
+            concurrencyLimit(other.getConcurrencyLimit());
             dataCutoffTimestamp(other.getDataCutoffTimestamp());
             destinationConfiguration(other.getDestinationConfiguration());
             destinationConnectionId(other.getDestinationConnectionId());
@@ -365,8 +427,10 @@ public final class UpdateBulkSyncRequest {
             discover(other.getDiscover());
             mode(other.getMode());
             name(other.getName());
+            normalizeNames(other.getNormalizeNames());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
+            resyncConcurrencyLimit(other.getResyncConcurrencyLimit());
             schedule(other.getSchedule());
             schemas(other.getSchemas());
             sourceConfiguration(other.getSourceConfiguration());
@@ -432,6 +496,23 @@ public final class UpdateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit) {
+            this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "resync_concurrency_limit", nulls = Nulls.SKIP)
+        public _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit) {
+            this.resyncConcurrencyLimit = resyncConcurrencyLimit;
+            return this;
+        }
+
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.of(policies);
@@ -459,14 +540,27 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
-        public _FinalStage mode(SyncMode mode) {
+        public _FinalStage normalizeNames(BulkNormalizeNames normalizeNames) {
+            this.normalizeNames = Optional.of(normalizeNames);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "normalize_names", nulls = Nulls.SKIP)
+        public _FinalStage normalizeNames(Optional<BulkNormalizeNames> normalizeNames) {
+            this.normalizeNames = normalizeNames;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage mode(BulkSyncMode mode) {
             this.mode = Optional.of(mode);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public _FinalStage mode(Optional<SyncMode> mode) {
+        public _FinalStage mode(Optional<BulkSyncMode> mode) {
             this.mode = mode;
             return this;
         }
@@ -502,15 +596,22 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
-        public _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration) {
-            this.destinationConfiguration = Optional.of(destinationConfiguration);
+        public _FinalStage destinationConfiguration(String key, Object value) {
+            this.destinationConfiguration.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage putAllDestinationConfiguration(Map<String, Object> destinationConfiguration) {
+            this.destinationConfiguration.putAll(destinationConfiguration);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
-        public _FinalStage destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration) {
-            this.destinationConfiguration = destinationConfiguration;
+        public _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration) {
+            this.destinationConfiguration.clear();
+            this.destinationConfiguration.putAll(destinationConfiguration);
             return this;
         }
 
@@ -524,6 +625,23 @@ public final class UpdateBulkSyncRequest {
         @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
         public _FinalStage dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
             this.dataCutoffTimestamp = dataCutoffTimestamp;
+            return this;
+        }
+
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage concurrencyLimit(Integer concurrencyLimit) {
+            this.concurrencyLimit = Optional.of(concurrencyLimit);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "concurrency_limit", nulls = Nulls.SKIP)
+        public _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit) {
+            this.concurrencyLimit = concurrencyLimit;
             return this;
         }
 
@@ -572,6 +690,7 @@ public final class UpdateBulkSyncRequest {
                     active,
                     automaticallyAddNewFields,
                     automaticallyAddNewObjects,
+                    concurrencyLimit,
                     dataCutoffTimestamp,
                     destinationConfiguration,
                     destinationConnectionId,
@@ -579,8 +698,10 @@ public final class UpdateBulkSyncRequest {
                     discover,
                     mode,
                     name,
+                    normalizeNames,
                     organizationId,
                     policies,
+                    resyncConcurrencyLimit,
                     schedule,
                     schemas,
                     sourceConfiguration,

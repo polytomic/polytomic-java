@@ -5,26 +5,16 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum SyncMode {
-    CREATE("create"),
+public enum BulkNormalizeNames {
+    ENABLED("enabled"),
 
-    UPDATE("update"),
+    DISABLED("disabled"),
 
-    UPDATE_OR_CREATE("updateOrCreate"),
-
-    REPLACE("replace"),
-
-    APPEND("append"),
-
-    SNAPSHOT("snapshot"),
-
-    REPLICATE("replicate"),
-
-    REMOVE("remove");
+    LEGACY("legacy");
 
     private final String value;
 
-    SyncMode(String value) {
+    BulkNormalizeNames(String value) {
         this.value = value;
     }
 

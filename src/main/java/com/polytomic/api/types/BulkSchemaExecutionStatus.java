@@ -18,7 +18,9 @@ public enum BulkSchemaExecutionStatus {
 
     COMPLETED("completed"),
 
-    FAILED("failed");
+    FAILED("failed"),
+
+    INTERRUPTED("interrupted");
 
     private final String value;
 

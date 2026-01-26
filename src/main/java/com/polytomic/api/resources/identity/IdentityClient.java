@@ -23,10 +23,16 @@ public class IdentityClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Returns information about the caller's identity.
+     */
     public GetIdentityResponseEnvelope get() {
         return get(null);
     }
 
+    /**
+     * Returns information about the caller's identity.
+     */
     public GetIdentityResponseEnvelope get(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

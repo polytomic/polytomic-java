@@ -23,6 +23,8 @@ import java.util.Optional;
 public final class ConnectCardRequest {
     private final Optional<String> connection;
 
+    private final Optional<Boolean> dark;
+
     private final String name;
 
     private final Optional<String> organizationId;
@@ -37,6 +39,7 @@ public final class ConnectCardRequest {
 
     private ConnectCardRequest(
             Optional<String> connection,
+            Optional<Boolean> dark,
             String name,
             Optional<String> organizationId,
             String redirectUrl,
@@ -44,6 +47,7 @@ public final class ConnectCardRequest {
             Optional<List<String>> whitelist,
             Map<String, Object> additionalProperties) {
         this.connection = connection;
+        this.dark = dark;
         this.name = name;
         this.organizationId = organizationId;
         this.redirectUrl = redirectUrl;
@@ -52,11 +56,25 @@ public final class ConnectCardRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The id of an existing connection to update.
+     */
     @JsonProperty("connection")
     public Optional<String> getConnection() {
         return connection;
     }
 
+    /**
+     * @return Whether to use the dark theme for the Connect modal.
+     */
+    @JsonProperty("dark")
+    public Optional<Boolean> getDark() {
+        return dark;
+    }
+
+    /**
+     * @return Name of the new connection. Must be unique per organization.
+     */
     @JsonProperty("name")
     public String getName() {
         return name;
@@ -67,16 +85,25 @@ public final class ConnectCardRequest {
         return organizationId;
     }
 
+    /**
+     * @return URL to redirect to after connection is created.
+     */
     @JsonProperty("redirect_url")
     public String getRedirectUrl() {
         return redirectUrl;
     }
 
+    /**
+     * @return Connection type to create.
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return List of connection types which are allowed to be created. Ignored if type is set.
+     */
     @JsonProperty("whitelist")
     public Optional<List<String>> getWhitelist() {
         return whitelist;
@@ -95,6 +122,7 @@ public final class ConnectCardRequest {
 
     private boolean equalTo(ConnectCardRequest other) {
         return connection.equals(other.connection)
+                && dark.equals(other.dark)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && redirectUrl.equals(other.redirectUrl)
@@ -105,7 +133,13 @@ public final class ConnectCardRequest {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.connection, this.name, this.organizationId, this.redirectUrl, this.type, this.whitelist);
+                this.connection,
+                this.dark,
+                this.name,
+                this.organizationId,
+                this.redirectUrl,
+                this.type,
+                this.whitelist);
     }
 
     @java.lang.Override
@@ -134,6 +168,10 @@ public final class ConnectCardRequest {
 
         _FinalStage connection(String connection);
 
+        _FinalStage dark(Optional<Boolean> dark);
+
+        _FinalStage dark(Boolean dark);
+
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
@@ -159,6 +197,8 @@ public final class ConnectCardRequest {
 
         private Optional<String> organizationId = Optional.empty();
 
+        private Optional<Boolean> dark = Optional.empty();
+
         private Optional<String> connection = Optional.empty();
 
         @JsonAnySetter
@@ -169,6 +209,7 @@ public final class ConnectCardRequest {
         @java.lang.Override
         public Builder from(ConnectCardRequest other) {
             connection(other.getConnection());
+            dark(other.getDark());
             name(other.getName());
             organizationId(other.getOrganizationId());
             redirectUrl(other.getRedirectUrl());
@@ -177,6 +218,10 @@ public final class ConnectCardRequest {
             return this;
         }
 
+        /**
+         * <p>Name of the new connection. Must be unique per organization.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("name")
         public RedirectUrlStage name(String name) {
@@ -184,6 +229,10 @@ public final class ConnectCardRequest {
             return this;
         }
 
+        /**
+         * <p>URL to redirect to after connection is created.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("redirect_url")
         public _FinalStage redirectUrl(String redirectUrl) {
@@ -191,6 +240,10 @@ public final class ConnectCardRequest {
             return this;
         }
 
+        /**
+         * <p>List of connection types which are allowed to be created. Ignored if type is set.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage whitelist(List<String> whitelist) {
             this.whitelist = Optional.of(whitelist);
@@ -204,6 +257,10 @@ public final class ConnectCardRequest {
             return this;
         }
 
+        /**
+         * <p>Connection type to create.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage type(String type) {
             this.type = Optional.of(type);
@@ -230,6 +287,27 @@ public final class ConnectCardRequest {
             return this;
         }
 
+        /**
+         * <p>Whether to use the dark theme for the Connect modal.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage dark(Boolean dark) {
+            this.dark = Optional.of(dark);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "dark", nulls = Nulls.SKIP)
+        public _FinalStage dark(Optional<Boolean> dark) {
+            this.dark = dark;
+            return this;
+        }
+
+        /**
+         * <p>The id of an existing connection to update.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage connection(String connection) {
             this.connection = Optional.of(connection);
@@ -246,7 +324,7 @@ public final class ConnectCardRequest {
         @java.lang.Override
         public ConnectCardRequest build() {
             return new ConnectCardRequest(
-                    connection, name, organizationId, redirectUrl, type, whitelist, additionalProperties);
+                    connection, dark, name, organizationId, redirectUrl, type, whitelist, additionalProperties);
         }
     }
 }

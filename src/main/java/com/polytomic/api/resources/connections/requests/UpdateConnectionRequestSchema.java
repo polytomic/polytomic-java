@@ -24,6 +24,8 @@ import java.util.Optional;
 public final class UpdateConnectionRequestSchema {
     private final Map<String, Object> configuration;
 
+    private final Optional<String> healthcheckInterval;
+
     private final String name;
 
     private final Optional<String> organizationId;
@@ -40,6 +42,7 @@ public final class UpdateConnectionRequestSchema {
 
     private UpdateConnectionRequestSchema(
             Map<String, Object> configuration,
+            Optional<String> healthcheckInterval,
             String name,
             Optional<String> organizationId,
             Optional<List<String>> policies,
@@ -48,6 +51,7 @@ public final class UpdateConnectionRequestSchema {
             Optional<Boolean> validate,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
+        this.healthcheckInterval = healthcheckInterval;
         this.name = name;
         this.organizationId = organizationId;
         this.policies = policies;
@@ -60,6 +64,14 @@ public final class UpdateConnectionRequestSchema {
     @JsonProperty("configuration")
     public Map<String, Object> getConfiguration() {
         return configuration;
+    }
+
+    /**
+     * @return Override interval for connection health checking.
+     */
+    @JsonProperty("healthcheck_interval")
+    public Optional<String> getHealthcheckInterval() {
+        return healthcheckInterval;
     }
 
     @JsonProperty("name")
@@ -108,6 +120,7 @@ public final class UpdateConnectionRequestSchema {
 
     private boolean equalTo(UpdateConnectionRequestSchema other) {
         return configuration.equals(other.configuration)
+                && healthcheckInterval.equals(other.healthcheckInterval)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
@@ -120,6 +133,7 @@ public final class UpdateConnectionRequestSchema {
     public int hashCode() {
         return Objects.hash(
                 this.configuration,
+                this.healthcheckInterval,
                 this.name,
                 this.organizationId,
                 this.policies,
@@ -151,6 +165,10 @@ public final class UpdateConnectionRequestSchema {
         _FinalStage putAllConfiguration(Map<String, Object> configuration);
 
         _FinalStage configuration(String key, Object value);
+
+        _FinalStage healthcheckInterval(Optional<String> healthcheckInterval);
+
+        _FinalStage healthcheckInterval(String healthcheckInterval);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
@@ -187,6 +205,8 @@ public final class UpdateConnectionRequestSchema {
 
         private Optional<String> organizationId = Optional.empty();
 
+        private Optional<String> healthcheckInterval = Optional.empty();
+
         private Map<String, Object> configuration = new LinkedHashMap<>();
 
         @JsonAnySetter
@@ -197,6 +217,7 @@ public final class UpdateConnectionRequestSchema {
         @java.lang.Override
         public Builder from(UpdateConnectionRequestSchema other) {
             configuration(other.getConfiguration());
+            healthcheckInterval(other.getHealthcheckInterval());
             name(other.getName());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
@@ -282,6 +303,23 @@ public final class UpdateConnectionRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Override interval for connection health checking.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage healthcheckInterval(String healthcheckInterval) {
+            this.healthcheckInterval = Optional.of(healthcheckInterval);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "healthcheck_interval", nulls = Nulls.SKIP)
+        public _FinalStage healthcheckInterval(Optional<String> healthcheckInterval) {
+            this.healthcheckInterval = healthcheckInterval;
+            return this;
+        }
+
         @java.lang.Override
         public _FinalStage configuration(String key, Object value) {
             this.configuration.put(key, value);
@@ -305,7 +343,15 @@ public final class UpdateConnectionRequestSchema {
         @java.lang.Override
         public UpdateConnectionRequestSchema build() {
             return new UpdateConnectionRequestSchema(
-                    configuration, name, organizationId, policies, reconnect, type, validate, additionalProperties);
+                    configuration,
+                    healthcheckInterval,
+                    name,
+                    organizationId,
+                    policies,
+                    reconnect,
+                    type,
+                    validate,
+                    additionalProperties);
         }
     }
 }

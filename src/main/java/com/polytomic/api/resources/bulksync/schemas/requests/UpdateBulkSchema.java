@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.BulkField;
 import com.polytomic.api.types.BulkFilter;
+import com.polytomic.api.types.UpdateBulkField;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +30,15 @@ public final class UpdateBulkSchema {
 
     private final Optional<Boolean> enabled;
 
-    private final Optional<List<BulkField>> fields;
+    private final Optional<List<UpdateBulkField>> fields;
 
     private final Optional<List<BulkFilter>> filters;
 
     private final Optional<String> partitionKey;
+
+    private final Optional<String> trackingField;
+
+    private final Optional<String> userOutputName;
 
     private final Map<String, Object> additionalProperties;
 
@@ -42,9 +46,11 @@ public final class UpdateBulkSchema {
             Optional<OffsetDateTime> dataCutoffTimestamp,
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
-            Optional<List<BulkField>> fields,
+            Optional<List<UpdateBulkField>> fields,
             Optional<List<BulkFilter>> filters,
             Optional<String> partitionKey,
+            Optional<String> trackingField,
+            Optional<String> userOutputName,
             Map<String, Object> additionalProperties) {
         this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.disableDataCutoff = disableDataCutoff;
@@ -52,6 +58,8 @@ public final class UpdateBulkSchema {
         this.fields = fields;
         this.filters = filters;
         this.partitionKey = partitionKey;
+        this.trackingField = trackingField;
+        this.userOutputName = userOutputName;
         this.additionalProperties = additionalProperties;
     }
 
@@ -71,7 +79,7 @@ public final class UpdateBulkSchema {
     }
 
     @JsonProperty("fields")
-    public Optional<List<BulkField>> getFields() {
+    public Optional<List<UpdateBulkField>> getFields() {
         return fields;
     }
 
@@ -83,6 +91,16 @@ public final class UpdateBulkSchema {
     @JsonProperty("partition_key")
     public Optional<String> getPartitionKey() {
         return partitionKey;
+    }
+
+    @JsonProperty("tracking_field")
+    public Optional<String> getTrackingField() {
+        return trackingField;
+    }
+
+    @JsonProperty("user_output_name")
+    public Optional<String> getUserOutputName() {
+        return userOutputName;
     }
 
     @java.lang.Override
@@ -102,7 +120,9 @@ public final class UpdateBulkSchema {
                 && enabled.equals(other.enabled)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
-                && partitionKey.equals(other.partitionKey);
+                && partitionKey.equals(other.partitionKey)
+                && trackingField.equals(other.trackingField)
+                && userOutputName.equals(other.userOutputName);
     }
 
     @java.lang.Override
@@ -113,7 +133,9 @@ public final class UpdateBulkSchema {
                 this.enabled,
                 this.fields,
                 this.filters,
-                this.partitionKey);
+                this.partitionKey,
+                this.trackingField,
+                this.userOutputName);
     }
 
     @java.lang.Override
@@ -133,11 +155,15 @@ public final class UpdateBulkSchema {
 
         private Optional<Boolean> enabled = Optional.empty();
 
-        private Optional<List<BulkField>> fields = Optional.empty();
+        private Optional<List<UpdateBulkField>> fields = Optional.empty();
 
         private Optional<List<BulkFilter>> filters = Optional.empty();
 
         private Optional<String> partitionKey = Optional.empty();
+
+        private Optional<String> trackingField = Optional.empty();
+
+        private Optional<String> userOutputName = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -151,6 +177,8 @@ public final class UpdateBulkSchema {
             fields(other.getFields());
             filters(other.getFilters());
             partitionKey(other.getPartitionKey());
+            trackingField(other.getTrackingField());
+            userOutputName(other.getUserOutputName());
             return this;
         }
 
@@ -188,12 +216,12 @@ public final class UpdateBulkSchema {
         }
 
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
-        public Builder fields(Optional<List<BulkField>> fields) {
+        public Builder fields(Optional<List<UpdateBulkField>> fields) {
             this.fields = fields;
             return this;
         }
 
-        public Builder fields(List<BulkField> fields) {
+        public Builder fields(List<UpdateBulkField> fields) {
             this.fields = Optional.of(fields);
             return this;
         }
@@ -220,6 +248,28 @@ public final class UpdateBulkSchema {
             return this;
         }
 
+        @JsonSetter(value = "tracking_field", nulls = Nulls.SKIP)
+        public Builder trackingField(Optional<String> trackingField) {
+            this.trackingField = trackingField;
+            return this;
+        }
+
+        public Builder trackingField(String trackingField) {
+            this.trackingField = Optional.of(trackingField);
+            return this;
+        }
+
+        @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
+        public Builder userOutputName(Optional<String> userOutputName) {
+            this.userOutputName = userOutputName;
+            return this;
+        }
+
+        public Builder userOutputName(String userOutputName) {
+            this.userOutputName = Optional.of(userOutputName);
+            return this;
+        }
+
         public UpdateBulkSchema build() {
             return new UpdateBulkSchema(
                     dataCutoffTimestamp,
@@ -228,6 +278,8 @@ public final class UpdateBulkSchema {
                     fields,
                     filters,
                     partitionKey,
+                    trackingField,
+                    userOutputName,
                     additionalProperties);
         }
     }

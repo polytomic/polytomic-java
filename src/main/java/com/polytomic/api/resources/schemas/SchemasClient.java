@@ -5,8 +5,11 @@ package com.polytomic.api.resources.schemas;
 
 import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.schemas.requests.SetPrimaryKeysRequest;
+import com.polytomic.api.resources.schemas.requests.UpsertSchemaFieldRequest;
 import com.polytomic.api.types.BulkSyncSourceSchemaEnvelope;
 import com.polytomic.api.types.BulkSyncSourceStatusEnvelope;
 import com.polytomic.api.types.SchemaRecordsResponseEnvelope;
@@ -24,6 +27,187 @@ public class SchemasClient {
 
     public SchemasClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    public void upsertField(String connectionId, String schemaId) {
+        upsertField(connectionId, schemaId, UpsertSchemaFieldRequest.builder().build());
+    }
+
+    public void upsertField(String connectionId, String schemaId, UpsertSchemaFieldRequest request) {
+        upsertField(connectionId, schemaId, request, null);
+    }
+
+    public void upsertField(
+            String connectionId, String schemaId, UpsertSchemaFieldRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .addPathSegments("fields")
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteField(String connectionId, String schemaId, String fieldId) {
+        deleteField(connectionId, schemaId, fieldId, null);
+    }
+
+    public void deleteField(String connectionId, String schemaId, String fieldId, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .addPathSegments("fields")
+                .addPathSegment(fieldId)
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setPrimaryKeys(String connectionId, String schemaId) {
+        setPrimaryKeys(connectionId, schemaId, SetPrimaryKeysRequest.builder().build());
+    }
+
+    public void setPrimaryKeys(String connectionId, String schemaId, SetPrimaryKeysRequest request) {
+        setPrimaryKeys(connectionId, schemaId, request, null);
+    }
+
+    public void setPrimaryKeys(
+            String connectionId, String schemaId, SetPrimaryKeysRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .addPathSegments("primary_keys")
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Delete all primary key overrides for a schema. After this call the schema will use the primary keys detected from the source connection, if any.
+     */
+    public void resetPrimaryKeys(String connectionId, String schemaId) {
+        resetPrimaryKeys(connectionId, schemaId, null);
+    }
+
+    /**
+     * Delete all primary key overrides for a schema. After this call the schema will use the primary keys detected from the source connection, if any.
+     */
+    public void resetPrimaryKeys(String connectionId, String schemaId, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .addPathSegments("primary_keys")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return;
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void refresh(String id) {

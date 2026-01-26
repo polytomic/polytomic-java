@@ -26,13 +26,19 @@ public final class BulkSyncExecution {
 
     private final Optional<OffsetDateTime> createdAt;
 
+    private final Optional<Integer> errorCount;
+
     private final Optional<BulkFetchMode> fetchMode;
 
     private final Optional<String> id;
 
+    private final Optional<Boolean> isPartial;
+
     private final Optional<Boolean> isResync;
 
     private final Optional<Boolean> isTest;
+
+    private final Optional<Integer> recordCount;
 
     private final Optional<List<BulkSyncSchemaExecution>> schemas;
 
@@ -40,32 +46,50 @@ public final class BulkSyncExecution {
 
     private final Optional<BulkExecutionStatus> status;
 
+    private final Optional<String> statusMessage;
+
     private final Optional<String> type;
+
+    private final Optional<OffsetDateTime> updatedAt;
+
+    private final Optional<Integer> warningCount;
 
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncExecution(
             Optional<OffsetDateTime> completedAt,
             Optional<OffsetDateTime> createdAt,
+            Optional<Integer> errorCount,
             Optional<BulkFetchMode> fetchMode,
             Optional<String> id,
+            Optional<Boolean> isPartial,
             Optional<Boolean> isResync,
             Optional<Boolean> isTest,
+            Optional<Integer> recordCount,
             Optional<List<BulkSyncSchemaExecution>> schemas,
             Optional<OffsetDateTime> startedAt,
             Optional<BulkExecutionStatus> status,
+            Optional<String> statusMessage,
             Optional<String> type,
+            Optional<OffsetDateTime> updatedAt,
+            Optional<Integer> warningCount,
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
         this.createdAt = createdAt;
+        this.errorCount = errorCount;
         this.fetchMode = fetchMode;
         this.id = id;
+        this.isPartial = isPartial;
         this.isResync = isResync;
         this.isTest = isTest;
+        this.recordCount = recordCount;
         this.schemas = schemas;
         this.startedAt = startedAt;
         this.status = status;
+        this.statusMessage = statusMessage;
         this.type = type;
+        this.updatedAt = updatedAt;
+        this.warningCount = warningCount;
         this.additionalProperties = additionalProperties;
     }
 
@@ -79,6 +103,11 @@ public final class BulkSyncExecution {
         return createdAt;
     }
 
+    @JsonProperty("error_count")
+    public Optional<Integer> getErrorCount() {
+        return errorCount;
+    }
+
     @JsonProperty("fetch_mode")
     public Optional<BulkFetchMode> getFetchMode() {
         return fetchMode;
@@ -89,6 +118,11 @@ public final class BulkSyncExecution {
         return id;
     }
 
+    @JsonProperty("is_partial")
+    public Optional<Boolean> getIsPartial() {
+        return isPartial;
+    }
+
     @JsonProperty("is_resync")
     public Optional<Boolean> getIsResync() {
         return isResync;
@@ -97,6 +131,11 @@ public final class BulkSyncExecution {
     @JsonProperty("is_test")
     public Optional<Boolean> getIsTest() {
         return isTest;
+    }
+
+    @JsonProperty("record_count")
+    public Optional<Integer> getRecordCount() {
+        return recordCount;
     }
 
     @JsonProperty("schemas")
@@ -114,9 +153,24 @@ public final class BulkSyncExecution {
         return status;
     }
 
+    @JsonProperty("status_message")
+    public Optional<String> getStatusMessage() {
+        return statusMessage;
+    }
+
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
+    }
+
+    @JsonProperty("updated_at")
+    public Optional<OffsetDateTime> getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @JsonProperty("warning_count")
+    public Optional<Integer> getWarningCount() {
+        return warningCount;
     }
 
     @java.lang.Override
@@ -133,14 +187,20 @@ public final class BulkSyncExecution {
     private boolean equalTo(BulkSyncExecution other) {
         return completedAt.equals(other.completedAt)
                 && createdAt.equals(other.createdAt)
+                && errorCount.equals(other.errorCount)
                 && fetchMode.equals(other.fetchMode)
                 && id.equals(other.id)
+                && isPartial.equals(other.isPartial)
                 && isResync.equals(other.isResync)
                 && isTest.equals(other.isTest)
+                && recordCount.equals(other.recordCount)
                 && schemas.equals(other.schemas)
                 && startedAt.equals(other.startedAt)
                 && status.equals(other.status)
-                && type.equals(other.type);
+                && statusMessage.equals(other.statusMessage)
+                && type.equals(other.type)
+                && updatedAt.equals(other.updatedAt)
+                && warningCount.equals(other.warningCount);
     }
 
     @java.lang.Override
@@ -148,14 +208,20 @@ public final class BulkSyncExecution {
         return Objects.hash(
                 this.completedAt,
                 this.createdAt,
+                this.errorCount,
                 this.fetchMode,
                 this.id,
+                this.isPartial,
                 this.isResync,
                 this.isTest,
+                this.recordCount,
                 this.schemas,
                 this.startedAt,
                 this.status,
-                this.type);
+                this.statusMessage,
+                this.type,
+                this.updatedAt,
+                this.warningCount);
     }
 
     @java.lang.Override
@@ -173,13 +239,19 @@ public final class BulkSyncExecution {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
+        private Optional<Integer> errorCount = Optional.empty();
+
         private Optional<BulkFetchMode> fetchMode = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
+        private Optional<Boolean> isPartial = Optional.empty();
+
         private Optional<Boolean> isResync = Optional.empty();
 
         private Optional<Boolean> isTest = Optional.empty();
+
+        private Optional<Integer> recordCount = Optional.empty();
 
         private Optional<List<BulkSyncSchemaExecution>> schemas = Optional.empty();
 
@@ -187,7 +259,13 @@ public final class BulkSyncExecution {
 
         private Optional<BulkExecutionStatus> status = Optional.empty();
 
+        private Optional<String> statusMessage = Optional.empty();
+
         private Optional<String> type = Optional.empty();
+
+        private Optional<OffsetDateTime> updatedAt = Optional.empty();
+
+        private Optional<Integer> warningCount = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -197,14 +275,20 @@ public final class BulkSyncExecution {
         public Builder from(BulkSyncExecution other) {
             completedAt(other.getCompletedAt());
             createdAt(other.getCreatedAt());
+            errorCount(other.getErrorCount());
             fetchMode(other.getFetchMode());
             id(other.getId());
+            isPartial(other.getIsPartial());
             isResync(other.getIsResync());
             isTest(other.getIsTest());
+            recordCount(other.getRecordCount());
             schemas(other.getSchemas());
             startedAt(other.getStartedAt());
             status(other.getStatus());
+            statusMessage(other.getStatusMessage());
             type(other.getType());
+            updatedAt(other.getUpdatedAt());
+            warningCount(other.getWarningCount());
             return this;
         }
 
@@ -230,6 +314,17 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        @JsonSetter(value = "error_count", nulls = Nulls.SKIP)
+        public Builder errorCount(Optional<Integer> errorCount) {
+            this.errorCount = errorCount;
+            return this;
+        }
+
+        public Builder errorCount(Integer errorCount) {
+            this.errorCount = Optional.of(errorCount);
+            return this;
+        }
+
         @JsonSetter(value = "fetch_mode", nulls = Nulls.SKIP)
         public Builder fetchMode(Optional<BulkFetchMode> fetchMode) {
             this.fetchMode = fetchMode;
@@ -252,6 +347,17 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        @JsonSetter(value = "is_partial", nulls = Nulls.SKIP)
+        public Builder isPartial(Optional<Boolean> isPartial) {
+            this.isPartial = isPartial;
+            return this;
+        }
+
+        public Builder isPartial(Boolean isPartial) {
+            this.isPartial = Optional.of(isPartial);
+            return this;
+        }
+
         @JsonSetter(value = "is_resync", nulls = Nulls.SKIP)
         public Builder isResync(Optional<Boolean> isResync) {
             this.isResync = isResync;
@@ -271,6 +377,17 @@ public final class BulkSyncExecution {
 
         public Builder isTest(Boolean isTest) {
             this.isTest = Optional.of(isTest);
+            return this;
+        }
+
+        @JsonSetter(value = "record_count", nulls = Nulls.SKIP)
+        public Builder recordCount(Optional<Integer> recordCount) {
+            this.recordCount = recordCount;
+            return this;
+        }
+
+        public Builder recordCount(Integer recordCount) {
+            this.recordCount = Optional.of(recordCount);
             return this;
         }
 
@@ -307,6 +424,17 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        @JsonSetter(value = "status_message", nulls = Nulls.SKIP)
+        public Builder statusMessage(Optional<String> statusMessage) {
+            this.statusMessage = statusMessage;
+            return this;
+        }
+
+        public Builder statusMessage(String statusMessage) {
+            this.statusMessage = Optional.of(statusMessage);
+            return this;
+        }
+
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -318,18 +446,46 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
+        public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Builder updatedAt(OffsetDateTime updatedAt) {
+            this.updatedAt = Optional.of(updatedAt);
+            return this;
+        }
+
+        @JsonSetter(value = "warning_count", nulls = Nulls.SKIP)
+        public Builder warningCount(Optional<Integer> warningCount) {
+            this.warningCount = warningCount;
+            return this;
+        }
+
+        public Builder warningCount(Integer warningCount) {
+            this.warningCount = Optional.of(warningCount);
+            return this;
+        }
+
         public BulkSyncExecution build() {
             return new BulkSyncExecution(
                     completedAt,
                     createdAt,
+                    errorCount,
                     fetchMode,
                     id,
+                    isPartial,
                     isResync,
                     isTest,
+                    recordCount,
                     schemas,
                     startedAt,
                     status,
+                    statusMessage,
                     type,
+                    updatedAt,
+                    warningCount,
                     additionalProperties);
         }
     }

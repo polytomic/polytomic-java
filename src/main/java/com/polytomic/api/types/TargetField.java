@@ -27,6 +27,8 @@ public final class TargetField {
 
     private final Optional<String> description;
 
+    private final Optional<Boolean> encryptable;
+
     private final Optional<Boolean> filterable;
 
     private final Optional<String> id;
@@ -51,6 +53,7 @@ public final class TargetField {
             Optional<Boolean> association,
             Optional<Boolean> createable,
             Optional<String> description,
+            Optional<Boolean> encryptable,
             Optional<Boolean> filterable,
             Optional<String> id,
             Optional<List<IdentityFunction>> identityFunctions,
@@ -64,6 +67,7 @@ public final class TargetField {
         this.association = association;
         this.createable = createable;
         this.description = description;
+        this.encryptable = encryptable;
         this.filterable = filterable;
         this.id = id;
         this.identityFunctions = identityFunctions;
@@ -89,6 +93,11 @@ public final class TargetField {
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
+    }
+
+    @JsonProperty("encryptable")
+    public Optional<Boolean> getEncryptable() {
+        return encryptable;
     }
 
     @JsonProperty("filterable")
@@ -151,6 +160,7 @@ public final class TargetField {
         return association.equals(other.association)
                 && createable.equals(other.createable)
                 && description.equals(other.description)
+                && encryptable.equals(other.encryptable)
                 && filterable.equals(other.filterable)
                 && id.equals(other.id)
                 && identityFunctions.equals(other.identityFunctions)
@@ -168,6 +178,7 @@ public final class TargetField {
                 this.association,
                 this.createable,
                 this.description,
+                this.encryptable,
                 this.filterable,
                 this.id,
                 this.identityFunctions,
@@ -196,6 +207,8 @@ public final class TargetField {
 
         private Optional<String> description = Optional.empty();
 
+        private Optional<Boolean> encryptable = Optional.empty();
+
         private Optional<Boolean> filterable = Optional.empty();
 
         private Optional<String> id = Optional.empty();
@@ -223,6 +236,7 @@ public final class TargetField {
             association(other.getAssociation());
             createable(other.getCreateable());
             description(other.getDescription());
+            encryptable(other.getEncryptable());
             filterable(other.getFilterable());
             id(other.getId());
             identityFunctions(other.getIdentityFunctions());
@@ -265,6 +279,17 @@ public final class TargetField {
 
         public Builder description(String description) {
             this.description = Optional.of(description);
+            return this;
+        }
+
+        @JsonSetter(value = "encryptable", nulls = Nulls.SKIP)
+        public Builder encryptable(Optional<Boolean> encryptable) {
+            this.encryptable = encryptable;
+            return this;
+        }
+
+        public Builder encryptable(Boolean encryptable) {
+            this.encryptable = Optional.of(encryptable);
             return this;
         }
 
@@ -372,6 +397,7 @@ public final class TargetField {
                     association,
                     createable,
                     description,
+                    encryptable,
                     filterable,
                     id,
                     identityFunctions,

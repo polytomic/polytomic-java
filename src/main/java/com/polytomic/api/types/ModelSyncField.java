@@ -20,6 +20,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ModelSyncField.Builder.class)
 public final class ModelSyncField {
+    private final Optional<Boolean> encryptionEnabled;
+
     private final Optional<Boolean> new_;
 
     private final Optional<String> overrideValue;
@@ -33,18 +35,28 @@ public final class ModelSyncField {
     private final Map<String, Object> additionalProperties;
 
     private ModelSyncField(
+            Optional<Boolean> encryptionEnabled,
             Optional<Boolean> new_,
             Optional<String> overrideValue,
             Optional<Source> source,
             Optional<String> syncMode,
             String target,
             Map<String, Object> additionalProperties) {
+        this.encryptionEnabled = encryptionEnabled;
         this.new_ = new_;
         this.overrideValue = overrideValue;
         this.source = source;
         this.syncMode = syncMode;
         this.target = target;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Whether the field should be encrypted.
+     */
+    @JsonProperty("encryption_enabled")
+    public Optional<Boolean> getEncryptionEnabled() {
+        return encryptionEnabled;
     }
 
     /**
@@ -96,7 +108,8 @@ public final class ModelSyncField {
     }
 
     private boolean equalTo(ModelSyncField other) {
-        return new_.equals(other.new_)
+        return encryptionEnabled.equals(other.encryptionEnabled)
+                && new_.equals(other.new_)
                 && overrideValue.equals(other.overrideValue)
                 && source.equals(other.source)
                 && syncMode.equals(other.syncMode)
@@ -105,7 +118,8 @@ public final class ModelSyncField {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.new_, this.overrideValue, this.source, this.syncMode, this.target);
+        return Objects.hash(
+                this.encryptionEnabled, this.new_, this.overrideValue, this.source, this.syncMode, this.target);
     }
 
     @java.lang.Override
@@ -125,6 +139,10 @@ public final class ModelSyncField {
 
     public interface _FinalStage {
         ModelSyncField build();
+
+        _FinalStage encryptionEnabled(Optional<Boolean> encryptionEnabled);
+
+        _FinalStage encryptionEnabled(Boolean encryptionEnabled);
 
         _FinalStage new_(Optional<Boolean> new_);
 
@@ -155,6 +173,8 @@ public final class ModelSyncField {
 
         private Optional<Boolean> new_ = Optional.empty();
 
+        private Optional<Boolean> encryptionEnabled = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -162,6 +182,7 @@ public final class ModelSyncField {
 
         @java.lang.Override
         public Builder from(ModelSyncField other) {
+            encryptionEnabled(other.getEncryptionEnabled());
             new_(other.getNew());
             overrideValue(other.getOverrideValue());
             source(other.getSource());
@@ -245,9 +266,27 @@ public final class ModelSyncField {
             return this;
         }
 
+        /**
+         * <p>Whether the field should be encrypted.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage encryptionEnabled(Boolean encryptionEnabled) {
+            this.encryptionEnabled = Optional.of(encryptionEnabled);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "encryption_enabled", nulls = Nulls.SKIP)
+        public _FinalStage encryptionEnabled(Optional<Boolean> encryptionEnabled) {
+            this.encryptionEnabled = encryptionEnabled;
+            return this;
+        }
+
         @java.lang.Override
         public ModelSyncField build() {
-            return new ModelSyncField(new_, overrideValue, source, syncMode, target, additionalProperties);
+            return new ModelSyncField(
+                    encryptionEnabled, new_, overrideValue, source, syncMode, target, additionalProperties);
         }
     }
 }

@@ -28,6 +28,12 @@ public final class BulkSyncResponse {
 
     private final Optional<BulkDiscover> automaticallyAddNewObjects;
 
+    private final Optional<Integer> concurrencyLimit;
+
+    private final Optional<OffsetDateTime> createdAt;
+
+    private final Optional<CommonOutputActor> createdBy;
+
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
 
     private final Optional<Map<String, Object>> destinationConfiguration;
@@ -40,13 +46,17 @@ public final class BulkSyncResponse {
 
     private final Optional<String> id;
 
-    private final Optional<String> mode;
+    private final Optional<BulkSyncMode> mode;
 
     private final Optional<String> name;
+
+    private final Optional<BulkNormalizeNames> normalizeNames;
 
     private final Optional<String> organizationId;
 
     private final Optional<List<String>> policies;
+
+    private final Optional<Integer> resyncConcurrencyLimit;
 
     private final Optional<BulkSchedule> schedule;
 
@@ -54,29 +64,43 @@ public final class BulkSyncResponse {
 
     private final Optional<String> sourceConnectionId;
 
+    private final Optional<OffsetDateTime> updatedAt;
+
+    private final Optional<CommonOutputActor> updatedBy;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncResponse(
             Optional<Boolean> active,
             Optional<BulkDiscover> automaticallyAddNewFields,
             Optional<BulkDiscover> automaticallyAddNewObjects,
+            Optional<Integer> concurrencyLimit,
+            Optional<OffsetDateTime> createdAt,
+            Optional<CommonOutputActor> createdBy,
             Optional<OffsetDateTime> dataCutoffTimestamp,
             Optional<Map<String, Object>> destinationConfiguration,
             Optional<String> destinationConnectionId,
             Optional<Boolean> disableRecordTimestamps,
             Optional<Boolean> discover,
             Optional<String> id,
-            Optional<String> mode,
+            Optional<BulkSyncMode> mode,
             Optional<String> name,
+            Optional<BulkNormalizeNames> normalizeNames,
             Optional<String> organizationId,
             Optional<List<String>> policies,
+            Optional<Integer> resyncConcurrencyLimit,
             Optional<BulkSchedule> schedule,
             Optional<Map<String, Object>> sourceConfiguration,
             Optional<String> sourceConnectionId,
+            Optional<OffsetDateTime> updatedAt,
+            Optional<CommonOutputActor> updatedBy,
             Map<String, Object> additionalProperties) {
         this.active = active;
         this.automaticallyAddNewFields = automaticallyAddNewFields;
         this.automaticallyAddNewObjects = automaticallyAddNewObjects;
+        this.concurrencyLimit = concurrencyLimit;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
         this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.destinationConfiguration = destinationConfiguration;
         this.destinationConnectionId = destinationConnectionId;
@@ -85,11 +109,15 @@ public final class BulkSyncResponse {
         this.id = id;
         this.mode = mode;
         this.name = name;
+        this.normalizeNames = normalizeNames;
         this.organizationId = organizationId;
         this.policies = policies;
+        this.resyncConcurrencyLimit = resyncConcurrencyLimit;
         this.schedule = schedule;
         this.sourceConfiguration = sourceConfiguration;
         this.sourceConnectionId = sourceConnectionId;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
         this.additionalProperties = additionalProperties;
     }
 
@@ -106,6 +134,24 @@ public final class BulkSyncResponse {
     @JsonProperty("automatically_add_new_objects")
     public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
         return automaticallyAddNewObjects;
+    }
+
+    /**
+     * @return Per-sync concurrency limit override.
+     */
+    @JsonProperty("concurrency_limit")
+    public Optional<Integer> getConcurrencyLimit() {
+        return concurrencyLimit;
+    }
+
+    @JsonProperty("created_at")
+    public Optional<OffsetDateTime> getCreatedAt() {
+        return createdAt;
+    }
+
+    @JsonProperty("created_by")
+    public Optional<CommonOutputActor> getCreatedBy() {
+        return createdBy;
     }
 
     @JsonProperty("data_cutoff_timestamp")
@@ -145,7 +191,7 @@ public final class BulkSyncResponse {
     }
 
     @JsonProperty("mode")
-    public Optional<String> getMode() {
+    public Optional<BulkSyncMode> getMode() {
         return mode;
     }
 
@@ -155,6 +201,11 @@ public final class BulkSyncResponse {
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
+    }
+
+    @JsonProperty("normalize_names")
+    public Optional<BulkNormalizeNames> getNormalizeNames() {
+        return normalizeNames;
     }
 
     @JsonProperty("organization_id")
@@ -168,6 +219,14 @@ public final class BulkSyncResponse {
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
+    }
+
+    /**
+     * @return Per-sync resync concurrency limit override.
+     */
+    @JsonProperty("resync_concurrency_limit")
+    public Optional<Integer> getResyncConcurrencyLimit() {
+        return resyncConcurrencyLimit;
     }
 
     @JsonProperty("schedule")
@@ -188,6 +247,16 @@ public final class BulkSyncResponse {
         return sourceConnectionId;
     }
 
+    @JsonProperty("updated_at")
+    public Optional<OffsetDateTime> getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @JsonProperty("updated_by")
+    public Optional<CommonOutputActor> getUpdatedBy() {
+        return updatedBy;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -203,6 +272,9 @@ public final class BulkSyncResponse {
         return active.equals(other.active)
                 && automaticallyAddNewFields.equals(other.automaticallyAddNewFields)
                 && automaticallyAddNewObjects.equals(other.automaticallyAddNewObjects)
+                && concurrencyLimit.equals(other.concurrencyLimit)
+                && createdAt.equals(other.createdAt)
+                && createdBy.equals(other.createdBy)
                 && dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
                 && destinationConfiguration.equals(other.destinationConfiguration)
                 && destinationConnectionId.equals(other.destinationConnectionId)
@@ -211,11 +283,15 @@ public final class BulkSyncResponse {
                 && id.equals(other.id)
                 && mode.equals(other.mode)
                 && name.equals(other.name)
+                && normalizeNames.equals(other.normalizeNames)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
+                && resyncConcurrencyLimit.equals(other.resyncConcurrencyLimit)
                 && schedule.equals(other.schedule)
                 && sourceConfiguration.equals(other.sourceConfiguration)
-                && sourceConnectionId.equals(other.sourceConnectionId);
+                && sourceConnectionId.equals(other.sourceConnectionId)
+                && updatedAt.equals(other.updatedAt)
+                && updatedBy.equals(other.updatedBy);
     }
 
     @java.lang.Override
@@ -224,6 +300,9 @@ public final class BulkSyncResponse {
                 this.active,
                 this.automaticallyAddNewFields,
                 this.automaticallyAddNewObjects,
+                this.concurrencyLimit,
+                this.createdAt,
+                this.createdBy,
                 this.dataCutoffTimestamp,
                 this.destinationConfiguration,
                 this.destinationConnectionId,
@@ -232,11 +311,15 @@ public final class BulkSyncResponse {
                 this.id,
                 this.mode,
                 this.name,
+                this.normalizeNames,
                 this.organizationId,
                 this.policies,
+                this.resyncConcurrencyLimit,
                 this.schedule,
                 this.sourceConfiguration,
-                this.sourceConnectionId);
+                this.sourceConnectionId,
+                this.updatedAt,
+                this.updatedBy);
     }
 
     @java.lang.Override
@@ -256,6 +339,12 @@ public final class BulkSyncResponse {
 
         private Optional<BulkDiscover> automaticallyAddNewObjects = Optional.empty();
 
+        private Optional<Integer> concurrencyLimit = Optional.empty();
+
+        private Optional<OffsetDateTime> createdAt = Optional.empty();
+
+        private Optional<CommonOutputActor> createdBy = Optional.empty();
+
         private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
 
         private Optional<Map<String, Object>> destinationConfiguration = Optional.empty();
@@ -268,19 +357,27 @@ public final class BulkSyncResponse {
 
         private Optional<String> id = Optional.empty();
 
-        private Optional<String> mode = Optional.empty();
+        private Optional<BulkSyncMode> mode = Optional.empty();
 
         private Optional<String> name = Optional.empty();
+
+        private Optional<BulkNormalizeNames> normalizeNames = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<List<String>> policies = Optional.empty();
+
+        private Optional<Integer> resyncConcurrencyLimit = Optional.empty();
 
         private Optional<BulkSchedule> schedule = Optional.empty();
 
         private Optional<Map<String, Object>> sourceConfiguration = Optional.empty();
 
         private Optional<String> sourceConnectionId = Optional.empty();
+
+        private Optional<OffsetDateTime> updatedAt = Optional.empty();
+
+        private Optional<CommonOutputActor> updatedBy = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -291,6 +388,9 @@ public final class BulkSyncResponse {
             active(other.getActive());
             automaticallyAddNewFields(other.getAutomaticallyAddNewFields());
             automaticallyAddNewObjects(other.getAutomaticallyAddNewObjects());
+            concurrencyLimit(other.getConcurrencyLimit());
+            createdAt(other.getCreatedAt());
+            createdBy(other.getCreatedBy());
             dataCutoffTimestamp(other.getDataCutoffTimestamp());
             destinationConfiguration(other.getDestinationConfiguration());
             destinationConnectionId(other.getDestinationConnectionId());
@@ -299,11 +399,15 @@ public final class BulkSyncResponse {
             id(other.getId());
             mode(other.getMode());
             name(other.getName());
+            normalizeNames(other.getNormalizeNames());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
+            resyncConcurrencyLimit(other.getResyncConcurrencyLimit());
             schedule(other.getSchedule());
             sourceConfiguration(other.getSourceConfiguration());
             sourceConnectionId(other.getSourceConnectionId());
+            updatedAt(other.getUpdatedAt());
+            updatedBy(other.getUpdatedBy());
             return this;
         }
 
@@ -337,6 +441,39 @@ public final class BulkSyncResponse {
 
         public Builder automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
             this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
+            return this;
+        }
+
+        @JsonSetter(value = "concurrency_limit", nulls = Nulls.SKIP)
+        public Builder concurrencyLimit(Optional<Integer> concurrencyLimit) {
+            this.concurrencyLimit = concurrencyLimit;
+            return this;
+        }
+
+        public Builder concurrencyLimit(Integer concurrencyLimit) {
+            this.concurrencyLimit = Optional.of(concurrencyLimit);
+            return this;
+        }
+
+        @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
+        public Builder createdAt(Optional<OffsetDateTime> createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder createdAt(OffsetDateTime createdAt) {
+            this.createdAt = Optional.of(createdAt);
+            return this;
+        }
+
+        @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
+        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+            this.createdBy = createdBy;
+            return this;
+        }
+
+        public Builder createdBy(CommonOutputActor createdBy) {
+            this.createdBy = Optional.of(createdBy);
             return this;
         }
 
@@ -407,12 +544,12 @@ public final class BulkSyncResponse {
         }
 
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public Builder mode(Optional<String> mode) {
+        public Builder mode(Optional<BulkSyncMode> mode) {
             this.mode = mode;
             return this;
         }
 
-        public Builder mode(String mode) {
+        public Builder mode(BulkSyncMode mode) {
             this.mode = Optional.of(mode);
             return this;
         }
@@ -425,6 +562,17 @@ public final class BulkSyncResponse {
 
         public Builder name(String name) {
             this.name = Optional.of(name);
+            return this;
+        }
+
+        @JsonSetter(value = "normalize_names", nulls = Nulls.SKIP)
+        public Builder normalizeNames(Optional<BulkNormalizeNames> normalizeNames) {
+            this.normalizeNames = normalizeNames;
+            return this;
+        }
+
+        public Builder normalizeNames(BulkNormalizeNames normalizeNames) {
+            this.normalizeNames = Optional.of(normalizeNames);
             return this;
         }
 
@@ -447,6 +595,17 @@ public final class BulkSyncResponse {
 
         public Builder policies(List<String> policies) {
             this.policies = Optional.of(policies);
+            return this;
+        }
+
+        @JsonSetter(value = "resync_concurrency_limit", nulls = Nulls.SKIP)
+        public Builder resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit) {
+            this.resyncConcurrencyLimit = resyncConcurrencyLimit;
+            return this;
+        }
+
+        public Builder resyncConcurrencyLimit(Integer resyncConcurrencyLimit) {
+            this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit);
             return this;
         }
 
@@ -483,11 +642,36 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
+        public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Builder updatedAt(OffsetDateTime updatedAt) {
+            this.updatedAt = Optional.of(updatedAt);
+            return this;
+        }
+
+        @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
+        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+            this.updatedBy = updatedBy;
+            return this;
+        }
+
+        public Builder updatedBy(CommonOutputActor updatedBy) {
+            this.updatedBy = Optional.of(updatedBy);
+            return this;
+        }
+
         public BulkSyncResponse build() {
             return new BulkSyncResponse(
                     active,
                     automaticallyAddNewFields,
                     automaticallyAddNewObjects,
+                    concurrencyLimit,
+                    createdAt,
+                    createdBy,
                     dataCutoffTimestamp,
                     destinationConfiguration,
                     destinationConnectionId,
@@ -496,11 +680,15 @@ public final class BulkSyncResponse {
                     id,
                     mode,
                     name,
+                    normalizeNames,
                     organizationId,
                     policies,
+                    resyncConcurrencyLimit,
                     schedule,
                     sourceConfiguration,
                     sourceConnectionId,
+                    updatedAt,
+                    updatedBy,
                     additionalProperties);
         }
     }

@@ -17,6 +17,7 @@ import com.polytomic.api.resources.bulksync.requests.BulkSyncRemoveRequest;
 import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.StartBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
+import com.polytomic.api.resources.bulksync.schedules.SchedulesClient;
 import com.polytomic.api.resources.bulksync.schemas.SchemasClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
@@ -43,10 +44,13 @@ public class BulkSyncClient {
 
     protected final Supplier<SchemasClient> schemasClient;
 
+    protected final Supplier<SchedulesClient> schedulesClient;
+
     public BulkSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
+        this.schedulesClient = Suppliers.memoize(() -> new SchedulesClient(clientOptions));
     }
 
     public BulkSyncListEnvelope list() {
@@ -89,10 +93,54 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Create a new Bulk Sync from a source to a destination (data warehouse, database, or cloud storage bucket like S3).
+     * <p>Bulk Syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
+     * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/bulk-syncs">the product
+     * documentation</a> is configurable via
+     * the API.</p>
+     * <p>Sample code examples:</p>
+     * <ul>
+     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-s-3">Bulk sync (ELT) from Salesforce to S3</a></li>
+     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-snowflake">Bulk sync (ELT) from Salesforce to Snowflake</a></li>
+     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-hub-spot-to-postgre-sql">Bulk sync (ELT) from HubSpot to PostgreSQL</a></li>
+     * </ul>
+     * <h2>Connection specific configuration</h2>
+     * <p>The <code>destination_configuration</code> is integration-specific configuration for the
+     * selected bulk sync destination. This includes settings such as the output schema
+     * and is required when creating a new sync.</p>
+     * <p>The <code>source_configuration</code> is optional. It allows configuration for how
+     * Polytomic reads data from the source connection. This will not be available for
+     * integrations that do not support additional configuration.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">connection configurations</a>
+     * to see configurations for particular integrations (for example, <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/postgre-sql#source-1">here</a> is the available source configuration for the PostgreSQL bulk sync source).</p>
+     */
     public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request) {
         return create(request, null);
     }
 
+    /**
+     * Create a new Bulk Sync from a source to a destination (data warehouse, database, or cloud storage bucket like S3).
+     * <p>Bulk Syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
+     * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/bulk-syncs">the product
+     * documentation</a> is configurable via
+     * the API.</p>
+     * <p>Sample code examples:</p>
+     * <ul>
+     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-s-3">Bulk sync (ELT) from Salesforce to S3</a></li>
+     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-snowflake">Bulk sync (ELT) from Salesforce to Snowflake</a></li>
+     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-hub-spot-to-postgre-sql">Bulk sync (ELT) from HubSpot to PostgreSQL</a></li>
+     * </ul>
+     * <h2>Connection specific configuration</h2>
+     * <p>The <code>destination_configuration</code> is integration-specific configuration for the
+     * selected bulk sync destination. This includes settings such as the output schema
+     * and is required when creating a new sync.</p>
+     * <p>The <code>source_configuration</code> is optional. It allows configuration for how
+     * Polytomic reads data from the source connection. This will not be available for
+     * integrations that do not support additional configuration.</p>
+     * <p>Consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">connection configurations</a>
+     * to see configurations for particular integrations (for example, <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/postgre-sql#source-1">here</a> is the available source configuration for the PostgreSQL bulk sync source).</p>
+     */
     public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -479,5 +527,9 @@ public class BulkSyncClient {
 
     public SchemasClient schemas() {
         return this.schemasClient.get();
+    }
+
+    public SchedulesClient schedules() {
+        return this.schedulesClient.get();
     }
 }

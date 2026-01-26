@@ -22,7 +22,7 @@ import java.util.Optional;
 public final class SupportedBulkMode {
     private final Optional<String> description;
 
-    private final Optional<SyncMode> id;
+    private final Optional<BulkSyncMode> id;
 
     private final Optional<String> label;
 
@@ -36,7 +36,7 @@ public final class SupportedBulkMode {
 
     private SupportedBulkMode(
             Optional<String> description,
-            Optional<SyncMode> id,
+            Optional<BulkSyncMode> id,
             Optional<String> label,
             Optional<Boolean> requiresIdentity,
             Optional<Boolean> supportsFieldSyncMode,
@@ -57,7 +57,7 @@ public final class SupportedBulkMode {
     }
 
     @JsonProperty("id")
-    public Optional<SyncMode> getId() {
+    public Optional<BulkSyncMode> getId() {
         return id;
     }
 
@@ -125,7 +125,7 @@ public final class SupportedBulkMode {
     public static final class Builder {
         private Optional<String> description = Optional.empty();
 
-        private Optional<SyncMode> id = Optional.empty();
+        private Optional<BulkSyncMode> id = Optional.empty();
 
         private Optional<String> label = Optional.empty();
 
@@ -162,12 +162,12 @@ public final class SupportedBulkMode {
         }
 
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
-        public Builder id(Optional<SyncMode> id) {
+        public Builder id(Optional<BulkSyncMode> id) {
             this.id = id;
             return this;
         }
 
-        public Builder id(SyncMode id) {
+        public Builder id(BulkSyncMode id) {
             this.id = Optional.of(id);
             return this;
         }

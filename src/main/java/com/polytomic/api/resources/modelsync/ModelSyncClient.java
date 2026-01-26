@@ -13,14 +13,13 @@ import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
 import com.polytomic.api.resources.modelsync.requests.CreateModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
-import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetFieldsRequest;
-import com.polytomic.api.resources.modelsync.requests.ModelSyncGetTargetRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
 import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncRequest;
+import com.polytomic.api.resources.modelsync.targets.TargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
-import com.polytomic.api.types.GetConnectionMetaEnvelope;
+import com.polytomic.api.types.CancelModelSyncResponseEnvelope;
 import com.polytomic.api.types.GetModelSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListModelSyncResponseEnvelope;
 import com.polytomic.api.types.ModelFieldResponse;
@@ -28,8 +27,6 @@ import com.polytomic.api.types.ModelSyncResponseEnvelope;
 import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
 import com.polytomic.api.types.StartModelSyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
-import com.polytomic.api.types.TargetResponseEnvelope;
-import com.polytomic.api.types.V4TargetObjectsResponseEnvelope;
 import java.io.IOException;
 import java.util.function.Supplier;
 import okhttp3.Headers;
@@ -43,10 +40,13 @@ import okhttp3.ResponseBody;
 public class ModelSyncClient {
     protected final ClientOptions clientOptions;
 
+    protected final Supplier<TargetsClient> targetsClient;
+
     protected final Supplier<ExecutionsClient> executionsClient;
 
     public ModelSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.targetsClient = Suppliers.memoize(() -> new TargetsClient(clientOptions));
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
     }
 
@@ -136,129 +136,6 @@ public class ModelSyncClient {
         }
     }
 
-    public GetConnectionMetaEnvelope getTarget(String id) {
-        return getTarget(id, ModelSyncGetTargetRequest.builder().build());
-    }
-
-    public GetConnectionMetaEnvelope getTarget(String id, ModelSyncGetTargetRequest request) {
-        return getTarget(id, request, null);
-    }
-
-    public GetConnectionMetaEnvelope getTarget(
-            String id, ModelSyncGetTargetRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/target");
-        if (request.getType().isPresent()) {
-            httpUrl.addQueryParameter("type", request.getType().get());
-        }
-        if (request.getSearch().isPresent()) {
-            httpUrl.addQueryParameter("search", request.getSearch().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetConnectionMetaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public TargetResponseEnvelope getTargetFields(String id, ModelSyncGetTargetFieldsRequest request) {
-        return getTargetFields(id, request, null);
-    }
-
-    public TargetResponseEnvelope getTargetFields(
-            String id, ModelSyncGetTargetFieldsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/target/fields");
-        httpUrl.addQueryParameter("target", request.getTarget());
-        if (request.getRefresh().isPresent()) {
-            httpUrl.addQueryParameter("refresh", request.getRefresh().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), TargetResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public V4TargetObjectsResponseEnvelope getTargetObjects(String id) {
-        return getTargetObjects(id, null);
-    }
-
-    public V4TargetObjectsResponseEnvelope getTargetObjects(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/targetobjects")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V4TargetObjectsResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public ListModelSyncResponseEnvelope list() {
         return list(ModelSyncListRequest.builder().build());
     }
@@ -306,10 +183,100 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Create a new sync from one or more models to a destination.
+     * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/sync-destinations">the product
+     * documentation</a> is
+     * configurable via the API.</p>
+     * <p>Guides:</p>
+     * <ul>
+     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/model-sync-reverse-etl-from-snowflake-query-to-salesforce">Model sync (Reverse ETL) from Snowflake query to Salesforce</a></li>
+     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/joined-model-sync-from-postgres-airtable-and-stripe-to-hubspot">Joined model sync from Postgres, Airtable, and Stripe to Hubspot</a></li>
+     * </ul>
+     * <h2>Targets (Destinations)</h2>
+     * <p>Polytomic refers to a model sync's destination as the &quot;target object&quot;, or
+     * target. Target objects are identified by a connection ID and an object ID. You
+     * can retrieve a list of all target objects for a connection using the <a href="./targets/list">Get Target
+     * Objects</a> endpoint.</p>
+     * <p>The <code>target</code> object in the request specifies information about the sync destination.</p>
+     * <pre><code class="language-json">&quot;target&quot;: {
+     *     &quot;connection_id&quot;: &quot;248df4b7-aa70-47b8-a036-33ac447e668d&quot;,
+     *     &quot;object&quot;: &quot;Users&quot;,
+     * },
+     * </code></pre>
+     * <p>Some connections support additional configuration for targets. For example,
+     * <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/salesforce#target">Salesforce
+     * connections</a>
+     * support optionally specifying the ingestion API to use. The target specific
+     * options are passed as <code>configuration</code>; consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">integration
+     * guides</a>
+     * for details about specific connection configurations.</p>
+     * <h3>Creating a new target</h3>
+     * <p>Some integrations support creating a new target when creating a model sync. For
+     * example, an ad audience or database table.</p>
+     * <p>When creating a new target, <code>object</code> is omitted and <code>create</code> is specified
+     * instead. The <code>create</code> property is an object containing integration specific
+     * configuration for the new target.</p>
+     * <pre><code class="language-json">&quot;target&quot;: {
+     *     &quot;connection_id&quot;: &quot;248df4b7-aa70-47b8-a036-33ac447e668d&quot;,
+     *     &quot;create&quot;: {
+     *         &quot;name&quot;: &quot;New audience&quot;,
+     *         &quot;type&quot;: &quot;user_audience&quot;
+     *     }
+     * },
+     * </code></pre>
+     * <p>The <a href="./targets/list">Get Target List</a> endpoint returns information about whether
+     * a connection supports target creation.</p>
+     */
     public ModelSyncResponseEnvelope create(CreateModelSyncRequest request) {
         return create(request, null);
     }
 
+    /**
+     * Create a new sync from one or more models to a destination.
+     * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/sync-destinations">the product
+     * documentation</a> is
+     * configurable via the API.</p>
+     * <p>Guides:</p>
+     * <ul>
+     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/model-sync-reverse-etl-from-snowflake-query-to-salesforce">Model sync (Reverse ETL) from Snowflake query to Salesforce</a></li>
+     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/joined-model-sync-from-postgres-airtable-and-stripe-to-hubspot">Joined model sync from Postgres, Airtable, and Stripe to Hubspot</a></li>
+     * </ul>
+     * <h2>Targets (Destinations)</h2>
+     * <p>Polytomic refers to a model sync's destination as the &quot;target object&quot;, or
+     * target. Target objects are identified by a connection ID and an object ID. You
+     * can retrieve a list of all target objects for a connection using the <a href="./targets/list">Get Target
+     * Objects</a> endpoint.</p>
+     * <p>The <code>target</code> object in the request specifies information about the sync destination.</p>
+     * <pre><code class="language-json">&quot;target&quot;: {
+     *     &quot;connection_id&quot;: &quot;248df4b7-aa70-47b8-a036-33ac447e668d&quot;,
+     *     &quot;object&quot;: &quot;Users&quot;,
+     * },
+     * </code></pre>
+     * <p>Some connections support additional configuration for targets. For example,
+     * <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/salesforce#target">Salesforce
+     * connections</a>
+     * support optionally specifying the ingestion API to use. The target specific
+     * options are passed as <code>configuration</code>; consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">integration
+     * guides</a>
+     * for details about specific connection configurations.</p>
+     * <h3>Creating a new target</h3>
+     * <p>Some integrations support creating a new target when creating a model sync. For
+     * example, an ad audience or database table.</p>
+     * <p>When creating a new target, <code>object</code> is omitted and <code>create</code> is specified
+     * instead. The <code>create</code> property is an object containing integration specific
+     * configuration for the new target.</p>
+     * <pre><code class="language-json">&quot;target&quot;: {
+     *     &quot;connection_id&quot;: &quot;248df4b7-aa70-47b8-a036-33ac447e668d&quot;,
+     *     &quot;create&quot;: {
+     *         &quot;name&quot;: &quot;New audience&quot;,
+     *         &quot;type&quot;: &quot;user_audience&quot;
+     *     }
+     * },
+     * </code></pre>
+     * <p>The <a href="./targets/list">Get Target List</a> endpoint returns information about whether
+     * a connection supports target creation.</p>
+     */
     public ModelSyncResponseEnvelope create(CreateModelSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -535,6 +502,43 @@ public class ModelSyncClient {
         }
     }
 
+    public CancelModelSyncResponseEnvelope cancel(String id) {
+        return cancel(id, null);
+    }
+
+    public CancelModelSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs")
+                .addPathSegment(id)
+                .addPathSegments("cancel")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        responseBody.string(), CancelModelSyncResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * <blockquote>
      * 🚧 Force full resync
@@ -635,6 +639,10 @@ public class ModelSyncClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public TargetsClient targets() {
+        return this.targetsClient.get();
     }
 
     public ExecutionsClient executions() {

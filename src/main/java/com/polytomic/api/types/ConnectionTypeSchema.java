@@ -23,6 +23,8 @@ import java.util.Optional;
 public final class ConnectionTypeSchema {
     private final Optional<String> id;
 
+    private final Optional<String> logoUrl;
+
     private final Optional<String> name;
 
     private final Optional<List<String>> operations;
@@ -31,10 +33,12 @@ public final class ConnectionTypeSchema {
 
     private ConnectionTypeSchema(
             Optional<String> id,
+            Optional<String> logoUrl,
             Optional<String> name,
             Optional<List<String>> operations,
             Map<String, Object> additionalProperties) {
         this.id = id;
+        this.logoUrl = logoUrl;
         this.name = name;
         this.operations = operations;
         this.additionalProperties = additionalProperties;
@@ -43,6 +47,11 @@ public final class ConnectionTypeSchema {
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
+    }
+
+    @JsonProperty("logo_url")
+    public Optional<String> getLogoUrl() {
+        return logoUrl;
     }
 
     @JsonProperty("name")
@@ -67,12 +76,15 @@ public final class ConnectionTypeSchema {
     }
 
     private boolean equalTo(ConnectionTypeSchema other) {
-        return id.equals(other.id) && name.equals(other.name) && operations.equals(other.operations);
+        return id.equals(other.id)
+                && logoUrl.equals(other.logoUrl)
+                && name.equals(other.name)
+                && operations.equals(other.operations);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.operations);
+        return Objects.hash(this.id, this.logoUrl, this.name, this.operations);
     }
 
     @java.lang.Override
@@ -88,6 +100,8 @@ public final class ConnectionTypeSchema {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
+        private Optional<String> logoUrl = Optional.empty();
+
         private Optional<String> name = Optional.empty();
 
         private Optional<List<String>> operations = Optional.empty();
@@ -99,6 +113,7 @@ public final class ConnectionTypeSchema {
 
         public Builder from(ConnectionTypeSchema other) {
             id(other.getId());
+            logoUrl(other.getLogoUrl());
             name(other.getName());
             operations(other.getOperations());
             return this;
@@ -112,6 +127,17 @@ public final class ConnectionTypeSchema {
 
         public Builder id(String id) {
             this.id = Optional.of(id);
+            return this;
+        }
+
+        @JsonSetter(value = "logo_url", nulls = Nulls.SKIP)
+        public Builder logoUrl(Optional<String> logoUrl) {
+            this.logoUrl = logoUrl;
+            return this;
+        }
+
+        public Builder logoUrl(String logoUrl) {
+            this.logoUrl = Optional.of(logoUrl);
             return this;
         }
 
@@ -138,7 +164,7 @@ public final class ConnectionTypeSchema {
         }
 
         public ConnectionTypeSchema build() {
-            return new ConnectionTypeSchema(id, name, operations, additionalProperties);
+            return new ConnectionTypeSchema(id, logoUrl, name, operations, additionalProperties);
         }
     }
 }
