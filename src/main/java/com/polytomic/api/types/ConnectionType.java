@@ -20,6 +20,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ConnectionType.Builder.class)
 public final class ConnectionType {
+    private final Optional<BackendConnectionCapabilities> capabilities;
+
     private final Optional<V2ConnectionForm> configurationForm;
 
     private final Optional<Map<String, Object>> envConfig;
@@ -39,6 +41,7 @@ public final class ConnectionType {
     private final Map<String, Object> additionalProperties;
 
     private ConnectionType(
+            Optional<BackendConnectionCapabilities> capabilities,
             Optional<V2ConnectionForm> configurationForm,
             Optional<Map<String, Object>> envConfig,
             Optional<String> id,
@@ -48,6 +51,7 @@ public final class ConnectionType {
             Optional<BackendOAuthPrompt> oauthPrompt,
             Optional<Boolean> useOauth,
             Map<String, Object> additionalProperties) {
+        this.capabilities = capabilities;
         this.configurationForm = configurationForm;
         this.envConfig = envConfig;
         this.id = id;
@@ -57,6 +61,11 @@ public final class ConnectionType {
         this.oauthPrompt = oauthPrompt;
         this.useOauth = useOauth;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("capabilities")
+    public Optional<BackendConnectionCapabilities> getCapabilities() {
+        return capabilities;
     }
 
     @JsonProperty("configurationForm")
@@ -111,7 +120,8 @@ public final class ConnectionType {
     }
 
     private boolean equalTo(ConnectionType other) {
-        return configurationForm.equals(other.configurationForm)
+        return capabilities.equals(other.capabilities)
+                && configurationForm.equals(other.configurationForm)
                 && envConfig.equals(other.envConfig)
                 && id.equals(other.id)
                 && initialConfiguration.equals(other.initialConfiguration)
@@ -124,6 +134,7 @@ public final class ConnectionType {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.capabilities,
                 this.configurationForm,
                 this.envConfig,
                 this.id,
@@ -145,6 +156,8 @@ public final class ConnectionType {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<BackendConnectionCapabilities> capabilities = Optional.empty();
+
         private Optional<V2ConnectionForm> configurationForm = Optional.empty();
 
         private Optional<Map<String, Object>> envConfig = Optional.empty();
@@ -167,6 +180,7 @@ public final class ConnectionType {
         private Builder() {}
 
         public Builder from(ConnectionType other) {
+            capabilities(other.getCapabilities());
             configurationForm(other.getConfigurationForm());
             envConfig(other.getEnvConfig());
             id(other.getId());
@@ -175,6 +189,17 @@ public final class ConnectionType {
             name(other.getName());
             oauthPrompt(other.getOauthPrompt());
             useOauth(other.getUseOauth());
+            return this;
+        }
+
+        @JsonSetter(value = "capabilities", nulls = Nulls.SKIP)
+        public Builder capabilities(Optional<BackendConnectionCapabilities> capabilities) {
+            this.capabilities = capabilities;
+            return this;
+        }
+
+        public Builder capabilities(BackendConnectionCapabilities capabilities) {
+            this.capabilities = Optional.of(capabilities);
             return this;
         }
 
@@ -268,6 +293,7 @@ public final class ConnectionType {
 
         public ConnectionType build() {
             return new ConnectionType(
+                    capabilities,
                     configurationForm,
                     envConfig,
                     id,

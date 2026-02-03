@@ -25,6 +25,8 @@ public final class SchemaField {
 
     private final Optional<String> id;
 
+    private final Optional<Boolean> isPrimaryKey;
+
     private final Optional<String> name;
 
     private final Optional<String> remoteType;
@@ -40,6 +42,7 @@ public final class SchemaField {
     private SchemaField(
             Optional<SchemaAssociation> association,
             Optional<String> id,
+            Optional<Boolean> isPrimaryKey,
             Optional<String> name,
             Optional<String> remoteType,
             Optional<UtilFieldType> type,
@@ -48,6 +51,7 @@ public final class SchemaField {
             Map<String, Object> additionalProperties) {
         this.association = association;
         this.id = id;
+        this.isPrimaryKey = isPrimaryKey;
         this.name = name;
         this.remoteType = remoteType;
         this.type = type;
@@ -64,6 +68,14 @@ public final class SchemaField {
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
+    }
+
+    /**
+     * @return Whether this field is part of the schema's primary key.
+     */
+    @JsonProperty("is_primary_key")
+    public Optional<Boolean> getIsPrimaryKey() {
+        return isPrimaryKey;
     }
 
     @JsonProperty("name")
@@ -108,6 +120,7 @@ public final class SchemaField {
     private boolean equalTo(SchemaField other) {
         return association.equals(other.association)
                 && id.equals(other.id)
+                && isPrimaryKey.equals(other.isPrimaryKey)
                 && name.equals(other.name)
                 && remoteType.equals(other.remoteType)
                 && type.equals(other.type)
@@ -118,7 +131,14 @@ public final class SchemaField {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.association, this.id, this.name, this.remoteType, this.type, this.typeSpec, this.values);
+                this.association,
+                this.id,
+                this.isPrimaryKey,
+                this.name,
+                this.remoteType,
+                this.type,
+                this.typeSpec,
+                this.values);
     }
 
     @java.lang.Override
@@ -135,6 +155,8 @@ public final class SchemaField {
         private Optional<SchemaAssociation> association = Optional.empty();
 
         private Optional<String> id = Optional.empty();
+
+        private Optional<Boolean> isPrimaryKey = Optional.empty();
 
         private Optional<String> name = Optional.empty();
 
@@ -154,6 +176,7 @@ public final class SchemaField {
         public Builder from(SchemaField other) {
             association(other.getAssociation());
             id(other.getId());
+            isPrimaryKey(other.getIsPrimaryKey());
             name(other.getName());
             remoteType(other.getRemoteType());
             type(other.getType());
@@ -181,6 +204,17 @@ public final class SchemaField {
 
         public Builder id(String id) {
             this.id = Optional.of(id);
+            return this;
+        }
+
+        @JsonSetter(value = "is_primary_key", nulls = Nulls.SKIP)
+        public Builder isPrimaryKey(Optional<Boolean> isPrimaryKey) {
+            this.isPrimaryKey = isPrimaryKey;
+            return this;
+        }
+
+        public Builder isPrimaryKey(Boolean isPrimaryKey) {
+            this.isPrimaryKey = Optional.of(isPrimaryKey);
             return this;
         }
 
@@ -240,7 +274,8 @@ public final class SchemaField {
         }
 
         public SchemaField build() {
-            return new SchemaField(association, id, name, remoteType, type, typeSpec, values, additionalProperties);
+            return new SchemaField(
+                    association, id, isPrimaryKey, name, remoteType, type, typeSpec, values, additionalProperties);
         }
     }
 }

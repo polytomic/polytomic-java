@@ -245,10 +245,16 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Polytomic periodically inspects the schemas for connections to discover new fields and update metadata. This endpoint returns the current inspection status.
+     */
     public BulkSyncSourceStatusEnvelope getStatus(String id) {
         return getStatus(id, null);
     }
 
+    /**
+     * Polytomic periodically inspects the schemas for connections to discover new fields and update metadata. This endpoint returns the current inspection status.
+     */
     public BulkSyncSourceStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
