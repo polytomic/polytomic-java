@@ -20,7 +20,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ConnectionType.Builder.class)
 public final class ConnectionType {
-    private final Optional<BackendConnectionCapabilities> capabilities;
+    private final BackendConnectionCapabilities capabilities;
 
     private final Optional<V2ConnectionForm> configurationForm;
 
@@ -41,7 +41,7 @@ public final class ConnectionType {
     private final Map<String, Object> additionalProperties;
 
     private ConnectionType(
-            Optional<BackendConnectionCapabilities> capabilities,
+            BackendConnectionCapabilities capabilities,
             Optional<V2ConnectionForm> configurationForm,
             Optional<Map<String, Object>> envConfig,
             Optional<String> id,
@@ -64,7 +64,7 @@ public final class ConnectionType {
     }
 
     @JsonProperty("capabilities")
-    public Optional<BackendConnectionCapabilities> getCapabilities() {
+    public BackendConnectionCapabilities getCapabilities() {
         return capabilities;
     }
 
@@ -150,35 +150,78 @@ public final class ConnectionType {
         return ObjectMappers.stringify(this);
     }
 
-    public static Builder builder() {
+    public static CapabilitiesStage builder() {
         return new Builder();
     }
 
+    public interface CapabilitiesStage {
+        _FinalStage capabilities(BackendConnectionCapabilities capabilities);
+
+        Builder from(ConnectionType other);
+    }
+
+    public interface _FinalStage {
+        ConnectionType build();
+
+        _FinalStage configurationForm(Optional<V2ConnectionForm> configurationForm);
+
+        _FinalStage configurationForm(V2ConnectionForm configurationForm);
+
+        _FinalStage envConfig(Optional<Map<String, Object>> envConfig);
+
+        _FinalStage envConfig(Map<String, Object> envConfig);
+
+        _FinalStage id(Optional<String> id);
+
+        _FinalStage id(String id);
+
+        _FinalStage initialConfiguration(Optional<Map<String, Object>> initialConfiguration);
+
+        _FinalStage initialConfiguration(Map<String, Object> initialConfiguration);
+
+        _FinalStage logoUrl(Optional<String> logoUrl);
+
+        _FinalStage logoUrl(String logoUrl);
+
+        _FinalStage name(Optional<String> name);
+
+        _FinalStage name(String name);
+
+        _FinalStage oauthPrompt(Optional<BackendOAuthPrompt> oauthPrompt);
+
+        _FinalStage oauthPrompt(BackendOAuthPrompt oauthPrompt);
+
+        _FinalStage useOauth(Optional<Boolean> useOauth);
+
+        _FinalStage useOauth(Boolean useOauth);
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder {
-        private Optional<BackendConnectionCapabilities> capabilities = Optional.empty();
+    public static final class Builder implements CapabilitiesStage, _FinalStage {
+        private BackendConnectionCapabilities capabilities;
 
-        private Optional<V2ConnectionForm> configurationForm = Optional.empty();
-
-        private Optional<Map<String, Object>> envConfig = Optional.empty();
-
-        private Optional<String> id = Optional.empty();
-
-        private Optional<Map<String, Object>> initialConfiguration = Optional.empty();
-
-        private Optional<String> logoUrl = Optional.empty();
-
-        private Optional<String> name = Optional.empty();
+        private Optional<Boolean> useOauth = Optional.empty();
 
         private Optional<BackendOAuthPrompt> oauthPrompt = Optional.empty();
 
-        private Optional<Boolean> useOauth = Optional.empty();
+        private Optional<String> name = Optional.empty();
+
+        private Optional<String> logoUrl = Optional.empty();
+
+        private Optional<Map<String, Object>> initialConfiguration = Optional.empty();
+
+        private Optional<String> id = Optional.empty();
+
+        private Optional<Map<String, Object>> envConfig = Optional.empty();
+
+        private Optional<V2ConnectionForm> configurationForm = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
+        @java.lang.Override
         public Builder from(ConnectionType other) {
             capabilities(other.getCapabilities());
             configurationForm(other.getConfigurationForm());
@@ -192,105 +235,118 @@ public final class ConnectionType {
             return this;
         }
 
-        @JsonSetter(value = "capabilities", nulls = Nulls.SKIP)
-        public Builder capabilities(Optional<BackendConnectionCapabilities> capabilities) {
+        @java.lang.Override
+        @JsonSetter("capabilities")
+        public _FinalStage capabilities(BackendConnectionCapabilities capabilities) {
             this.capabilities = capabilities;
             return this;
         }
 
-        public Builder capabilities(BackendConnectionCapabilities capabilities) {
-            this.capabilities = Optional.of(capabilities);
-            return this;
-        }
-
-        @JsonSetter(value = "configurationForm", nulls = Nulls.SKIP)
-        public Builder configurationForm(Optional<V2ConnectionForm> configurationForm) {
-            this.configurationForm = configurationForm;
-            return this;
-        }
-
-        public Builder configurationForm(V2ConnectionForm configurationForm) {
-            this.configurationForm = Optional.of(configurationForm);
-            return this;
-        }
-
-        @JsonSetter(value = "envConfig", nulls = Nulls.SKIP)
-        public Builder envConfig(Optional<Map<String, Object>> envConfig) {
-            this.envConfig = envConfig;
-            return this;
-        }
-
-        public Builder envConfig(Map<String, Object> envConfig) {
-            this.envConfig = Optional.of(envConfig);
-            return this;
-        }
-
-        @JsonSetter(value = "id", nulls = Nulls.SKIP)
-        public Builder id(Optional<String> id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = Optional.of(id);
-            return this;
-        }
-
-        @JsonSetter(value = "initialConfiguration", nulls = Nulls.SKIP)
-        public Builder initialConfiguration(Optional<Map<String, Object>> initialConfiguration) {
-            this.initialConfiguration = initialConfiguration;
-            return this;
-        }
-
-        public Builder initialConfiguration(Map<String, Object> initialConfiguration) {
-            this.initialConfiguration = Optional.of(initialConfiguration);
-            return this;
-        }
-
-        @JsonSetter(value = "logo_url", nulls = Nulls.SKIP)
-        public Builder logoUrl(Optional<String> logoUrl) {
-            this.logoUrl = logoUrl;
-            return this;
-        }
-
-        public Builder logoUrl(String logoUrl) {
-            this.logoUrl = Optional.of(logoUrl);
-            return this;
-        }
-
-        @JsonSetter(value = "name", nulls = Nulls.SKIP)
-        public Builder name(Optional<String> name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = Optional.of(name);
-            return this;
-        }
-
-        @JsonSetter(value = "oauth_prompt", nulls = Nulls.SKIP)
-        public Builder oauthPrompt(Optional<BackendOAuthPrompt> oauthPrompt) {
-            this.oauthPrompt = oauthPrompt;
-            return this;
-        }
-
-        public Builder oauthPrompt(BackendOAuthPrompt oauthPrompt) {
-            this.oauthPrompt = Optional.of(oauthPrompt);
-            return this;
-        }
-
-        @JsonSetter(value = "use_oauth", nulls = Nulls.SKIP)
-        public Builder useOauth(Optional<Boolean> useOauth) {
-            this.useOauth = useOauth;
-            return this;
-        }
-
-        public Builder useOauth(Boolean useOauth) {
+        @java.lang.Override
+        public _FinalStage useOauth(Boolean useOauth) {
             this.useOauth = Optional.of(useOauth);
             return this;
         }
 
+        @java.lang.Override
+        @JsonSetter(value = "use_oauth", nulls = Nulls.SKIP)
+        public _FinalStage useOauth(Optional<Boolean> useOauth) {
+            this.useOauth = useOauth;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage oauthPrompt(BackendOAuthPrompt oauthPrompt) {
+            this.oauthPrompt = Optional.of(oauthPrompt);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "oauth_prompt", nulls = Nulls.SKIP)
+        public _FinalStage oauthPrompt(Optional<BackendOAuthPrompt> oauthPrompt) {
+            this.oauthPrompt = oauthPrompt;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage name(String name) {
+            this.name = Optional.of(name);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "name", nulls = Nulls.SKIP)
+        public _FinalStage name(Optional<String> name) {
+            this.name = name;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage logoUrl(String logoUrl) {
+            this.logoUrl = Optional.of(logoUrl);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "logo_url", nulls = Nulls.SKIP)
+        public _FinalStage logoUrl(Optional<String> logoUrl) {
+            this.logoUrl = logoUrl;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage initialConfiguration(Map<String, Object> initialConfiguration) {
+            this.initialConfiguration = Optional.of(initialConfiguration);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "initialConfiguration", nulls = Nulls.SKIP)
+        public _FinalStage initialConfiguration(Optional<Map<String, Object>> initialConfiguration) {
+            this.initialConfiguration = initialConfiguration;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage id(String id) {
+            this.id = Optional.of(id);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "id", nulls = Nulls.SKIP)
+        public _FinalStage id(Optional<String> id) {
+            this.id = id;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage envConfig(Map<String, Object> envConfig) {
+            this.envConfig = Optional.of(envConfig);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "envConfig", nulls = Nulls.SKIP)
+        public _FinalStage envConfig(Optional<Map<String, Object>> envConfig) {
+            this.envConfig = envConfig;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage configurationForm(V2ConnectionForm configurationForm) {
+            this.configurationForm = Optional.of(configurationForm);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "configurationForm", nulls = Nulls.SKIP)
+        public _FinalStage configurationForm(Optional<V2ConnectionForm> configurationForm) {
+            this.configurationForm = configurationForm;
+            return this;
+        }
+
+        @java.lang.Override
         public ConnectionType build() {
             return new ConnectionType(
                     capabilities,

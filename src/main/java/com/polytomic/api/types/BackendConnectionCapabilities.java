@@ -9,32 +9,30 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = BackendConnectionCapabilities.Builder.class)
 public final class BackendConnectionCapabilities {
-    private final Optional<Boolean> destination;
+    private final boolean destination;
 
-    private final Optional<Boolean> enrichment;
+    private final boolean enrichment;
 
-    private final Optional<Boolean> orchestration;
+    private final boolean orchestration;
 
-    private final Optional<Boolean> source;
+    private final boolean source;
 
     private final Map<String, Object> additionalProperties;
 
     private BackendConnectionCapabilities(
-            Optional<Boolean> destination,
-            Optional<Boolean> enrichment,
-            Optional<Boolean> orchestration,
-            Optional<Boolean> source,
+            boolean destination,
+            boolean enrichment,
+            boolean orchestration,
+            boolean source,
             Map<String, Object> additionalProperties) {
         this.destination = destination;
         this.enrichment = enrichment;
@@ -44,22 +42,22 @@ public final class BackendConnectionCapabilities {
     }
 
     @JsonProperty("destination")
-    public Optional<Boolean> getDestination() {
+    public boolean getDestination() {
         return destination;
     }
 
     @JsonProperty("enrichment")
-    public Optional<Boolean> getEnrichment() {
+    public boolean getEnrichment() {
         return enrichment;
     }
 
     @JsonProperty("orchestration")
-    public Optional<Boolean> getOrchestration() {
+    public boolean getOrchestration() {
         return orchestration;
     }
 
     @JsonProperty("source")
-    public Optional<Boolean> getSource() {
+    public boolean getSource() {
         return source;
     }
 
@@ -75,10 +73,10 @@ public final class BackendConnectionCapabilities {
     }
 
     private boolean equalTo(BackendConnectionCapabilities other) {
-        return destination.equals(other.destination)
-                && enrichment.equals(other.enrichment)
-                && orchestration.equals(other.orchestration)
-                && source.equals(other.source);
+        return destination == other.destination
+                && enrichment == other.enrichment
+                && orchestration == other.orchestration
+                && source == other.source;
     }
 
     @java.lang.Override
@@ -91,25 +89,49 @@ public final class BackendConnectionCapabilities {
         return ObjectMappers.stringify(this);
     }
 
-    public static Builder builder() {
+    public static DestinationStage builder() {
         return new Builder();
     }
 
+    public interface DestinationStage {
+        EnrichmentStage destination(boolean destination);
+
+        Builder from(BackendConnectionCapabilities other);
+    }
+
+    public interface EnrichmentStage {
+        OrchestrationStage enrichment(boolean enrichment);
+    }
+
+    public interface OrchestrationStage {
+        SourceStage orchestration(boolean orchestration);
+    }
+
+    public interface SourceStage {
+        _FinalStage source(boolean source);
+    }
+
+    public interface _FinalStage {
+        BackendConnectionCapabilities build();
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder {
-        private Optional<Boolean> destination = Optional.empty();
+    public static final class Builder
+            implements DestinationStage, EnrichmentStage, OrchestrationStage, SourceStage, _FinalStage {
+        private boolean destination;
 
-        private Optional<Boolean> enrichment = Optional.empty();
+        private boolean enrichment;
 
-        private Optional<Boolean> orchestration = Optional.empty();
+        private boolean orchestration;
 
-        private Optional<Boolean> source = Optional.empty();
+        private boolean source;
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
+        @java.lang.Override
         public Builder from(BackendConnectionCapabilities other) {
             destination(other.getDestination());
             enrichment(other.getEnrichment());
@@ -118,50 +140,35 @@ public final class BackendConnectionCapabilities {
             return this;
         }
 
-        @JsonSetter(value = "destination", nulls = Nulls.SKIP)
-        public Builder destination(Optional<Boolean> destination) {
+        @java.lang.Override
+        @JsonSetter("destination")
+        public EnrichmentStage destination(boolean destination) {
             this.destination = destination;
             return this;
         }
 
-        public Builder destination(Boolean destination) {
-            this.destination = Optional.of(destination);
-            return this;
-        }
-
-        @JsonSetter(value = "enrichment", nulls = Nulls.SKIP)
-        public Builder enrichment(Optional<Boolean> enrichment) {
+        @java.lang.Override
+        @JsonSetter("enrichment")
+        public OrchestrationStage enrichment(boolean enrichment) {
             this.enrichment = enrichment;
             return this;
         }
 
-        public Builder enrichment(Boolean enrichment) {
-            this.enrichment = Optional.of(enrichment);
-            return this;
-        }
-
-        @JsonSetter(value = "orchestration", nulls = Nulls.SKIP)
-        public Builder orchestration(Optional<Boolean> orchestration) {
+        @java.lang.Override
+        @JsonSetter("orchestration")
+        public SourceStage orchestration(boolean orchestration) {
             this.orchestration = orchestration;
             return this;
         }
 
-        public Builder orchestration(Boolean orchestration) {
-            this.orchestration = Optional.of(orchestration);
-            return this;
-        }
-
-        @JsonSetter(value = "source", nulls = Nulls.SKIP)
-        public Builder source(Optional<Boolean> source) {
+        @java.lang.Override
+        @JsonSetter("source")
+        public _FinalStage source(boolean source) {
             this.source = source;
             return this;
         }
 
-        public Builder source(Boolean source) {
-            this.source = Optional.of(source);
-            return this;
-        }
-
+        @java.lang.Override
         public BackendConnectionCapabilities build() {
             return new BackendConnectionCapabilities(
                     destination, enrichment, orchestration, source, additionalProperties);
