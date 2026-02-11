@@ -30,7 +30,7 @@ public final class ClientOptions {
             {
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.polytomic.fern:api-sdk");
-                put("X-Fern-SDK-Version", "1.15.2");
+                put("X-Fern-SDK-Version", "1.15.7");
             }
         });
         this.headerSuppliers = headerSuppliers;
