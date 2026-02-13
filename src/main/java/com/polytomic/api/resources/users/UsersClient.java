@@ -11,6 +11,9 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.users.requests.CreateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UpdateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UsersCreateApiKeyRequest;
+import com.polytomic.api.resources.users.requests.UsersGetRequest;
+import com.polytomic.api.resources.users.requests.UsersListRequest;
+import com.polytomic.api.resources.users.requests.UsersRemoveRequest;
 import com.polytomic.api.types.ApiKeyResponseEnvelope;
 import com.polytomic.api.types.ListUsersEnvelope;
 import com.polytomic.api.types.UserEnvelope;
@@ -37,7 +40,7 @@ public class UsersClient {
      * </blockquote>
      */
     public ListUsersEnvelope list(String orgId) {
-        return list(orgId, null);
+        return list(orgId, UsersListRequest.builder().build());
     }
 
     /**
@@ -46,19 +49,29 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public ListUsersEnvelope list(String orgId, RequestOptions requestOptions) {
+    public ListUsersEnvelope list(String orgId, UsersListRequest request) {
+        return list(orgId, request, null);
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
+    public ListUsersEnvelope list(String orgId, UsersListRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
                 .addPathSegment(orgId)
                 .addPathSegments("users")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -139,8 +152,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public UserEnvelope get(String id, String orgId) {
-        return get(id, orgId, null);
+    public UserEnvelope get(String orgId, String id) {
+        return get(orgId, id, UsersGetRequest.builder().build());
     }
 
     /**
@@ -149,7 +162,17 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public UserEnvelope get(String id, String orgId, RequestOptions requestOptions) {
+    public UserEnvelope get(String orgId, String id, UsersGetRequest request) {
+        return get(orgId, id, request, null);
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
+    public UserEnvelope get(String orgId, String id, UsersGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
@@ -157,12 +180,12 @@ public class UsersClient {
                 .addPathSegments("users")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -188,8 +211,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public UserEnvelope update(String id, String orgId, UpdateUserRequestSchema request) {
-        return update(id, orgId, request, null);
+    public UserEnvelope update(String orgId, String id, UpdateUserRequestSchema request) {
+        return update(orgId, id, request, null);
     }
 
     /**
@@ -199,7 +222,7 @@ public class UsersClient {
      * </blockquote>
      */
     public UserEnvelope update(
-            String id, String orgId, UpdateUserRequestSchema request, RequestOptions requestOptions) {
+            String orgId, String id, UpdateUserRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
@@ -245,8 +268,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public UserEnvelope remove(String id, String orgId) {
-        return remove(id, orgId, null);
+    public UserEnvelope remove(String orgId, String id) {
+        return remove(orgId, id, UsersRemoveRequest.builder().build());
     }
 
     /**
@@ -255,7 +278,17 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public UserEnvelope remove(String id, String orgId, RequestOptions requestOptions) {
+    public UserEnvelope remove(String orgId, String id, UsersRemoveRequest request) {
+        return remove(orgId, id, request, null);
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
+    public UserEnvelope remove(String orgId, String id, UsersRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
@@ -263,12 +296,12 @@ public class UsersClient {
                 .addPathSegments("users")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

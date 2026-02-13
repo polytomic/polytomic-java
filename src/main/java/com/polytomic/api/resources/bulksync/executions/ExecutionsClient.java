@@ -8,6 +8,8 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsExportLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListStatusRequest;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
@@ -133,10 +135,15 @@ public class ExecutionsClient {
     }
 
     public BulkSyncExecutionEnvelope get(String id, String execId) {
-        return get(id, execId, null);
+        return get(id, execId, ExecutionsGetRequest.builder().build());
     }
 
-    public BulkSyncExecutionEnvelope get(String id, String execId, RequestOptions requestOptions) {
+    public BulkSyncExecutionEnvelope get(String id, String execId, ExecutionsGetRequest request) {
+        return get(id, execId, request, null);
+    }
+
+    public BulkSyncExecutionEnvelope get(
+            String id, String execId, ExecutionsGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -144,12 +151,12 @@ public class ExecutionsClient {
                 .addPathSegments("executions")
                 .addPathSegment(execId)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -170,10 +177,16 @@ public class ExecutionsClient {
     }
 
     public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId) {
-        return getLogs(syncId, executionId, null);
+        return getLogs(syncId, executionId, ExecutionsGetLogsRequest.builder().build());
     }
 
-    public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId, RequestOptions requestOptions) {
+    public V4BulkSyncExecutionLogsEnvelope getLogs(
+            String syncId, String executionId, ExecutionsGetLogsRequest request) {
+        return getLogs(syncId, executionId, request, null);
+    }
+
+    public V4BulkSyncExecutionLogsEnvelope getLogs(
+            String syncId, String executionId, ExecutionsGetLogsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -182,12 +195,12 @@ public class ExecutionsClient {
                 .addPathSegment(executionId)
                 .addPathSegments("logs")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

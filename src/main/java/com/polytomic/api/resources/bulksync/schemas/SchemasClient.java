@@ -9,6 +9,7 @@ import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.schemas.requests.BulkSyncSchemasRequest;
+import com.polytomic.api.resources.bulksync.schemas.requests.SchemasGetRequest;
 import com.polytomic.api.resources.bulksync.schemas.requests.SchemasListRequest;
 import com.polytomic.api.resources.bulksync.schemas.requests.UpdateBulkSchema;
 import com.polytomic.api.types.BulkSchemaEnvelope;
@@ -119,10 +120,15 @@ public class SchemasClient {
     }
 
     public BulkSchemaEnvelope get(String id, String schemaId) {
-        return get(id, schemaId, null);
+        return get(id, schemaId, SchemasGetRequest.builder().build());
     }
 
-    public BulkSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
+    public BulkSchemaEnvelope get(String id, String schemaId, SchemasGetRequest request) {
+        return get(id, schemaId, request, null);
+    }
+
+    public BulkSchemaEnvelope get(
+            String id, String schemaId, SchemasGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -130,12 +136,12 @@ public class SchemasClient {
                 .addPathSegments("schemas")
                 .addPathSegment(schemaId)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

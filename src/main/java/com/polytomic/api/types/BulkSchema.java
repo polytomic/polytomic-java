@@ -30,7 +30,7 @@ public final class BulkSchema {
 
     private final Optional<List<BulkField>> fields;
 
-    private final Optional<List<BulkFilter>> filters;
+    private final Optional<List<BulkFilter2>> filters;
 
     private final Optional<String> id;
 
@@ -49,7 +49,7 @@ public final class BulkSchema {
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
             Optional<List<BulkField>> fields,
-            Optional<List<BulkFilter>> filters,
+            Optional<List<BulkFilter2>> filters,
             Optional<String> id,
             Optional<String> outputName,
             Optional<String> partitionKey,
@@ -90,7 +90,7 @@ public final class BulkSchema {
     }
 
     @JsonProperty("filters")
-    public Optional<List<BulkFilter>> getFilters() {
+    public Optional<List<BulkFilter2>> getFilters() {
         return filters;
     }
 
@@ -177,7 +177,7 @@ public final class BulkSchema {
 
         private Optional<List<BulkField>> fields = Optional.empty();
 
-        private Optional<List<BulkFilter>> filters = Optional.empty();
+        private Optional<List<BulkFilter2>> filters = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -253,12 +253,12 @@ public final class BulkSchema {
         }
 
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
-        public Builder filters(Optional<List<BulkFilter>> filters) {
+        public Builder filters(Optional<List<BulkFilter2>> filters) {
             this.filters = filters;
             return this;
         }
 
-        public Builder filters(List<BulkFilter> filters) {
+        public Builder filters(List<BulkFilter2> filters) {
             this.filters = Optional.of(filters);
             return this;
         }

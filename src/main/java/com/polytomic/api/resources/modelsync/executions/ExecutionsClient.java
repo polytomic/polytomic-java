@@ -8,6 +8,9 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsGetLogUrlsRequest;
+import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsGetLogsRequest;
+import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsGetRequest;
 import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsListRequest;
 import com.polytomic.api.resources.modelsync.executions.requests.UpdateExecutionRequest;
 import com.polytomic.api.types.ExecutionLogsResponseEnvelope;
@@ -81,10 +84,15 @@ public class ExecutionsClient {
     }
 
     public GetExecutionResponseEnvelope get(String syncId, String id) {
-        return get(syncId, id, null);
+        return get(syncId, id, ExecutionsGetRequest.builder().build());
     }
 
-    public GetExecutionResponseEnvelope get(String syncId, String id, RequestOptions requestOptions) {
+    public GetExecutionResponseEnvelope get(String syncId, String id, ExecutionsGetRequest request) {
+        return get(syncId, id, request, null);
+    }
+
+    public GetExecutionResponseEnvelope get(
+            String syncId, String id, ExecutionsGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -92,12 +100,12 @@ public class ExecutionsClient {
                 .addPathSegments("executions")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -163,11 +171,21 @@ public class ExecutionsClient {
     }
 
     public ExecutionLogsResponseEnvelope getLogUrls(String syncId, String id, V2ExecutionLogType type) {
-        return getLogUrls(syncId, id, type, null);
+        return getLogUrls(
+                syncId, id, type, ExecutionsGetLogUrlsRequest.builder().build());
     }
 
     public ExecutionLogsResponseEnvelope getLogUrls(
-            String syncId, String id, V2ExecutionLogType type, RequestOptions requestOptions) {
+            String syncId, String id, V2ExecutionLogType type, ExecutionsGetLogUrlsRequest request) {
+        return getLogUrls(syncId, id, type, request, null);
+    }
+
+    public ExecutionLogsResponseEnvelope getLogUrls(
+            String syncId,
+            String id,
+            V2ExecutionLogType type,
+            ExecutionsGetLogUrlsRequest request,
+            RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -176,12 +194,12 @@ public class ExecutionsClient {
                 .addPathSegment(id)
                 .addPathSegment(type.toString())
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -202,11 +220,21 @@ public class ExecutionsClient {
     }
 
     public void getLogs(String syncId, String id, V2ExecutionLogType type, String filename) {
-        getLogs(syncId, id, type, filename, null);
+        getLogs(syncId, id, type, filename, ExecutionsGetLogsRequest.builder().build());
     }
 
     public void getLogs(
-            String syncId, String id, V2ExecutionLogType type, String filename, RequestOptions requestOptions) {
+            String syncId, String id, V2ExecutionLogType type, String filename, ExecutionsGetLogsRequest request) {
+        getLogs(syncId, id, type, filename, request, null);
+    }
+
+    public void getLogs(
+            String syncId,
+            String id,
+            V2ExecutionLogType type,
+            String filename,
+            ExecutionsGetLogsRequest request,
+            RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -216,11 +244,11 @@ public class ExecutionsClient {
                 .addPathSegment(type.toString())
                 .addPathSegment(filename)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

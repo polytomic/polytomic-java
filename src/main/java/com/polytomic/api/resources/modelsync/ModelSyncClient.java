@@ -11,14 +11,18 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
 import com.polytomic.api.resources.modelsync.requests.CreateModelSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncActivateRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncCancelRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncGetRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncGetStatusRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
+import com.polytomic.api.resources.modelsync.requests.ModelSyncRemoveRequest;
 import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncRequest;
 import com.polytomic.api.resources.modelsync.targets.TargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.CancelModelSyncResponseEnvelope;
 import com.polytomic.api.types.GetModelSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListModelSyncResponseEnvelope;
@@ -349,21 +353,25 @@ public class ModelSyncClient {
     }
 
     public ModelSyncResponseEnvelope get(String id) {
-        return get(id, null);
+        return get(id, ModelSyncGetRequest.builder().build());
     }
 
-    public ModelSyncResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public ModelSyncResponseEnvelope get(String id, ModelSyncGetRequest request) {
+        return get(id, request, null);
+    }
+
+    public ModelSyncResponseEnvelope get(String id, ModelSyncGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -426,20 +434,24 @@ public class ModelSyncClient {
     }
 
     public void remove(String id) {
-        remove(id, null);
+        remove(id, ModelSyncRemoveRequest.builder().build());
     }
 
-    public void remove(String id, RequestOptions requestOptions) {
+    public void remove(String id, ModelSyncRemoveRequest request) {
+        remove(id, request, null);
+    }
+
+    public void remove(String id, ModelSyncRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -459,11 +471,11 @@ public class ModelSyncClient {
         }
     }
 
-    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
+    public ActivateSyncEnvelope activate(String id, ModelSyncActivateRequest request) {
         return activate(id, request, null);
     }
 
-    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
+    public ActivateSyncEnvelope activate(String id, ModelSyncActivateRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -503,22 +515,27 @@ public class ModelSyncClient {
     }
 
     public CancelModelSyncResponseEnvelope cancel(String id) {
-        return cancel(id, null);
+        return cancel(id, ModelSyncCancelRequest.builder().build());
     }
 
-    public CancelModelSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
+    public CancelModelSyncResponseEnvelope cancel(String id, ModelSyncCancelRequest request) {
+        return cancel(id, request, null);
+    }
+
+    public CancelModelSyncResponseEnvelope cancel(
+            String id, ModelSyncCancelRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
                 .addPathSegment(id)
                 .addPathSegments("cancel")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -606,22 +623,26 @@ public class ModelSyncClient {
     }
 
     public SyncStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
+        return getStatus(id, ModelSyncGetStatusRequest.builder().build());
     }
 
-    public SyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
+    public SyncStatusEnvelope getStatus(String id, ModelSyncGetStatusRequest request) {
+        return getStatus(id, request, null);
+    }
+
+    public SyncStatusEnvelope getStatus(String id, ModelSyncGetStatusRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
                 .addPathSegment(id)
                 .addPathSegments("status")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

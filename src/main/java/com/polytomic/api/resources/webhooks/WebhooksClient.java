@@ -10,6 +10,10 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.webhooks.requests.CreateWebhooksSchema;
 import com.polytomic.api.resources.webhooks.requests.UpdateWebhooksSchema;
+import com.polytomic.api.resources.webhooks.requests.WebhooksDisableRequest;
+import com.polytomic.api.resources.webhooks.requests.WebhooksEnableRequest;
+import com.polytomic.api.resources.webhooks.requests.WebhooksGetRequest;
+import com.polytomic.api.resources.webhooks.requests.WebhooksRemoveRequest;
 import com.polytomic.api.types.WebhookEnvelope;
 import com.polytomic.api.types.WebhookListEnvelope;
 import java.io.IOException;
@@ -134,7 +138,7 @@ public class WebhooksClient {
      * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
     public WebhookEnvelope get(String id) {
-        return get(id, null);
+        return get(id, WebhooksGetRequest.builder().build());
     }
 
     /**
@@ -143,18 +147,28 @@ public class WebhooksClient {
      * in that organization.
      * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
      */
-    public WebhookEnvelope get(String id, RequestOptions requestOptions) {
+    public WebhookEnvelope get(String id, WebhooksGetRequest request) {
+        return get(id, request, null);
+    }
+
+    /**
+     * Webooks can be set up using the webhook API endpoints. Currently, only one
+     * webhook may be created per organization. The webhook will be called for events
+     * in that organization.
+     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     */
+    public WebhookEnvelope get(String id, WebhooksGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -229,20 +243,24 @@ public class WebhooksClient {
     }
 
     public void remove(String id) {
-        remove(id, null);
+        remove(id, WebhooksRemoveRequest.builder().build());
     }
 
-    public void remove(String id, RequestOptions requestOptions) {
+    public void remove(String id, WebhooksRemoveRequest request) {
+        remove(id, request, null);
+    }
+
+    public void remove(String id, WebhooksRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -263,22 +281,26 @@ public class WebhooksClient {
     }
 
     public WebhookEnvelope disable(String id) {
-        return disable(id, null);
+        return disable(id, WebhooksDisableRequest.builder().build());
     }
 
-    public WebhookEnvelope disable(String id, RequestOptions requestOptions) {
+    public WebhookEnvelope disable(String id, WebhooksDisableRequest request) {
+        return disable(id, request, null);
+    }
+
+    public WebhookEnvelope disable(String id, WebhooksDisableRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
                 .addPathSegment(id)
                 .addPathSegments("disable")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -299,22 +321,26 @@ public class WebhooksClient {
     }
 
     public WebhookEnvelope enable(String id) {
-        return enable(id, null);
+        return enable(id, WebhooksEnableRequest.builder().build());
     }
 
-    public WebhookEnvelope enable(String id, RequestOptions requestOptions) {
+    public WebhookEnvelope enable(String id, WebhooksEnableRequest request) {
+        return enable(id, request, null);
+    }
+
+    public WebhookEnvelope enable(String id, WebhooksEnableRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")
                 .addPathSegment(id)
                 .addPathSegments("enable")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("POST", RequestBody.create("", null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

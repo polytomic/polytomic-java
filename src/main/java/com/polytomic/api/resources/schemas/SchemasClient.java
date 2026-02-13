@@ -8,6 +8,12 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.schemas.requests.SchemasDeleteFieldRequest;
+import com.polytomic.api.resources.schemas.requests.SchemasGetRecordsRequest;
+import com.polytomic.api.resources.schemas.requests.SchemasGetRequest;
+import com.polytomic.api.resources.schemas.requests.SchemasGetStatusRequest;
+import com.polytomic.api.resources.schemas.requests.SchemasRefreshRequest;
+import com.polytomic.api.resources.schemas.requests.SchemasResetPrimaryKeysRequest;
 import com.polytomic.api.resources.schemas.requests.SetPrimaryKeysRequest;
 import com.polytomic.api.resources.schemas.requests.UpsertSchemaFieldRequest;
 import com.polytomic.api.types.BulkSyncSourceSchemaEnvelope;
@@ -80,10 +86,23 @@ public class SchemasClient {
     }
 
     public void deleteField(String connectionId, String schemaId, String fieldId) {
-        deleteField(connectionId, schemaId, fieldId, null);
+        deleteField(
+                connectionId,
+                schemaId,
+                fieldId,
+                SchemasDeleteFieldRequest.builder().build());
     }
 
-    public void deleteField(String connectionId, String schemaId, String fieldId, RequestOptions requestOptions) {
+    public void deleteField(String connectionId, String schemaId, String fieldId, SchemasDeleteFieldRequest request) {
+        deleteField(connectionId, schemaId, fieldId, request, null);
+    }
+
+    public void deleteField(
+            String connectionId,
+            String schemaId,
+            String fieldId,
+            SchemasDeleteFieldRequest request,
+            RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -93,11 +112,11 @@ public class SchemasClient {
                 .addPathSegments("fields")
                 .addPathSegment(fieldId)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -171,13 +190,25 @@ public class SchemasClient {
      * Delete all primary key overrides for a schema. After this call the schema will use the primary keys detected from the source connection, if any.
      */
     public void resetPrimaryKeys(String connectionId, String schemaId) {
-        resetPrimaryKeys(connectionId, schemaId, null);
+        resetPrimaryKeys(
+                connectionId, schemaId, SchemasResetPrimaryKeysRequest.builder().build());
     }
 
     /**
      * Delete all primary key overrides for a schema. After this call the schema will use the primary keys detected from the source connection, if any.
      */
-    public void resetPrimaryKeys(String connectionId, String schemaId, RequestOptions requestOptions) {
+    public void resetPrimaryKeys(String connectionId, String schemaId, SchemasResetPrimaryKeysRequest request) {
+        resetPrimaryKeys(connectionId, schemaId, request, null);
+    }
+
+    /**
+     * Delete all primary key overrides for a schema. After this call the schema will use the primary keys detected from the source connection, if any.
+     */
+    public void resetPrimaryKeys(
+            String connectionId,
+            String schemaId,
+            SchemasResetPrimaryKeysRequest request,
+            RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -186,11 +217,11 @@ public class SchemasClient {
                 .addPathSegment(schemaId)
                 .addPathSegments("primary_keys")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -211,21 +242,25 @@ public class SchemasClient {
     }
 
     public void refresh(String id) {
-        refresh(id, null);
+        refresh(id, SchemasRefreshRequest.builder().build());
     }
 
-    public void refresh(String id, RequestOptions requestOptions) {
+    public void refresh(String id, SchemasRefreshRequest request) {
+        refresh(id, request, null);
+    }
+
+    public void refresh(String id, SchemasRefreshRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
                 .addPathSegments("schemas/refresh")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -249,25 +284,33 @@ public class SchemasClient {
      * Polytomic periodically inspects the schemas for connections to discover new fields and update metadata. This endpoint returns the current inspection status.
      */
     public BulkSyncSourceStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
+        return getStatus(id, SchemasGetStatusRequest.builder().build());
     }
 
     /**
      * Polytomic periodically inspects the schemas for connections to discover new fields and update metadata. This endpoint returns the current inspection status.
      */
-    public BulkSyncSourceStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
+    public BulkSyncSourceStatusEnvelope getStatus(String id, SchemasGetStatusRequest request) {
+        return getStatus(id, request, null);
+    }
+
+    /**
+     * Polytomic periodically inspects the schemas for connections to discover new fields and update metadata. This endpoint returns the current inspection status.
+     */
+    public BulkSyncSourceStatusEnvelope getStatus(
+            String id, SchemasGetStatusRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
                 .addPathSegments("schemas/status")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -288,10 +331,15 @@ public class SchemasClient {
     }
 
     public BulkSyncSourceSchemaEnvelope get(String id, String schemaId) {
-        return get(id, schemaId, null);
+        return get(id, schemaId, SchemasGetRequest.builder().build());
     }
 
-    public BulkSyncSourceSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
+    public BulkSyncSourceSchemaEnvelope get(String id, String schemaId, SchemasGetRequest request) {
+        return get(id, schemaId, request, null);
+    }
+
+    public BulkSyncSourceSchemaEnvelope get(
+            String id, String schemaId, SchemasGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -299,12 +347,12 @@ public class SchemasClient {
                 .addPathSegments("schemas")
                 .addPathSegment(schemaId)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -325,10 +373,15 @@ public class SchemasClient {
     }
 
     public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId) {
-        return getRecords(id, schemaId, null);
+        return getRecords(id, schemaId, SchemasGetRecordsRequest.builder().build());
     }
 
-    public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId, RequestOptions requestOptions) {
+    public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId, SchemasGetRecordsRequest request) {
+        return getRecords(id, schemaId, request, null);
+    }
+
+    public SchemaRecordsResponseEnvelope getRecords(
+            String id, String schemaId, SchemasGetRecordsRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -337,12 +390,12 @@ public class SchemasClient {
                 .addPathSegment(schemaId)
                 .addPathSegments("records")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

@@ -21,7 +21,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ModelSyncSourceMetaResponse.Builder.class)
 public final class ModelSyncSourceMetaResponse {
-    private final Optional<Map<String, ConfigurationValue>> configuration;
+    private final Optional<Map<String, ConfigurationValue2>> configuration;
 
     private final Optional<Map<String, Optional<SourceMeta>>> items;
 
@@ -30,7 +30,7 @@ public final class ModelSyncSourceMetaResponse {
     private final Map<String, Object> additionalProperties;
 
     private ModelSyncSourceMetaResponse(
-            Optional<Map<String, ConfigurationValue>> configuration,
+            Optional<Map<String, ConfigurationValue2>> configuration,
             Optional<Map<String, Optional<SourceMeta>>> items,
             Optional<List<String>> requiresOneOf,
             Map<String, Object> additionalProperties) {
@@ -41,7 +41,7 @@ public final class ModelSyncSourceMetaResponse {
     }
 
     @JsonProperty("configuration")
-    public Optional<Map<String, ConfigurationValue>> getConfiguration() {
+    public Optional<Map<String, ConfigurationValue2>> getConfiguration() {
         return configuration;
     }
 
@@ -88,7 +88,7 @@ public final class ModelSyncSourceMetaResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, ConfigurationValue>> configuration = Optional.empty();
+        private Optional<Map<String, ConfigurationValue2>> configuration = Optional.empty();
 
         private Optional<Map<String, Optional<SourceMeta>>> items = Optional.empty();
 
@@ -107,12 +107,12 @@ public final class ModelSyncSourceMetaResponse {
         }
 
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
-        public Builder configuration(Optional<Map<String, ConfigurationValue>> configuration) {
+        public Builder configuration(Optional<Map<String, ConfigurationValue2>> configuration) {
             this.configuration = configuration;
             return this;
         }
 
-        public Builder configuration(Map<String, ConfigurationValue> configuration) {
+        public Builder configuration(Map<String, ConfigurationValue2> configuration) {
             this.configuration = Optional.of(configuration);
             return this;
         }

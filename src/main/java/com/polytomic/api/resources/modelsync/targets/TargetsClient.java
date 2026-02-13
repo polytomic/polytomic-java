@@ -7,8 +7,10 @@ import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetCreatePropertyRequest;
 import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetTargetFieldsRequest;
 import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetTargetRequest;
+import com.polytomic.api.resources.modelsync.targets.requests.TargetsListRequest;
 import com.polytomic.api.types.GetConnectionMetaEnvelope;
 import com.polytomic.api.types.TargetResponseEnvelope;
 import com.polytomic.api.types.V4TargetObjectsResponseEnvelope;
@@ -130,7 +132,7 @@ public class TargetsClient {
      * what operations the mode supports.</p>
      */
     public V4TargetObjectsResponseEnvelope list(String id) {
-        return list(id, null);
+        return list(id, TargetsListRequest.builder().build());
     }
 
     /**
@@ -148,19 +150,38 @@ public class TargetsClient {
      * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
      * what operations the mode supports.</p>
      */
-    public V4TargetObjectsResponseEnvelope list(String id, RequestOptions requestOptions) {
+    public V4TargetObjectsResponseEnvelope list(String id, TargetsListRequest request) {
+        return list(id, request, null);
+    }
+
+    /**
+     * Returns available model sync destinations for a connection.
+     * <p>If the connection supports creating new destinations, the <code>target_creation</code>
+     * object will contain information on what properties are required to create the
+     * target.</p>
+     * <p>Target creation properties are all string values; the <code>enum</code> flag indicates if
+     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/targets/get-create-property">Target
+     * Creation Property
+     * Values</a>
+     * endpoint can be used to retrieve the valid values.</p>
+     * <h2>Sync modes</h2>
+     * <p>The sync mode determines which records are written to the destination for a
+     * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
+     * what operations the mode supports.</p>
+     */
+    public V4TargetObjectsResponseEnvelope list(String id, TargetsListRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
                 .addPathSegments("modelsync/targetobjects")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -209,7 +230,8 @@ public class TargetsClient {
      * sync</a>.</p>
      */
     public V4TargetPropertyValuesEnvelope getCreateProperty(String id, String property) {
-        return getCreateProperty(id, property, null);
+        return getCreateProperty(
+                id, property, TargetsGetCreatePropertyRequest.builder().build());
     }
 
     /**
@@ -239,7 +261,40 @@ public class TargetsClient {
      * <p>The <code>value</code> for the selected option should be passed when <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/create">creating a
      * sync</a>.</p>
      */
-    public V4TargetPropertyValuesEnvelope getCreateProperty(String id, String property, RequestOptions requestOptions) {
+    public V4TargetPropertyValuesEnvelope getCreateProperty(
+            String id, String property, TargetsGetCreatePropertyRequest request) {
+        return getCreateProperty(id, property, request, null);
+    }
+
+    /**
+     * Connections which support creating new sync target objects (destinations) will
+     * return <code>target_creation</code> with their <a href="./list">target object list</a>. This endpoint
+     * will return possible values for properties where <code>enum</code> is <code>true</code>.
+     * <p>If the connection does not support creating new target objects, an HTTP 404 will
+     * be returned.</p>
+     * <p>The <code>values</code> array lists the valid options (and labels) for the property. Each
+     * member of the <code>values</code> array has a <code>label</code> and <code>value</code>. For exaample,</p>
+     * <pre><code class="language-json">{
+     *   &quot;data&quot;: [
+     *     {
+     *       &quot;id&quot;: &quot;account&quot;,
+     *       &quot;title&quot;: &quot;Account ID&quot;,
+     *       &quot;enum&quot;: true,
+     *       &quot;values&quot;: [
+     *         {
+     *           &quot;value&quot;: &quot;1234567::urn:li:organization:987654&quot;,
+     *           &quot;label&quot;: &quot;Polytomic Inc. (1234567)&quot;
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     * </code></pre>
+     * <p>The <code>value</code> for the selected option should be passed when <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/create">creating a
+     * sync</a>.</p>
+     */
+    public V4TargetPropertyValuesEnvelope getCreateProperty(
+            String id, String property, TargetsGetCreatePropertyRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
@@ -247,12 +302,12 @@ public class TargetsClient {
                 .addPathSegments("modelsync/targetobjects/properties")
                 .addPathSegment(property)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

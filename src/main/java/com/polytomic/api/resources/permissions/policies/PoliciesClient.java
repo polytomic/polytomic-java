@@ -9,6 +9,8 @@ import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.permissions.policies.requests.CreatePolicyRequest;
+import com.polytomic.api.resources.permissions.policies.requests.PoliciesGetRequest;
+import com.polytomic.api.resources.permissions.policies.requests.PoliciesRemoveRequest;
 import com.polytomic.api.resources.permissions.policies.requests.UpdatePolicyRequest;
 import com.polytomic.api.types.ListPoliciesResponseEnvelope;
 import com.polytomic.api.types.PolicyResponseEnvelope;
@@ -104,21 +106,25 @@ public class PoliciesClient {
     }
 
     public PolicyResponseEnvelope get(String id) {
-        return get(id, null);
+        return get(id, PoliciesGetRequest.builder().build());
     }
 
-    public PolicyResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public PolicyResponseEnvelope get(String id, PoliciesGetRequest request) {
+        return get(id, request, null);
+    }
+
+    public PolicyResponseEnvelope get(String id, PoliciesGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/policies")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -181,20 +187,24 @@ public class PoliciesClient {
     }
 
     public void remove(String id) {
-        remove(id, null);
+        remove(id, PoliciesRemoveRequest.builder().build());
     }
 
-    public void remove(String id, RequestOptions requestOptions) {
+    public void remove(String id, PoliciesRemoveRequest request) {
+        remove(id, request, null);
+    }
+
+    public void remove(String id, PoliciesRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/policies")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

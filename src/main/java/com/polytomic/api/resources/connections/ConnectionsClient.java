@@ -9,6 +9,9 @@ import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
+import com.polytomic.api.resources.connections.requests.ConnectionsGetConnectionTypeSchemaRequest;
+import com.polytomic.api.resources.connections.requests.ConnectionsGetParameterValuesRequest;
+import com.polytomic.api.resources.connections.requests.ConnectionsGetRequest;
 import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.TestConnectionRequest;
@@ -71,21 +74,27 @@ public class ConnectionsClient {
     }
 
     public JsonschemaSchema getConnectionTypeSchema(String id) {
-        return getConnectionTypeSchema(id, null);
+        return getConnectionTypeSchema(
+                id, ConnectionsGetConnectionTypeSchemaRequest.builder().build());
     }
 
-    public JsonschemaSchema getConnectionTypeSchema(String id, RequestOptions requestOptions) {
+    public JsonschemaSchema getConnectionTypeSchema(String id, ConnectionsGetConnectionTypeSchemaRequest request) {
+        return getConnectionTypeSchema(id, request, null);
+    }
+
+    public JsonschemaSchema getConnectionTypeSchema(
+            String id, ConnectionsGetConnectionTypeSchemaRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connection_types")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -291,21 +300,25 @@ public class ConnectionsClient {
     }
 
     public ConnectionResponseEnvelope get(String id) {
-        return get(id, null);
+        return get(id, ConnectionsGetRequest.builder().build());
     }
 
-    public ConnectionResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public ConnectionResponseEnvelope get(String id, ConnectionsGetRequest request) {
+        return get(id, request, null);
+    }
+
+    public ConnectionResponseEnvelope get(String id, ConnectionsGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -410,22 +423,29 @@ public class ConnectionsClient {
     }
 
     public ConnectionParameterValuesResponseEnvelope getParameterValues(String id) {
-        return getParameterValues(id, null);
+        return getParameterValues(
+                id, ConnectionsGetParameterValuesRequest.builder().build());
     }
 
-    public ConnectionParameterValuesResponseEnvelope getParameterValues(String id, RequestOptions requestOptions) {
+    public ConnectionParameterValuesResponseEnvelope getParameterValues(
+            String id, ConnectionsGetParameterValuesRequest request) {
+        return getParameterValues(id, request, null);
+    }
+
+    public ConnectionParameterValuesResponseEnvelope getParameterValues(
+            String id, ConnectionsGetParameterValuesRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
                 .addPathSegments("parameter_values")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
