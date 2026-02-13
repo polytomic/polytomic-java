@@ -7,6 +7,7 @@ import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.jobs.requests.JobsGetRequest;
 import com.polytomic.api.types.JobResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -23,23 +24,27 @@ public class JobsClient {
         this.clientOptions = clientOptions;
     }
 
-    public JobResponseEnvelope get(String id, String type) {
-        return get(id, type, null);
+    public JobResponseEnvelope get(String type, String id) {
+        return get(type, id, JobsGetRequest.builder().build());
     }
 
-    public JobResponseEnvelope get(String id, String type, RequestOptions requestOptions) {
+    public JobResponseEnvelope get(String type, String id, JobsGetRequest request) {
+        return get(type, id, request, null);
+    }
+
+    public JobResponseEnvelope get(String type, String id, JobsGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/jobs")
                 .addPathSegment(type)
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.BulkFilter;
+import com.polytomic.api.types.BulkFilter2;
 import com.polytomic.api.types.UpdateBulkField;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public final class UpdateBulkSchema {
 
     private final Optional<List<UpdateBulkField>> fields;
 
-    private final Optional<List<BulkFilter>> filters;
+    private final Optional<List<BulkFilter2>> filters;
 
     private final Optional<String> partitionKey;
 
@@ -47,7 +47,7 @@ public final class UpdateBulkSchema {
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
             Optional<List<UpdateBulkField>> fields,
-            Optional<List<BulkFilter>> filters,
+            Optional<List<BulkFilter2>> filters,
             Optional<String> partitionKey,
             Optional<String> trackingField,
             Optional<String> userOutputName,
@@ -84,7 +84,7 @@ public final class UpdateBulkSchema {
     }
 
     @JsonProperty("filters")
-    public Optional<List<BulkFilter>> getFilters() {
+    public Optional<List<BulkFilter2>> getFilters() {
         return filters;
     }
 
@@ -157,7 +157,7 @@ public final class UpdateBulkSchema {
 
         private Optional<List<UpdateBulkField>> fields = Optional.empty();
 
-        private Optional<List<BulkFilter>> filters = Optional.empty();
+        private Optional<List<BulkFilter2>> filters = Optional.empty();
 
         private Optional<String> partitionKey = Optional.empty();
 
@@ -227,12 +227,12 @@ public final class UpdateBulkSchema {
         }
 
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
-        public Builder filters(Optional<List<BulkFilter>> filters) {
+        public Builder filters(Optional<List<BulkFilter2>> filters) {
             this.filters = filters;
             return this;
         }
 
-        public Builder filters(List<BulkFilter> filters) {
+        public Builder filters(List<BulkFilter2> filters) {
             this.filters = Optional.of(filters);
             return this;
         }

@@ -9,6 +9,9 @@ import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.schedules.requests.CreateScheduleRequest;
+import com.polytomic.api.resources.bulksync.schedules.requests.SchedulesDeleteRequest;
+import com.polytomic.api.resources.bulksync.schedules.requests.SchedulesGetRequest;
+import com.polytomic.api.resources.bulksync.schedules.requests.SchedulesListRequest;
 import com.polytomic.api.resources.bulksync.schedules.requests.UpdateScheduleRequest;
 import com.polytomic.api.types.ScheduleEnvelope;
 import com.polytomic.api.types.SchedulesEnvelope;
@@ -29,22 +32,26 @@ public class SchedulesClient {
     }
 
     public SchedulesEnvelope list(String syncId) {
-        return list(syncId, null);
+        return list(syncId, SchedulesListRequest.builder().build());
     }
 
-    public SchedulesEnvelope list(String syncId, RequestOptions requestOptions) {
+    public SchedulesEnvelope list(String syncId, SchedulesListRequest request) {
+        return list(syncId, request, null);
+    }
+
+    public SchedulesEnvelope list(String syncId, SchedulesListRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
                 .addPathSegment(syncId)
                 .addPathSegments("schedules")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -108,10 +115,15 @@ public class SchedulesClient {
     }
 
     public ScheduleEnvelope get(String syncId, String scheduleId) {
-        return get(syncId, scheduleId, null);
+        return get(syncId, scheduleId, SchedulesGetRequest.builder().build());
     }
 
-    public ScheduleEnvelope get(String syncId, String scheduleId, RequestOptions requestOptions) {
+    public ScheduleEnvelope get(String syncId, String scheduleId, SchedulesGetRequest request) {
+        return get(syncId, scheduleId, request, null);
+    }
+
+    public ScheduleEnvelope get(
+            String syncId, String scheduleId, SchedulesGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -119,12 +131,12 @@ public class SchedulesClient {
                 .addPathSegments("schedules")
                 .addPathSegment(scheduleId)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -190,10 +202,15 @@ public class SchedulesClient {
     }
 
     public void delete(String syncId, String scheduleId) {
-        delete(syncId, scheduleId, null);
+        delete(syncId, scheduleId, SchedulesDeleteRequest.builder().build());
     }
 
-    public void delete(String syncId, String scheduleId, RequestOptions requestOptions) {
+    public void delete(String syncId, String scheduleId, SchedulesDeleteRequest request) {
+        delete(syncId, scheduleId, request, null);
+    }
+
+    public void delete(
+            String syncId, String scheduleId, SchedulesDeleteRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -201,11 +218,11 @@ public class SchedulesClient {
                 .addPathSegments("schedules")
                 .addPathSegment(scheduleId)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

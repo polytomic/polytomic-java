@@ -9,6 +9,8 @@ import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.organization.requests.CreateOrganizationRequestSchema;
+import com.polytomic.api.resources.organization.requests.OrganizationGetRequest;
+import com.polytomic.api.resources.organization.requests.OrganizationRemoveRequest;
 import com.polytomic.api.resources.organization.requests.UpdateOrganizationRequestSchema;
 import com.polytomic.api.types.OrganizationEnvelope;
 import com.polytomic.api.types.OrganizationsEnvelope;
@@ -134,7 +136,7 @@ public class OrganizationClient {
      * </blockquote>
      */
     public OrganizationEnvelope get(String id) {
-        return get(id, null);
+        return get(id, OrganizationGetRequest.builder().build());
     }
 
     /**
@@ -143,18 +145,28 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public OrganizationEnvelope get(String id, RequestOptions requestOptions) {
+    public OrganizationEnvelope get(String id, OrganizationGetRequest request) {
+        return get(id, request, null);
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
+    public OrganizationEnvelope get(String id, OrganizationGetRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -236,7 +248,7 @@ public class OrganizationClient {
      * </blockquote>
      */
     public void remove(String id) {
-        remove(id, null);
+        remove(id, OrganizationRemoveRequest.builder().build());
     }
 
     /**
@@ -245,17 +257,27 @@ public class OrganizationClient {
      * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public void remove(String id, RequestOptions requestOptions) {
+    public void remove(String id, OrganizationRemoveRequest request) {
+        remove(id, request, null);
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Requires partner key
+     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
+    public void remove(String id, OrganizationRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")
                 .addPathSegment(id)
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
+                .headers(Headers.of(clientOptions.headers(requestOptions)));
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

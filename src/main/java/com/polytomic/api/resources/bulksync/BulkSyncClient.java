@@ -10,8 +10,11 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncActivateRequest;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncGetDestinationRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncGetStatusRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncListRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncRemoveRequest;
 import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
@@ -20,7 +23,6 @@ import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.schedules.SchedulesClient;
 import com.polytomic.api.resources.bulksync.schemas.SchemasClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.BulkSyncDestEnvelope;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
 import com.polytomic.api.types.BulkSyncListEnvelope;
@@ -315,11 +317,11 @@ public class BulkSyncClient {
         }
     }
 
-    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
+    public ActivateSyncEnvelope activate(String id, BulkSyncActivateRequest request) {
         return activate(id, request, null);
     }
 
-    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
+    public ActivateSyncEnvelope activate(String id, BulkSyncActivateRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
@@ -406,22 +408,27 @@ public class BulkSyncClient {
     }
 
     public BulkSyncStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
+        return getStatus(id, BulkSyncGetStatusRequest.builder().build());
     }
 
-    public BulkSyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
+    public BulkSyncStatusEnvelope getStatus(String id, BulkSyncGetStatusRequest request) {
+        return getStatus(id, request, null);
+    }
+
+    public BulkSyncStatusEnvelope getStatus(
+            String id, BulkSyncGetStatusRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
                 .addPathSegment(id)
                 .addPathSegments("status")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -486,22 +493,27 @@ public class BulkSyncClient {
     }
 
     public BulkSyncDestEnvelope getDestination(String id) {
-        return getDestination(id, null);
+        return getDestination(id, BulkSyncGetDestinationRequest.builder().build());
     }
 
-    public BulkSyncDestEnvelope getDestination(String id, RequestOptions requestOptions) {
+    public BulkSyncDestEnvelope getDestination(String id, BulkSyncGetDestinationRequest request) {
+        return getDestination(id, request, null);
+    }
+
+    public BulkSyncDestEnvelope getDestination(
+            String id, BulkSyncGetDestinationRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
                 .addPathSegments("bulksync/target")
                 .build();
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl)
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
+                .addHeader("Content-Type", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
         try {
             OkHttpClient client = clientOptions.httpClient();
             if (requestOptions != null && requestOptions.getTimeout().isPresent()) {

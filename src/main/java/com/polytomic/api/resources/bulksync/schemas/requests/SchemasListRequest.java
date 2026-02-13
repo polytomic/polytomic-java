@@ -20,18 +20,17 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = SchemasListRequest.Builder.class)
 public final class SchemasListRequest {
-    private final Optional<Map<String, Optional<String>>> filters;
+    private final Optional<Map<String, String>> filters;
 
     private final Map<String, Object> additionalProperties;
 
-    private SchemasListRequest(
-            Optional<Map<String, Optional<String>>> filters, Map<String, Object> additionalProperties) {
+    private SchemasListRequest(Optional<Map<String, String>> filters, Map<String, Object> additionalProperties) {
         this.filters = filters;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("filters")
-    public Optional<Map<String, Optional<String>>> getFilters() {
+    public Optional<Map<String, String>> getFilters() {
         return filters;
     }
 
@@ -66,7 +65,7 @@ public final class SchemasListRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Optional<String>>> filters = Optional.empty();
+        private Optional<Map<String, String>> filters = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -79,12 +78,12 @@ public final class SchemasListRequest {
         }
 
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
-        public Builder filters(Optional<Map<String, Optional<String>>> filters) {
+        public Builder filters(Optional<Map<String, String>> filters) {
             this.filters = filters;
             return this;
         }
 
-        public Builder filters(Map<String, Optional<String>> filters) {
+        public Builder filters(Map<String, String> filters) {
             this.filters = Optional.of(filters);
             return this;
         }

@@ -21,18 +21,18 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = ModelSyncGetSourceFieldsRequest.Builder.class)
 public final class ModelSyncGetSourceFieldsRequest {
-    private final Optional<Map<String, Optional<List<String>>>> params;
+    private final Optional<Map<String, List<String>>> params;
 
     private final Map<String, Object> additionalProperties;
 
     private ModelSyncGetSourceFieldsRequest(
-            Optional<Map<String, Optional<List<String>>>> params, Map<String, Object> additionalProperties) {
+            Optional<Map<String, List<String>>> params, Map<String, Object> additionalProperties) {
         this.params = params;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("params")
-    public Optional<Map<String, Optional<List<String>>>> getParams() {
+    public Optional<Map<String, List<String>>> getParams() {
         return params;
     }
 
@@ -67,7 +67,7 @@ public final class ModelSyncGetSourceFieldsRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Optional<List<String>>>> params = Optional.empty();
+        private Optional<Map<String, List<String>>> params = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -80,12 +80,12 @@ public final class ModelSyncGetSourceFieldsRequest {
         }
 
         @JsonSetter(value = "params", nulls = Nulls.SKIP)
-        public Builder params(Optional<Map<String, Optional<List<String>>>> params) {
+        public Builder params(Optional<Map<String, List<String>>> params) {
             this.params = params;
             return this;
         }
 
-        public Builder params(Map<String, Optional<List<String>>> params) {
+        public Builder params(Map<String, List<String>> params) {
             this.params = Optional.of(params);
             return this;
         }

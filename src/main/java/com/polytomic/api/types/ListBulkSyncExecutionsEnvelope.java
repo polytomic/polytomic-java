@@ -23,13 +23,13 @@ import java.util.Optional;
 public final class ListBulkSyncExecutionsEnvelope {
     private final Optional<List<BulkSyncExecution>> data;
 
-    private final Optional<PaginationDetails> pagination;
+    private final Optional<PaginationDetails2> pagination;
 
     private final Map<String, Object> additionalProperties;
 
     private ListBulkSyncExecutionsEnvelope(
             Optional<List<BulkSyncExecution>> data,
-            Optional<PaginationDetails> pagination,
+            Optional<PaginationDetails2> pagination,
             Map<String, Object> additionalProperties) {
         this.data = data;
         this.pagination = pagination;
@@ -42,7 +42,7 @@ public final class ListBulkSyncExecutionsEnvelope {
     }
 
     @JsonProperty("pagination")
-    public Optional<PaginationDetails> getPagination() {
+    public Optional<PaginationDetails2> getPagination() {
         return pagination;
     }
 
@@ -79,7 +79,7 @@ public final class ListBulkSyncExecutionsEnvelope {
     public static final class Builder {
         private Optional<List<BulkSyncExecution>> data = Optional.empty();
 
-        private Optional<PaginationDetails> pagination = Optional.empty();
+        private Optional<PaginationDetails2> pagination = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -104,12 +104,12 @@ public final class ListBulkSyncExecutionsEnvelope {
         }
 
         @JsonSetter(value = "pagination", nulls = Nulls.SKIP)
-        public Builder pagination(Optional<PaginationDetails> pagination) {
+        public Builder pagination(Optional<PaginationDetails2> pagination) {
             this.pagination = pagination;
             return this;
         }
 
-        public Builder pagination(PaginationDetails pagination) {
+        public Builder pagination(PaginationDetails2 pagination) {
             this.pagination = Optional.of(pagination);
             return this;
         }
