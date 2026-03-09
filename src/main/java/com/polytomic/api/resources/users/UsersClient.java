@@ -30,22 +30,10 @@ public class UsersClient {
         this.clientOptions = clientOptions;
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public ListUsersEnvelope list(String orgId) {
         return list(orgId, null);
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public ListUsersEnvelope list(String orgId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -78,22 +66,10 @@ public class UsersClient {
         }
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope create(String orgId, CreateUserRequestSchema request) {
         return create(orgId, request, null);
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope create(String orgId, CreateUserRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -133,22 +109,10 @@ public class UsersClient {
         }
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope get(String id, String orgId) {
         return get(id, orgId, null);
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope get(String id, String orgId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -182,22 +146,10 @@ public class UsersClient {
         }
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope update(String id, String orgId, UpdateUserRequestSchema request) {
         return update(id, orgId, request, null);
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope update(
             String id, String orgId, UpdateUserRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -239,22 +191,10 @@ public class UsersClient {
         }
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope remove(String id, String orgId) {
         return remove(id, orgId, null);
     }
 
-    /**
-     * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
-     */
     public UserEnvelope remove(String id, String orgId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

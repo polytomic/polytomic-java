@@ -27,6 +27,7 @@ import com.polytomic.api.types.BulkSyncListEnvelope;
 import com.polytomic.api.types.BulkSyncResponseEnvelope;
 import com.polytomic.api.types.BulkSyncSourceEnvelope;
 import com.polytomic.api.types.BulkSyncStatusEnvelope;
+import com.polytomic.api.types.CancelBulkSyncResponseEnvelope;
 import java.io.IOException;
 import java.util.function.Supplier;
 import okhttp3.Headers;
@@ -348,6 +349,42 @@ public class BulkSyncClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ActivateSyncEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public CancelBulkSyncResponseEnvelope cancel(String id) {
+        return cancel(id, null);
+    }
+
+    public CancelBulkSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/bulk/syncs")
+                .addPathSegment(id)
+                .addPathSegments("cancel")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CancelBulkSyncResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

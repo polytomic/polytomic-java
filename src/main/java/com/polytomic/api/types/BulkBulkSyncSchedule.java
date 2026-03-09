@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,9 +42,13 @@ public final class BulkBulkSyncSchedule {
 
     private final Optional<String> month;
 
+    private final Optional<List<String>> schemas;
+
     private final Optional<BulkSelectiveMode> selectiveMode;
 
     private final Optional<String> syncId;
+
+    private final Optional<BulkScheduleSyncMode> syncMode;
 
     private final Optional<OffsetDateTime> updatedAt;
 
@@ -62,8 +67,10 @@ public final class BulkBulkSyncSchedule {
             Optional<String> hour,
             Optional<String> minute,
             Optional<String> month,
+            Optional<List<String>> schemas,
             Optional<BulkSelectiveMode> selectiveMode,
             Optional<String> syncId,
+            Optional<BulkScheduleSyncMode> syncMode,
             Optional<OffsetDateTime> updatedAt,
             Optional<String> updatedBy,
             Map<String, Object> additionalProperties) {
@@ -77,8 +84,10 @@ public final class BulkBulkSyncSchedule {
         this.hour = hour;
         this.minute = minute;
         this.month = month;
+        this.schemas = schemas;
         this.selectiveMode = selectiveMode;
         this.syncId = syncId;
+        this.syncMode = syncMode;
         this.updatedAt = updatedAt;
         this.updatedBy = updatedBy;
         this.additionalProperties = additionalProperties;
@@ -134,6 +143,11 @@ public final class BulkBulkSyncSchedule {
         return month;
     }
 
+    @JsonProperty("schemas")
+    public Optional<List<String>> getSchemas() {
+        return schemas;
+    }
+
     @JsonProperty("selectiveMode")
     public Optional<BulkSelectiveMode> getSelectiveMode() {
         return selectiveMode;
@@ -142,6 +156,11 @@ public final class BulkBulkSyncSchedule {
     @JsonProperty("syncId")
     public Optional<String> getSyncId() {
         return syncId;
+    }
+
+    @JsonProperty("syncMode")
+    public Optional<BulkScheduleSyncMode> getSyncMode() {
+        return syncMode;
     }
 
     @JsonProperty("updatedAt")
@@ -176,8 +195,10 @@ public final class BulkBulkSyncSchedule {
                 && hour.equals(other.hour)
                 && minute.equals(other.minute)
                 && month.equals(other.month)
+                && schemas.equals(other.schemas)
                 && selectiveMode.equals(other.selectiveMode)
                 && syncId.equals(other.syncId)
+                && syncMode.equals(other.syncMode)
                 && updatedAt.equals(other.updatedAt)
                 && updatedBy.equals(other.updatedBy);
     }
@@ -195,8 +216,10 @@ public final class BulkBulkSyncSchedule {
                 this.hour,
                 this.minute,
                 this.month,
+                this.schemas,
                 this.selectiveMode,
                 this.syncId,
+                this.syncMode,
                 this.updatedAt,
                 this.updatedBy);
     }
@@ -255,6 +278,10 @@ public final class BulkBulkSyncSchedule {
 
         _FinalStage month(String month);
 
+        _FinalStage schemas(Optional<List<String>> schemas);
+
+        _FinalStage schemas(List<String> schemas);
+
         _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode);
 
         _FinalStage selectiveMode(BulkSelectiveMode selectiveMode);
@@ -262,6 +289,10 @@ public final class BulkBulkSyncSchedule {
         _FinalStage syncId(Optional<String> syncId);
 
         _FinalStage syncId(String syncId);
+
+        _FinalStage syncMode(Optional<BulkScheduleSyncMode> syncMode);
+
+        _FinalStage syncMode(BulkScheduleSyncMode syncMode);
 
         _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt);
 
@@ -280,9 +311,13 @@ public final class BulkBulkSyncSchedule {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
+        private Optional<BulkScheduleSyncMode> syncMode = Optional.empty();
+
         private Optional<String> syncId = Optional.empty();
 
         private Optional<BulkSelectiveMode> selectiveMode = Optional.empty();
+
+        private Optional<List<String>> schemas = Optional.empty();
 
         private Optional<String> month = Optional.empty();
 
@@ -319,8 +354,10 @@ public final class BulkBulkSyncSchedule {
             hour(other.getHour());
             minute(other.getMinute());
             month(other.getMonth());
+            schemas(other.getSchemas());
             selectiveMode(other.getSelectiveMode());
             syncId(other.getSyncId());
+            syncMode(other.getSyncMode());
             updatedAt(other.getUpdatedAt());
             updatedBy(other.getUpdatedBy());
             return this;
@@ -360,6 +397,19 @@ public final class BulkBulkSyncSchedule {
         }
 
         @java.lang.Override
+        public _FinalStage syncMode(BulkScheduleSyncMode syncMode) {
+            this.syncMode = Optional.of(syncMode);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "syncMode", nulls = Nulls.SKIP)
+        public _FinalStage syncMode(Optional<BulkScheduleSyncMode> syncMode) {
+            this.syncMode = syncMode;
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage syncId(String syncId) {
             this.syncId = Optional.of(syncId);
             return this;
@@ -382,6 +432,19 @@ public final class BulkBulkSyncSchedule {
         @JsonSetter(value = "selectiveMode", nulls = Nulls.SKIP)
         public _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode) {
             this.selectiveMode = selectiveMode;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage schemas(List<String> schemas) {
+            this.schemas = Optional.of(schemas);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
+        public _FinalStage schemas(Optional<List<String>> schemas) {
+            this.schemas = schemas;
             return this;
         }
 
@@ -515,8 +578,10 @@ public final class BulkBulkSyncSchedule {
                     hour,
                     minute,
                     month,
+                    schemas,
                     selectiveMode,
                     syncId,
+                    syncMode,
                     updatedAt,
                     updatedBy,
                     additionalProperties);
