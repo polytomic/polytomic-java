@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,6 +29,8 @@ public final class User {
 
     private final Optional<String> role;
 
+    private final Optional<List<String>> roleIds;
+
     private final Map<String, Object> additionalProperties;
 
     private User(
@@ -35,11 +38,13 @@ public final class User {
             Optional<String> id,
             Optional<String> organizationId,
             Optional<String> role,
+            Optional<List<String>> roleIds,
             Map<String, Object> additionalProperties) {
         this.email = email;
         this.id = id;
         this.organizationId = organizationId;
         this.role = role;
+        this.roleIds = roleIds;
         this.additionalProperties = additionalProperties;
     }
 
@@ -63,6 +68,11 @@ public final class User {
         return role;
     }
 
+    @JsonProperty("role_ids")
+    public Optional<List<String>> getRoleIds() {
+        return roleIds;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -78,12 +88,13 @@ public final class User {
         return email.equals(other.email)
                 && id.equals(other.id)
                 && organizationId.equals(other.organizationId)
-                && role.equals(other.role);
+                && role.equals(other.role)
+                && roleIds.equals(other.roleIds);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.email, this.id, this.organizationId, this.role);
+        return Objects.hash(this.email, this.id, this.organizationId, this.role, this.roleIds);
     }
 
     @java.lang.Override
@@ -105,6 +116,8 @@ public final class User {
 
         private Optional<String> role = Optional.empty();
 
+        private Optional<List<String>> roleIds = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -115,6 +128,7 @@ public final class User {
             id(other.getId());
             organizationId(other.getOrganizationId());
             role(other.getRole());
+            roleIds(other.getRoleIds());
             return this;
         }
 
@@ -162,8 +176,19 @@ public final class User {
             return this;
         }
 
+        @JsonSetter(value = "role_ids", nulls = Nulls.SKIP)
+        public Builder roleIds(Optional<List<String>> roleIds) {
+            this.roleIds = roleIds;
+            return this;
+        }
+
+        public Builder roleIds(List<String> roleIds) {
+            this.roleIds = Optional.of(roleIds);
+            return this;
+        }
+
         public User build() {
-            return new User(email, id, organizationId, role, additionalProperties);
+            return new User(email, id, organizationId, role, roleIds, additionalProperties);
         }
     }
 }

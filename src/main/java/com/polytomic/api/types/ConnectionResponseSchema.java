@@ -36,6 +36,8 @@ public final class ConnectionResponseSchema {
 
     private final Optional<String> organizationId;
 
+    private final Optional<String> parentConnectionId;
+
     private final Optional<List<String>> policies;
 
     private final Optional<Boolean> saved;
@@ -60,6 +62,7 @@ public final class ConnectionResponseSchema {
             Optional<String> id,
             Optional<String> name,
             Optional<String> organizationId,
+            Optional<String> parentConnectionId,
             Optional<List<String>> policies,
             Optional<Boolean> saved,
             Optional<String> status,
@@ -75,6 +78,7 @@ public final class ConnectionResponseSchema {
         this.id = id;
         this.name = name;
         this.organizationId = organizationId;
+        this.parentConnectionId = parentConnectionId;
         this.policies = policies;
         this.saved = saved;
         this.status = status;
@@ -121,6 +125,14 @@ public final class ConnectionResponseSchema {
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
+    }
+
+    /**
+     * @return For shared connections, the ID of the parent connection.
+     */
+    @JsonProperty("parent_connection_id")
+    public Optional<String> getParentConnectionId() {
+        return parentConnectionId;
     }
 
     @JsonProperty("policies")
@@ -177,6 +189,7 @@ public final class ConnectionResponseSchema {
                 && id.equals(other.id)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
+                && parentConnectionId.equals(other.parentConnectionId)
                 && policies.equals(other.policies)
                 && saved.equals(other.saved)
                 && status.equals(other.status)
@@ -196,6 +209,7 @@ public final class ConnectionResponseSchema {
                 this.id,
                 this.name,
                 this.organizationId,
+                this.parentConnectionId,
                 this.policies,
                 this.saved,
                 this.status,
@@ -230,6 +244,8 @@ public final class ConnectionResponseSchema {
 
         private Optional<String> organizationId = Optional.empty();
 
+        private Optional<String> parentConnectionId = Optional.empty();
+
         private Optional<List<String>> policies = Optional.empty();
 
         private Optional<Boolean> saved = Optional.empty();
@@ -257,6 +273,7 @@ public final class ConnectionResponseSchema {
             id(other.getId());
             name(other.getName());
             organizationId(other.getOrganizationId());
+            parentConnectionId(other.getParentConnectionId());
             policies(other.getPolicies());
             saved(other.getSaved());
             status(other.getStatus());
@@ -341,6 +358,17 @@ public final class ConnectionResponseSchema {
 
         public Builder organizationId(String organizationId) {
             this.organizationId = Optional.of(organizationId);
+            return this;
+        }
+
+        @JsonSetter(value = "parent_connection_id", nulls = Nulls.SKIP)
+        public Builder parentConnectionId(Optional<String> parentConnectionId) {
+            this.parentConnectionId = parentConnectionId;
+            return this;
+        }
+
+        public Builder parentConnectionId(String parentConnectionId) {
+            this.parentConnectionId = Optional.of(parentConnectionId);
             return this;
         }
 
@@ -430,6 +458,7 @@ public final class ConnectionResponseSchema {
                     id,
                     name,
                     organizationId,
+                    parentConnectionId,
                     policies,
                     saved,
                     status,

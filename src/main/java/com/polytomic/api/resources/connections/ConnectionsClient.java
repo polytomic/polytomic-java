@@ -8,9 +8,11 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.connections.requests.ApiRequest;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
 import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
+import com.polytomic.api.resources.connections.requests.GetConnectionTypeParameterValuesRequestSchema;
 import com.polytomic.api.resources.connections.requests.TestConnectionRequest;
 import com.polytomic.api.resources.connections.requests.UpdateConnectionRequestSchema;
 import com.polytomic.api.types.ConnectCardResponseEnvelope;
@@ -20,6 +22,7 @@ import com.polytomic.api.types.ConnectionResponseEnvelope;
 import com.polytomic.api.types.ConnectionTypeResponseEnvelope;
 import com.polytomic.api.types.CreateConnectionResponseEnvelope;
 import com.polytomic.api.types.JsonschemaSchema;
+import com.polytomic.api.types.V2CreateSharedConnectionResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -95,6 +98,52 @@ public class ConnectionsClient {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), JsonschemaSchema.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ConnectionParameterValuesResponseEnvelope getTypeParameterValues(
+            String type, GetConnectionTypeParameterValuesRequestSchema request) {
+        return getTypeParameterValues(type, request, null);
+    }
+
+    public ConnectionParameterValuesResponseEnvelope getTypeParameterValues(
+            String type, GetConnectionTypeParameterValuesRequestSchema request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connection_types")
+                .addPathSegment(type)
+                .addPathSegments("parameter_values")
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        responseBody.string(), ConnectionParameterValuesResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),
@@ -436,6 +485,51 @@ public class ConnectionsClient {
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
                         responseBody.string(), ConnectionParameterValuesResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public V2CreateSharedConnectionResponseEnvelope apiV2CreateSharedConnection(String id, ApiRequest request) {
+        return apiV2CreateSharedConnection(id, request, null);
+    }
+
+    public V2CreateSharedConnectionResponseEnvelope apiV2CreateSharedConnection(
+            String id, ApiRequest request, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(id)
+                .addPathSegments("share")
+                .build();
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(
+                        responseBody.string(), V2CreateSharedConnectionResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

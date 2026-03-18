@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,11 +25,18 @@ public final class CreateUserRequestSchema {
 
     private final Optional<String> role;
 
+    private final Optional<List<String>> roleIds;
+
     private final Map<String, Object> additionalProperties;
 
-    private CreateUserRequestSchema(String email, Optional<String> role, Map<String, Object> additionalProperties) {
+    private CreateUserRequestSchema(
+            String email,
+            Optional<String> role,
+            Optional<List<String>> roleIds,
+            Map<String, Object> additionalProperties) {
         this.email = email;
         this.role = role;
+        this.roleIds = roleIds;
         this.additionalProperties = additionalProperties;
     }
 
@@ -40,6 +48,11 @@ public final class CreateUserRequestSchema {
     @JsonProperty("role")
     public Optional<String> getRole() {
         return role;
+    }
+
+    @JsonProperty("role_ids")
+    public Optional<List<String>> getRoleIds() {
+        return roleIds;
     }
 
     @java.lang.Override
@@ -54,12 +67,12 @@ public final class CreateUserRequestSchema {
     }
 
     private boolean equalTo(CreateUserRequestSchema other) {
-        return email.equals(other.email) && role.equals(other.role);
+        return email.equals(other.email) && role.equals(other.role) && roleIds.equals(other.roleIds);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.email, this.role);
+        return Objects.hash(this.email, this.role, this.roleIds);
     }
 
     @java.lang.Override
@@ -83,11 +96,17 @@ public final class CreateUserRequestSchema {
         _FinalStage role(Optional<String> role);
 
         _FinalStage role(String role);
+
+        _FinalStage roleIds(Optional<List<String>> roleIds);
+
+        _FinalStage roleIds(List<String> roleIds);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements EmailStage, _FinalStage {
         private String email;
+
+        private Optional<List<String>> roleIds = Optional.empty();
 
         private Optional<String> role = Optional.empty();
 
@@ -100,6 +119,7 @@ public final class CreateUserRequestSchema {
         public Builder from(CreateUserRequestSchema other) {
             email(other.getEmail());
             role(other.getRole());
+            roleIds(other.getRoleIds());
             return this;
         }
 
@@ -107,6 +127,19 @@ public final class CreateUserRequestSchema {
         @JsonSetter("email")
         public _FinalStage email(String email) {
             this.email = email;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage roleIds(List<String> roleIds) {
+            this.roleIds = Optional.of(roleIds);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "role_ids", nulls = Nulls.SKIP)
+        public _FinalStage roleIds(Optional<List<String>> roleIds) {
+            this.roleIds = roleIds;
             return this;
         }
 
@@ -125,7 +158,7 @@ public final class CreateUserRequestSchema {
 
         @java.lang.Override
         public CreateUserRequestSchema build() {
-            return new CreateUserRequestSchema(email, role, additionalProperties);
+            return new CreateUserRequestSchema(email, role, roleIds, additionalProperties);
         }
     }
 }
