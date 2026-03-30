@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PolicyResponse.Builder.class)
 public final class PolicyResponse {
     private final Optional<String> id;
@@ -139,7 +139,7 @@ public final class PolicyResponse {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -150,7 +150,7 @@ public final class PolicyResponse {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -161,7 +161,7 @@ public final class PolicyResponse {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -172,7 +172,7 @@ public final class PolicyResponse {
         }
 
         public Builder policyActions(List<PolicyAction> policyActions) {
-            this.policyActions = Optional.of(policyActions);
+            this.policyActions = Optional.ofNullable(policyActions);
             return this;
         }
 
@@ -183,12 +183,22 @@ public final class PolicyResponse {
         }
 
         public Builder system(Boolean system) {
-            this.system = Optional.of(system);
+            this.system = Optional.ofNullable(system);
             return this;
         }
 
         public PolicyResponse build() {
             return new PolicyResponse(id, name, organizationId, policyActions, system, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

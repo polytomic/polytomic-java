@@ -3,115 +3,58 @@
  */
 package com.polytomic.api.resources.modelsync.targets;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetCreatePropertyRequest;
 import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetTargetFieldsRequest;
 import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetTargetRequest;
+import com.polytomic.api.resources.modelsync.targets.requests.TargetsListRequest;
 import com.polytomic.api.types.GetConnectionMetaEnvelope;
 import com.polytomic.api.types.TargetResponseEnvelope;
 import com.polytomic.api.types.V4TargetObjectsResponseEnvelope;
 import com.polytomic.api.types.V4TargetPropertyValuesEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class TargetsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawTargetsClient rawClient;
+
     public TargetsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawTargetsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawTargetsClient withRawResponse() {
+        return this.rawClient;
     }
 
     public GetConnectionMetaEnvelope getTarget(String id) {
-        return getTarget(id, TargetsGetTargetRequest.builder().build());
+        return this.rawClient.getTarget(id).body();
+    }
+
+    public GetConnectionMetaEnvelope getTarget(String id, RequestOptions requestOptions) {
+        return this.rawClient.getTarget(id, requestOptions).body();
     }
 
     public GetConnectionMetaEnvelope getTarget(String id, TargetsGetTargetRequest request) {
-        return getTarget(id, request, null);
+        return this.rawClient.getTarget(id, request).body();
     }
 
     public GetConnectionMetaEnvelope getTarget(
             String id, TargetsGetTargetRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/target");
-        if (request.getType().isPresent()) {
-            httpUrl.addQueryParameter("type", request.getType().get());
-        }
-        if (request.getSearch().isPresent()) {
-            httpUrl.addQueryParameter("search", request.getSearch().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetConnectionMetaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getTarget(id, request, requestOptions).body();
     }
 
     public TargetResponseEnvelope getTargetFields(String id, TargetsGetTargetFieldsRequest request) {
-        return getTargetFields(id, request, null);
+        return this.rawClient.getTargetFields(id, request).body();
     }
 
     public TargetResponseEnvelope getTargetFields(
             String id, TargetsGetTargetFieldsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/target/fields");
-        httpUrl.addQueryParameter("target", request.getTarget());
-        if (request.getRefresh().isPresent()) {
-            httpUrl.addQueryParameter("refresh", request.getRefresh().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), TargetResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getTargetFields(id, request, requestOptions).body();
     }
 
     /**
@@ -130,7 +73,7 @@ public class TargetsClient {
      * what operations the mode supports.</p>
      */
     public V4TargetObjectsResponseEnvelope list(String id) {
-        return list(id, null);
+        return this.rawClient.list(id).body();
     }
 
     /**
@@ -149,36 +92,45 @@ public class TargetsClient {
      * what operations the mode supports.</p>
      */
     public V4TargetObjectsResponseEnvelope list(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/targetobjects")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V4TargetObjectsResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(id, requestOptions).body();
+    }
+
+    /**
+     * Returns available model sync destinations for a connection.
+     * <p>If the connection supports creating new destinations, the <code>target_creation</code>
+     * object will contain information on what properties are required to create the
+     * target.</p>
+     * <p>Target creation properties are all string values; the <code>enum</code> flag indicates if
+     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/targets/get-create-property">Target
+     * Creation Property
+     * Values</a>
+     * endpoint can be used to retrieve the valid values.</p>
+     * <h2>Sync modes</h2>
+     * <p>The sync mode determines which records are written to the destination for a
+     * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
+     * what operations the mode supports.</p>
+     */
+    public V4TargetObjectsResponseEnvelope list(String id, TargetsListRequest request) {
+        return this.rawClient.list(id, request).body();
+    }
+
+    /**
+     * Returns available model sync destinations for a connection.
+     * <p>If the connection supports creating new destinations, the <code>target_creation</code>
+     * object will contain information on what properties are required to create the
+     * target.</p>
+     * <p>Target creation properties are all string values; the <code>enum</code> flag indicates if
+     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/targets/get-create-property">Target
+     * Creation Property
+     * Values</a>
+     * endpoint can be used to retrieve the valid values.</p>
+     * <h2>Sync modes</h2>
+     * <p>The sync mode determines which records are written to the destination for a
+     * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
+     * what operations the mode supports.</p>
+     */
+    public V4TargetObjectsResponseEnvelope list(String id, TargetsListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(id, request, requestOptions).body();
     }
 
     /**
@@ -209,7 +161,7 @@ public class TargetsClient {
      * sync</a>.</p>
      */
     public V4TargetPropertyValuesEnvelope getCreateProperty(String id, String property) {
-        return getCreateProperty(id, property, null);
+        return this.rawClient.getCreateProperty(id, property).body();
     }
 
     /**
@@ -240,35 +192,72 @@ public class TargetsClient {
      * sync</a>.</p>
      */
     public V4TargetPropertyValuesEnvelope getCreateProperty(String id, String property, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/targetobjects/properties")
-                .addPathSegment(property)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), V4TargetPropertyValuesEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getCreateProperty(id, property, requestOptions).body();
+    }
+
+    /**
+     * Connections which support creating new sync target objects (destinations) will
+     * return <code>target_creation</code> with their <a href="./list">target object list</a>. This endpoint
+     * will return possible values for properties where <code>enum</code> is <code>true</code>.
+     * <p>If the connection does not support creating new target objects, an HTTP 404 will
+     * be returned.</p>
+     * <p>The <code>values</code> array lists the valid options (and labels) for the property. Each
+     * member of the <code>values</code> array has a <code>label</code> and <code>value</code>. For exaample,</p>
+     * <pre><code class="language-json">{
+     *   &quot;data&quot;: [
+     *     {
+     *       &quot;id&quot;: &quot;account&quot;,
+     *       &quot;title&quot;: &quot;Account ID&quot;,
+     *       &quot;enum&quot;: true,
+     *       &quot;values&quot;: [
+     *         {
+     *           &quot;value&quot;: &quot;1234567::urn:li:organization:987654&quot;,
+     *           &quot;label&quot;: &quot;Polytomic Inc. (1234567)&quot;
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     * </code></pre>
+     * <p>The <code>value</code> for the selected option should be passed when <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/create">creating a
+     * sync</a>.</p>
+     */
+    public V4TargetPropertyValuesEnvelope getCreateProperty(
+            String id, String property, TargetsGetCreatePropertyRequest request) {
+        return this.rawClient.getCreateProperty(id, property, request).body();
+    }
+
+    /**
+     * Connections which support creating new sync target objects (destinations) will
+     * return <code>target_creation</code> with their <a href="./list">target object list</a>. This endpoint
+     * will return possible values for properties where <code>enum</code> is <code>true</code>.
+     * <p>If the connection does not support creating new target objects, an HTTP 404 will
+     * be returned.</p>
+     * <p>The <code>values</code> array lists the valid options (and labels) for the property. Each
+     * member of the <code>values</code> array has a <code>label</code> and <code>value</code>. For exaample,</p>
+     * <pre><code class="language-json">{
+     *   &quot;data&quot;: [
+     *     {
+     *       &quot;id&quot;: &quot;account&quot;,
+     *       &quot;title&quot;: &quot;Account ID&quot;,
+     *       &quot;enum&quot;: true,
+     *       &quot;values&quot;: [
+     *         {
+     *           &quot;value&quot;: &quot;1234567::urn:li:organization:987654&quot;,
+     *           &quot;label&quot;: &quot;Polytomic Inc. (1234567)&quot;
+     *         }
+     *       ]
+     *     }
+     *   ]
+     * }
+     * </code></pre>
+     * <p>The <code>value</code> for the selected option should be passed when <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/create">creating a
+     * sync</a>.</p>
+     */
+    public V4TargetPropertyValuesEnvelope getCreateProperty(
+            String id, String property, TargetsGetCreatePropertyRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .getCreateProperty(id, property, request, requestOptions)
+                .body();
     }
 }

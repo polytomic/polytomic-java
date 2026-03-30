@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelResponse.Builder.class)
 public final class ModelResponse {
     private final Optional<Map<String, Object>> configuration;
@@ -327,7 +327,7 @@ public final class ModelResponse {
         }
 
         public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -338,7 +338,7 @@ public final class ModelResponse {
         }
 
         public Builder connectionId(String connectionId) {
-            this.connectionId = Optional.of(connectionId);
+            this.connectionId = Optional.ofNullable(connectionId);
             return this;
         }
 
@@ -349,7 +349,7 @@ public final class ModelResponse {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
@@ -360,7 +360,7 @@ public final class ModelResponse {
         }
 
         public Builder createdBy(CommonOutputActor createdBy) {
-            this.createdBy = Optional.of(createdBy);
+            this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
@@ -371,7 +371,7 @@ public final class ModelResponse {
         }
 
         public Builder enricher(Enrichment enricher) {
-            this.enricher = Optional.of(enricher);
+            this.enricher = Optional.ofNullable(enricher);
             return this;
         }
 
@@ -382,7 +382,7 @@ public final class ModelResponse {
         }
 
         public Builder fields(List<ModelField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -393,7 +393,7 @@ public final class ModelResponse {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -404,7 +404,7 @@ public final class ModelResponse {
         }
 
         public Builder identifier(String identifier) {
-            this.identifier = Optional.of(identifier);
+            this.identifier = Optional.ofNullable(identifier);
             return this;
         }
 
@@ -415,7 +415,7 @@ public final class ModelResponse {
         }
 
         public Builder labels(List<Map<String, Object>> labels) {
-            this.labels = Optional.of(labels);
+            this.labels = Optional.ofNullable(labels);
             return this;
         }
 
@@ -426,7 +426,7 @@ public final class ModelResponse {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -437,7 +437,7 @@ public final class ModelResponse {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -448,7 +448,7 @@ public final class ModelResponse {
         }
 
         public Builder policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -459,7 +459,7 @@ public final class ModelResponse {
         }
 
         public Builder relations(List<Relation> relations) {
-            this.relations = Optional.of(relations);
+            this.relations = Optional.ofNullable(relations);
             return this;
         }
 
@@ -470,7 +470,7 @@ public final class ModelResponse {
         }
 
         public Builder trackingColumns(List<String> trackingColumns) {
-            this.trackingColumns = Optional.of(trackingColumns);
+            this.trackingColumns = Optional.ofNullable(trackingColumns);
             return this;
         }
 
@@ -481,7 +481,7 @@ public final class ModelResponse {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -492,7 +492,7 @@ public final class ModelResponse {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
@@ -503,7 +503,7 @@ public final class ModelResponse {
         }
 
         public Builder updatedBy(CommonOutputActor updatedBy) {
-            this.updatedBy = Optional.of(updatedBy);
+            this.updatedBy = Optional.ofNullable(updatedBy);
             return this;
         }
 
@@ -514,7 +514,7 @@ public final class ModelResponse {
         }
 
         public Builder version(Integer version) {
-            this.version = Optional.of(version);
+            this.version = Optional.ofNullable(version);
             return this;
         }
 
@@ -539,6 +539,16 @@ public final class ModelResponse {
                     updatedBy,
                     version,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

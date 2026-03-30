@@ -14,8 +14,9 @@ import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SchemaPrimaryKeyOverrideInput.Builder.class)
 public final class SchemaPrimaryKeyOverrideInput {
     private final String fieldId;
@@ -71,7 +72,7 @@ public final class SchemaPrimaryKeyOverrideInput {
     }
 
     public interface FieldIdStage {
-        IsPrimaryKeyStage fieldId(String fieldId);
+        IsPrimaryKeyStage fieldId(@NotNull String fieldId);
 
         Builder from(SchemaPrimaryKeyOverrideInput other);
     }
@@ -82,6 +83,10 @@ public final class SchemaPrimaryKeyOverrideInput {
 
     public interface _FinalStage {
         SchemaPrimaryKeyOverrideInput build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -104,7 +109,7 @@ public final class SchemaPrimaryKeyOverrideInput {
 
         @java.lang.Override
         @JsonSetter("field_id")
-        public IsPrimaryKeyStage fieldId(String fieldId) {
+        public IsPrimaryKeyStage fieldId(@NotNull String fieldId) {
             this.fieldId = fieldId;
             return this;
         }
@@ -119,6 +124,18 @@ public final class SchemaPrimaryKeyOverrideInput {
         @java.lang.Override
         public SchemaPrimaryKeyOverrideInput build() {
             return new SchemaPrimaryKeyOverrideInput(fieldId, isPrimaryKey, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

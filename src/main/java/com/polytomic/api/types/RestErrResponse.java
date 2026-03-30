@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = RestErrResponse.Builder.class)
 public final class RestErrResponse {
     private final Optional<Integer> code;
@@ -130,6 +130,9 @@ public final class RestErrResponse {
             return this;
         }
 
+        /**
+         * <p>Application-specific error code.</p>
+         */
         @JsonSetter(value = "code", nulls = Nulls.SKIP)
         public Builder code(Optional<Integer> code) {
             this.code = code;
@@ -137,10 +140,13 @@ public final class RestErrResponse {
         }
 
         public Builder code(Integer code) {
-            this.code = Optional.of(code);
+            this.code = Optional.ofNullable(code);
             return this;
         }
 
+        /**
+         * <p>Application context.</p>
+         */
         @JsonSetter(value = "context", nulls = Nulls.SKIP)
         public Builder context(Optional<Map<String, Object>> context) {
             this.context = context;
@@ -148,10 +154,13 @@ public final class RestErrResponse {
         }
 
         public Builder context(Map<String, Object> context) {
-            this.context = Optional.of(context);
+            this.context = Optional.ofNullable(context);
             return this;
         }
 
+        /**
+         * <p>Error message.</p>
+         */
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public Builder error(Optional<String> error) {
             this.error = error;
@@ -159,10 +168,13 @@ public final class RestErrResponse {
         }
 
         public Builder error(String error) {
-            this.error = Optional.of(error);
+            this.error = Optional.ofNullable(error);
             return this;
         }
 
+        /**
+         * <p>Status text.</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<String> status) {
             this.status = status;
@@ -170,12 +182,22 @@ public final class RestErrResponse {
         }
 
         public Builder status(String status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
         public RestErrResponse build() {
             return new RestErrResponse(code, context, error, status, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

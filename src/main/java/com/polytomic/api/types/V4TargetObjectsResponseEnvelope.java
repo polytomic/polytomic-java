@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4TargetObjectsResponseEnvelope.Builder.class)
 public final class V4TargetObjectsResponseEnvelope {
     private final Optional<List<TargetObject>> data;
@@ -36,14 +39,23 @@ public final class V4TargetObjectsResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("data")
+    @JsonIgnore
     public Optional<List<TargetObject>> getData() {
+        if (data == null) {
+            return Optional.empty();
+        }
         return data;
     }
 
     @JsonProperty("target_creation")
     public Optional<V4TargetCreator> getTargetCreation() {
         return targetCreation;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("data")
+    private Optional<List<TargetObject>> _getData() {
+        return data;
     }
 
     @java.lang.Override
@@ -99,7 +111,18 @@ public final class V4TargetObjectsResponseEnvelope {
         }
 
         public Builder data(List<TargetObject> data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
+            return this;
+        }
+
+        public Builder data(Nullable<List<TargetObject>> data) {
+            if (data.isNull()) {
+                this.data = null;
+            } else if (data.isEmpty()) {
+                this.data = Optional.empty();
+            } else {
+                this.data = Optional.of(data.get());
+            }
             return this;
         }
 
@@ -110,12 +133,22 @@ public final class V4TargetObjectsResponseEnvelope {
         }
 
         public Builder targetCreation(V4TargetCreator targetCreation) {
-            this.targetCreation = Optional.of(targetCreation);
+            this.targetCreation = Optional.ofNullable(targetCreation);
             return this;
         }
 
         public V4TargetObjectsResponseEnvelope build() {
             return new V4TargetObjectsResponseEnvelope(data, targetCreation, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

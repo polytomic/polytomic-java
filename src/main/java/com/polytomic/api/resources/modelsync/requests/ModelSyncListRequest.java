@@ -5,12 +5,13 @@ package com.polytomic.api.resources.modelsync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.ModelSyncMode;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSyncListRequest.Builder.class)
 public final class ModelSyncListRequest {
     private final Optional<Boolean> active;
@@ -40,17 +41,20 @@ public final class ModelSyncListRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("active")
+    @JsonIgnore
     public Optional<Boolean> getActive() {
+        if (active == null) {
+            return Optional.empty();
+        }
         return active;
     }
 
-    @JsonProperty("mode")
+    @JsonIgnore
     public Optional<ModelSyncMode> getMode() {
         return mode;
     }
 
-    @JsonProperty("target_connection_id")
+    @JsonIgnore
     public Optional<String> getTargetConnectionId() {
         return targetConnectionId;
     }
@@ -113,7 +117,18 @@ public final class ModelSyncListRequest {
         }
 
         public Builder active(Boolean active) {
-            this.active = Optional.of(active);
+            this.active = Optional.ofNullable(active);
+            return this;
+        }
+
+        public Builder active(Nullable<Boolean> active) {
+            if (active.isNull()) {
+                this.active = null;
+            } else if (active.isEmpty()) {
+                this.active = Optional.empty();
+            } else {
+                this.active = Optional.of(active.get());
+            }
             return this;
         }
 
@@ -124,7 +139,7 @@ public final class ModelSyncListRequest {
         }
 
         public Builder mode(ModelSyncMode mode) {
-            this.mode = Optional.of(mode);
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
@@ -135,12 +150,22 @@ public final class ModelSyncListRequest {
         }
 
         public Builder targetConnectionId(String targetConnectionId) {
-            this.targetConnectionId = Optional.of(targetConnectionId);
+            this.targetConnectionId = Optional.ofNullable(targetConnectionId);
             return this;
         }
 
         public ModelSyncListRequest build() {
             return new ModelSyncListRequest(active, mode, targetConnectionId, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

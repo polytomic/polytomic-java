@@ -5,19 +5,22 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UtilEnumValue.Builder.class)
 public final class UtilEnumValue {
     private final Optional<String> label;
@@ -32,14 +35,23 @@ public final class UtilEnumValue {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("label")
+    @JsonIgnore
     public Optional<String> getLabel() {
+        if (label == null) {
+            return Optional.empty();
+        }
         return label;
     }
 
     @JsonProperty("value")
     public Optional<String> getValue() {
         return value;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("label")
+    private Optional<String> _getLabel() {
+        return label;
     }
 
     @java.lang.Override
@@ -95,7 +107,18 @@ public final class UtilEnumValue {
         }
 
         public Builder label(String label) {
-            this.label = Optional.of(label);
+            this.label = Optional.ofNullable(label);
+            return this;
+        }
+
+        public Builder label(Nullable<String> label) {
+            if (label.isNull()) {
+                this.label = null;
+            } else if (label.isEmpty()) {
+                this.label = Optional.empty();
+            } else {
+                this.label = Optional.of(label.get());
+            }
             return this;
         }
 
@@ -106,12 +129,22 @@ public final class UtilEnumValue {
         }
 
         public Builder value(String value) {
-            this.value = Optional.of(value);
+            this.value = Optional.ofNullable(value);
             return this;
         }
 
         public UtilEnumValue build() {
             return new UtilEnumValue(label, value, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

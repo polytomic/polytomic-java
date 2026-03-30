@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncSourceStatusEnvelope.Builder.class)
 public final class BulkSyncSourceStatusEnvelope {
     private final Optional<BulkSyncSourceStatus> data;
@@ -85,12 +85,22 @@ public final class BulkSyncSourceStatusEnvelope {
         }
 
         public Builder data(BulkSyncSourceStatus data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
         public BulkSyncSourceStatusEnvelope build() {
             return new BulkSyncSourceStatusEnvelope(data, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

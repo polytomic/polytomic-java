@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetModelSyncSourceMetaEnvelope.Builder.class)
 public final class GetModelSyncSourceMetaEnvelope {
     private final Optional<ModelSyncSourceMetaResponse> data;
@@ -85,12 +85,22 @@ public final class GetModelSyncSourceMetaEnvelope {
         }
 
         public Builder data(ModelSyncSourceMetaResponse data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
         public GetModelSyncSourceMetaEnvelope build() {
             return new GetModelSyncSourceMetaEnvelope(data, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

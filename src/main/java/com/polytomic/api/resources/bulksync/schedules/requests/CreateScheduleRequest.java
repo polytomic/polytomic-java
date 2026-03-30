@@ -15,8 +15,9 @@ import com.polytomic.api.types.V4BulkSyncScheduleApi;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateScheduleRequest.Builder.class)
 public final class CreateScheduleRequest {
     private final V4BulkSyncScheduleApi schedule;
@@ -63,13 +64,17 @@ public final class CreateScheduleRequest {
     }
 
     public interface ScheduleStage {
-        _FinalStage schedule(V4BulkSyncScheduleApi schedule);
+        _FinalStage schedule(@NotNull V4BulkSyncScheduleApi schedule);
 
         Builder from(CreateScheduleRequest other);
     }
 
     public interface _FinalStage {
         CreateScheduleRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -89,7 +94,7 @@ public final class CreateScheduleRequest {
 
         @java.lang.Override
         @JsonSetter("schedule")
-        public _FinalStage schedule(V4BulkSyncScheduleApi schedule) {
+        public _FinalStage schedule(@NotNull V4BulkSyncScheduleApi schedule) {
             this.schedule = schedule;
             return this;
         }
@@ -97,6 +102,18 @@ public final class CreateScheduleRequest {
         @java.lang.Override
         public CreateScheduleRequest build() {
             return new CreateScheduleRequest(schedule, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

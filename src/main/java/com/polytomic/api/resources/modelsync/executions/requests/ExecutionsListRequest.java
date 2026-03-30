@@ -5,9 +5,9 @@ package com.polytomic.api.resources.modelsync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionsListRequest.Builder.class)
 public final class ExecutionsListRequest {
     private final Optional<String> pageToken;
@@ -39,17 +39,17 @@ public final class ExecutionsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("page_token")
+    @JsonIgnore
     public Optional<String> getPageToken() {
         return pageToken;
     }
 
-    @JsonProperty("only_completed")
+    @JsonIgnore
     public Optional<Boolean> getOnlyCompleted() {
         return onlyCompleted;
     }
 
-    @JsonProperty("ascending")
+    @JsonIgnore
     public Optional<Boolean> getAscending() {
         return ascending;
     }
@@ -112,7 +112,7 @@ public final class ExecutionsListRequest {
         }
 
         public Builder pageToken(String pageToken) {
-            this.pageToken = Optional.of(pageToken);
+            this.pageToken = Optional.ofNullable(pageToken);
             return this;
         }
 
@@ -123,7 +123,7 @@ public final class ExecutionsListRequest {
         }
 
         public Builder onlyCompleted(Boolean onlyCompleted) {
-            this.onlyCompleted = Optional.of(onlyCompleted);
+            this.onlyCompleted = Optional.ofNullable(onlyCompleted);
             return this;
         }
 
@@ -134,12 +134,22 @@ public final class ExecutionsListRequest {
         }
 
         public Builder ascending(Boolean ascending) {
-            this.ascending = Optional.of(ascending);
+            this.ascending = Optional.ofNullable(ascending);
             return this;
         }
 
         public ExecutionsListRequest build() {
             return new ExecutionsListRequest(pageToken, onlyCompleted, ascending, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

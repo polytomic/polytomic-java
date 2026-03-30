@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Pagination.Builder.class)
 public final class Pagination {
     private final Optional<String> next;
@@ -94,6 +94,9 @@ public final class Pagination {
             return this;
         }
 
+        /**
+         * <p>URL to the next page of results, if available. This may be returned as a host relative path.</p>
+         */
         @JsonSetter(value = "next", nulls = Nulls.SKIP)
         public Builder next(Optional<String> next) {
             this.next = next;
@@ -101,10 +104,13 @@ public final class Pagination {
         }
 
         public Builder next(String next) {
-            this.next = Optional.of(next);
+            this.next = Optional.ofNullable(next);
             return this;
         }
 
+        /**
+         * <p>URL to the previous page of results, if available. This may be returned as a host relative path.</p>
+         */
         @JsonSetter(value = "previous", nulls = Nulls.SKIP)
         public Builder previous(Optional<String> previous) {
             this.previous = previous;
@@ -112,12 +118,22 @@ public final class Pagination {
         }
 
         public Builder previous(String previous) {
-            this.previous = Optional.of(previous);
+            this.previous = Optional.ofNullable(previous);
             return this;
         }
 
         public Pagination build() {
             return new Pagination(next, previous, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

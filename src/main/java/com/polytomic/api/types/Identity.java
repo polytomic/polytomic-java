@@ -5,19 +5,23 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Identity.Builder.class)
 public final class Identity {
     private final SchemaIdentityFunction function;
@@ -57,8 +61,11 @@ public final class Identity {
         return newField;
     }
 
-    @JsonProperty("remote_field_type_id")
+    @JsonIgnore
     public Optional<String> getRemoteFieldTypeId() {
+        if (remoteFieldTypeId == null) {
+            return Optional.empty();
+        }
         return remoteFieldTypeId;
     }
 
@@ -70,6 +77,12 @@ public final class Identity {
     @JsonProperty("target")
     public String getTarget() {
         return target;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("remote_field_type_id")
+    private Optional<String> _getRemoteFieldTypeId() {
+        return remoteFieldTypeId;
     }
 
     @java.lang.Override
@@ -106,21 +119,25 @@ public final class Identity {
     }
 
     public interface FunctionStage {
-        SourceStage function(SchemaIdentityFunction function);
+        SourceStage function(@NotNull SchemaIdentityFunction function);
 
         Builder from(Identity other);
     }
 
     public interface SourceStage {
-        TargetStage source(Source source);
+        TargetStage source(@NotNull Source source);
     }
 
     public interface TargetStage {
-        _FinalStage target(String target);
+        _FinalStage target(@NotNull String target);
     }
 
     public interface _FinalStage {
         Identity build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage newField(Optional<Boolean> newField);
 
@@ -129,6 +146,8 @@ public final class Identity {
         _FinalStage remoteFieldTypeId(Optional<String> remoteFieldTypeId);
 
         _FinalStage remoteFieldTypeId(String remoteFieldTypeId);
+
+        _FinalStage remoteFieldTypeId(Nullable<String> remoteFieldTypeId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -160,28 +179,40 @@ public final class Identity {
 
         @java.lang.Override
         @JsonSetter("function")
-        public SourceStage function(SchemaIdentityFunction function) {
+        public SourceStage function(@NotNull SchemaIdentityFunction function) {
             this.function = function;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("source")
-        public TargetStage source(Source source) {
+        public TargetStage source(@NotNull Source source) {
             this.source = source;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("target")
-        public _FinalStage target(String target) {
+        public _FinalStage target(@NotNull String target) {
             this.target = target;
             return this;
         }
 
         @java.lang.Override
+        public _FinalStage remoteFieldTypeId(Nullable<String> remoteFieldTypeId) {
+            if (remoteFieldTypeId.isNull()) {
+                this.remoteFieldTypeId = null;
+            } else if (remoteFieldTypeId.isEmpty()) {
+                this.remoteFieldTypeId = Optional.empty();
+            } else {
+                this.remoteFieldTypeId = Optional.of(remoteFieldTypeId.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage remoteFieldTypeId(String remoteFieldTypeId) {
-            this.remoteFieldTypeId = Optional.of(remoteFieldTypeId);
+            this.remoteFieldTypeId = Optional.ofNullable(remoteFieldTypeId);
             return this;
         }
 
@@ -194,7 +225,7 @@ public final class Identity {
 
         @java.lang.Override
         public _FinalStage newField(Boolean newField) {
-            this.newField = Optional.of(newField);
+            this.newField = Optional.ofNullable(newField);
             return this;
         }
 
@@ -208,6 +239,18 @@ public final class Identity {
         @java.lang.Override
         public Identity build() {
             return new Identity(function, newField, remoteFieldTypeId, source, target, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

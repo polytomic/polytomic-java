@@ -29,6 +29,7 @@ public final class V2SchemaConfigurationFieldsItem {
         return this.value;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T visit(Visitor<T> visitor) {
         if (this.type == 0) {
             return visitor.visit((String) this.value);
@@ -78,16 +79,16 @@ public final class V2SchemaConfigurationFieldsItem {
         }
 
         @java.lang.Override
-        public V2SchemaConfigurationFieldsItem deserialize(JsonParser p, DeserializationContext ctxt)
+        public V2SchemaConfigurationFieldsItem deserialize(JsonParser p, DeserializationContext context)
                 throws IOException {
             Object value = p.readValueAs(Object.class);
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, String.class));
-            } catch (IllegalArgumentException e) {
+            } catch (RuntimeException e) {
             }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, FieldConfiguration.class));
-            } catch (IllegalArgumentException e) {
+            } catch (RuntimeException e) {
             }
             throw new JsonParseException(p, "Failed to deserialize");
         }

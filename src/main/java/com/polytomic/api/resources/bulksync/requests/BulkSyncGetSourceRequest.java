@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncGetSourceRequest.Builder.class)
 public final class BulkSyncGetSourceRequest {
     private final Optional<Boolean> includeFields;
@@ -29,7 +29,7 @@ public final class BulkSyncGetSourceRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("include_fields")
+    @JsonIgnore
     public Optional<Boolean> getIncludeFields() {
         return includeFields;
     }
@@ -84,12 +84,22 @@ public final class BulkSyncGetSourceRequest {
         }
 
         public Builder includeFields(Boolean includeFields) {
-            this.includeFields = Optional.of(includeFields);
+            this.includeFields = Optional.ofNullable(includeFields);
             return this;
         }
 
         public BulkSyncGetSourceRequest build() {
             return new BulkSyncGetSourceRequest(includeFields, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

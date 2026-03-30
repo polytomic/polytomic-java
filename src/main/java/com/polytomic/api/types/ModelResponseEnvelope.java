@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelResponseEnvelope.Builder.class)
 public final class ModelResponseEnvelope {
     private final Optional<ModelResponse> data;
@@ -96,7 +96,7 @@ public final class ModelResponseEnvelope {
         }
 
         public Builder data(ModelResponse data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
@@ -107,12 +107,22 @@ public final class ModelResponseEnvelope {
         }
 
         public Builder job(JobResponse job) {
-            this.job = Optional.of(job);
+            this.job = Optional.ofNullable(job);
             return this;
         }
 
         public ModelResponseEnvelope build() {
             return new ModelResponseEnvelope(data, job, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

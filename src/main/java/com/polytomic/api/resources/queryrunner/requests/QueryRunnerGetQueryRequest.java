@@ -5,9 +5,9 @@ package com.polytomic.api.resources.queryrunner.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = QueryRunnerGetQueryRequest.Builder.class)
 public final class QueryRunnerGetQueryRequest {
     private final Optional<String> page;
@@ -29,7 +29,7 @@ public final class QueryRunnerGetQueryRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("page")
+    @JsonIgnore
     public Optional<String> getPage() {
         return page;
     }
@@ -84,12 +84,22 @@ public final class QueryRunnerGetQueryRequest {
         }
 
         public Builder page(String page) {
-            this.page = Optional.of(page);
+            this.page = Optional.ofNullable(page);
             return this;
         }
 
         public QueryRunnerGetQueryRequest build() {
             return new QueryRunnerGetQueryRequest(page, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

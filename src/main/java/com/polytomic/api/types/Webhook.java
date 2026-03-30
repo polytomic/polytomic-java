@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Webhook.Builder.class)
 public final class Webhook {
     private final Optional<OffsetDateTime> createdAt;
@@ -152,7 +152,7 @@ public final class Webhook {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
@@ -163,7 +163,7 @@ public final class Webhook {
         }
 
         public Builder disabled(Boolean disabled) {
-            this.disabled = Optional.of(disabled);
+            this.disabled = Optional.ofNullable(disabled);
             return this;
         }
 
@@ -174,7 +174,7 @@ public final class Webhook {
         }
 
         public Builder endpoint(String endpoint) {
-            this.endpoint = Optional.of(endpoint);
+            this.endpoint = Optional.ofNullable(endpoint);
             return this;
         }
 
@@ -185,7 +185,7 @@ public final class Webhook {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -196,7 +196,7 @@ public final class Webhook {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -207,12 +207,22 @@ public final class Webhook {
         }
 
         public Builder secret(String secret) {
-            this.secret = Optional.of(secret);
+            this.secret = Optional.ofNullable(secret);
             return this;
         }
 
         public Webhook build() {
             return new Webhook(createdAt, disabled, endpoint, id, organizationId, secret, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

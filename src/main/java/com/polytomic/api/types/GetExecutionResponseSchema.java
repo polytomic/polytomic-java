@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetExecutionResponseSchema.Builder.class)
 public final class GetExecutionResponseSchema {
     private final Optional<OffsetDateTime> completedAt;
@@ -61,8 +64,11 @@ public final class GetExecutionResponseSchema {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("completed_at")
+    @JsonIgnore
     public Optional<OffsetDateTime> getCompletedAt() {
+        if (completedAt == null) {
+            return Optional.empty();
+        }
         return completedAt;
     }
 
@@ -86,8 +92,11 @@ public final class GetExecutionResponseSchema {
         return id;
     }
 
-    @JsonProperty("started_at")
+    @JsonIgnore
     public Optional<OffsetDateTime> getStartedAt() {
+        if (startedAt == null) {
+            return Optional.empty();
+        }
         return startedAt;
     }
 
@@ -99,6 +108,18 @@ public final class GetExecutionResponseSchema {
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("completed_at")
+    private Optional<OffsetDateTime> _getCompletedAt() {
+        return completedAt;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("started_at")
+    private Optional<OffsetDateTime> _getStartedAt() {
+        return startedAt;
     }
 
     @java.lang.Override
@@ -187,7 +208,18 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder completedAt(OffsetDateTime completedAt) {
-            this.completedAt = Optional.of(completedAt);
+            this.completedAt = Optional.ofNullable(completedAt);
+            return this;
+        }
+
+        public Builder completedAt(Nullable<OffsetDateTime> completedAt) {
+            if (completedAt.isNull()) {
+                this.completedAt = null;
+            } else if (completedAt.isEmpty()) {
+                this.completedAt = Optional.empty();
+            } else {
+                this.completedAt = Optional.of(completedAt.get());
+            }
             return this;
         }
 
@@ -198,7 +230,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder counts(ExecutionCounts counts) {
-            this.counts = Optional.of(counts);
+            this.counts = Optional.ofNullable(counts);
             return this;
         }
 
@@ -209,7 +241,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
@@ -220,7 +252,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder errors(List<String> errors) {
-            this.errors = Optional.of(errors);
+            this.errors = Optional.ofNullable(errors);
             return this;
         }
 
@@ -231,7 +263,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -242,7 +274,18 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder startedAt(OffsetDateTime startedAt) {
-            this.startedAt = Optional.of(startedAt);
+            this.startedAt = Optional.ofNullable(startedAt);
+            return this;
+        }
+
+        public Builder startedAt(Nullable<OffsetDateTime> startedAt) {
+            if (startedAt.isNull()) {
+                this.startedAt = null;
+            } else if (startedAt.isEmpty()) {
+                this.startedAt = Optional.empty();
+            } else {
+                this.startedAt = Optional.of(startedAt.get());
+            }
             return this;
         }
 
@@ -253,7 +296,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder status(ExecutionStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -264,13 +307,23 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         public GetExecutionResponseSchema build() {
             return new GetExecutionResponseSchema(
                     completedAt, counts, createdAt, errors, id, startedAt, status, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

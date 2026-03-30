@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4TargetPropertyValues.Builder.class)
 public final class V4TargetPropertyValues {
     private final Optional<Boolean> enum_;
@@ -131,6 +131,9 @@ public final class V4TargetPropertyValues {
             return this;
         }
 
+        /**
+         * <p>True if the property is an enum.</p>
+         */
         @JsonSetter(value = "enum", nulls = Nulls.SKIP)
         public Builder enum_(Optional<Boolean> enum_) {
             this.enum_ = enum_;
@@ -138,10 +141,13 @@ public final class V4TargetPropertyValues {
         }
 
         public Builder enum_(Boolean enum_) {
-            this.enum_ = Optional.of(enum_);
+            this.enum_ = Optional.ofNullable(enum_);
             return this;
         }
 
+        /**
+         * <p>The identifier of the target property.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -149,10 +155,13 @@ public final class V4TargetPropertyValues {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>A human readable title for the target property.</p>
+         */
         @JsonSetter(value = "title", nulls = Nulls.SKIP)
         public Builder title(Optional<String> title) {
             this.title = title;
@@ -160,10 +169,13 @@ public final class V4TargetPropertyValues {
         }
 
         public Builder title(String title) {
-            this.title = Optional.of(title);
+            this.title = Optional.ofNullable(title);
             return this;
         }
 
+        /**
+         * <p>Valid values for the target property.</p>
+         */
         @JsonSetter(value = "values", nulls = Nulls.SKIP)
         public Builder values(Optional<List<UtilEnumValue>> values) {
             this.values = values;
@@ -171,12 +183,22 @@ public final class V4TargetPropertyValues {
         }
 
         public Builder values(List<UtilEnumValue> values) {
-            this.values = Optional.of(values);
+            this.values = Optional.ofNullable(values);
             return this;
         }
 
         public V4TargetPropertyValues build() {
             return new V4TargetPropertyValues(enum_, id, title, values, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

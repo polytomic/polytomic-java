@@ -5,19 +5,22 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = FieldConfiguration.Builder.class)
 public final class FieldConfiguration {
     private final Optional<Boolean> enabled;
@@ -42,8 +45,11 @@ public final class FieldConfiguration {
     /**
      * @return Whether the field is enabled for syncing.
      */
-    @JsonProperty("enabled")
+    @JsonIgnore
     public Optional<Boolean> getEnabled() {
+        if (enabled == null) {
+            return Optional.empty();
+        }
         return enabled;
     }
 
@@ -55,8 +61,23 @@ public final class FieldConfiguration {
     /**
      * @return Whether the field should be obfuscated.
      */
-    @JsonProperty("obfuscate")
+    @JsonIgnore
     public Optional<Boolean> getObfuscate() {
+        if (obfuscate == null) {
+            return Optional.empty();
+        }
+        return obfuscate;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("enabled")
+    private Optional<Boolean> _getEnabled() {
+        return enabled;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("obfuscate")
+    private Optional<Boolean> _getObfuscate() {
         return obfuscate;
     }
 
@@ -109,6 +130,9 @@ public final class FieldConfiguration {
             return this;
         }
 
+        /**
+         * <p>Whether the field is enabled for syncing.</p>
+         */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
             this.enabled = enabled;
@@ -116,7 +140,18 @@ public final class FieldConfiguration {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
+            return this;
+        }
+
+        public Builder enabled(Nullable<Boolean> enabled) {
+            if (enabled.isNull()) {
+                this.enabled = null;
+            } else if (enabled.isEmpty()) {
+                this.enabled = Optional.empty();
+            } else {
+                this.enabled = Optional.of(enabled.get());
+            }
             return this;
         }
 
@@ -127,10 +162,13 @@ public final class FieldConfiguration {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>Whether the field should be obfuscated.</p>
+         */
         @JsonSetter(value = "obfuscate", nulls = Nulls.SKIP)
         public Builder obfuscate(Optional<Boolean> obfuscate) {
             this.obfuscate = obfuscate;
@@ -138,12 +176,33 @@ public final class FieldConfiguration {
         }
 
         public Builder obfuscate(Boolean obfuscate) {
-            this.obfuscate = Optional.of(obfuscate);
+            this.obfuscate = Optional.ofNullable(obfuscate);
+            return this;
+        }
+
+        public Builder obfuscate(Nullable<Boolean> obfuscate) {
+            if (obfuscate.isNull()) {
+                this.obfuscate = null;
+            } else if (obfuscate.isEmpty()) {
+                this.obfuscate = Optional.empty();
+            } else {
+                this.obfuscate = Optional.of(obfuscate.get());
+            }
             return this;
         }
 
         public FieldConfiguration build() {
             return new FieldConfiguration(enabled, id, obfuscate, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

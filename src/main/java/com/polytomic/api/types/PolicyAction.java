@@ -5,20 +5,24 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PolicyAction.Builder.class)
 public final class PolicyAction {
     private final String action;
@@ -38,8 +42,17 @@ public final class PolicyAction {
         return action;
     }
 
-    @JsonProperty("role_ids")
+    @JsonIgnore
     public Optional<List<String>> getRoleIds() {
+        if (roleIds == null) {
+            return Optional.empty();
+        }
+        return roleIds;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("role_ids")
+    private Optional<List<String>> _getRoleIds() {
         return roleIds;
     }
 
@@ -73,7 +86,7 @@ public final class PolicyAction {
     }
 
     public interface ActionStage {
-        _FinalStage action(String action);
+        _FinalStage action(@NotNull String action);
 
         Builder from(PolicyAction other);
     }
@@ -81,9 +94,15 @@ public final class PolicyAction {
     public interface _FinalStage {
         PolicyAction build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage roleIds(Optional<List<String>> roleIds);
 
         _FinalStage roleIds(List<String> roleIds);
+
+        _FinalStage roleIds(Nullable<List<String>> roleIds);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -106,14 +125,26 @@ public final class PolicyAction {
 
         @java.lang.Override
         @JsonSetter("action")
-        public _FinalStage action(String action) {
+        public _FinalStage action(@NotNull String action) {
             this.action = action;
             return this;
         }
 
         @java.lang.Override
+        public _FinalStage roleIds(Nullable<List<String>> roleIds) {
+            if (roleIds.isNull()) {
+                this.roleIds = null;
+            } else if (roleIds.isEmpty()) {
+                this.roleIds = Optional.empty();
+            } else {
+                this.roleIds = Optional.of(roleIds.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage roleIds(List<String> roleIds) {
-            this.roleIds = Optional.of(roleIds);
+            this.roleIds = Optional.ofNullable(roleIds);
             return this;
         }
 
@@ -127,6 +158,18 @@ public final class PolicyAction {
         @java.lang.Override
         public PolicyAction build() {
             return new PolicyAction(action, roleIds, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

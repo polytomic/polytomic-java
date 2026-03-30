@@ -5,12 +5,15 @@ package com.polytomic.api.resources.bulksync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.resources.bulksync.types.V2UpdateBulkSyncRequestSchemasItem;
 import com.polytomic.api.types.BulkDiscover;
@@ -24,8 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateBulkSyncRequest.Builder.class)
 public final class UpdateBulkSyncRequest {
     private final Optional<Boolean> active;
@@ -111,31 +115,46 @@ public final class UpdateBulkSyncRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("active")
+    @JsonIgnore
     public Optional<Boolean> getActive() {
+        if (active == null) {
+            return Optional.empty();
+        }
         return active;
     }
 
-    @JsonProperty("automatically_add_new_fields")
+    @JsonIgnore
     public Optional<BulkDiscover> getAutomaticallyAddNewFields() {
+        if (automaticallyAddNewFields == null) {
+            return Optional.empty();
+        }
         return automaticallyAddNewFields;
     }
 
-    @JsonProperty("automatically_add_new_objects")
+    @JsonIgnore
     public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
+        if (automaticallyAddNewObjects == null) {
+            return Optional.empty();
+        }
         return automaticallyAddNewObjects;
     }
 
     /**
      * @return Override the default concurrency limit for this sync.
      */
-    @JsonProperty("concurrency_limit")
+    @JsonIgnore
     public Optional<Integer> getConcurrencyLimit() {
+        if (concurrencyLimit == null) {
+            return Optional.empty();
+        }
         return concurrencyLimit;
     }
 
-    @JsonProperty("data_cutoff_timestamp")
+    @JsonIgnore
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        if (dataCutoffTimestamp == null) {
+            return Optional.empty();
+        }
         return dataCutoffTimestamp;
     }
 
@@ -149,21 +168,30 @@ public final class UpdateBulkSyncRequest {
         return destinationConnectionId;
     }
 
-    @JsonProperty("disable_record_timestamps")
+    @JsonIgnore
     public Optional<Boolean> getDisableRecordTimestamps() {
+        if (disableRecordTimestamps == null) {
+            return Optional.empty();
+        }
         return disableRecordTimestamps;
     }
 
     /**
      * @return DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead
      */
-    @JsonProperty("discover")
+    @JsonIgnore
     public Optional<Boolean> getDiscover() {
+        if (discover == null) {
+            return Optional.empty();
+        }
         return discover;
     }
 
-    @JsonProperty("mode")
+    @JsonIgnore
     public Optional<BulkSyncMode> getMode() {
+        if (mode == null) {
+            return Optional.empty();
+        }
         return mode;
     }
 
@@ -172,26 +200,38 @@ public final class UpdateBulkSyncRequest {
         return name;
     }
 
-    @JsonProperty("normalize_names")
+    @JsonIgnore
     public Optional<BulkNormalizeNames> getNormalizeNames() {
+        if (normalizeNames == null) {
+            return Optional.empty();
+        }
         return normalizeNames;
     }
 
-    @JsonProperty("organization_id")
+    @JsonIgnore
     public Optional<String> getOrganizationId() {
+        if (organizationId == null) {
+            return Optional.empty();
+        }
         return organizationId;
     }
 
-    @JsonProperty("policies")
+    @JsonIgnore
     public Optional<List<String>> getPolicies() {
+        if (policies == null) {
+            return Optional.empty();
+        }
         return policies;
     }
 
     /**
      * @return Override the default resync concurrency limit for this sync.
      */
-    @JsonProperty("resync_concurrency_limit")
+    @JsonIgnore
     public Optional<Integer> getResyncConcurrencyLimit() {
+        if (resyncConcurrencyLimit == null) {
+            return Optional.empty();
+        }
         return resyncConcurrencyLimit;
     }
 
@@ -203,19 +243,109 @@ public final class UpdateBulkSyncRequest {
     /**
      * @return List of schemas to sync; if omitted, all schemas will be selected for syncing.
      */
-    @JsonProperty("schemas")
+    @JsonIgnore
     public Optional<List<V2UpdateBulkSyncRequestSchemasItem>> getSchemas() {
+        if (schemas == null) {
+            return Optional.empty();
+        }
         return schemas;
     }
 
-    @JsonProperty("source_configuration")
+    @JsonIgnore
     public Optional<Map<String, Object>> getSourceConfiguration() {
+        if (sourceConfiguration == null) {
+            return Optional.empty();
+        }
         return sourceConfiguration;
     }
 
     @JsonProperty("source_connection_id")
     public String getSourceConnectionId() {
         return sourceConnectionId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("active")
+    private Optional<Boolean> _getActive() {
+        return active;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("automatically_add_new_fields")
+    private Optional<BulkDiscover> _getAutomaticallyAddNewFields() {
+        return automaticallyAddNewFields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("automatically_add_new_objects")
+    private Optional<BulkDiscover> _getAutomaticallyAddNewObjects() {
+        return automaticallyAddNewObjects;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("concurrency_limit")
+    private Optional<Integer> _getConcurrencyLimit() {
+        return concurrencyLimit;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("data_cutoff_timestamp")
+    private Optional<OffsetDateTime> _getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("disable_record_timestamps")
+    private Optional<Boolean> _getDisableRecordTimestamps() {
+        return disableRecordTimestamps;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("discover")
+    private Optional<Boolean> _getDiscover() {
+        return discover;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("mode")
+    private Optional<BulkSyncMode> _getMode() {
+        return mode;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("normalize_names")
+    private Optional<BulkNormalizeNames> _getNormalizeNames() {
+        return normalizeNames;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("organization_id")
+    private Optional<String> _getOrganizationId() {
+        return organizationId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("policies")
+    private Optional<List<String>> _getPolicies() {
+        return policies;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("resync_concurrency_limit")
+    private Optional<Integer> _getResyncConcurrencyLimit() {
+        return resyncConcurrencyLimit;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("schemas")
+    private Optional<List<V2UpdateBulkSyncRequestSchemasItem>> _getSchemas() {
+        return schemas;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("source_configuration")
+    private Optional<Map<String, Object>> _getSourceConfiguration() {
+        return sourceConfiguration;
     }
 
     @java.lang.Override
@@ -285,45 +415,62 @@ public final class UpdateBulkSyncRequest {
     }
 
     public interface DestinationConnectionIdStage {
-        NameStage destinationConnectionId(String destinationConnectionId);
+        NameStage destinationConnectionId(@NotNull String destinationConnectionId);
 
         Builder from(UpdateBulkSyncRequest other);
     }
 
     public interface NameStage {
-        ScheduleStage name(String name);
+        ScheduleStage name(@NotNull String name);
     }
 
     public interface ScheduleStage {
-        SourceConnectionIdStage schedule(BulkSchedule schedule);
+        SourceConnectionIdStage schedule(@NotNull BulkSchedule schedule);
     }
 
     public interface SourceConnectionIdStage {
-        _FinalStage sourceConnectionId(String sourceConnectionId);
+        _FinalStage sourceConnectionId(@NotNull String sourceConnectionId);
     }
 
     public interface _FinalStage {
         UpdateBulkSyncRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage active(Optional<Boolean> active);
 
         _FinalStage active(Boolean active);
+
+        _FinalStage active(Nullable<Boolean> active);
 
         _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields);
 
         _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields);
 
+        _FinalStage automaticallyAddNewFields(Nullable<BulkDiscover> automaticallyAddNewFields);
+
         _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects);
 
         _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
 
+        _FinalStage automaticallyAddNewObjects(Nullable<BulkDiscover> automaticallyAddNewObjects);
+
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         */
         _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit);
 
         _FinalStage concurrencyLimit(Integer concurrencyLimit);
 
+        _FinalStage concurrencyLimit(Nullable<Integer> concurrencyLimit);
+
         _FinalStage dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp);
 
         _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp);
+
+        _FinalStage dataCutoffTimestamp(Nullable<OffsetDateTime> dataCutoffTimestamp);
 
         _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration);
 
@@ -335,37 +482,64 @@ public final class UpdateBulkSyncRequest {
 
         _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps);
 
+        _FinalStage disableRecordTimestamps(Nullable<Boolean> disableRecordTimestamps);
+
+        /**
+         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+         */
         _FinalStage discover(Optional<Boolean> discover);
 
         _FinalStage discover(Boolean discover);
+
+        _FinalStage discover(Nullable<Boolean> discover);
 
         _FinalStage mode(Optional<BulkSyncMode> mode);
 
         _FinalStage mode(BulkSyncMode mode);
 
+        _FinalStage mode(Nullable<BulkSyncMode> mode);
+
         _FinalStage normalizeNames(Optional<BulkNormalizeNames> normalizeNames);
 
         _FinalStage normalizeNames(BulkNormalizeNames normalizeNames);
+
+        _FinalStage normalizeNames(Nullable<BulkNormalizeNames> normalizeNames);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
+        _FinalStage organizationId(Nullable<String> organizationId);
+
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
 
+        _FinalStage policies(Nullable<List<String>> policies);
+
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         */
         _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit);
 
         _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit);
 
+        _FinalStage resyncConcurrencyLimit(Nullable<Integer> resyncConcurrencyLimit);
+
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         */
         _FinalStage schemas(Optional<List<V2UpdateBulkSyncRequestSchemasItem>> schemas);
 
         _FinalStage schemas(List<V2UpdateBulkSyncRequestSchemasItem> schemas);
 
+        _FinalStage schemas(Nullable<List<V2UpdateBulkSyncRequestSchemasItem>> schemas);
+
         _FinalStage sourceConfiguration(Optional<Map<String, Object>> sourceConfiguration);
 
         _FinalStage sourceConfiguration(Map<String, Object> sourceConfiguration);
+
+        _FinalStage sourceConfiguration(Nullable<Map<String, Object>> sourceConfiguration);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -440,35 +614,47 @@ public final class UpdateBulkSyncRequest {
 
         @java.lang.Override
         @JsonSetter("destination_connection_id")
-        public NameStage destinationConnectionId(String destinationConnectionId) {
+        public NameStage destinationConnectionId(@NotNull String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("name")
-        public ScheduleStage name(String name) {
+        public ScheduleStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("schedule")
-        public SourceConnectionIdStage schedule(BulkSchedule schedule) {
+        public SourceConnectionIdStage schedule(@NotNull BulkSchedule schedule) {
             this.schedule = schedule;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("source_connection_id")
-        public _FinalStage sourceConnectionId(String sourceConnectionId) {
+        public _FinalStage sourceConnectionId(@NotNull String sourceConnectionId) {
             this.sourceConnectionId = sourceConnectionId;
             return this;
         }
 
         @java.lang.Override
+        public _FinalStage sourceConfiguration(Nullable<Map<String, Object>> sourceConfiguration) {
+            if (sourceConfiguration.isNull()) {
+                this.sourceConfiguration = null;
+            } else if (sourceConfiguration.isEmpty()) {
+                this.sourceConfiguration = Optional.empty();
+            } else {
+                this.sourceConfiguration = Optional.of(sourceConfiguration.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage sourceConfiguration(Map<String, Object> sourceConfiguration) {
-            this.sourceConfiguration = Optional.of(sourceConfiguration);
+            this.sourceConfiguration = Optional.ofNullable(sourceConfiguration);
             return this;
         }
 
@@ -484,11 +670,30 @@ public final class UpdateBulkSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage schemas(List<V2UpdateBulkSyncRequestSchemasItem> schemas) {
-            this.schemas = Optional.of(schemas);
+        public _FinalStage schemas(Nullable<List<V2UpdateBulkSyncRequestSchemasItem>> schemas) {
+            if (schemas.isNull()) {
+                this.schemas = null;
+            } else if (schemas.isEmpty()) {
+                this.schemas = Optional.empty();
+            } else {
+                this.schemas = Optional.of(schemas.get());
+            }
             return this;
         }
 
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage schemas(List<V2UpdateBulkSyncRequestSchemasItem> schemas) {
+            this.schemas = Optional.ofNullable(schemas);
+            return this;
+        }
+
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public _FinalStage schemas(Optional<List<V2UpdateBulkSyncRequestSchemasItem>> schemas) {
@@ -501,11 +706,30 @@ public final class UpdateBulkSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit) {
-            this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit);
+        public _FinalStage resyncConcurrencyLimit(Nullable<Integer> resyncConcurrencyLimit) {
+            if (resyncConcurrencyLimit.isNull()) {
+                this.resyncConcurrencyLimit = null;
+            } else if (resyncConcurrencyLimit.isEmpty()) {
+                this.resyncConcurrencyLimit = Optional.empty();
+            } else {
+                this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit.get());
+            }
             return this;
         }
 
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit) {
+            this.resyncConcurrencyLimit = Optional.ofNullable(resyncConcurrencyLimit);
+            return this;
+        }
+
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "resync_concurrency_limit", nulls = Nulls.SKIP)
         public _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit) {
@@ -514,8 +738,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage policies(Nullable<List<String>> policies) {
+            if (policies.isNull()) {
+                this.policies = null;
+            } else if (policies.isEmpty()) {
+                this.policies = Optional.empty();
+            } else {
+                this.policies = Optional.of(policies.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -527,8 +763,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage organizationId(Nullable<String> organizationId) {
+            if (organizationId.isNull()) {
+                this.organizationId = null;
+            } else if (organizationId.isEmpty()) {
+                this.organizationId = Optional.empty();
+            } else {
+                this.organizationId = Optional.of(organizationId.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -540,8 +788,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage normalizeNames(Nullable<BulkNormalizeNames> normalizeNames) {
+            if (normalizeNames.isNull()) {
+                this.normalizeNames = null;
+            } else if (normalizeNames.isEmpty()) {
+                this.normalizeNames = Optional.empty();
+            } else {
+                this.normalizeNames = Optional.of(normalizeNames.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage normalizeNames(BulkNormalizeNames normalizeNames) {
-            this.normalizeNames = Optional.of(normalizeNames);
+            this.normalizeNames = Optional.ofNullable(normalizeNames);
             return this;
         }
 
@@ -553,8 +813,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage mode(Nullable<BulkSyncMode> mode) {
+            if (mode.isNull()) {
+                this.mode = null;
+            } else if (mode.isEmpty()) {
+                this.mode = Optional.empty();
+            } else {
+                this.mode = Optional.of(mode.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage mode(BulkSyncMode mode) {
-            this.mode = Optional.of(mode);
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
@@ -570,11 +842,30 @@ public final class UpdateBulkSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage discover(Boolean discover) {
-            this.discover = Optional.of(discover);
+        public _FinalStage discover(Nullable<Boolean> discover) {
+            if (discover.isNull()) {
+                this.discover = null;
+            } else if (discover.isEmpty()) {
+                this.discover = Optional.empty();
+            } else {
+                this.discover = Optional.of(discover.get());
+            }
             return this;
         }
 
+        /**
+         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage discover(Boolean discover) {
+            this.discover = Optional.ofNullable(discover);
+            return this;
+        }
+
+        /**
+         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "discover", nulls = Nulls.SKIP)
         public _FinalStage discover(Optional<Boolean> discover) {
@@ -583,8 +874,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage disableRecordTimestamps(Nullable<Boolean> disableRecordTimestamps) {
+            if (disableRecordTimestamps.isNull()) {
+                this.disableRecordTimestamps = null;
+            } else if (disableRecordTimestamps.isEmpty()) {
+                this.disableRecordTimestamps = Optional.empty();
+            } else {
+                this.disableRecordTimestamps = Optional.of(disableRecordTimestamps.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps) {
-            this.disableRecordTimestamps = Optional.of(disableRecordTimestamps);
+            this.disableRecordTimestamps = Optional.ofNullable(disableRecordTimestamps);
             return this;
         }
 
@@ -603,7 +906,9 @@ public final class UpdateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage putAllDestinationConfiguration(Map<String, Object> destinationConfiguration) {
-            this.destinationConfiguration.putAll(destinationConfiguration);
+            if (destinationConfiguration != null) {
+                this.destinationConfiguration.putAll(destinationConfiguration);
+            }
             return this;
         }
 
@@ -611,13 +916,27 @@ public final class UpdateBulkSyncRequest {
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
         public _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration) {
             this.destinationConfiguration.clear();
-            this.destinationConfiguration.putAll(destinationConfiguration);
+            if (destinationConfiguration != null) {
+                this.destinationConfiguration.putAll(destinationConfiguration);
+            }
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage dataCutoffTimestamp(Nullable<OffsetDateTime> dataCutoffTimestamp) {
+            if (dataCutoffTimestamp.isNull()) {
+                this.dataCutoffTimestamp = null;
+            } else if (dataCutoffTimestamp.isEmpty()) {
+                this.dataCutoffTimestamp = Optional.empty();
+            } else {
+                this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp.get());
+            }
             return this;
         }
 
         @java.lang.Override
         public _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
             return this;
         }
 
@@ -633,11 +952,30 @@ public final class UpdateBulkSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage concurrencyLimit(Integer concurrencyLimit) {
-            this.concurrencyLimit = Optional.of(concurrencyLimit);
+        public _FinalStage concurrencyLimit(Nullable<Integer> concurrencyLimit) {
+            if (concurrencyLimit.isNull()) {
+                this.concurrencyLimit = null;
+            } else if (concurrencyLimit.isEmpty()) {
+                this.concurrencyLimit = Optional.empty();
+            } else {
+                this.concurrencyLimit = Optional.of(concurrencyLimit.get());
+            }
             return this;
         }
 
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage concurrencyLimit(Integer concurrencyLimit) {
+            this.concurrencyLimit = Optional.ofNullable(concurrencyLimit);
+            return this;
+        }
+
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "concurrency_limit", nulls = Nulls.SKIP)
         public _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit) {
@@ -646,8 +984,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage automaticallyAddNewObjects(Nullable<BulkDiscover> automaticallyAddNewObjects) {
+            if (automaticallyAddNewObjects.isNull()) {
+                this.automaticallyAddNewObjects = null;
+            } else if (automaticallyAddNewObjects.isEmpty()) {
+                this.automaticallyAddNewObjects = Optional.empty();
+            } else {
+                this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
-            this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
+            this.automaticallyAddNewObjects = Optional.ofNullable(automaticallyAddNewObjects);
             return this;
         }
 
@@ -659,8 +1009,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage automaticallyAddNewFields(Nullable<BulkDiscover> automaticallyAddNewFields) {
+            if (automaticallyAddNewFields.isNull()) {
+                this.automaticallyAddNewFields = null;
+            } else if (automaticallyAddNewFields.isEmpty()) {
+                this.automaticallyAddNewFields = Optional.empty();
+            } else {
+                this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
-            this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
+            this.automaticallyAddNewFields = Optional.ofNullable(automaticallyAddNewFields);
             return this;
         }
 
@@ -672,8 +1034,20 @@ public final class UpdateBulkSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage active(Nullable<Boolean> active) {
+            if (active.isNull()) {
+                this.active = null;
+            } else if (active.isEmpty()) {
+                this.active = Optional.empty();
+            } else {
+                this.active = Optional.of(active.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage active(Boolean active) {
-            this.active = Optional.of(active);
+            this.active = Optional.ofNullable(active);
             return this;
         }
 
@@ -707,6 +1081,18 @@ public final class UpdateBulkSyncRequest {
                     sourceConfiguration,
                     sourceConnectionId,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

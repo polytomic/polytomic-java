@@ -5,12 +5,15 @@ package com.polytomic.api.resources.modelsync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = StartModelSyncRequest.Builder.class)
 public final class StartModelSyncRequest {
     private final Optional<List<String>> identities;
@@ -40,8 +43,11 @@ public final class StartModelSyncRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("identities")
+    @JsonIgnore
     public Optional<List<String>> getIdentities() {
+        if (identities == null) {
+            return Optional.empty();
+        }
         return identities;
     }
 
@@ -53,6 +59,12 @@ public final class StartModelSyncRequest {
     @JsonProperty("test")
     public Optional<Boolean> getTest() {
         return test;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("identities")
+    private Optional<List<String>> _getIdentities() {
+        return identities;
     }
 
     @java.lang.Override
@@ -111,7 +123,18 @@ public final class StartModelSyncRequest {
         }
 
         public Builder identities(List<String> identities) {
-            this.identities = Optional.of(identities);
+            this.identities = Optional.ofNullable(identities);
+            return this;
+        }
+
+        public Builder identities(Nullable<List<String>> identities) {
+            if (identities.isNull()) {
+                this.identities = null;
+            } else if (identities.isEmpty()) {
+                this.identities = Optional.empty();
+            } else {
+                this.identities = Optional.of(identities.get());
+            }
             return this;
         }
 
@@ -122,7 +145,7 @@ public final class StartModelSyncRequest {
         }
 
         public Builder resync(Boolean resync) {
-            this.resync = Optional.of(resync);
+            this.resync = Optional.ofNullable(resync);
             return this;
         }
 
@@ -133,12 +156,22 @@ public final class StartModelSyncRequest {
         }
 
         public Builder test(Boolean test) {
-            this.test = Optional.of(test);
+            this.test = Optional.ofNullable(test);
             return this;
         }
 
         public StartModelSyncRequest build() {
             return new StartModelSyncRequest(identities, resync, test, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

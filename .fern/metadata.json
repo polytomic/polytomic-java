@@ -1,0 +1,12 @@
+{
+  "cliVersion": "4.48.1",
+  "generatorName": "fernapi/fern-java-sdk",
+  "generatorVersion": "4.0.9",
+  "generatorConfig": {
+    "client-class-name": "Polytomic",
+    "disable-required-property-builder-checks": true,
+    "enable-forward-compatible-enums": false
+  },
+  "originGitCommit": "913cf94029db4c2f1775516f624f18b82067e333",
+  "sdkVersion": "1.16.2"
+}

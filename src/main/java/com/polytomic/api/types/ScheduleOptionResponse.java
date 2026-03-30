@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ScheduleOptionResponse.Builder.class)
 public final class ScheduleOptionResponse {
     private final Optional<List<ScheduleScheduleOption>> scheduleOptions;
@@ -31,8 +34,17 @@ public final class ScheduleOptionResponse {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("schedule_options")
+    @JsonIgnore
     public Optional<List<ScheduleScheduleOption>> getScheduleOptions() {
+        if (scheduleOptions == null) {
+            return Optional.empty();
+        }
+        return scheduleOptions;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("schedule_options")
+    private Optional<List<ScheduleScheduleOption>> _getScheduleOptions() {
         return scheduleOptions;
     }
 
@@ -86,12 +98,33 @@ public final class ScheduleOptionResponse {
         }
 
         public Builder scheduleOptions(List<ScheduleScheduleOption> scheduleOptions) {
-            this.scheduleOptions = Optional.of(scheduleOptions);
+            this.scheduleOptions = Optional.ofNullable(scheduleOptions);
+            return this;
+        }
+
+        public Builder scheduleOptions(Nullable<List<ScheduleScheduleOption>> scheduleOptions) {
+            if (scheduleOptions.isNull()) {
+                this.scheduleOptions = null;
+            } else if (scheduleOptions.isEmpty()) {
+                this.scheduleOptions = Optional.empty();
+            } else {
+                this.scheduleOptions = Optional.of(scheduleOptions.get());
+            }
             return this;
         }
 
         public ScheduleOptionResponse build() {
             return new ScheduleOptionResponse(scheduleOptions, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

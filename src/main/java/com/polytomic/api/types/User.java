@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = User.Builder.class)
 public final class User {
     private final Optional<String> email;
@@ -68,8 +71,17 @@ public final class User {
         return role;
     }
 
-    @JsonProperty("role_ids")
+    @JsonIgnore
     public Optional<List<String>> getRoleIds() {
+        if (roleIds == null) {
+            return Optional.empty();
+        }
+        return roleIds;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("role_ids")
+    private Optional<List<String>> _getRoleIds() {
         return roleIds;
     }
 
@@ -139,7 +151,7 @@ public final class User {
         }
 
         public Builder email(String email) {
-            this.email = Optional.of(email);
+            this.email = Optional.ofNullable(email);
             return this;
         }
 
@@ -150,7 +162,7 @@ public final class User {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -161,7 +173,7 @@ public final class User {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -172,7 +184,7 @@ public final class User {
         }
 
         public Builder role(String role) {
-            this.role = Optional.of(role);
+            this.role = Optional.ofNullable(role);
             return this;
         }
 
@@ -183,12 +195,33 @@ public final class User {
         }
 
         public Builder roleIds(List<String> roleIds) {
-            this.roleIds = Optional.of(roleIds);
+            this.roleIds = Optional.ofNullable(roleIds);
+            return this;
+        }
+
+        public Builder roleIds(Nullable<List<String>> roleIds) {
+            if (roleIds.isNull()) {
+                this.roleIds = null;
+            } else if (roleIds.isEmpty()) {
+                this.roleIds = Optional.empty();
+            } else {
+                this.roleIds = Optional.of(roleIds.get());
+            }
             return this;
         }
 
         public User build() {
             return new User(email, id, organizationId, role, roleIds, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -5,9 +5,9 @@ package com.polytomic.api.resources.modelsync.targets.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetsGetTargetFieldsRequest.Builder.class)
 public final class TargetsGetTargetFieldsRequest {
     private final String target;
@@ -33,12 +34,12 @@ public final class TargetsGetTargetFieldsRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("target")
+    @JsonIgnore
     public String getTarget() {
         return target;
     }
 
-    @JsonProperty("refresh")
+    @JsonIgnore
     public Optional<Boolean> getRefresh() {
         return refresh;
     }
@@ -73,13 +74,17 @@ public final class TargetsGetTargetFieldsRequest {
     }
 
     public interface TargetStage {
-        _FinalStage target(String target);
+        _FinalStage target(@NotNull String target);
 
         Builder from(TargetsGetTargetFieldsRequest other);
     }
 
     public interface _FinalStage {
         TargetsGetTargetFieldsRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage refresh(Optional<Boolean> refresh);
 
@@ -106,14 +111,14 @@ public final class TargetsGetTargetFieldsRequest {
 
         @java.lang.Override
         @JsonSetter("target")
-        public _FinalStage target(String target) {
+        public _FinalStage target(@NotNull String target) {
             this.target = target;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage refresh(Boolean refresh) {
-            this.refresh = Optional.of(refresh);
+            this.refresh = Optional.ofNullable(refresh);
             return this;
         }
 
@@ -127,6 +132,18 @@ public final class TargetsGetTargetFieldsRequest {
         @java.lang.Override
         public TargetsGetTargetFieldsRequest build() {
             return new TargetsGetTargetFieldsRequest(target, refresh, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

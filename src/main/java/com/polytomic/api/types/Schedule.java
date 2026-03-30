@@ -5,19 +5,22 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Schedule.Builder.class)
 public final class Schedule {
     private final Optional<String> connectionId;
@@ -72,13 +75,19 @@ public final class Schedule {
         return connectionId;
     }
 
-    @JsonProperty("day_of_month")
+    @JsonIgnore
     public Optional<String> getDayOfMonth() {
+        if (dayOfMonth == null) {
+            return Optional.empty();
+        }
         return dayOfMonth;
     }
 
-    @JsonProperty("day_of_week")
+    @JsonIgnore
     public Optional<String> getDayOfWeek() {
+        if (dayOfWeek == null) {
+            return Optional.empty();
+        }
         return dayOfWeek;
     }
 
@@ -87,23 +96,35 @@ public final class Schedule {
         return frequency;
     }
 
-    @JsonProperty("hour")
+    @JsonIgnore
     public Optional<String> getHour() {
+        if (hour == null) {
+            return Optional.empty();
+        }
         return hour;
     }
 
-    @JsonProperty("job_id")
+    @JsonIgnore
     public Optional<Integer> getJobId() {
+        if (jobId == null) {
+            return Optional.empty();
+        }
         return jobId;
     }
 
-    @JsonProperty("minute")
+    @JsonIgnore
     public Optional<String> getMinute() {
+        if (minute == null) {
+            return Optional.empty();
+        }
         return minute;
     }
 
-    @JsonProperty("month")
+    @JsonIgnore
     public Optional<String> getMonth() {
+        if (month == null) {
+            return Optional.empty();
+        }
         return month;
     }
 
@@ -115,8 +136,53 @@ public final class Schedule {
     /**
      * @return If true, the sync will only run if the dependent syncs completed successfully.
      */
-    @JsonProperty("run_after_success_only")
+    @JsonIgnore
     public Optional<Boolean> getRunAfterSuccessOnly() {
+        if (runAfterSuccessOnly == null) {
+            return Optional.empty();
+        }
+        return runAfterSuccessOnly;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("day_of_month")
+    private Optional<String> _getDayOfMonth() {
+        return dayOfMonth;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("day_of_week")
+    private Optional<String> _getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("hour")
+    private Optional<String> _getHour() {
+        return hour;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("job_id")
+    private Optional<Integer> _getJobId() {
+        return jobId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("minute")
+    private Optional<String> _getMinute() {
+        return minute;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("month")
+    private Optional<String> _getMonth() {
+        return month;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("run_after_success_only")
+    private Optional<Boolean> _getRunAfterSuccessOnly() {
         return runAfterSuccessOnly;
     }
 
@@ -216,7 +282,7 @@ public final class Schedule {
         }
 
         public Builder connectionId(String connectionId) {
-            this.connectionId = Optional.of(connectionId);
+            this.connectionId = Optional.ofNullable(connectionId);
             return this;
         }
 
@@ -227,7 +293,18 @@ public final class Schedule {
         }
 
         public Builder dayOfMonth(String dayOfMonth) {
-            this.dayOfMonth = Optional.of(dayOfMonth);
+            this.dayOfMonth = Optional.ofNullable(dayOfMonth);
+            return this;
+        }
+
+        public Builder dayOfMonth(Nullable<String> dayOfMonth) {
+            if (dayOfMonth.isNull()) {
+                this.dayOfMonth = null;
+            } else if (dayOfMonth.isEmpty()) {
+                this.dayOfMonth = Optional.empty();
+            } else {
+                this.dayOfMonth = Optional.of(dayOfMonth.get());
+            }
             return this;
         }
 
@@ -238,7 +315,18 @@ public final class Schedule {
         }
 
         public Builder dayOfWeek(String dayOfWeek) {
-            this.dayOfWeek = Optional.of(dayOfWeek);
+            this.dayOfWeek = Optional.ofNullable(dayOfWeek);
+            return this;
+        }
+
+        public Builder dayOfWeek(Nullable<String> dayOfWeek) {
+            if (dayOfWeek.isNull()) {
+                this.dayOfWeek = null;
+            } else if (dayOfWeek.isEmpty()) {
+                this.dayOfWeek = Optional.empty();
+            } else {
+                this.dayOfWeek = Optional.of(dayOfWeek.get());
+            }
             return this;
         }
 
@@ -249,7 +337,7 @@ public final class Schedule {
         }
 
         public Builder frequency(ScheduleFrequency frequency) {
-            this.frequency = Optional.of(frequency);
+            this.frequency = Optional.ofNullable(frequency);
             return this;
         }
 
@@ -260,7 +348,18 @@ public final class Schedule {
         }
 
         public Builder hour(String hour) {
-            this.hour = Optional.of(hour);
+            this.hour = Optional.ofNullable(hour);
+            return this;
+        }
+
+        public Builder hour(Nullable<String> hour) {
+            if (hour.isNull()) {
+                this.hour = null;
+            } else if (hour.isEmpty()) {
+                this.hour = Optional.empty();
+            } else {
+                this.hour = Optional.of(hour.get());
+            }
             return this;
         }
 
@@ -271,7 +370,18 @@ public final class Schedule {
         }
 
         public Builder jobId(Integer jobId) {
-            this.jobId = Optional.of(jobId);
+            this.jobId = Optional.ofNullable(jobId);
+            return this;
+        }
+
+        public Builder jobId(Nullable<Integer> jobId) {
+            if (jobId.isNull()) {
+                this.jobId = null;
+            } else if (jobId.isEmpty()) {
+                this.jobId = Optional.empty();
+            } else {
+                this.jobId = Optional.of(jobId.get());
+            }
             return this;
         }
 
@@ -282,7 +392,18 @@ public final class Schedule {
         }
 
         public Builder minute(String minute) {
-            this.minute = Optional.of(minute);
+            this.minute = Optional.ofNullable(minute);
+            return this;
+        }
+
+        public Builder minute(Nullable<String> minute) {
+            if (minute.isNull()) {
+                this.minute = null;
+            } else if (minute.isEmpty()) {
+                this.minute = Optional.empty();
+            } else {
+                this.minute = Optional.of(minute.get());
+            }
             return this;
         }
 
@@ -293,7 +414,18 @@ public final class Schedule {
         }
 
         public Builder month(String month) {
-            this.month = Optional.of(month);
+            this.month = Optional.ofNullable(month);
+            return this;
+        }
+
+        public Builder month(Nullable<String> month) {
+            if (month.isNull()) {
+                this.month = null;
+            } else if (month.isEmpty()) {
+                this.month = Optional.empty();
+            } else {
+                this.month = Optional.of(month.get());
+            }
             return this;
         }
 
@@ -304,10 +436,13 @@ public final class Schedule {
         }
 
         public Builder runAfter(RunAfter runAfter) {
-            this.runAfter = Optional.of(runAfter);
+            this.runAfter = Optional.ofNullable(runAfter);
             return this;
         }
 
+        /**
+         * <p>If true, the sync will only run if the dependent syncs completed successfully.</p>
+         */
         @JsonSetter(value = "run_after_success_only", nulls = Nulls.SKIP)
         public Builder runAfterSuccessOnly(Optional<Boolean> runAfterSuccessOnly) {
             this.runAfterSuccessOnly = runAfterSuccessOnly;
@@ -315,7 +450,18 @@ public final class Schedule {
         }
 
         public Builder runAfterSuccessOnly(Boolean runAfterSuccessOnly) {
-            this.runAfterSuccessOnly = Optional.of(runAfterSuccessOnly);
+            this.runAfterSuccessOnly = Optional.ofNullable(runAfterSuccessOnly);
+            return this;
+        }
+
+        public Builder runAfterSuccessOnly(Nullable<Boolean> runAfterSuccessOnly) {
+            if (runAfterSuccessOnly.isNull()) {
+                this.runAfterSuccessOnly = null;
+            } else if (runAfterSuccessOnly.isEmpty()) {
+                this.runAfterSuccessOnly = Optional.empty();
+            } else {
+                this.runAfterSuccessOnly = Optional.of(runAfterSuccessOnly.get());
+            }
             return this;
         }
 
@@ -332,6 +478,16 @@ public final class Schedule {
                     runAfter,
                     runAfterSuccessOnly,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

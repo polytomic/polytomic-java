@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Mode.Builder.class)
 public final class Mode {
     private final Optional<String> description;
@@ -157,7 +157,7 @@ public final class Mode {
         }
 
         public Builder description(String description) {
-            this.description = Optional.of(description);
+            this.description = Optional.ofNullable(description);
             return this;
         }
 
@@ -168,7 +168,7 @@ public final class Mode {
         }
 
         public Builder label(String label) {
-            this.label = Optional.of(label);
+            this.label = Optional.ofNullable(label);
             return this;
         }
 
@@ -179,7 +179,7 @@ public final class Mode {
         }
 
         public Builder mode(String mode) {
-            this.mode = Optional.of(mode);
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
@@ -190,7 +190,7 @@ public final class Mode {
         }
 
         public Builder requiresIdentity(Boolean requiresIdentity) {
-            this.requiresIdentity = Optional.of(requiresIdentity);
+            this.requiresIdentity = Optional.ofNullable(requiresIdentity);
             return this;
         }
 
@@ -201,7 +201,7 @@ public final class Mode {
         }
 
         public Builder supportsFieldSyncMode(Boolean supportsFieldSyncMode) {
-            this.supportsFieldSyncMode = Optional.of(supportsFieldSyncMode);
+            this.supportsFieldSyncMode = Optional.ofNullable(supportsFieldSyncMode);
             return this;
         }
 
@@ -212,7 +212,7 @@ public final class Mode {
         }
 
         public Builder supportsTargetFilters(Boolean supportsTargetFilters) {
-            this.supportsTargetFilters = Optional.of(supportsTargetFilters);
+            this.supportsTargetFilters = Optional.ofNullable(supportsTargetFilters);
             return this;
         }
 
@@ -225,6 +225,16 @@ public final class Mode {
                     supportsFieldSyncMode,
                     supportsTargetFilters,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

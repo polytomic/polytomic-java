@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionTypeSchema.Builder.class)
 public final class ConnectionTypeSchema {
     private final Optional<String> id;
@@ -59,8 +62,17 @@ public final class ConnectionTypeSchema {
         return name;
     }
 
-    @JsonProperty("operations")
+    @JsonIgnore
     public Optional<List<String>> getOperations() {
+        if (operations == null) {
+            return Optional.empty();
+        }
+        return operations;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("operations")
+    private Optional<List<String>> _getOperations() {
         return operations;
     }
 
@@ -126,7 +138,7 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -137,7 +149,7 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder logoUrl(String logoUrl) {
-            this.logoUrl = Optional.of(logoUrl);
+            this.logoUrl = Optional.ofNullable(logoUrl);
             return this;
         }
 
@@ -148,7 +160,7 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -159,12 +171,33 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder operations(List<String> operations) {
-            this.operations = Optional.of(operations);
+            this.operations = Optional.ofNullable(operations);
+            return this;
+        }
+
+        public Builder operations(Nullable<List<String>> operations) {
+            if (operations.isNull()) {
+                this.operations = null;
+            } else if (operations.isEmpty()) {
+                this.operations = Optional.empty();
+            } else {
+                this.operations = Optional.of(operations.get());
+            }
             return this;
         }
 
         public ConnectionTypeSchema build() {
             return new ConnectionTypeSchema(id, logoUrl, name, operations, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

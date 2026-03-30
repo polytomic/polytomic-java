@@ -3,11 +3,12 @@
  */
 package com.polytomic.api.resources.bulksync.executions;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsCancelRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsExportLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListStatusRequest;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
@@ -16,280 +17,128 @@ import com.polytomic.api.types.ListBulkSyncExecutionStatusEnvelope;
 import com.polytomic.api.types.ListBulkSyncExecutionsEnvelope;
 import com.polytomic.api.types.V4BulkSyncExecutionLogsEnvelope;
 import com.polytomic.api.types.V4ExportSyncLogsEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ExecutionsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawExecutionsClient rawClient;
+
     public ExecutionsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawExecutionsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawExecutionsClient withRawResponse() {
+        return this.rawClient;
     }
 
     public ListBulkSyncExecutionStatusEnvelope listStatus() {
-        return listStatus(ExecutionsListStatusRequest.builder().build());
+        return this.rawClient.listStatus().body();
+    }
+
+    public ListBulkSyncExecutionStatusEnvelope listStatus(RequestOptions requestOptions) {
+        return this.rawClient.listStatus(requestOptions).body();
     }
 
     public ListBulkSyncExecutionStatusEnvelope listStatus(ExecutionsListStatusRequest request) {
-        return listStatus(request, null);
+        return this.rawClient.listStatus(request).body();
     }
 
     public ListBulkSyncExecutionStatusEnvelope listStatus(
             ExecutionsListStatusRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs/status");
-        if (request.getAll().isPresent()) {
-            httpUrl.addQueryParameter("all", request.getAll().get().toString());
-        }
-        if (request.getActive().isPresent()) {
-            httpUrl.addQueryParameter("active", request.getActive().get().toString());
-        }
-        if (request.getSyncId().isPresent()) {
-            httpUrl.addQueryParameter("sync_id", request.getSyncId().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), ListBulkSyncExecutionStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.listStatus(request, requestOptions).body();
     }
 
     public ListBulkSyncExecutionsEnvelope list(String id) {
-        return list(id, ExecutionsListRequest.builder().build());
+        return this.rawClient.list(id).body();
+    }
+
+    public ListBulkSyncExecutionsEnvelope list(String id, RequestOptions requestOptions) {
+        return this.rawClient.list(id, requestOptions).body();
     }
 
     public ListBulkSyncExecutionsEnvelope list(String id, ExecutionsListRequest request) {
-        return list(id, request, null);
+        return this.rawClient.list(id, request).body();
     }
 
     public ListBulkSyncExecutionsEnvelope list(
             String id, ExecutionsListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions");
-        if (request.getPageToken().isPresent()) {
-            httpUrl.addQueryParameter("page_token", request.getPageToken().get());
-        }
-        if (request.getOnlyTerminal().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "only_terminal", request.getOnlyTerminal().get().toString());
-        }
-        if (request.getAscending().isPresent()) {
-            httpUrl.addQueryParameter("ascending", request.getAscending().get().toString());
-        }
-        if (request.getLimit().isPresent()) {
-            httpUrl.addQueryParameter("limit", request.getLimit().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListBulkSyncExecutionsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(id, request, requestOptions).body();
     }
 
     public BulkSyncExecutionEnvelope get(String id, String execId) {
-        return get(id, execId, null);
+        return this.rawClient.get(id, execId).body();
     }
 
     public BulkSyncExecutionEnvelope get(String id, String execId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions")
-                .addPathSegment(execId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncExecutionEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, execId, requestOptions).body();
+    }
+
+    public BulkSyncExecutionEnvelope get(String id, String execId, ExecutionsGetRequest request) {
+        return this.rawClient.get(id, execId, request).body();
+    }
+
+    public BulkSyncExecutionEnvelope get(
+            String id, String execId, ExecutionsGetRequest request, RequestOptions requestOptions) {
+        return this.rawClient.get(id, execId, request, requestOptions).body();
     }
 
     public CancelBulkSyncResponseEnvelope cancel(String id, String execId) {
-        return cancel(id, execId, null);
+        return this.rawClient.cancel(id, execId).body();
     }
 
     public CancelBulkSyncResponseEnvelope cancel(String id, String execId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions")
-                .addPathSegment(execId)
-                .addPathSegments("cancel")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CancelBulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.cancel(id, execId, requestOptions).body();
+    }
+
+    public CancelBulkSyncResponseEnvelope cancel(String id, String execId, ExecutionsCancelRequest request) {
+        return this.rawClient.cancel(id, execId, request).body();
+    }
+
+    public CancelBulkSyncResponseEnvelope cancel(
+            String id, String execId, ExecutionsCancelRequest request, RequestOptions requestOptions) {
+        return this.rawClient.cancel(id, execId, request, requestOptions).body();
     }
 
     public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId) {
-        return getLogs(syncId, executionId, null);
+        return this.rawClient.getLogs(syncId, executionId).body();
     }
 
     public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(executionId)
-                .addPathSegments("logs")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V4BulkSyncExecutionLogsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getLogs(syncId, executionId, requestOptions).body();
+    }
+
+    public V4BulkSyncExecutionLogsEnvelope getLogs(
+            String syncId, String executionId, ExecutionsGetLogsRequest request) {
+        return this.rawClient.getLogs(syncId, executionId, request).body();
+    }
+
+    public V4BulkSyncExecutionLogsEnvelope getLogs(
+            String syncId, String executionId, ExecutionsGetLogsRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .getLogs(syncId, executionId, request, requestOptions)
+                .body();
     }
 
     public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId) {
-        return exportLogs(
-                syncId, executionId, ExecutionsExportLogsRequest.builder().build());
+        return this.rawClient.exportLogs(syncId, executionId).body();
+    }
+
+    public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId, RequestOptions requestOptions) {
+        return this.rawClient.exportLogs(syncId, executionId, requestOptions).body();
     }
 
     public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId, ExecutionsExportLogsRequest request) {
-        return exportLogs(syncId, executionId, request, null);
+        return this.rawClient.exportLogs(syncId, executionId, request).body();
     }
 
     public V4ExportSyncLogsEnvelope exportLogs(
             String syncId, String executionId, ExecutionsExportLogsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(executionId)
-                .addPathSegments("logs/export");
-        if (request.getNotify().isPresent()) {
-            httpUrl.addQueryParameter("notify", request.getNotify().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), V4ExportSyncLogsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient
+                .exportLogs(syncId, executionId, request, requestOptions)
+                .body();
     }
 }

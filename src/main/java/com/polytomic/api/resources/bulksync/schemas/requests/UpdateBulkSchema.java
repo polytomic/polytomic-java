@@ -5,14 +5,17 @@ package com.polytomic.api.resources.bulksync.schemas.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.BulkFilter;
+import com.polytomic.api.types.BulkFilter2;
 import com.polytomic.api.types.UpdateBulkField;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -21,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateBulkSchema.Builder.class)
 public final class UpdateBulkSchema {
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
@@ -32,7 +35,7 @@ public final class UpdateBulkSchema {
 
     private final Optional<List<UpdateBulkField>> fields;
 
-    private final Optional<List<BulkFilter>> filters;
+    private final Optional<List<BulkFilter2>> filters;
 
     private final Optional<String> partitionKey;
 
@@ -47,7 +50,7 @@ public final class UpdateBulkSchema {
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
             Optional<List<UpdateBulkField>> fields,
-            Optional<List<BulkFilter>> filters,
+            Optional<List<BulkFilter2>> filters,
             Optional<String> partitionKey,
             Optional<String> trackingField,
             Optional<String> userOutputName,
@@ -63,8 +66,11 @@ public final class UpdateBulkSchema {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("data_cutoff_timestamp")
+    @JsonIgnore
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        if (dataCutoffTimestamp == null) {
+            return Optional.empty();
+        }
         return dataCutoffTimestamp;
     }
 
@@ -78,13 +84,19 @@ public final class UpdateBulkSchema {
         return enabled;
     }
 
-    @JsonProperty("fields")
+    @JsonIgnore
     public Optional<List<UpdateBulkField>> getFields() {
+        if (fields == null) {
+            return Optional.empty();
+        }
         return fields;
     }
 
-    @JsonProperty("filters")
-    public Optional<List<BulkFilter>> getFilters() {
+    @JsonIgnore
+    public Optional<List<BulkFilter2>> getFilters() {
+        if (filters == null) {
+            return Optional.empty();
+        }
         return filters;
     }
 
@@ -101,6 +113,24 @@ public final class UpdateBulkSchema {
     @JsonProperty("user_output_name")
     public Optional<String> getUserOutputName() {
         return userOutputName;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("data_cutoff_timestamp")
+    private Optional<OffsetDateTime> _getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("fields")
+    private Optional<List<UpdateBulkField>> _getFields() {
+        return fields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("filters")
+    private Optional<List<BulkFilter2>> _getFilters() {
+        return filters;
     }
 
     @java.lang.Override
@@ -157,7 +187,7 @@ public final class UpdateBulkSchema {
 
         private Optional<List<UpdateBulkField>> fields = Optional.empty();
 
-        private Optional<List<BulkFilter>> filters = Optional.empty();
+        private Optional<List<BulkFilter2>> filters = Optional.empty();
 
         private Optional<String> partitionKey = Optional.empty();
 
@@ -189,7 +219,18 @@ public final class UpdateBulkSchema {
         }
 
         public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
+            return this;
+        }
+
+        public Builder dataCutoffTimestamp(Nullable<OffsetDateTime> dataCutoffTimestamp) {
+            if (dataCutoffTimestamp.isNull()) {
+                this.dataCutoffTimestamp = null;
+            } else if (dataCutoffTimestamp.isEmpty()) {
+                this.dataCutoffTimestamp = Optional.empty();
+            } else {
+                this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp.get());
+            }
             return this;
         }
 
@@ -200,7 +241,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder disableDataCutoff(Boolean disableDataCutoff) {
-            this.disableDataCutoff = Optional.of(disableDataCutoff);
+            this.disableDataCutoff = Optional.ofNullable(disableDataCutoff);
             return this;
         }
 
@@ -211,7 +252,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
@@ -222,18 +263,40 @@ public final class UpdateBulkSchema {
         }
 
         public Builder fields(List<UpdateBulkField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
+            return this;
+        }
+
+        public Builder fields(Nullable<List<UpdateBulkField>> fields) {
+            if (fields.isNull()) {
+                this.fields = null;
+            } else if (fields.isEmpty()) {
+                this.fields = Optional.empty();
+            } else {
+                this.fields = Optional.of(fields.get());
+            }
             return this;
         }
 
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
-        public Builder filters(Optional<List<BulkFilter>> filters) {
+        public Builder filters(Optional<List<BulkFilter2>> filters) {
             this.filters = filters;
             return this;
         }
 
-        public Builder filters(List<BulkFilter> filters) {
-            this.filters = Optional.of(filters);
+        public Builder filters(List<BulkFilter2> filters) {
+            this.filters = Optional.ofNullable(filters);
+            return this;
+        }
+
+        public Builder filters(Nullable<List<BulkFilter2>> filters) {
+            if (filters.isNull()) {
+                this.filters = null;
+            } else if (filters.isEmpty()) {
+                this.filters = Optional.empty();
+            } else {
+                this.filters = Optional.of(filters.get());
+            }
             return this;
         }
 
@@ -244,7 +307,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder partitionKey(String partitionKey) {
-            this.partitionKey = Optional.of(partitionKey);
+            this.partitionKey = Optional.ofNullable(partitionKey);
             return this;
         }
 
@@ -255,7 +318,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder trackingField(String trackingField) {
-            this.trackingField = Optional.of(trackingField);
+            this.trackingField = Optional.ofNullable(trackingField);
             return this;
         }
 
@@ -266,7 +329,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder userOutputName(String userOutputName) {
-            this.userOutputName = Optional.of(userOutputName);
+            this.userOutputName = Optional.ofNullable(userOutputName);
             return this;
         }
 
@@ -281,6 +344,16 @@ public final class UpdateBulkSchema {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

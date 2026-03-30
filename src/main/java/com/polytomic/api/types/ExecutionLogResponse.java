@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionLogResponse.Builder.class)
 public final class ExecutionLogResponse {
     private final Optional<OffsetDateTime> expires;
@@ -35,13 +38,31 @@ public final class ExecutionLogResponse {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("expires")
+    @JsonIgnore
     public Optional<OffsetDateTime> getExpires() {
+        if (expires == null) {
+            return Optional.empty();
+        }
         return expires;
     }
 
-    @JsonProperty("urls")
+    @JsonIgnore
     public Optional<List<String>> getUrls() {
+        if (urls == null) {
+            return Optional.empty();
+        }
+        return urls;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("expires")
+    private Optional<OffsetDateTime> _getExpires() {
+        return expires;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("urls")
+    private Optional<List<String>> _getUrls() {
         return urls;
     }
 
@@ -98,7 +119,18 @@ public final class ExecutionLogResponse {
         }
 
         public Builder expires(OffsetDateTime expires) {
-            this.expires = Optional.of(expires);
+            this.expires = Optional.ofNullable(expires);
+            return this;
+        }
+
+        public Builder expires(Nullable<OffsetDateTime> expires) {
+            if (expires.isNull()) {
+                this.expires = null;
+            } else if (expires.isEmpty()) {
+                this.expires = Optional.empty();
+            } else {
+                this.expires = Optional.of(expires.get());
+            }
             return this;
         }
 
@@ -109,12 +141,33 @@ public final class ExecutionLogResponse {
         }
 
         public Builder urls(List<String> urls) {
-            this.urls = Optional.of(urls);
+            this.urls = Optional.ofNullable(urls);
+            return this;
+        }
+
+        public Builder urls(Nullable<List<String>> urls) {
+            if (urls.isNull()) {
+                this.urls = null;
+            } else if (urls.isEmpty()) {
+                this.urls = Optional.empty();
+            } else {
+                this.urls = Optional.of(urls.get());
+            }
             return this;
         }
 
         public ExecutionLogResponse build() {
             return new ExecutionLogResponse(expires, urls, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

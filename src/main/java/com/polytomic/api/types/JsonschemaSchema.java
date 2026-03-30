@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = JsonschemaSchema.Builder.class)
 public final class JsonschemaSchema {
     private final Optional<String> anchor;
@@ -380,23 +383,35 @@ public final class JsonschemaSchema {
         return items;
     }
 
-    @JsonProperty("maxContains")
+    @JsonIgnore
     public Optional<Integer> getMaxContains() {
+        if (maxContains == null) {
+            return Optional.empty();
+        }
         return maxContains;
     }
 
-    @JsonProperty("maxItems")
+    @JsonIgnore
     public Optional<Integer> getMaxItems() {
+        if (maxItems == null) {
+            return Optional.empty();
+        }
         return maxItems;
     }
 
-    @JsonProperty("maxLength")
+    @JsonIgnore
     public Optional<Integer> getMaxLength() {
+        if (maxLength == null) {
+            return Optional.empty();
+        }
         return maxLength;
     }
 
-    @JsonProperty("maxProperties")
+    @JsonIgnore
     public Optional<Integer> getMaxProperties() {
+        if (maxProperties == null) {
+            return Optional.empty();
+        }
         return maxProperties;
     }
 
@@ -405,23 +420,35 @@ public final class JsonschemaSchema {
         return maximum;
     }
 
-    @JsonProperty("minContains")
+    @JsonIgnore
     public Optional<Integer> getMinContains() {
+        if (minContains == null) {
+            return Optional.empty();
+        }
         return minContains;
     }
 
-    @JsonProperty("minItems")
+    @JsonIgnore
     public Optional<Integer> getMinItems() {
+        if (minItems == null) {
+            return Optional.empty();
+        }
         return minItems;
     }
 
-    @JsonProperty("minLength")
+    @JsonIgnore
     public Optional<Integer> getMinLength() {
+        if (minLength == null) {
+            return Optional.empty();
+        }
         return minLength;
     }
 
-    @JsonProperty("minProperties")
+    @JsonIgnore
     public Optional<Integer> getMinProperties() {
+        if (minProperties == null) {
+            return Optional.empty();
+        }
         return minProperties;
     }
 
@@ -503,6 +530,54 @@ public final class JsonschemaSchema {
     @JsonProperty("writeOnly")
     public Optional<Boolean> getWriteOnly() {
         return writeOnly;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("maxContains")
+    private Optional<Integer> _getMaxContains() {
+        return maxContains;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("maxItems")
+    private Optional<Integer> _getMaxItems() {
+        return maxItems;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("maxLength")
+    private Optional<Integer> _getMaxLength() {
+        return maxLength;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("maxProperties")
+    private Optional<Integer> _getMaxProperties() {
+        return maxProperties;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("minContains")
+    private Optional<Integer> _getMinContains() {
+        return minContains;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("minItems")
+    private Optional<Integer> _getMinItems() {
+        return minItems;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("minLength")
+    private Optional<Integer> _getMinLength() {
+        return minLength;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("minProperties")
+    private Optional<Integer> _getMinProperties() {
+        return minProperties;
     }
 
     @java.lang.Override
@@ -816,7 +891,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder anchor(String anchor) {
-            this.anchor = Optional.of(anchor);
+            this.anchor = Optional.ofNullable(anchor);
             return this;
         }
 
@@ -827,7 +902,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder comment(String comment) {
-            this.comment = Optional.of(comment);
+            this.comment = Optional.ofNullable(comment);
             return this;
         }
 
@@ -838,7 +913,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder defs(Map<String, JsonschemaSchema> defs) {
-            this.defs = Optional.of(defs);
+            this.defs = Optional.ofNullable(defs);
             return this;
         }
 
@@ -849,7 +924,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder dynamicRef(String dynamicRef) {
-            this.dynamicRef = Optional.of(dynamicRef);
+            this.dynamicRef = Optional.ofNullable(dynamicRef);
             return this;
         }
 
@@ -860,7 +935,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -871,7 +946,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder ref(String ref) {
-            this.ref = Optional.of(ref);
+            this.ref = Optional.ofNullable(ref);
             return this;
         }
 
@@ -882,7 +957,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder schema(String schema) {
-            this.schema = Optional.of(schema);
+            this.schema = Optional.ofNullable(schema);
             return this;
         }
 
@@ -893,7 +968,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder additionalProperties(JsonschemaSchema additionalProperties) {
-            this.additionalProperties = Optional.of(additionalProperties);
+            this.additionalProperties = Optional.ofNullable(additionalProperties);
             return this;
         }
 
@@ -904,7 +979,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder allOf(List<JsonschemaSchema> allOf) {
-            this.allOf = Optional.of(allOf);
+            this.allOf = Optional.ofNullable(allOf);
             return this;
         }
 
@@ -915,7 +990,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder anyOf(List<JsonschemaSchema> anyOf) {
-            this.anyOf = Optional.of(anyOf);
+            this.anyOf = Optional.ofNullable(anyOf);
             return this;
         }
 
@@ -926,7 +1001,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder const_(Object const_) {
-            this.const_ = Optional.of(const_);
+            this.const_ = Optional.ofNullable(const_);
             return this;
         }
 
@@ -937,7 +1012,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder contains(JsonschemaSchema contains) {
-            this.contains = Optional.of(contains);
+            this.contains = Optional.ofNullable(contains);
             return this;
         }
 
@@ -948,7 +1023,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder contentEncoding(String contentEncoding) {
-            this.contentEncoding = Optional.of(contentEncoding);
+            this.contentEncoding = Optional.ofNullable(contentEncoding);
             return this;
         }
 
@@ -959,7 +1034,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder contentMediaType(String contentMediaType) {
-            this.contentMediaType = Optional.of(contentMediaType);
+            this.contentMediaType = Optional.ofNullable(contentMediaType);
             return this;
         }
 
@@ -970,7 +1045,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder contentSchema(JsonschemaSchema contentSchema) {
-            this.contentSchema = Optional.of(contentSchema);
+            this.contentSchema = Optional.ofNullable(contentSchema);
             return this;
         }
 
@@ -981,7 +1056,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder default_(Object default_) {
-            this.default_ = Optional.of(default_);
+            this.default_ = Optional.ofNullable(default_);
             return this;
         }
 
@@ -992,7 +1067,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder dependentRequired(Map<String, List<String>> dependentRequired) {
-            this.dependentRequired = Optional.of(dependentRequired);
+            this.dependentRequired = Optional.ofNullable(dependentRequired);
             return this;
         }
 
@@ -1003,7 +1078,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder dependentSchemas(Map<String, JsonschemaSchema> dependentSchemas) {
-            this.dependentSchemas = Optional.of(dependentSchemas);
+            this.dependentSchemas = Optional.ofNullable(dependentSchemas);
             return this;
         }
 
@@ -1014,7 +1089,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder deprecated(Boolean deprecated) {
-            this.deprecated = Optional.of(deprecated);
+            this.deprecated = Optional.ofNullable(deprecated);
             return this;
         }
 
@@ -1025,7 +1100,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder description(String description) {
-            this.description = Optional.of(description);
+            this.description = Optional.ofNullable(description);
             return this;
         }
 
@@ -1036,7 +1111,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder else_(JsonschemaSchema else_) {
-            this.else_ = Optional.of(else_);
+            this.else_ = Optional.ofNullable(else_);
             return this;
         }
 
@@ -1047,7 +1122,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder enum_(List<Object> enum_) {
-            this.enum_ = Optional.of(enum_);
+            this.enum_ = Optional.ofNullable(enum_);
             return this;
         }
 
@@ -1058,7 +1133,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder examples(List<Object> examples) {
-            this.examples = Optional.of(examples);
+            this.examples = Optional.ofNullable(examples);
             return this;
         }
 
@@ -1069,7 +1144,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder exclusiveMaximum(String exclusiveMaximum) {
-            this.exclusiveMaximum = Optional.of(exclusiveMaximum);
+            this.exclusiveMaximum = Optional.ofNullable(exclusiveMaximum);
             return this;
         }
 
@@ -1080,7 +1155,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder exclusiveMinimum(String exclusiveMinimum) {
-            this.exclusiveMinimum = Optional.of(exclusiveMinimum);
+            this.exclusiveMinimum = Optional.ofNullable(exclusiveMinimum);
             return this;
         }
 
@@ -1091,7 +1166,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder format(String format) {
-            this.format = Optional.of(format);
+            this.format = Optional.ofNullable(format);
             return this;
         }
 
@@ -1102,7 +1177,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder if_(JsonschemaSchema if_) {
-            this.if_ = Optional.of(if_);
+            this.if_ = Optional.ofNullable(if_);
             return this;
         }
 
@@ -1113,7 +1188,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder items(JsonschemaSchema items) {
-            this.items = Optional.of(items);
+            this.items = Optional.ofNullable(items);
             return this;
         }
 
@@ -1124,7 +1199,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder maxContains(Integer maxContains) {
-            this.maxContains = Optional.of(maxContains);
+            this.maxContains = Optional.ofNullable(maxContains);
+            return this;
+        }
+
+        public Builder maxContains(Nullable<Integer> maxContains) {
+            if (maxContains.isNull()) {
+                this.maxContains = null;
+            } else if (maxContains.isEmpty()) {
+                this.maxContains = Optional.empty();
+            } else {
+                this.maxContains = Optional.of(maxContains.get());
+            }
             return this;
         }
 
@@ -1135,7 +1221,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder maxItems(Integer maxItems) {
-            this.maxItems = Optional.of(maxItems);
+            this.maxItems = Optional.ofNullable(maxItems);
+            return this;
+        }
+
+        public Builder maxItems(Nullable<Integer> maxItems) {
+            if (maxItems.isNull()) {
+                this.maxItems = null;
+            } else if (maxItems.isEmpty()) {
+                this.maxItems = Optional.empty();
+            } else {
+                this.maxItems = Optional.of(maxItems.get());
+            }
             return this;
         }
 
@@ -1146,7 +1243,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder maxLength(Integer maxLength) {
-            this.maxLength = Optional.of(maxLength);
+            this.maxLength = Optional.ofNullable(maxLength);
+            return this;
+        }
+
+        public Builder maxLength(Nullable<Integer> maxLength) {
+            if (maxLength.isNull()) {
+                this.maxLength = null;
+            } else if (maxLength.isEmpty()) {
+                this.maxLength = Optional.empty();
+            } else {
+                this.maxLength = Optional.of(maxLength.get());
+            }
             return this;
         }
 
@@ -1157,7 +1265,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder maxProperties(Integer maxProperties) {
-            this.maxProperties = Optional.of(maxProperties);
+            this.maxProperties = Optional.ofNullable(maxProperties);
+            return this;
+        }
+
+        public Builder maxProperties(Nullable<Integer> maxProperties) {
+            if (maxProperties.isNull()) {
+                this.maxProperties = null;
+            } else if (maxProperties.isEmpty()) {
+                this.maxProperties = Optional.empty();
+            } else {
+                this.maxProperties = Optional.of(maxProperties.get());
+            }
             return this;
         }
 
@@ -1168,7 +1287,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder maximum(String maximum) {
-            this.maximum = Optional.of(maximum);
+            this.maximum = Optional.ofNullable(maximum);
             return this;
         }
 
@@ -1179,7 +1298,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder minContains(Integer minContains) {
-            this.minContains = Optional.of(minContains);
+            this.minContains = Optional.ofNullable(minContains);
+            return this;
+        }
+
+        public Builder minContains(Nullable<Integer> minContains) {
+            if (minContains.isNull()) {
+                this.minContains = null;
+            } else if (minContains.isEmpty()) {
+                this.minContains = Optional.empty();
+            } else {
+                this.minContains = Optional.of(minContains.get());
+            }
             return this;
         }
 
@@ -1190,7 +1320,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder minItems(Integer minItems) {
-            this.minItems = Optional.of(minItems);
+            this.minItems = Optional.ofNullable(minItems);
+            return this;
+        }
+
+        public Builder minItems(Nullable<Integer> minItems) {
+            if (minItems.isNull()) {
+                this.minItems = null;
+            } else if (minItems.isEmpty()) {
+                this.minItems = Optional.empty();
+            } else {
+                this.minItems = Optional.of(minItems.get());
+            }
             return this;
         }
 
@@ -1201,7 +1342,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder minLength(Integer minLength) {
-            this.minLength = Optional.of(minLength);
+            this.minLength = Optional.ofNullable(minLength);
+            return this;
+        }
+
+        public Builder minLength(Nullable<Integer> minLength) {
+            if (minLength.isNull()) {
+                this.minLength = null;
+            } else if (minLength.isEmpty()) {
+                this.minLength = Optional.empty();
+            } else {
+                this.minLength = Optional.of(minLength.get());
+            }
             return this;
         }
 
@@ -1212,7 +1364,18 @@ public final class JsonschemaSchema {
         }
 
         public Builder minProperties(Integer minProperties) {
-            this.minProperties = Optional.of(minProperties);
+            this.minProperties = Optional.ofNullable(minProperties);
+            return this;
+        }
+
+        public Builder minProperties(Nullable<Integer> minProperties) {
+            if (minProperties.isNull()) {
+                this.minProperties = null;
+            } else if (minProperties.isEmpty()) {
+                this.minProperties = Optional.empty();
+            } else {
+                this.minProperties = Optional.of(minProperties.get());
+            }
             return this;
         }
 
@@ -1223,7 +1386,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder minimum(String minimum) {
-            this.minimum = Optional.of(minimum);
+            this.minimum = Optional.ofNullable(minimum);
             return this;
         }
 
@@ -1234,7 +1397,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder multipleOf(String multipleOf) {
-            this.multipleOf = Optional.of(multipleOf);
+            this.multipleOf = Optional.ofNullable(multipleOf);
             return this;
         }
 
@@ -1245,7 +1408,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder not(JsonschemaSchema not) {
-            this.not = Optional.of(not);
+            this.not = Optional.ofNullable(not);
             return this;
         }
 
@@ -1256,7 +1419,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder oneOf(List<JsonschemaSchema> oneOf) {
-            this.oneOf = Optional.of(oneOf);
+            this.oneOf = Optional.ofNullable(oneOf);
             return this;
         }
 
@@ -1267,7 +1430,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder pattern(String pattern) {
-            this.pattern = Optional.of(pattern);
+            this.pattern = Optional.ofNullable(pattern);
             return this;
         }
 
@@ -1278,7 +1441,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder patternProperties(Map<String, JsonschemaSchema> patternProperties) {
-            this.patternProperties = Optional.of(patternProperties);
+            this.patternProperties = Optional.ofNullable(patternProperties);
             return this;
         }
 
@@ -1289,7 +1452,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder prefixItems(List<JsonschemaSchema> prefixItems) {
-            this.prefixItems = Optional.of(prefixItems);
+            this.prefixItems = Optional.ofNullable(prefixItems);
             return this;
         }
 
@@ -1300,7 +1463,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder properties(Map<String, Object> properties) {
-            this.properties = Optional.of(properties);
+            this.properties = Optional.ofNullable(properties);
             return this;
         }
 
@@ -1311,7 +1474,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder propertyNames(JsonschemaSchema propertyNames) {
-            this.propertyNames = Optional.of(propertyNames);
+            this.propertyNames = Optional.ofNullable(propertyNames);
             return this;
         }
 
@@ -1322,7 +1485,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder readOnly(Boolean readOnly) {
-            this.readOnly = Optional.of(readOnly);
+            this.readOnly = Optional.ofNullable(readOnly);
             return this;
         }
 
@@ -1333,7 +1496,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder required(List<String> required) {
-            this.required = Optional.of(required);
+            this.required = Optional.ofNullable(required);
             return this;
         }
 
@@ -1344,7 +1507,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder then(JsonschemaSchema then) {
-            this.then = Optional.of(then);
+            this.then = Optional.ofNullable(then);
             return this;
         }
 
@@ -1355,7 +1518,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder title(String title) {
-            this.title = Optional.of(title);
+            this.title = Optional.ofNullable(title);
             return this;
         }
 
@@ -1366,7 +1529,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -1377,7 +1540,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder uniqueItems(Boolean uniqueItems) {
-            this.uniqueItems = Optional.of(uniqueItems);
+            this.uniqueItems = Optional.ofNullable(uniqueItems);
             return this;
         }
 
@@ -1388,7 +1551,7 @@ public final class JsonschemaSchema {
         }
 
         public Builder writeOnly(Boolean writeOnly) {
-            this.writeOnly = Optional.of(writeOnly);
+            this.writeOnly = Optional.ofNullable(writeOnly);
             return this;
         }
 
@@ -1448,6 +1611,16 @@ public final class JsonschemaSchema {
                     uniqueItems,
                     writeOnly,
                     _additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this._additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder _additionalProperties(Map<String, Object> _additionalProperties) {
+            this._additionalProperties.putAll(_additionalProperties);
+            return this;
         }
     }
 }

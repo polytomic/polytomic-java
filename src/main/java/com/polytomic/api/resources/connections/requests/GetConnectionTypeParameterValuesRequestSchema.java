@@ -5,19 +5,23 @@ package com.polytomic.api.resources.connections.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetConnectionTypeParameterValuesRequestSchema.Builder.class)
 public final class GetConnectionTypeParameterValuesRequestSchema {
     private final Optional<String> connectionId;
@@ -53,14 +57,23 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
         return field;
     }
 
-    @JsonProperty("parameters")
+    @JsonIgnore
     public Optional<Map<String, Object>> getParameters() {
+        if (parameters == null) {
+            return Optional.empty();
+        }
         return parameters;
     }
 
     @JsonProperty("query")
     public Optional<String> getQuery() {
         return query;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("parameters")
+    private Optional<Map<String, Object>> _getParameters() {
+        return parameters;
     }
 
     @java.lang.Override
@@ -97,13 +110,17 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
     }
 
     public interface FieldStage {
-        _FinalStage field(String field);
+        _FinalStage field(@NotNull String field);
 
         Builder from(GetConnectionTypeParameterValuesRequestSchema other);
     }
 
     public interface _FinalStage {
         GetConnectionTypeParameterValuesRequestSchema build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage connectionId(Optional<String> connectionId);
 
@@ -112,6 +129,8 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
         _FinalStage parameters(Optional<Map<String, Object>> parameters);
 
         _FinalStage parameters(Map<String, Object> parameters);
+
+        _FinalStage parameters(Nullable<Map<String, Object>> parameters);
 
         _FinalStage query(Optional<String> query);
 
@@ -144,14 +163,14 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
 
         @java.lang.Override
         @JsonSetter("field")
-        public _FinalStage field(String field) {
+        public _FinalStage field(@NotNull String field) {
             this.field = field;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage query(String query) {
-            this.query = Optional.of(query);
+            this.query = Optional.ofNullable(query);
             return this;
         }
 
@@ -163,8 +182,20 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
         }
 
         @java.lang.Override
+        public _FinalStage parameters(Nullable<Map<String, Object>> parameters) {
+            if (parameters.isNull()) {
+                this.parameters = null;
+            } else if (parameters.isEmpty()) {
+                this.parameters = Optional.empty();
+            } else {
+                this.parameters = Optional.of(parameters.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage parameters(Map<String, Object> parameters) {
-            this.parameters = Optional.of(parameters);
+            this.parameters = Optional.ofNullable(parameters);
             return this;
         }
 
@@ -177,7 +208,7 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
 
         @java.lang.Override
         public _FinalStage connectionId(String connectionId) {
-            this.connectionId = Optional.of(connectionId);
+            this.connectionId = Optional.ofNullable(connectionId);
             return this;
         }
 
@@ -192,6 +223,18 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
         public GetConnectionTypeParameterValuesRequestSchema build() {
             return new GetConnectionTypeParameterValuesRequestSchema(
                     connectionId, field, parameters, query, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

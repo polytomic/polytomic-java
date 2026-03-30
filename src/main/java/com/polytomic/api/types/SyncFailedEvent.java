@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SyncFailedEvent.Builder.class)
 public final class SyncFailedEvent {
     private final Optional<String> error;
@@ -152,7 +152,7 @@ public final class SyncFailedEvent {
         }
 
         public Builder error(String error) {
-            this.error = Optional.of(error);
+            this.error = Optional.ofNullable(error);
             return this;
         }
 
@@ -163,7 +163,7 @@ public final class SyncFailedEvent {
         }
 
         public Builder executionId(String executionId) {
-            this.executionId = Optional.of(executionId);
+            this.executionId = Optional.ofNullable(executionId);
             return this;
         }
 
@@ -174,7 +174,7 @@ public final class SyncFailedEvent {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -185,7 +185,7 @@ public final class SyncFailedEvent {
         }
 
         public Builder syncId(String syncId) {
-            this.syncId = Optional.of(syncId);
+            this.syncId = Optional.ofNullable(syncId);
             return this;
         }
 
@@ -196,7 +196,7 @@ public final class SyncFailedEvent {
         }
 
         public Builder syncName(String syncName) {
-            this.syncName = Optional.of(syncName);
+            this.syncName = Optional.ofNullable(syncName);
             return this;
         }
 
@@ -207,13 +207,23 @@ public final class SyncFailedEvent {
         }
 
         public Builder targetConnectionId(String targetConnectionId) {
-            this.targetConnectionId = Optional.of(targetConnectionId);
+            this.targetConnectionId = Optional.ofNullable(targetConnectionId);
             return this;
         }
 
         public SyncFailedEvent build() {
             return new SyncFailedEvent(
                     error, executionId, organizationId, syncId, syncName, targetConnectionId, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

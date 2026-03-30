@@ -5,12 +5,15 @@ package com.polytomic.api.resources.bulksync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.BulkFetchMode;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = StartBulkSyncRequest.Builder.class)
 public final class StartBulkSyncRequest {
     private final Optional<BulkFetchMode> fetchMode;
@@ -55,14 +58,23 @@ public final class StartBulkSyncRequest {
         return resync;
     }
 
-    @JsonProperty("schemas")
+    @JsonIgnore
     public Optional<List<String>> getSchemas() {
+        if (schemas == null) {
+            return Optional.empty();
+        }
         return schemas;
     }
 
     @JsonProperty("test")
     public Optional<Boolean> getTest() {
         return test;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("schemas")
+    private Optional<List<String>> _getSchemas() {
+        return schemas;
     }
 
     @java.lang.Override
@@ -127,7 +139,7 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder fetchMode(BulkFetchMode fetchMode) {
-            this.fetchMode = Optional.of(fetchMode);
+            this.fetchMode = Optional.ofNullable(fetchMode);
             return this;
         }
 
@@ -138,7 +150,7 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder resync(Boolean resync) {
-            this.resync = Optional.of(resync);
+            this.resync = Optional.ofNullable(resync);
             return this;
         }
 
@@ -149,7 +161,18 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder schemas(List<String> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
+            return this;
+        }
+
+        public Builder schemas(Nullable<List<String>> schemas) {
+            if (schemas.isNull()) {
+                this.schemas = null;
+            } else if (schemas.isEmpty()) {
+                this.schemas = Optional.empty();
+            } else {
+                this.schemas = Optional.of(schemas.get());
+            }
             return this;
         }
 
@@ -160,12 +183,22 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder test(Boolean test) {
-            this.test = Optional.of(test);
+            this.test = Optional.ofNullable(test);
             return this;
         }
 
         public StartBulkSyncRequest build() {
             return new StartBulkSyncRequest(fetchMode, resync, schemas, test, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncResponse.Builder.class)
 public final class BulkSyncResponse {
     private final Optional<Boolean> active;
@@ -126,21 +129,30 @@ public final class BulkSyncResponse {
         return active;
     }
 
-    @JsonProperty("automatically_add_new_fields")
+    @JsonIgnore
     public Optional<BulkDiscover> getAutomaticallyAddNewFields() {
+        if (automaticallyAddNewFields == null) {
+            return Optional.empty();
+        }
         return automaticallyAddNewFields;
     }
 
-    @JsonProperty("automatically_add_new_objects")
+    @JsonIgnore
     public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
+        if (automaticallyAddNewObjects == null) {
+            return Optional.empty();
+        }
         return automaticallyAddNewObjects;
     }
 
     /**
      * @return Per-sync concurrency limit override.
      */
-    @JsonProperty("concurrency_limit")
+    @JsonIgnore
     public Optional<Integer> getConcurrencyLimit() {
+        if (concurrencyLimit == null) {
+            return Optional.empty();
+        }
         return concurrencyLimit;
     }
 
@@ -154,16 +166,22 @@ public final class BulkSyncResponse {
         return createdBy;
     }
 
-    @JsonProperty("data_cutoff_timestamp")
+    @JsonIgnore
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        if (dataCutoffTimestamp == null) {
+            return Optional.empty();
+        }
         return dataCutoffTimestamp;
     }
 
     /**
      * @return Destination-specific bulk sync configuration. e.g. output schema name, s3 file format, etc.
      */
-    @JsonProperty("destination_configuration")
+    @JsonIgnore
     public Optional<Map<String, Object>> getDestinationConfiguration() {
+        if (destinationConfiguration == null) {
+            return Optional.empty();
+        }
         return destinationConfiguration;
     }
 
@@ -190,8 +208,11 @@ public final class BulkSyncResponse {
         return id;
     }
 
-    @JsonProperty("mode")
+    @JsonIgnore
     public Optional<BulkSyncMode> getMode() {
+        if (mode == null) {
+            return Optional.empty();
+        }
         return mode;
     }
 
@@ -203,8 +224,11 @@ public final class BulkSyncResponse {
         return name;
     }
 
-    @JsonProperty("normalize_names")
+    @JsonIgnore
     public Optional<BulkNormalizeNames> getNormalizeNames() {
+        if (normalizeNames == null) {
+            return Optional.empty();
+        }
         return normalizeNames;
     }
 
@@ -224,8 +248,11 @@ public final class BulkSyncResponse {
     /**
      * @return Per-sync resync concurrency limit override.
      */
-    @JsonProperty("resync_concurrency_limit")
+    @JsonIgnore
     public Optional<Integer> getResyncConcurrencyLimit() {
+        if (resyncConcurrencyLimit == null) {
+            return Optional.empty();
+        }
         return resyncConcurrencyLimit;
     }
 
@@ -237,8 +264,11 @@ public final class BulkSyncResponse {
     /**
      * @return Source-specific bulk sync configuration. e.g. replication slot name, sync lookback, etc.
      */
-    @JsonProperty("source_configuration")
+    @JsonIgnore
     public Optional<Map<String, Object>> getSourceConfiguration() {
+        if (sourceConfiguration == null) {
+            return Optional.empty();
+        }
         return sourceConfiguration;
     }
 
@@ -255,6 +285,60 @@ public final class BulkSyncResponse {
     @JsonProperty("updated_by")
     public Optional<CommonOutputActor> getUpdatedBy() {
         return updatedBy;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("automatically_add_new_fields")
+    private Optional<BulkDiscover> _getAutomaticallyAddNewFields() {
+        return automaticallyAddNewFields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("automatically_add_new_objects")
+    private Optional<BulkDiscover> _getAutomaticallyAddNewObjects() {
+        return automaticallyAddNewObjects;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("concurrency_limit")
+    private Optional<Integer> _getConcurrencyLimit() {
+        return concurrencyLimit;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("data_cutoff_timestamp")
+    private Optional<OffsetDateTime> _getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("destination_configuration")
+    private Optional<Map<String, Object>> _getDestinationConfiguration() {
+        return destinationConfiguration;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("mode")
+    private Optional<BulkSyncMode> _getMode() {
+        return mode;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("normalize_names")
+    private Optional<BulkNormalizeNames> _getNormalizeNames() {
+        return normalizeNames;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("resync_concurrency_limit")
+    private Optional<Integer> _getResyncConcurrencyLimit() {
+        return resyncConcurrencyLimit;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("source_configuration")
+    private Optional<Map<String, Object>> _getSourceConfiguration() {
+        return sourceConfiguration;
     }
 
     @java.lang.Override
@@ -418,7 +502,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder active(Boolean active) {
-            this.active = Optional.of(active);
+            this.active = Optional.ofNullable(active);
             return this;
         }
 
@@ -429,7 +513,18 @@ public final class BulkSyncResponse {
         }
 
         public Builder automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
-            this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
+            this.automaticallyAddNewFields = Optional.ofNullable(automaticallyAddNewFields);
+            return this;
+        }
+
+        public Builder automaticallyAddNewFields(Nullable<BulkDiscover> automaticallyAddNewFields) {
+            if (automaticallyAddNewFields.isNull()) {
+                this.automaticallyAddNewFields = null;
+            } else if (automaticallyAddNewFields.isEmpty()) {
+                this.automaticallyAddNewFields = Optional.empty();
+            } else {
+                this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields.get());
+            }
             return this;
         }
 
@@ -440,10 +535,24 @@ public final class BulkSyncResponse {
         }
 
         public Builder automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
-            this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
+            this.automaticallyAddNewObjects = Optional.ofNullable(automaticallyAddNewObjects);
             return this;
         }
 
+        public Builder automaticallyAddNewObjects(Nullable<BulkDiscover> automaticallyAddNewObjects) {
+            if (automaticallyAddNewObjects.isNull()) {
+                this.automaticallyAddNewObjects = null;
+            } else if (automaticallyAddNewObjects.isEmpty()) {
+                this.automaticallyAddNewObjects = Optional.empty();
+            } else {
+                this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Per-sync concurrency limit override.</p>
+         */
         @JsonSetter(value = "concurrency_limit", nulls = Nulls.SKIP)
         public Builder concurrencyLimit(Optional<Integer> concurrencyLimit) {
             this.concurrencyLimit = concurrencyLimit;
@@ -451,7 +560,18 @@ public final class BulkSyncResponse {
         }
 
         public Builder concurrencyLimit(Integer concurrencyLimit) {
-            this.concurrencyLimit = Optional.of(concurrencyLimit);
+            this.concurrencyLimit = Optional.ofNullable(concurrencyLimit);
+            return this;
+        }
+
+        public Builder concurrencyLimit(Nullable<Integer> concurrencyLimit) {
+            if (concurrencyLimit.isNull()) {
+                this.concurrencyLimit = null;
+            } else if (concurrencyLimit.isEmpty()) {
+                this.concurrencyLimit = Optional.empty();
+            } else {
+                this.concurrencyLimit = Optional.of(concurrencyLimit.get());
+            }
             return this;
         }
 
@@ -462,7 +582,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
@@ -473,7 +593,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder createdBy(CommonOutputActor createdBy) {
-            this.createdBy = Optional.of(createdBy);
+            this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
@@ -484,10 +604,24 @@ public final class BulkSyncResponse {
         }
 
         public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
             return this;
         }
 
+        public Builder dataCutoffTimestamp(Nullable<OffsetDateTime> dataCutoffTimestamp) {
+            if (dataCutoffTimestamp.isNull()) {
+                this.dataCutoffTimestamp = null;
+            } else if (dataCutoffTimestamp.isEmpty()) {
+                this.dataCutoffTimestamp = Optional.empty();
+            } else {
+                this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Destination-specific bulk sync configuration. e.g. output schema name, s3 file format, etc.</p>
+         */
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
         public Builder destinationConfiguration(Optional<Map<String, Object>> destinationConfiguration) {
             this.destinationConfiguration = destinationConfiguration;
@@ -495,7 +629,18 @@ public final class BulkSyncResponse {
         }
 
         public Builder destinationConfiguration(Map<String, Object> destinationConfiguration) {
-            this.destinationConfiguration = Optional.of(destinationConfiguration);
+            this.destinationConfiguration = Optional.ofNullable(destinationConfiguration);
+            return this;
+        }
+
+        public Builder destinationConfiguration(Nullable<Map<String, Object>> destinationConfiguration) {
+            if (destinationConfiguration.isNull()) {
+                this.destinationConfiguration = null;
+            } else if (destinationConfiguration.isEmpty()) {
+                this.destinationConfiguration = Optional.empty();
+            } else {
+                this.destinationConfiguration = Optional.of(destinationConfiguration.get());
+            }
             return this;
         }
 
@@ -506,7 +651,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder destinationConnectionId(String destinationConnectionId) {
-            this.destinationConnectionId = Optional.of(destinationConnectionId);
+            this.destinationConnectionId = Optional.ofNullable(destinationConnectionId);
             return this;
         }
 
@@ -517,10 +662,13 @@ public final class BulkSyncResponse {
         }
 
         public Builder disableRecordTimestamps(Boolean disableRecordTimestamps) {
-            this.disableRecordTimestamps = Optional.of(disableRecordTimestamps);
+            this.disableRecordTimestamps = Optional.ofNullable(disableRecordTimestamps);
             return this;
         }
 
+        /**
+         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+         */
         @JsonSetter(value = "discover", nulls = Nulls.SKIP)
         public Builder discover(Optional<Boolean> discover) {
             this.discover = discover;
@@ -528,7 +676,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder discover(Boolean discover) {
-            this.discover = Optional.of(discover);
+            this.discover = Optional.ofNullable(discover);
             return this;
         }
 
@@ -539,7 +687,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -550,10 +698,24 @@ public final class BulkSyncResponse {
         }
 
         public Builder mode(BulkSyncMode mode) {
-            this.mode = Optional.of(mode);
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
+        public Builder mode(Nullable<BulkSyncMode> mode) {
+            if (mode.isNull()) {
+                this.mode = null;
+            } else if (mode.isEmpty()) {
+                this.mode = Optional.empty();
+            } else {
+                this.mode = Optional.of(mode.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Name of the bulk sync</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -561,7 +723,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -572,7 +734,18 @@ public final class BulkSyncResponse {
         }
 
         public Builder normalizeNames(BulkNormalizeNames normalizeNames) {
-            this.normalizeNames = Optional.of(normalizeNames);
+            this.normalizeNames = Optional.ofNullable(normalizeNames);
+            return this;
+        }
+
+        public Builder normalizeNames(Nullable<BulkNormalizeNames> normalizeNames) {
+            if (normalizeNames.isNull()) {
+                this.normalizeNames = null;
+            } else if (normalizeNames.isEmpty()) {
+                this.normalizeNames = Optional.empty();
+            } else {
+                this.normalizeNames = Optional.of(normalizeNames.get());
+            }
             return this;
         }
 
@@ -583,10 +756,13 @@ public final class BulkSyncResponse {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>List of permissions policies applied to the bulk sync.</p>
+         */
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public Builder policies(Optional<List<String>> policies) {
             this.policies = policies;
@@ -594,10 +770,13 @@ public final class BulkSyncResponse {
         }
 
         public Builder policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
+        /**
+         * <p>Per-sync resync concurrency limit override.</p>
+         */
         @JsonSetter(value = "resync_concurrency_limit", nulls = Nulls.SKIP)
         public Builder resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit) {
             this.resyncConcurrencyLimit = resyncConcurrencyLimit;
@@ -605,7 +784,18 @@ public final class BulkSyncResponse {
         }
 
         public Builder resyncConcurrencyLimit(Integer resyncConcurrencyLimit) {
-            this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit);
+            this.resyncConcurrencyLimit = Optional.ofNullable(resyncConcurrencyLimit);
+            return this;
+        }
+
+        public Builder resyncConcurrencyLimit(Nullable<Integer> resyncConcurrencyLimit) {
+            if (resyncConcurrencyLimit.isNull()) {
+                this.resyncConcurrencyLimit = null;
+            } else if (resyncConcurrencyLimit.isEmpty()) {
+                this.resyncConcurrencyLimit = Optional.empty();
+            } else {
+                this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit.get());
+            }
             return this;
         }
 
@@ -616,10 +806,13 @@ public final class BulkSyncResponse {
         }
 
         public Builder schedule(BulkSchedule schedule) {
-            this.schedule = Optional.of(schedule);
+            this.schedule = Optional.ofNullable(schedule);
             return this;
         }
 
+        /**
+         * <p>Source-specific bulk sync configuration. e.g. replication slot name, sync lookback, etc.</p>
+         */
         @JsonSetter(value = "source_configuration", nulls = Nulls.SKIP)
         public Builder sourceConfiguration(Optional<Map<String, Object>> sourceConfiguration) {
             this.sourceConfiguration = sourceConfiguration;
@@ -627,7 +820,18 @@ public final class BulkSyncResponse {
         }
 
         public Builder sourceConfiguration(Map<String, Object> sourceConfiguration) {
-            this.sourceConfiguration = Optional.of(sourceConfiguration);
+            this.sourceConfiguration = Optional.ofNullable(sourceConfiguration);
+            return this;
+        }
+
+        public Builder sourceConfiguration(Nullable<Map<String, Object>> sourceConfiguration) {
+            if (sourceConfiguration.isNull()) {
+                this.sourceConfiguration = null;
+            } else if (sourceConfiguration.isEmpty()) {
+                this.sourceConfiguration = Optional.empty();
+            } else {
+                this.sourceConfiguration = Optional.of(sourceConfiguration.get());
+            }
             return this;
         }
 
@@ -638,7 +842,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder sourceConnectionId(String sourceConnectionId) {
-            this.sourceConnectionId = Optional.of(sourceConnectionId);
+            this.sourceConnectionId = Optional.ofNullable(sourceConnectionId);
             return this;
         }
 
@@ -649,7 +853,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
@@ -660,7 +864,7 @@ public final class BulkSyncResponse {
         }
 
         public Builder updatedBy(CommonOutputActor updatedBy) {
-            this.updatedBy = Optional.of(updatedBy);
+            this.updatedBy = Optional.ofNullable(updatedBy);
             return this;
         }
 
@@ -690,6 +894,16 @@ public final class BulkSyncResponse {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

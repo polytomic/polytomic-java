@@ -5,9 +5,9 @@ package com.polytomic.api.resources.models.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -18,21 +18,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelsGetEnrichmentSourceRequest.Builder.class)
 public final class ModelsGetEnrichmentSourceRequest {
-    private final Optional<Map<String, Optional<List<String>>>> params;
+    private final Optional<Map<String, List<String>>> params;
 
     private final Map<String, Object> additionalProperties;
 
     private ModelsGetEnrichmentSourceRequest(
-            Optional<Map<String, Optional<List<String>>>> params, Map<String, Object> additionalProperties) {
+            Optional<Map<String, List<String>>> params, Map<String, Object> additionalProperties) {
         this.params = params;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("params")
-    public Optional<Map<String, Optional<List<String>>>> getParams() {
+    @JsonIgnore
+    public Optional<Map<String, List<String>>> getParams() {
         return params;
     }
 
@@ -67,7 +67,7 @@ public final class ModelsGetEnrichmentSourceRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Optional<List<String>>>> params = Optional.empty();
+        private Optional<Map<String, List<String>>> params = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -80,18 +80,28 @@ public final class ModelsGetEnrichmentSourceRequest {
         }
 
         @JsonSetter(value = "params", nulls = Nulls.SKIP)
-        public Builder params(Optional<Map<String, Optional<List<String>>>> params) {
+        public Builder params(Optional<Map<String, List<String>>> params) {
             this.params = params;
             return this;
         }
 
-        public Builder params(Map<String, Optional<List<String>>> params) {
-            this.params = Optional.of(params);
+        public Builder params(Map<String, List<String>> params) {
+            this.params = Optional.ofNullable(params);
             return this;
         }
 
         public ModelsGetEnrichmentSourceRequest build() {
             return new ModelsGetEnrichmentSourceRequest(params, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

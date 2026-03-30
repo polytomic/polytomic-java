@@ -5,12 +5,15 @@ package com.polytomic.api.resources.modelsync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.Filter;
 import com.polytomic.api.types.Identity;
@@ -25,8 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateModelSyncRequest.Builder.class)
 public final class UpdateModelSyncRequest {
     private final Optional<Boolean> active;
@@ -139,8 +143,11 @@ public final class UpdateModelSyncRequest {
     /**
      * @return Filters to apply to the source data.
      */
-    @JsonProperty("filters")
+    @JsonIgnore
     public Optional<List<Filter>> getFilters() {
+        if (filters == null) {
+            return Optional.empty();
+        }
         return filters;
     }
 
@@ -170,29 +177,41 @@ public final class UpdateModelSyncRequest {
     /**
      * @return Organization ID for the sync; read-only with a partner key.
      */
-    @JsonProperty("organization_id")
+    @JsonIgnore
     public Optional<String> getOrganizationId() {
+        if (organizationId == null) {
+            return Optional.empty();
+        }
         return organizationId;
     }
 
     /**
      * @return Values to set in the target unconditionally.
      */
-    @JsonProperty("override_fields")
+    @JsonIgnore
     public Optional<List<ModelSyncField>> getOverrideFields() {
+        if (overrideFields == null) {
+            return Optional.empty();
+        }
         return overrideFields;
     }
 
     /**
      * @return Conditional value replacement for fields.
      */
-    @JsonProperty("overrides")
+    @JsonIgnore
     public Optional<List<Override>> getOverrides() {
+        if (overrides == null) {
+            return Optional.empty();
+        }
         return overrides;
     }
 
-    @JsonProperty("policies")
+    @JsonIgnore
     public Optional<List<String>> getPolicies() {
+        if (policies == null) {
+            return Optional.empty();
+        }
         return policies;
     }
 
@@ -220,6 +239,36 @@ public final class UpdateModelSyncRequest {
     @JsonProperty("target")
     public Target getTarget() {
         return target;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("filters")
+    private Optional<List<Filter>> _getFilters() {
+        return filters;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("organization_id")
+    private Optional<String> _getOrganizationId() {
+        return organizationId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("override_fields")
+    private Optional<List<ModelSyncField>> _getOverrideFields() {
+        return overrideFields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("overrides")
+    private Optional<List<Override>> _getOverrides() {
+        return overrides;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("policies")
+    private Optional<List<String>> _getPolicies() {
+        return policies;
     }
 
     @java.lang.Override
@@ -285,76 +334,123 @@ public final class UpdateModelSyncRequest {
     }
 
     public interface ModeStage {
-        NameStage mode(ModelSyncMode mode);
+        NameStage mode(@NotNull ModelSyncMode mode);
 
         Builder from(UpdateModelSyncRequest other);
     }
 
     public interface NameStage {
-        ScheduleStage name(String name);
+        ScheduleStage name(@NotNull String name);
     }
 
     public interface ScheduleStage {
-        TargetStage schedule(Schedule schedule);
+        TargetStage schedule(@NotNull Schedule schedule);
     }
 
     public interface TargetStage {
-        _FinalStage target(Target target);
+        _FinalStage target(@NotNull Target target);
     }
 
     public interface _FinalStage {
         UpdateModelSyncRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Whether the sync is enabled and scheduled.</p>
+         */
         _FinalStage active(Optional<Boolean> active);
 
         _FinalStage active(Boolean active);
 
+        /**
+         * <p>Passphrase for encrypting the sync data.</p>
+         */
         _FinalStage encryptionPassphrase(Optional<String> encryptionPassphrase);
 
         _FinalStage encryptionPassphrase(String encryptionPassphrase);
 
+        /**
+         * <p>Fields to sync from source to destination.</p>
+         */
         _FinalStage fields(List<ModelSyncField> fields);
 
         _FinalStage addFields(ModelSyncField fields);
 
         _FinalStage addAllFields(List<ModelSyncField> fields);
 
+        /**
+         * <p>Logical expression to combine filters.</p>
+         */
         _FinalStage filterLogic(Optional<String> filterLogic);
 
         _FinalStage filterLogic(String filterLogic);
 
+        /**
+         * <p>Filters to apply to the source data.</p>
+         */
         _FinalStage filters(Optional<List<Filter>> filters);
 
         _FinalStage filters(List<Filter> filters);
+
+        _FinalStage filters(Nullable<List<Filter>> filters);
 
         _FinalStage identity(Optional<Identity> identity);
 
         _FinalStage identity(Identity identity);
 
+        /**
+         * <p>Whether to use enrichment models as a source of possible changes to sync. If true, only changes to the base models will cause a record to sync.</p>
+         */
         _FinalStage onlyEnrichUpdates(Optional<Boolean> onlyEnrichUpdates);
 
         _FinalStage onlyEnrichUpdates(Boolean onlyEnrichUpdates);
 
+        /**
+         * <p>Organization ID for the sync; read-only with a partner key.</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
+        _FinalStage organizationId(Nullable<String> organizationId);
+
+        /**
+         * <p>Values to set in the target unconditionally.</p>
+         */
         _FinalStage overrideFields(Optional<List<ModelSyncField>> overrideFields);
 
         _FinalStage overrideFields(List<ModelSyncField> overrideFields);
 
+        _FinalStage overrideFields(Nullable<List<ModelSyncField>> overrideFields);
+
+        /**
+         * <p>Conditional value replacement for fields.</p>
+         */
         _FinalStage overrides(Optional<List<Override>> overrides);
 
         _FinalStage overrides(List<Override> overrides);
+
+        _FinalStage overrides(Nullable<List<Override>> overrides);
 
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
 
+        _FinalStage policies(Nullable<List<String>> policies);
+
+        /**
+         * <p>Whether to skip the initial backfill of records; if true only records seen after the sync is enabled will be synced.</p>
+         */
         _FinalStage skipInitialBackfill(Optional<Boolean> skipInitialBackfill);
 
         _FinalStage skipInitialBackfill(Boolean skipInitialBackfill);
 
+        /**
+         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution.</p>
+         */
         _FinalStage syncAllRecords(Optional<Boolean> syncAllRecords);
 
         _FinalStage syncAllRecords(Boolean syncAllRecords);
@@ -425,28 +521,28 @@ public final class UpdateModelSyncRequest {
 
         @java.lang.Override
         @JsonSetter("mode")
-        public NameStage mode(ModelSyncMode mode) {
+        public NameStage mode(@NotNull ModelSyncMode mode) {
             this.mode = mode;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("name")
-        public ScheduleStage name(String name) {
+        public ScheduleStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("schedule")
-        public TargetStage schedule(Schedule schedule) {
+        public TargetStage schedule(@NotNull Schedule schedule) {
             this.schedule = schedule;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("target")
-        public _FinalStage target(Target target) {
+        public _FinalStage target(@NotNull Target target) {
             this.target = target;
             return this;
         }
@@ -457,10 +553,13 @@ public final class UpdateModelSyncRequest {
          */
         @java.lang.Override
         public _FinalStage syncAllRecords(Boolean syncAllRecords) {
-            this.syncAllRecords = Optional.of(syncAllRecords);
+            this.syncAllRecords = Optional.ofNullable(syncAllRecords);
             return this;
         }
 
+        /**
+         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "sync_all_records", nulls = Nulls.SKIP)
         public _FinalStage syncAllRecords(Optional<Boolean> syncAllRecords) {
@@ -474,10 +573,13 @@ public final class UpdateModelSyncRequest {
          */
         @java.lang.Override
         public _FinalStage skipInitialBackfill(Boolean skipInitialBackfill) {
-            this.skipInitialBackfill = Optional.of(skipInitialBackfill);
+            this.skipInitialBackfill = Optional.ofNullable(skipInitialBackfill);
             return this;
         }
 
+        /**
+         * <p>Whether to skip the initial backfill of records; if true only records seen after the sync is enabled will be synced.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "skip_initial_backfill", nulls = Nulls.SKIP)
         public _FinalStage skipInitialBackfill(Optional<Boolean> skipInitialBackfill) {
@@ -486,8 +588,20 @@ public final class UpdateModelSyncRequest {
         }
 
         @java.lang.Override
+        public _FinalStage policies(Nullable<List<String>> policies) {
+            if (policies.isNull()) {
+                this.policies = null;
+            } else if (policies.isEmpty()) {
+                this.policies = Optional.empty();
+            } else {
+                this.policies = Optional.of(policies.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -503,11 +617,30 @@ public final class UpdateModelSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage overrides(List<Override> overrides) {
-            this.overrides = Optional.of(overrides);
+        public _FinalStage overrides(Nullable<List<Override>> overrides) {
+            if (overrides.isNull()) {
+                this.overrides = null;
+            } else if (overrides.isEmpty()) {
+                this.overrides = Optional.empty();
+            } else {
+                this.overrides = Optional.of(overrides.get());
+            }
             return this;
         }
 
+        /**
+         * <p>Conditional value replacement for fields.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage overrides(List<Override> overrides) {
+            this.overrides = Optional.ofNullable(overrides);
+            return this;
+        }
+
+        /**
+         * <p>Conditional value replacement for fields.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "overrides", nulls = Nulls.SKIP)
         public _FinalStage overrides(Optional<List<Override>> overrides) {
@@ -520,11 +653,30 @@ public final class UpdateModelSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage overrideFields(List<ModelSyncField> overrideFields) {
-            this.overrideFields = Optional.of(overrideFields);
+        public _FinalStage overrideFields(Nullable<List<ModelSyncField>> overrideFields) {
+            if (overrideFields.isNull()) {
+                this.overrideFields = null;
+            } else if (overrideFields.isEmpty()) {
+                this.overrideFields = Optional.empty();
+            } else {
+                this.overrideFields = Optional.of(overrideFields.get());
+            }
             return this;
         }
 
+        /**
+         * <p>Values to set in the target unconditionally.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage overrideFields(List<ModelSyncField> overrideFields) {
+            this.overrideFields = Optional.ofNullable(overrideFields);
+            return this;
+        }
+
+        /**
+         * <p>Values to set in the target unconditionally.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "override_fields", nulls = Nulls.SKIP)
         public _FinalStage overrideFields(Optional<List<ModelSyncField>> overrideFields) {
@@ -537,11 +689,30 @@ public final class UpdateModelSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+        public _FinalStage organizationId(Nullable<String> organizationId) {
+            if (organizationId.isNull()) {
+                this.organizationId = null;
+            } else if (organizationId.isEmpty()) {
+                this.organizationId = Optional.empty();
+            } else {
+                this.organizationId = Optional.of(organizationId.get());
+            }
             return this;
         }
 
+        /**
+         * <p>Organization ID for the sync; read-only with a partner key.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage organizationId(String organizationId) {
+            this.organizationId = Optional.ofNullable(organizationId);
+            return this;
+        }
+
+        /**
+         * <p>Organization ID for the sync; read-only with a partner key.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -555,10 +726,13 @@ public final class UpdateModelSyncRequest {
          */
         @java.lang.Override
         public _FinalStage onlyEnrichUpdates(Boolean onlyEnrichUpdates) {
-            this.onlyEnrichUpdates = Optional.of(onlyEnrichUpdates);
+            this.onlyEnrichUpdates = Optional.ofNullable(onlyEnrichUpdates);
             return this;
         }
 
+        /**
+         * <p>Whether to use enrichment models as a source of possible changes to sync. If true, only changes to the base models will cause a record to sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "only_enrich_updates", nulls = Nulls.SKIP)
         public _FinalStage onlyEnrichUpdates(Optional<Boolean> onlyEnrichUpdates) {
@@ -568,7 +742,7 @@ public final class UpdateModelSyncRequest {
 
         @java.lang.Override
         public _FinalStage identity(Identity identity) {
-            this.identity = Optional.of(identity);
+            this.identity = Optional.ofNullable(identity);
             return this;
         }
 
@@ -584,11 +758,30 @@ public final class UpdateModelSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage filters(List<Filter> filters) {
-            this.filters = Optional.of(filters);
+        public _FinalStage filters(Nullable<List<Filter>> filters) {
+            if (filters.isNull()) {
+                this.filters = null;
+            } else if (filters.isEmpty()) {
+                this.filters = Optional.empty();
+            } else {
+                this.filters = Optional.of(filters.get());
+            }
             return this;
         }
 
+        /**
+         * <p>Filters to apply to the source data.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage filters(List<Filter> filters) {
+            this.filters = Optional.ofNullable(filters);
+            return this;
+        }
+
+        /**
+         * <p>Filters to apply to the source data.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
         public _FinalStage filters(Optional<List<Filter>> filters) {
@@ -602,10 +795,13 @@ public final class UpdateModelSyncRequest {
          */
         @java.lang.Override
         public _FinalStage filterLogic(String filterLogic) {
-            this.filterLogic = Optional.of(filterLogic);
+            this.filterLogic = Optional.ofNullable(filterLogic);
             return this;
         }
 
+        /**
+         * <p>Logical expression to combine filters.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "filter_logic", nulls = Nulls.SKIP)
         public _FinalStage filterLogic(Optional<String> filterLogic) {
@@ -619,7 +815,9 @@ public final class UpdateModelSyncRequest {
          */
         @java.lang.Override
         public _FinalStage addAllFields(List<ModelSyncField> fields) {
-            this.fields.addAll(fields);
+            if (fields != null) {
+                this.fields.addAll(fields);
+            }
             return this;
         }
 
@@ -633,11 +831,16 @@ public final class UpdateModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Fields to sync from source to destination.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public _FinalStage fields(List<ModelSyncField> fields) {
             this.fields.clear();
-            this.fields.addAll(fields);
+            if (fields != null) {
+                this.fields.addAll(fields);
+            }
             return this;
         }
 
@@ -647,10 +850,13 @@ public final class UpdateModelSyncRequest {
          */
         @java.lang.Override
         public _FinalStage encryptionPassphrase(String encryptionPassphrase) {
-            this.encryptionPassphrase = Optional.of(encryptionPassphrase);
+            this.encryptionPassphrase = Optional.ofNullable(encryptionPassphrase);
             return this;
         }
 
+        /**
+         * <p>Passphrase for encrypting the sync data.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "encryption_passphrase", nulls = Nulls.SKIP)
         public _FinalStage encryptionPassphrase(Optional<String> encryptionPassphrase) {
@@ -664,10 +870,13 @@ public final class UpdateModelSyncRequest {
          */
         @java.lang.Override
         public _FinalStage active(Boolean active) {
-            this.active = Optional.of(active);
+            this.active = Optional.ofNullable(active);
             return this;
         }
 
+        /**
+         * <p>Whether the sync is enabled and scheduled.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public _FinalStage active(Optional<Boolean> active) {
@@ -696,6 +905,18 @@ public final class UpdateModelSyncRequest {
                     syncAllRecords,
                     target,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

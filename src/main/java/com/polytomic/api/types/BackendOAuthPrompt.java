@@ -5,19 +5,22 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BackendOAuthPrompt.Builder.class)
 public final class BackendOAuthPrompt {
     private final Optional<String> key;
@@ -39,19 +42,37 @@ public final class BackendOAuthPrompt {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("key")
+    @JsonIgnore
     public Optional<String> getKey() {
+        if (key == null) {
+            return Optional.empty();
+        }
         return key;
     }
 
-    @JsonProperty("value")
+    @JsonIgnore
     public Optional<String> getValue() {
+        if (value == null) {
+            return Optional.empty();
+        }
         return value;
     }
 
     @JsonProperty("when")
     public Optional<String> getWhen() {
         return when;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("key")
+    private Optional<String> _getKey() {
+        return key;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("value")
+    private Optional<String> _getValue() {
+        return value;
     }
 
     @java.lang.Override
@@ -110,7 +131,18 @@ public final class BackendOAuthPrompt {
         }
 
         public Builder key(String key) {
-            this.key = Optional.of(key);
+            this.key = Optional.ofNullable(key);
+            return this;
+        }
+
+        public Builder key(Nullable<String> key) {
+            if (key.isNull()) {
+                this.key = null;
+            } else if (key.isEmpty()) {
+                this.key = Optional.empty();
+            } else {
+                this.key = Optional.of(key.get());
+            }
             return this;
         }
 
@@ -121,7 +153,18 @@ public final class BackendOAuthPrompt {
         }
 
         public Builder value(String value) {
-            this.value = Optional.of(value);
+            this.value = Optional.ofNullable(value);
+            return this;
+        }
+
+        public Builder value(Nullable<String> value) {
+            if (value.isNull()) {
+                this.value = null;
+            } else if (value.isEmpty()) {
+                this.value = Optional.empty();
+            } else {
+                this.value = Optional.of(value.get());
+            }
             return this;
         }
 
@@ -132,12 +175,22 @@ public final class BackendOAuthPrompt {
         }
 
         public Builder when(String when) {
-            this.when = Optional.of(when);
+            this.when = Optional.ofNullable(when);
             return this;
         }
 
         public BackendOAuthPrompt build() {
             return new BackendOAuthPrompt(key, value, when, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

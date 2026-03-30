@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.schemas.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,21 +17,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SchemasListRequest.Builder.class)
 public final class SchemasListRequest {
-    private final Optional<Map<String, Optional<String>>> filters;
+    private final Optional<Map<String, String>> filters;
 
     private final Map<String, Object> additionalProperties;
 
-    private SchemasListRequest(
-            Optional<Map<String, Optional<String>>> filters, Map<String, Object> additionalProperties) {
+    private SchemasListRequest(Optional<Map<String, String>> filters, Map<String, Object> additionalProperties) {
         this.filters = filters;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("filters")
-    public Optional<Map<String, Optional<String>>> getFilters() {
+    @JsonIgnore
+    public Optional<Map<String, String>> getFilters() {
         return filters;
     }
 
@@ -66,7 +65,7 @@ public final class SchemasListRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Optional<String>>> filters = Optional.empty();
+        private Optional<Map<String, String>> filters = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -79,18 +78,28 @@ public final class SchemasListRequest {
         }
 
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
-        public Builder filters(Optional<Map<String, Optional<String>>> filters) {
+        public Builder filters(Optional<Map<String, String>> filters) {
             this.filters = filters;
             return this;
         }
 
-        public Builder filters(Map<String, Optional<String>> filters) {
-            this.filters = Optional.of(filters);
+        public Builder filters(Map<String, String> filters) {
+            this.filters = Optional.ofNullable(filters);
             return this;
         }
 
         public SchemasListRequest build() {
             return new SchemasListRequest(filters, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

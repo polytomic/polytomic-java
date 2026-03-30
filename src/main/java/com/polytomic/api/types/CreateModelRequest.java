@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,8 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateModelRequest.Builder.class)
 public final class CreateModelRequest {
     private final Optional<List<ModelModelFieldRequest>> additionalFields;
@@ -77,8 +81,11 @@ public final class CreateModelRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("additional_fields")
+    @JsonIgnore
     public Optional<List<ModelModelFieldRequest>> getAdditionalFields() {
+        if (additionalFields == null) {
+            return Optional.empty();
+        }
         return additionalFields;
     }
 
@@ -97,8 +104,11 @@ public final class CreateModelRequest {
         return enricher;
     }
 
-    @JsonProperty("fields")
+    @JsonIgnore
     public Optional<List<String>> getFields() {
+        if (fields == null) {
+            return Optional.empty();
+        }
         return fields;
     }
 
@@ -107,8 +117,11 @@ public final class CreateModelRequest {
         return identifier;
     }
 
-    @JsonProperty("labels")
+    @JsonIgnore
     public Optional<List<String>> getLabels() {
+        if (labels == null) {
+            return Optional.empty();
+        }
         return labels;
     }
 
@@ -117,23 +130,77 @@ public final class CreateModelRequest {
         return name;
     }
 
-    @JsonProperty("organization_id")
+    @JsonIgnore
     public Optional<String> getOrganizationId() {
+        if (organizationId == null) {
+            return Optional.empty();
+        }
         return organizationId;
     }
 
-    @JsonProperty("policies")
+    @JsonIgnore
     public Optional<List<String>> getPolicies() {
+        if (policies == null) {
+            return Optional.empty();
+        }
         return policies;
     }
 
-    @JsonProperty("relations")
+    @JsonIgnore
     public Optional<List<ModelRelation>> getRelations() {
+        if (relations == null) {
+            return Optional.empty();
+        }
         return relations;
     }
 
-    @JsonProperty("tracking_columns")
+    @JsonIgnore
     public Optional<List<String>> getTrackingColumns() {
+        if (trackingColumns == null) {
+            return Optional.empty();
+        }
+        return trackingColumns;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("additional_fields")
+    private Optional<List<ModelModelFieldRequest>> _getAdditionalFields() {
+        return additionalFields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("fields")
+    private Optional<List<String>> _getFields() {
+        return fields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("labels")
+    private Optional<List<String>> _getLabels() {
+        return labels;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("organization_id")
+    private Optional<String> _getOrganizationId() {
+        return organizationId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("policies")
+    private Optional<List<String>> _getPolicies() {
+        return policies;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("relations")
+    private Optional<List<ModelRelation>> _getRelations() {
+        return relations;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("tracking_columns")
+    private Optional<List<String>> _getTrackingColumns() {
         return trackingColumns;
     }
 
@@ -190,21 +257,27 @@ public final class CreateModelRequest {
     }
 
     public interface ConnectionIdStage {
-        NameStage connectionId(String connectionId);
+        NameStage connectionId(@NotNull String connectionId);
 
         Builder from(CreateModelRequest other);
     }
 
     public interface NameStage {
-        _FinalStage name(String name);
+        _FinalStage name(@NotNull String name);
     }
 
     public interface _FinalStage {
         CreateModelRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage additionalFields(Optional<List<ModelModelFieldRequest>> additionalFields);
 
         _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields);
+
+        _FinalStage additionalFields(Nullable<List<ModelModelFieldRequest>> additionalFields);
 
         _FinalStage configuration(Map<String, Object> configuration);
 
@@ -220,6 +293,8 @@ public final class CreateModelRequest {
 
         _FinalStage fields(List<String> fields);
 
+        _FinalStage fields(Nullable<List<String>> fields);
+
         _FinalStage identifier(Optional<String> identifier);
 
         _FinalStage identifier(String identifier);
@@ -228,21 +303,31 @@ public final class CreateModelRequest {
 
         _FinalStage labels(List<String> labels);
 
+        _FinalStage labels(Nullable<List<String>> labels);
+
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
+
+        _FinalStage organizationId(Nullable<String> organizationId);
 
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
 
+        _FinalStage policies(Nullable<List<String>> policies);
+
         _FinalStage relations(Optional<List<ModelRelation>> relations);
 
         _FinalStage relations(List<ModelRelation> relations);
 
+        _FinalStage relations(Nullable<List<ModelRelation>> relations);
+
         _FinalStage trackingColumns(Optional<List<String>> trackingColumns);
 
         _FinalStage trackingColumns(List<String> trackingColumns);
+
+        _FinalStage trackingColumns(Nullable<List<String>> trackingColumns);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -295,21 +380,33 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         @JsonSetter("connection_id")
-        public NameStage connectionId(String connectionId) {
+        public NameStage connectionId(@NotNull String connectionId) {
             this.connectionId = connectionId;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
+        public _FinalStage trackingColumns(Nullable<List<String>> trackingColumns) {
+            if (trackingColumns.isNull()) {
+                this.trackingColumns = null;
+            } else if (trackingColumns.isEmpty()) {
+                this.trackingColumns = Optional.empty();
+            } else {
+                this.trackingColumns = Optional.of(trackingColumns.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage trackingColumns(List<String> trackingColumns) {
-            this.trackingColumns = Optional.of(trackingColumns);
+            this.trackingColumns = Optional.ofNullable(trackingColumns);
             return this;
         }
 
@@ -321,8 +418,20 @@ public final class CreateModelRequest {
         }
 
         @java.lang.Override
+        public _FinalStage relations(Nullable<List<ModelRelation>> relations) {
+            if (relations.isNull()) {
+                this.relations = null;
+            } else if (relations.isEmpty()) {
+                this.relations = Optional.empty();
+            } else {
+                this.relations = Optional.of(relations.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage relations(List<ModelRelation> relations) {
-            this.relations = Optional.of(relations);
+            this.relations = Optional.ofNullable(relations);
             return this;
         }
 
@@ -334,8 +443,20 @@ public final class CreateModelRequest {
         }
 
         @java.lang.Override
+        public _FinalStage policies(Nullable<List<String>> policies) {
+            if (policies.isNull()) {
+                this.policies = null;
+            } else if (policies.isEmpty()) {
+                this.policies = Optional.empty();
+            } else {
+                this.policies = Optional.of(policies.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -347,8 +468,20 @@ public final class CreateModelRequest {
         }
 
         @java.lang.Override
+        public _FinalStage organizationId(Nullable<String> organizationId) {
+            if (organizationId.isNull()) {
+                this.organizationId = null;
+            } else if (organizationId.isEmpty()) {
+                this.organizationId = Optional.empty();
+            } else {
+                this.organizationId = Optional.of(organizationId.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -360,8 +493,20 @@ public final class CreateModelRequest {
         }
 
         @java.lang.Override
+        public _FinalStage labels(Nullable<List<String>> labels) {
+            if (labels.isNull()) {
+                this.labels = null;
+            } else if (labels.isEmpty()) {
+                this.labels = Optional.empty();
+            } else {
+                this.labels = Optional.of(labels.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage labels(List<String> labels) {
-            this.labels = Optional.of(labels);
+            this.labels = Optional.ofNullable(labels);
             return this;
         }
 
@@ -374,7 +519,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage identifier(String identifier) {
-            this.identifier = Optional.of(identifier);
+            this.identifier = Optional.ofNullable(identifier);
             return this;
         }
 
@@ -386,8 +531,20 @@ public final class CreateModelRequest {
         }
 
         @java.lang.Override
+        public _FinalStage fields(Nullable<List<String>> fields) {
+            if (fields.isNull()) {
+                this.fields = null;
+            } else if (fields.isEmpty()) {
+                this.fields = Optional.empty();
+            } else {
+                this.fields = Optional.of(fields.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage fields(List<String> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -400,7 +557,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage enricher(Enrichment enricher) {
-            this.enricher = Optional.of(enricher);
+            this.enricher = Optional.ofNullable(enricher);
             return this;
         }
 
@@ -419,7 +576,9 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage putAllConfiguration(Map<String, Object> configuration) {
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
             return this;
         }
 
@@ -427,13 +586,27 @@ public final class CreateModelRequest {
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration.clear();
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage additionalFields(Nullable<List<ModelModelFieldRequest>> additionalFields) {
+            if (additionalFields.isNull()) {
+                this.additionalFields = null;
+            } else if (additionalFields.isEmpty()) {
+                this.additionalFields = Optional.empty();
+            } else {
+                this.additionalFields = Optional.of(additionalFields.get());
+            }
             return this;
         }
 
         @java.lang.Override
         public _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields) {
-            this.additionalFields = Optional.of(additionalFields);
+            this.additionalFields = Optional.ofNullable(additionalFields);
             return this;
         }
 
@@ -460,6 +633,18 @@ public final class CreateModelRequest {
                     relations,
                     trackingColumns,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

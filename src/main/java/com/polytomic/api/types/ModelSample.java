@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSample.Builder.class)
 public final class ModelSample {
     private final Optional<List<Map<String, Map<String, Object>>>> records;
@@ -99,7 +99,7 @@ public final class ModelSample {
         }
 
         public Builder records(List<Map<String, Map<String, Object>>> records) {
-            this.records = Optional.of(records);
+            this.records = Optional.ofNullable(records);
             return this;
         }
 
@@ -110,12 +110,22 @@ public final class ModelSample {
         }
 
         public Builder warnings(List<String> warnings) {
-            this.warnings = Optional.of(warnings);
+            this.warnings = Optional.ofNullable(warnings);
             return this;
         }
 
         public ModelSample build() {
             return new ModelSample(records, warnings, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

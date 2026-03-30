@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncSource.Builder.class)
 public final class BulkSyncSource {
     private final Optional<Object> configuration;
@@ -39,8 +42,17 @@ public final class BulkSyncSource {
         return configuration;
     }
 
-    @JsonProperty("schemas")
+    @JsonIgnore
     public Optional<List<Schema>> getSchemas() {
+        if (schemas == null) {
+            return Optional.empty();
+        }
+        return schemas;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("schemas")
+    private Optional<List<Schema>> _getSchemas() {
         return schemas;
     }
 
@@ -97,7 +109,7 @@ public final class BulkSyncSource {
         }
 
         public Builder configuration(Object configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -108,12 +120,33 @@ public final class BulkSyncSource {
         }
 
         public Builder schemas(List<Schema> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
+            return this;
+        }
+
+        public Builder schemas(Nullable<List<Schema>> schemas) {
+            if (schemas.isNull()) {
+                this.schemas = null;
+            } else if (schemas.isEmpty()) {
+                this.schemas = Optional.empty();
+            } else {
+                this.schemas = Optional.of(schemas.get());
+            }
             return this;
         }
 
         public BulkSyncSource build() {
             return new BulkSyncSource(configuration, schemas, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

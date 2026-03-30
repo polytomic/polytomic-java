@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkFilter.Builder.class)
 public final class BulkFilter {
     private final Optional<String> fieldId;
@@ -87,7 +88,7 @@ public final class BulkFilter {
     }
 
     public interface FunctionStage {
-        _FinalStage function(FilterFunction function);
+        _FinalStage function(@NotNull FilterFunction function);
 
         Builder from(BulkFilter other);
     }
@@ -95,6 +96,13 @@ public final class BulkFilter {
     public interface _FinalStage {
         BulkFilter build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Schema field ID to filter on.</p>
+         */
         _FinalStage fieldId(Optional<String> fieldId);
 
         _FinalStage fieldId(String fieldId);
@@ -127,14 +135,14 @@ public final class BulkFilter {
 
         @java.lang.Override
         @JsonSetter("function")
-        public _FinalStage function(FilterFunction function) {
+        public _FinalStage function(@NotNull FilterFunction function) {
             this.function = function;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage value(Object value) {
-            this.value = Optional.of(value);
+            this.value = Optional.ofNullable(value);
             return this;
         }
 
@@ -151,10 +159,13 @@ public final class BulkFilter {
          */
         @java.lang.Override
         public _FinalStage fieldId(String fieldId) {
-            this.fieldId = Optional.of(fieldId);
+            this.fieldId = Optional.ofNullable(fieldId);
             return this;
         }
 
+        /**
+         * <p>Schema field ID to filter on.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
         public _FinalStage fieldId(Optional<String> fieldId) {
@@ -165,6 +176,18 @@ public final class BulkFilter {
         @java.lang.Override
         public BulkFilter build() {
             return new BulkFilter(fieldId, function, value, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

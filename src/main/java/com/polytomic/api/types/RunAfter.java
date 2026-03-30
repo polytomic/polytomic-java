@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = RunAfter.Builder.class)
 public final class RunAfter {
     private final Optional<List<String>> bulkSyncIds;
@@ -99,7 +99,7 @@ public final class RunAfter {
         }
 
         public Builder bulkSyncIds(List<String> bulkSyncIds) {
-            this.bulkSyncIds = Optional.of(bulkSyncIds);
+            this.bulkSyncIds = Optional.ofNullable(bulkSyncIds);
             return this;
         }
 
@@ -110,12 +110,22 @@ public final class RunAfter {
         }
 
         public Builder syncIds(List<String> syncIds) {
-            this.syncIds = Optional.of(syncIds);
+            this.syncIds = Optional.ofNullable(syncIds);
             return this;
         }
 
         public RunAfter build() {
             return new RunAfter(bulkSyncIds, syncIds, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

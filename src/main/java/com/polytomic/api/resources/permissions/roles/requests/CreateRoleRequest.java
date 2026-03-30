@@ -5,19 +5,23 @@ package com.polytomic.api.resources.permissions.roles.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateRoleRequest.Builder.class)
 public final class CreateRoleRequest {
     private final String name;
@@ -37,8 +41,17 @@ public final class CreateRoleRequest {
         return name;
     }
 
-    @JsonProperty("organization_id")
+    @JsonIgnore
     public Optional<String> getOrganizationId() {
+        if (organizationId == null) {
+            return Optional.empty();
+        }
+        return organizationId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("organization_id")
+    private Optional<String> _getOrganizationId() {
         return organizationId;
     }
 
@@ -72,7 +85,7 @@ public final class CreateRoleRequest {
     }
 
     public interface NameStage {
-        _FinalStage name(String name);
+        _FinalStage name(@NotNull String name);
 
         Builder from(CreateRoleRequest other);
     }
@@ -80,9 +93,15 @@ public final class CreateRoleRequest {
     public interface _FinalStage {
         CreateRoleRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
+
+        _FinalStage organizationId(Nullable<String> organizationId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -105,14 +124,26 @@ public final class CreateRoleRequest {
 
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
+        public _FinalStage organizationId(Nullable<String> organizationId) {
+            if (organizationId.isNull()) {
+                this.organizationId = null;
+            } else if (organizationId.isEmpty()) {
+                this.organizationId = Optional.empty();
+            } else {
+                this.organizationId = Optional.of(organizationId.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -126,6 +157,18 @@ public final class CreateRoleRequest {
         @java.lang.Override
         public CreateRoleRequest build() {
             return new CreateRoleRequest(name, organizationId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Filter.Builder.class)
 public final class Filter {
     private final Optional<Source> field;
@@ -119,7 +120,7 @@ public final class Filter {
     }
 
     public interface FunctionStage {
-        _FinalStage function(FilterFunction function);
+        _FinalStage function(@NotNull FilterFunction function);
 
         Builder from(Filter other);
     }
@@ -127,10 +128,17 @@ public final class Filter {
     public interface _FinalStage {
         Filter build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage field(Optional<Source> field);
 
         _FinalStage field(Source field);
 
+        /**
+         * <p>Model or Target field name to filter on.</p>
+         */
         _FinalStage fieldId(Optional<String> fieldId);
 
         _FinalStage fieldId(String fieldId);
@@ -180,14 +188,14 @@ public final class Filter {
 
         @java.lang.Override
         @JsonSetter("function")
-        public _FinalStage function(FilterFunction function) {
+        public _FinalStage function(@NotNull FilterFunction function) {
             this.function = function;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage value(Object value) {
-            this.value = Optional.of(value);
+            this.value = Optional.ofNullable(value);
             return this;
         }
 
@@ -200,7 +208,7 @@ public final class Filter {
 
         @java.lang.Override
         public _FinalStage label(String label) {
-            this.label = Optional.of(label);
+            this.label = Optional.ofNullable(label);
             return this;
         }
 
@@ -213,7 +221,7 @@ public final class Filter {
 
         @java.lang.Override
         public _FinalStage fieldType(FilterFieldReferenceType fieldType) {
-            this.fieldType = Optional.of(fieldType);
+            this.fieldType = Optional.ofNullable(fieldType);
             return this;
         }
 
@@ -230,10 +238,13 @@ public final class Filter {
          */
         @java.lang.Override
         public _FinalStage fieldId(String fieldId) {
-            this.fieldId = Optional.of(fieldId);
+            this.fieldId = Optional.ofNullable(fieldId);
             return this;
         }
 
+        /**
+         * <p>Model or Target field name to filter on.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
         public _FinalStage fieldId(Optional<String> fieldId) {
@@ -243,7 +254,7 @@ public final class Filter {
 
         @java.lang.Override
         public _FinalStage field(Source field) {
-            this.field = Optional.of(field);
+            this.field = Optional.ofNullable(field);
             return this;
         }
 
@@ -257,6 +268,18 @@ public final class Filter {
         @java.lang.Override
         public Filter build() {
             return new Filter(field, fieldId, fieldType, function, label, value, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

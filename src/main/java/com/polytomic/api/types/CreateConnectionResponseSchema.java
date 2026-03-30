@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateConnectionResponseSchema.Builder.class)
 public final class CreateConnectionResponseSchema {
     private final Optional<String> authCode;
@@ -92,8 +95,11 @@ public final class CreateConnectionResponseSchema {
         return authUrl;
     }
 
-    @JsonProperty("configuration")
+    @JsonIgnore
     public Optional<Map<String, Object>> getConfiguration() {
+        if (configuration == null) {
+            return Optional.empty();
+        }
         return configuration;
     }
 
@@ -143,6 +149,12 @@ public final class CreateConnectionResponseSchema {
     @JsonProperty("type")
     public Optional<ConnectionTypeSchema> getType() {
         return type;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("configuration")
+    private Optional<Map<String, Object>> _getConfiguration() {
+        return configuration;
     }
 
     @java.lang.Override
@@ -244,6 +256,9 @@ public final class CreateConnectionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Code to enter in order to complete connection authentication.</p>
+         */
         @JsonSetter(value = "auth_code", nulls = Nulls.SKIP)
         public Builder authCode(Optional<String> authCode) {
             this.authCode = authCode;
@@ -251,10 +266,13 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder authCode(String authCode) {
-            this.authCode = Optional.of(authCode);
+            this.authCode = Optional.ofNullable(authCode);
             return this;
         }
 
+        /**
+         * <p>URL to visit to complete connection authentication.</p>
+         */
         @JsonSetter(value = "auth_url", nulls = Nulls.SKIP)
         public Builder authUrl(Optional<String> authUrl) {
             this.authUrl = authUrl;
@@ -262,7 +280,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder authUrl(String authUrl) {
-            this.authUrl = Optional.of(authUrl);
+            this.authUrl = Optional.ofNullable(authUrl);
             return this;
         }
 
@@ -273,10 +291,24 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
+        public Builder configuration(Nullable<Map<String, Object>> configuration) {
+            if (configuration.isNull()) {
+                this.configuration = null;
+            } else if (configuration.isEmpty()) {
+                this.configuration = Optional.empty();
+            } else {
+                this.configuration = Optional.of(configuration.get());
+            }
+            return this;
+        }
+
+        /**
+         * <p>Interval for connection health checking.</p>
+         */
         @JsonSetter(value = "healthcheck_interval", nulls = Nulls.SKIP)
         public Builder healthcheckInterval(Optional<String> healthcheckInterval) {
             this.healthcheckInterval = healthcheckInterval;
@@ -284,7 +316,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder healthcheckInterval(String healthcheckInterval) {
-            this.healthcheckInterval = Optional.of(healthcheckInterval);
+            this.healthcheckInterval = Optional.ofNullable(healthcheckInterval);
             return this;
         }
 
@@ -295,7 +327,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -306,7 +338,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -317,7 +349,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -328,7 +360,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -339,7 +371,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder saved(Boolean saved) {
-            this.saved = Optional.of(saved);
+            this.saved = Optional.ofNullable(saved);
             return this;
         }
 
@@ -350,7 +382,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder status(String status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -361,7 +393,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder statusError(String statusError) {
-            this.statusError = Optional.of(statusError);
+            this.statusError = Optional.ofNullable(statusError);
             return this;
         }
 
@@ -372,7 +404,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         public Builder type(ConnectionTypeSchema type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -391,6 +423,16 @@ public final class CreateConnectionResponseSchema {
                     statusError,
                     type,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

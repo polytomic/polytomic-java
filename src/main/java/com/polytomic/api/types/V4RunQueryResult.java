@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4RunQueryResult.Builder.class)
 public final class V4RunQueryResult {
     private final Optional<Integer> count;
@@ -86,7 +86,7 @@ public final class V4RunQueryResult {
     }
 
     /**
-     * @return The ID of the query task.
+     * @return The ID of the query task. Poll GET /api/queries/{id} until the task reaches done or failed to retrieve results.
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -173,6 +173,9 @@ public final class V4RunQueryResult {
             return this;
         }
 
+        /**
+         * <p>The number of rows returned by the query. This will not be returned until the query completes.</p>
+         */
         @JsonSetter(value = "count", nulls = Nulls.SKIP)
         public Builder count(Optional<Integer> count) {
             this.count = count;
@@ -180,7 +183,7 @@ public final class V4RunQueryResult {
         }
 
         public Builder count(Integer count) {
-            this.count = Optional.of(count);
+            this.count = Optional.ofNullable(count);
             return this;
         }
 
@@ -191,10 +194,13 @@ public final class V4RunQueryResult {
         }
 
         public Builder error(String error) {
-            this.error = Optional.of(error);
+            this.error = Optional.ofNullable(error);
             return this;
         }
 
+        /**
+         * <p>The time at which the query will expire and be deleted. This will not be returned until the query completes.</p>
+         */
         @JsonSetter(value = "expires", nulls = Nulls.SKIP)
         public Builder expires(Optional<String> expires) {
             this.expires = expires;
@@ -202,10 +208,13 @@ public final class V4RunQueryResult {
         }
 
         public Builder expires(String expires) {
-            this.expires = Optional.of(expires);
+            this.expires = Optional.ofNullable(expires);
             return this;
         }
 
+        /**
+         * <p>The names of the fields returned by the query. This will not be returned until the query completes.</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<String>> fields) {
             this.fields = fields;
@@ -213,10 +222,13 @@ public final class V4RunQueryResult {
         }
 
         public Builder fields(List<String> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
+        /**
+         * <p>The ID of the query task. Poll GET /api/queries/{id} until the task reaches done or failed to retrieve results.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -224,10 +236,13 @@ public final class V4RunQueryResult {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>The query results, returned as an array of objects.</p>
+         */
         @JsonSetter(value = "results", nulls = Nulls.SKIP)
         public Builder results(Optional<List<Map<String, Object>>> results) {
             this.results = results;
@@ -235,7 +250,7 @@ public final class V4RunQueryResult {
         }
 
         public Builder results(List<Map<String, Object>> results) {
-            this.results = Optional.of(results);
+            this.results = Optional.ofNullable(results);
             return this;
         }
 
@@ -246,12 +261,22 @@ public final class V4RunQueryResult {
         }
 
         public Builder status(WorkTaskStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
         public V4RunQueryResult build() {
             return new V4RunQueryResult(count, error, expires, fields, id, results, status, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

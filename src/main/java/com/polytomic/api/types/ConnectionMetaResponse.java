@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionMetaResponse.Builder.class)
 public final class ConnectionMetaResponse {
     private final Optional<Map<String, ConfigurationValue>> configuration;
@@ -45,13 +48,31 @@ public final class ConnectionMetaResponse {
         return configuration;
     }
 
-    @JsonProperty("items")
+    @JsonIgnore
     public Optional<Map<String, Optional<ConnectionMeta>>> getItems() {
+        if (items == null) {
+            return Optional.empty();
+        }
         return items;
     }
 
-    @JsonProperty("requires_one_of")
+    @JsonIgnore
     public Optional<List<String>> getRequiresOneOf() {
+        if (requiresOneOf == null) {
+            return Optional.empty();
+        }
+        return requiresOneOf;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("items")
+    private Optional<Map<String, Optional<ConnectionMeta>>> _getItems() {
+        return items;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("requires_one_of")
+    private Optional<List<String>> _getRequiresOneOf() {
         return requiresOneOf;
     }
 
@@ -113,7 +134,7 @@ public final class ConnectionMetaResponse {
         }
 
         public Builder configuration(Map<String, ConfigurationValue> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -124,7 +145,18 @@ public final class ConnectionMetaResponse {
         }
 
         public Builder items(Map<String, Optional<ConnectionMeta>> items) {
-            this.items = Optional.of(items);
+            this.items = Optional.ofNullable(items);
+            return this;
+        }
+
+        public Builder items(Nullable<Map<String, Optional<ConnectionMeta>>> items) {
+            if (items.isNull()) {
+                this.items = null;
+            } else if (items.isEmpty()) {
+                this.items = Optional.empty();
+            } else {
+                this.items = Optional.of(items.get());
+            }
             return this;
         }
 
@@ -135,12 +167,33 @@ public final class ConnectionMetaResponse {
         }
 
         public Builder requiresOneOf(List<String> requiresOneOf) {
-            this.requiresOneOf = Optional.of(requiresOneOf);
+            this.requiresOneOf = Optional.ofNullable(requiresOneOf);
+            return this;
+        }
+
+        public Builder requiresOneOf(Nullable<List<String>> requiresOneOf) {
+            if (requiresOneOf.isNull()) {
+                this.requiresOneOf = null;
+            } else if (requiresOneOf.isEmpty()) {
+                this.requiresOneOf = Optional.empty();
+            } else {
+                this.requiresOneOf = Optional.of(requiresOneOf.get());
+            }
             return this;
         }
 
         public ConnectionMetaResponse build() {
             return new ConnectionMetaResponse(configuration, items, requiresOneOf, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -5,12 +5,15 @@ package com.polytomic.api.resources.schemas.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.V4UserFieldRequest;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpsertSchemaFieldRequest.Builder.class)
 public final class UpsertSchemaFieldRequest {
     private final Optional<List<V4UserFieldRequest>> fields;
@@ -32,8 +35,17 @@ public final class UpsertSchemaFieldRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("fields")
+    @JsonIgnore
     public Optional<List<V4UserFieldRequest>> getFields() {
+        if (fields == null) {
+            return Optional.empty();
+        }
+        return fields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("fields")
+    private Optional<List<V4UserFieldRequest>> _getFields() {
         return fields;
     }
 
@@ -87,12 +99,33 @@ public final class UpsertSchemaFieldRequest {
         }
 
         public Builder fields(List<V4UserFieldRequest> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
+            return this;
+        }
+
+        public Builder fields(Nullable<List<V4UserFieldRequest>> fields) {
+            if (fields.isNull()) {
+                this.fields = null;
+            } else if (fields.isEmpty()) {
+                this.fields = Optional.empty();
+            } else {
+                this.fields = Optional.of(fields.get());
+            }
             return this;
         }
 
         public UpsertSchemaFieldRequest build() {
             return new UpsertSchemaFieldRequest(fields, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

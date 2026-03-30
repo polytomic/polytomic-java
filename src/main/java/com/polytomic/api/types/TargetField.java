@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetField.Builder.class)
 public final class TargetField {
     private final Optional<Boolean> association;
@@ -110,8 +113,11 @@ public final class TargetField {
         return id;
     }
 
-    @JsonProperty("identity_functions")
+    @JsonIgnore
     public Optional<List<IdentityFunction>> getIdentityFunctions() {
+        if (identityFunctions == null) {
+            return Optional.empty();
+        }
         return identityFunctions;
     }
 
@@ -143,6 +149,12 @@ public final class TargetField {
     @JsonProperty("updateable")
     public Optional<Boolean> getUpdateable() {
         return updateable;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("identity_functions")
+    private Optional<List<IdentityFunction>> _getIdentityFunctions() {
+        return identityFunctions;
     }
 
     @java.lang.Override
@@ -256,7 +268,7 @@ public final class TargetField {
         }
 
         public Builder association(Boolean association) {
-            this.association = Optional.of(association);
+            this.association = Optional.ofNullable(association);
             return this;
         }
 
@@ -267,7 +279,7 @@ public final class TargetField {
         }
 
         public Builder createable(Boolean createable) {
-            this.createable = Optional.of(createable);
+            this.createable = Optional.ofNullable(createable);
             return this;
         }
 
@@ -278,7 +290,7 @@ public final class TargetField {
         }
 
         public Builder description(String description) {
-            this.description = Optional.of(description);
+            this.description = Optional.ofNullable(description);
             return this;
         }
 
@@ -289,7 +301,7 @@ public final class TargetField {
         }
 
         public Builder encryptable(Boolean encryptable) {
-            this.encryptable = Optional.of(encryptable);
+            this.encryptable = Optional.ofNullable(encryptable);
             return this;
         }
 
@@ -300,7 +312,7 @@ public final class TargetField {
         }
 
         public Builder filterable(Boolean filterable) {
-            this.filterable = Optional.of(filterable);
+            this.filterable = Optional.ofNullable(filterable);
             return this;
         }
 
@@ -311,7 +323,7 @@ public final class TargetField {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -322,7 +334,18 @@ public final class TargetField {
         }
 
         public Builder identityFunctions(List<IdentityFunction> identityFunctions) {
-            this.identityFunctions = Optional.of(identityFunctions);
+            this.identityFunctions = Optional.ofNullable(identityFunctions);
+            return this;
+        }
+
+        public Builder identityFunctions(Nullable<List<IdentityFunction>> identityFunctions) {
+            if (identityFunctions.isNull()) {
+                this.identityFunctions = null;
+            } else if (identityFunctions.isEmpty()) {
+                this.identityFunctions = Optional.empty();
+            } else {
+                this.identityFunctions = Optional.of(identityFunctions.get());
+            }
             return this;
         }
 
@@ -333,7 +356,7 @@ public final class TargetField {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -344,7 +367,7 @@ public final class TargetField {
         }
 
         public Builder required(Boolean required) {
-            this.required = Optional.of(required);
+            this.required = Optional.ofNullable(required);
             return this;
         }
 
@@ -355,7 +378,7 @@ public final class TargetField {
         }
 
         public Builder sourceType(String sourceType) {
-            this.sourceType = Optional.of(sourceType);
+            this.sourceType = Optional.ofNullable(sourceType);
             return this;
         }
 
@@ -366,7 +389,7 @@ public final class TargetField {
         }
 
         public Builder supportsIdentity(Boolean supportsIdentity) {
-            this.supportsIdentity = Optional.of(supportsIdentity);
+            this.supportsIdentity = Optional.ofNullable(supportsIdentity);
             return this;
         }
 
@@ -377,7 +400,7 @@ public final class TargetField {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -388,7 +411,7 @@ public final class TargetField {
         }
 
         public Builder updateable(Boolean updateable) {
-            this.updateable = Optional.of(updateable);
+            this.updateable = Optional.ofNullable(updateable);
             return this;
         }
 
@@ -408,6 +431,16 @@ public final class TargetField {
                     type,
                     updateable,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

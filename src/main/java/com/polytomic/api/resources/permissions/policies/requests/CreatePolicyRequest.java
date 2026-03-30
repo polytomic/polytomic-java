@@ -5,12 +5,15 @@ package com.polytomic.api.resources.permissions.policies.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.PolicyAction;
 import java.util.HashMap;
@@ -18,8 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreatePolicyRequest.Builder.class)
 public final class CreatePolicyRequest {
     private final String name;
@@ -46,13 +50,31 @@ public final class CreatePolicyRequest {
         return name;
     }
 
-    @JsonProperty("organization_id")
+    @JsonIgnore
     public Optional<String> getOrganizationId() {
+        if (organizationId == null) {
+            return Optional.empty();
+        }
         return organizationId;
     }
 
-    @JsonProperty("policy_actions")
+    @JsonIgnore
     public Optional<List<PolicyAction>> getPolicyActions() {
+        if (policyActions == null) {
+            return Optional.empty();
+        }
+        return policyActions;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("organization_id")
+    private Optional<String> _getOrganizationId() {
+        return organizationId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("policy_actions")
+    private Optional<List<PolicyAction>> _getPolicyActions() {
         return policyActions;
     }
 
@@ -88,7 +110,7 @@ public final class CreatePolicyRequest {
     }
 
     public interface NameStage {
-        _FinalStage name(String name);
+        _FinalStage name(@NotNull String name);
 
         Builder from(CreatePolicyRequest other);
     }
@@ -96,13 +118,21 @@ public final class CreatePolicyRequest {
     public interface _FinalStage {
         CreatePolicyRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
+        _FinalStage organizationId(Nullable<String> organizationId);
+
         _FinalStage policyActions(Optional<List<PolicyAction>> policyActions);
 
         _FinalStage policyActions(List<PolicyAction> policyActions);
+
+        _FinalStage policyActions(Nullable<List<PolicyAction>> policyActions);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -128,14 +158,26 @@ public final class CreatePolicyRequest {
 
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
+        public _FinalStage policyActions(Nullable<List<PolicyAction>> policyActions) {
+            if (policyActions.isNull()) {
+                this.policyActions = null;
+            } else if (policyActions.isEmpty()) {
+                this.policyActions = Optional.empty();
+            } else {
+                this.policyActions = Optional.of(policyActions.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage policyActions(List<PolicyAction> policyActions) {
-            this.policyActions = Optional.of(policyActions);
+            this.policyActions = Optional.ofNullable(policyActions);
             return this;
         }
 
@@ -147,8 +189,20 @@ public final class CreatePolicyRequest {
         }
 
         @java.lang.Override
+        public _FinalStage organizationId(Nullable<String> organizationId) {
+            if (organizationId.isNull()) {
+                this.organizationId = null;
+            } else if (organizationId.isEmpty()) {
+                this.organizationId = Optional.empty();
+            } else {
+                this.organizationId = Optional.of(organizationId.get());
+            }
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -162,6 +216,18 @@ public final class CreatePolicyRequest {
         @java.lang.Override
         public CreatePolicyRequest build() {
             return new CreatePolicyRequest(name, organizationId, policyActions, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

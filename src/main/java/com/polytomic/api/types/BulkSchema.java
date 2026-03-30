@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSchema.Builder.class)
 public final class BulkSchema {
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
@@ -30,7 +33,7 @@ public final class BulkSchema {
 
     private final Optional<List<BulkField>> fields;
 
-    private final Optional<List<BulkFilter>> filters;
+    private final Optional<List<BulkFilter2>> filters;
 
     private final Optional<String> id;
 
@@ -49,7 +52,7 @@ public final class BulkSchema {
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
             Optional<List<BulkField>> fields,
-            Optional<List<BulkFilter>> filters,
+            Optional<List<BulkFilter2>> filters,
             Optional<String> id,
             Optional<String> outputName,
             Optional<String> partitionKey,
@@ -69,8 +72,11 @@ public final class BulkSchema {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("data_cutoff_timestamp")
+    @JsonIgnore
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
+        if (dataCutoffTimestamp == null) {
+            return Optional.empty();
+        }
         return dataCutoffTimestamp;
     }
 
@@ -84,13 +90,19 @@ public final class BulkSchema {
         return enabled;
     }
 
+    /**
+     * @return fields is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for fields.
+     */
     @JsonProperty("fields")
     public Optional<List<BulkField>> getFields() {
         return fields;
     }
 
+    /**
+     * @return filters is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for filters.
+     */
     @JsonProperty("filters")
-    public Optional<List<BulkFilter>> getFilters() {
+    public Optional<List<BulkFilter2>> getFilters() {
         return filters;
     }
 
@@ -117,6 +129,12 @@ public final class BulkSchema {
     @JsonProperty("user_output_name")
     public Optional<String> getUserOutputName() {
         return userOutputName;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("data_cutoff_timestamp")
+    private Optional<OffsetDateTime> _getDataCutoffTimestamp() {
+        return dataCutoffTimestamp;
     }
 
     @java.lang.Override
@@ -177,7 +195,7 @@ public final class BulkSchema {
 
         private Optional<List<BulkField>> fields = Optional.empty();
 
-        private Optional<List<BulkFilter>> filters = Optional.empty();
+        private Optional<List<BulkFilter2>> filters = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -215,7 +233,18 @@ public final class BulkSchema {
         }
 
         public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
+            return this;
+        }
+
+        public Builder dataCutoffTimestamp(Nullable<OffsetDateTime> dataCutoffTimestamp) {
+            if (dataCutoffTimestamp.isNull()) {
+                this.dataCutoffTimestamp = null;
+            } else if (dataCutoffTimestamp.isEmpty()) {
+                this.dataCutoffTimestamp = Optional.empty();
+            } else {
+                this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp.get());
+            }
             return this;
         }
 
@@ -226,7 +255,7 @@ public final class BulkSchema {
         }
 
         public Builder disableDataCutoff(Boolean disableDataCutoff) {
-            this.disableDataCutoff = Optional.of(disableDataCutoff);
+            this.disableDataCutoff = Optional.ofNullable(disableDataCutoff);
             return this;
         }
 
@@ -237,10 +266,13 @@ public final class BulkSchema {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
+        /**
+         * <p>fields is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for fields.</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<BulkField>> fields) {
             this.fields = fields;
@@ -248,18 +280,21 @@ public final class BulkSchema {
         }
 
         public Builder fields(List<BulkField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
+        /**
+         * <p>filters is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for filters.</p>
+         */
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
-        public Builder filters(Optional<List<BulkFilter>> filters) {
+        public Builder filters(Optional<List<BulkFilter2>> filters) {
             this.filters = filters;
             return this;
         }
 
-        public Builder filters(List<BulkFilter> filters) {
-            this.filters = Optional.of(filters);
+        public Builder filters(List<BulkFilter2> filters) {
+            this.filters = Optional.ofNullable(filters);
             return this;
         }
 
@@ -270,7 +305,7 @@ public final class BulkSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -281,7 +316,7 @@ public final class BulkSchema {
         }
 
         public Builder outputName(String outputName) {
-            this.outputName = Optional.of(outputName);
+            this.outputName = Optional.ofNullable(outputName);
             return this;
         }
 
@@ -292,7 +327,7 @@ public final class BulkSchema {
         }
 
         public Builder partitionKey(String partitionKey) {
-            this.partitionKey = Optional.of(partitionKey);
+            this.partitionKey = Optional.ofNullable(partitionKey);
             return this;
         }
 
@@ -303,7 +338,7 @@ public final class BulkSchema {
         }
 
         public Builder trackingField(String trackingField) {
-            this.trackingField = Optional.of(trackingField);
+            this.trackingField = Optional.ofNullable(trackingField);
             return this;
         }
 
@@ -314,7 +349,7 @@ public final class BulkSchema {
         }
 
         public Builder userOutputName(String userOutputName) {
-            this.userOutputName = Optional.of(userOutputName);
+            this.userOutputName = Optional.ofNullable(userOutputName);
             return this;
         }
 
@@ -331,6 +366,16 @@ public final class BulkSchema {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

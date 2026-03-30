@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionCounts.Builder.class)
 public final class ExecutionCounts {
     private final Optional<Integer> delete;
@@ -164,7 +164,7 @@ public final class ExecutionCounts {
         }
 
         public Builder delete(Integer delete) {
-            this.delete = Optional.of(delete);
+            this.delete = Optional.ofNullable(delete);
             return this;
         }
 
@@ -175,7 +175,7 @@ public final class ExecutionCounts {
         }
 
         public Builder error(Integer error) {
-            this.error = Optional.of(error);
+            this.error = Optional.ofNullable(error);
             return this;
         }
 
@@ -186,7 +186,7 @@ public final class ExecutionCounts {
         }
 
         public Builder insert(Integer insert) {
-            this.insert = Optional.of(insert);
+            this.insert = Optional.ofNullable(insert);
             return this;
         }
 
@@ -197,7 +197,7 @@ public final class ExecutionCounts {
         }
 
         public Builder total(Integer total) {
-            this.total = Optional.of(total);
+            this.total = Optional.ofNullable(total);
             return this;
         }
 
@@ -208,7 +208,7 @@ public final class ExecutionCounts {
         }
 
         public Builder update(Integer update) {
-            this.update = Optional.of(update);
+            this.update = Optional.ofNullable(update);
             return this;
         }
 
@@ -219,7 +219,7 @@ public final class ExecutionCounts {
         }
 
         public Builder upserts(Integer upserts) {
-            this.upserts = Optional.of(upserts);
+            this.upserts = Optional.ofNullable(upserts);
             return this;
         }
 
@@ -230,12 +230,22 @@ public final class ExecutionCounts {
         }
 
         public Builder warnings(Integer warnings) {
-            this.warnings = Optional.of(warnings);
+            this.warnings = Optional.ofNullable(warnings);
             return this;
         }
 
         public ExecutionCounts build() {
             return new ExecutionCounts(delete, error, insert, total, update, upserts, warnings, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

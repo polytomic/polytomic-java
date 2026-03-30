@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkMultiScheduleConfiguration.Builder.class)
 public final class BulkMultiScheduleConfiguration {
     private final Optional<List<BulkItemizedSchedule>> schedules;
@@ -36,13 +39,31 @@ public final class BulkMultiScheduleConfiguration {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("schedules")
+    @JsonIgnore
     public Optional<List<BulkItemizedSchedule>> getSchedules() {
+        if (schedules == null) {
+            return Optional.empty();
+        }
         return schedules;
     }
 
-    @JsonProperty("type")
+    @JsonIgnore
     public Optional<String> getType() {
+        if (type == null) {
+            return Optional.empty();
+        }
+        return type;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("schedules")
+    private Optional<List<BulkItemizedSchedule>> _getSchedules() {
+        return schedules;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("type")
+    private Optional<String> _getType() {
         return type;
     }
 
@@ -99,7 +120,18 @@ public final class BulkMultiScheduleConfiguration {
         }
 
         public Builder schedules(List<BulkItemizedSchedule> schedules) {
-            this.schedules = Optional.of(schedules);
+            this.schedules = Optional.ofNullable(schedules);
+            return this;
+        }
+
+        public Builder schedules(Nullable<List<BulkItemizedSchedule>> schedules) {
+            if (schedules.isNull()) {
+                this.schedules = null;
+            } else if (schedules.isEmpty()) {
+                this.schedules = Optional.empty();
+            } else {
+                this.schedules = Optional.of(schedules.get());
+            }
             return this;
         }
 
@@ -110,12 +142,33 @@ public final class BulkMultiScheduleConfiguration {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
+            return this;
+        }
+
+        public Builder type(Nullable<String> type) {
+            if (type.isNull()) {
+                this.type = null;
+            } else if (type.isEmpty()) {
+                this.type = Optional.empty();
+            } else {
+                this.type = Optional.of(type.get());
+            }
             return this;
         }
 
         public BulkMultiScheduleConfiguration build() {
             return new BulkMultiScheduleConfiguration(schedules, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

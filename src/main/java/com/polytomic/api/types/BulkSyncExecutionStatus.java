@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncExecutionStatus.Builder.class)
 public final class BulkSyncExecutionStatus {
     private final Optional<OffsetDateTime> nextExecutionTime;
@@ -45,13 +48,19 @@ public final class BulkSyncExecutionStatus {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("nextExecutionTime")
+    @JsonIgnore
     public Optional<OffsetDateTime> getNextExecutionTime() {
+        if (nextExecutionTime == null) {
+            return Optional.empty();
+        }
         return nextExecutionTime;
     }
 
-    @JsonProperty("schemas")
+    @JsonIgnore
     public Optional<List<BulkSyncSchemaExecutionStatus>> getSchemas() {
+        if (schemas == null) {
+            return Optional.empty();
+        }
         return schemas;
     }
 
@@ -63,6 +72,18 @@ public final class BulkSyncExecutionStatus {
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("nextExecutionTime")
+    private Optional<OffsetDateTime> _getNextExecutionTime() {
+        return nextExecutionTime;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("schemas")
+    private Optional<List<BulkSyncSchemaExecutionStatus>> _getSchemas() {
+        return schemas;
     }
 
     @java.lang.Override
@@ -127,7 +148,18 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder nextExecutionTime(OffsetDateTime nextExecutionTime) {
-            this.nextExecutionTime = Optional.of(nextExecutionTime);
+            this.nextExecutionTime = Optional.ofNullable(nextExecutionTime);
+            return this;
+        }
+
+        public Builder nextExecutionTime(Nullable<OffsetDateTime> nextExecutionTime) {
+            if (nextExecutionTime.isNull()) {
+                this.nextExecutionTime = null;
+            } else if (nextExecutionTime.isEmpty()) {
+                this.nextExecutionTime = Optional.empty();
+            } else {
+                this.nextExecutionTime = Optional.of(nextExecutionTime.get());
+            }
             return this;
         }
 
@@ -138,7 +170,18 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder schemas(List<BulkSyncSchemaExecutionStatus> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
+            return this;
+        }
+
+        public Builder schemas(Nullable<List<BulkSyncSchemaExecutionStatus>> schemas) {
+            if (schemas.isNull()) {
+                this.schemas = null;
+            } else if (schemas.isEmpty()) {
+                this.schemas = Optional.empty();
+            } else {
+                this.schemas = Optional.of(schemas.get());
+            }
             return this;
         }
 
@@ -149,7 +192,7 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder status(BulkExecutionStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -160,12 +203,22 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder syncId(String syncId) {
-            this.syncId = Optional.of(syncId);
+            this.syncId = Optional.ofNullable(syncId);
             return this;
         }
 
         public BulkSyncExecutionStatus build() {
             return new BulkSyncExecutionStatus(nextExecutionTime, schemas, status, syncId, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

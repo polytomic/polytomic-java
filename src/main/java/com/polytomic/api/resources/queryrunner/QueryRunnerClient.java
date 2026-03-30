@@ -3,122 +3,84 @@
  */
 package com.polytomic.api.resources.queryrunner;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.queryrunner.requests.QueryRunnerGetQueryRequest;
 import com.polytomic.api.resources.queryrunner.requests.V4RunQueryRequest;
 import com.polytomic.api.types.V4QueryResultsEnvelope;
 import com.polytomic.api.types.V4RunQueryEnvelope;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class QueryRunnerClient {
     protected final ClientOptions clientOptions;
 
+    private final RawQueryRunnerClient rawClient;
+
     public QueryRunnerClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawQueryRunnerClient(clientOptions);
     }
 
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawQueryRunnerClient withRawResponse() {
+        return this.rawClient;
+    }
+
+    /**
+     * Submit a query for asynchronous execution against the connection. The initial response may only contain the query task id and status. Poll GET /api/queries/{id} with the returned id to retrieve completion status, fields, and results.
+     */
     public V4RunQueryEnvelope runQuery(String connectionId) {
-        return runQuery(connectionId, V4RunQueryRequest.builder().build());
+        return this.rawClient.runQuery(connectionId).body();
     }
 
+    /**
+     * Submit a query for asynchronous execution against the connection. The initial response may only contain the query task id and status. Poll GET /api/queries/{id} with the returned id to retrieve completion status, fields, and results.
+     */
+    public V4RunQueryEnvelope runQuery(String connectionId, RequestOptions requestOptions) {
+        return this.rawClient.runQuery(connectionId, requestOptions).body();
+    }
+
+    /**
+     * Submit a query for asynchronous execution against the connection. The initial response may only contain the query task id and status. Poll GET /api/queries/{id} with the returned id to retrieve completion status, fields, and results.
+     */
     public V4RunQueryEnvelope runQuery(String connectionId, V4RunQueryRequest request) {
-        return runQuery(connectionId, request, null);
+        return this.rawClient.runQuery(connectionId, request).body();
     }
 
+    /**
+     * Submit a query for asynchronous execution against the connection. The initial response may only contain the query task id and status. Poll GET /api/queries/{id} with the returned id to retrieve completion status, fields, and results.
+     */
     public V4RunQueryEnvelope runQuery(String connectionId, V4RunQueryRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(connectionId)
-                .addPathSegments("query");
-        if (request.getQuery().isPresent()) {
-            httpUrl.addQueryParameter("query", request.getQuery().get());
-        }
-        Map<String, Object> properties = new HashMap<>();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), V4RunQueryEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.runQuery(connectionId, request, requestOptions).body();
     }
 
+    /**
+     * Fetch the latest status for a submitted query and, once complete, return fields and paginated results. Use the query id returned by POST /api/connections/{connection_id}/query.
+     */
     public V4QueryResultsEnvelope getQuery(String id) {
-        return getQuery(id, QueryRunnerGetQueryRequest.builder().build());
+        return this.rawClient.getQuery(id).body();
     }
 
+    /**
+     * Fetch the latest status for a submitted query and, once complete, return fields and paginated results. Use the query id returned by POST /api/connections/{connection_id}/query.
+     */
+    public V4QueryResultsEnvelope getQuery(String id, RequestOptions requestOptions) {
+        return this.rawClient.getQuery(id, requestOptions).body();
+    }
+
+    /**
+     * Fetch the latest status for a submitted query and, once complete, return fields and paginated results. Use the query id returned by POST /api/connections/{connection_id}/query.
+     */
     public V4QueryResultsEnvelope getQuery(String id, QueryRunnerGetQueryRequest request) {
-        return getQuery(id, request, null);
+        return this.rawClient.getQuery(id, request).body();
     }
 
+    /**
+     * Fetch the latest status for a submitted query and, once complete, return fields and paginated results. Use the query id returned by POST /api/connections/{connection_id}/query.
+     */
     public V4QueryResultsEnvelope getQuery(
             String id, QueryRunnerGetQueryRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/queries")
-                .addPathSegment(id);
-        if (request.getPage().isPresent()) {
-            httpUrl.addQueryParameter("page", request.getPage().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), V4QueryResultsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getQuery(id, request, requestOptions).body();
     }
 }

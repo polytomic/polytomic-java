@@ -5,12 +5,15 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.polytomic.api.core.Nullable;
+import com.polytomic.api.core.NullableNonemptyFilter;
 import com.polytomic.api.core.ObjectMappers;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetResponse.Builder.class)
 public final class TargetResponse {
     private final Optional<List<TargetField>> fields;
@@ -53,8 +56,11 @@ public final class TargetResponse {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("fields")
+    @JsonIgnore
     public Optional<List<TargetField>> getFields() {
+        if (fields == null) {
+            return Optional.empty();
+        }
         return fields;
     }
 
@@ -63,8 +69,11 @@ public final class TargetResponse {
         return id;
     }
 
-    @JsonProperty("modes")
+    @JsonIgnore
     public Optional<List<Mode>> getModes() {
+        if (modes == null) {
+            return Optional.empty();
+        }
         return modes;
     }
 
@@ -81,6 +90,18 @@ public final class TargetResponse {
     @JsonProperty("refreshed_at")
     public Optional<OffsetDateTime> getRefreshedAt() {
         return refreshedAt;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("fields")
+    private Optional<List<TargetField>> _getFields() {
+        return fields;
+    }
+
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NullableNonemptyFilter.class)
+    @JsonProperty("modes")
+    private Optional<List<Mode>> _getModes() {
+        return modes;
     }
 
     @java.lang.Override
@@ -153,7 +174,18 @@ public final class TargetResponse {
         }
 
         public Builder fields(List<TargetField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
+            return this;
+        }
+
+        public Builder fields(Nullable<List<TargetField>> fields) {
+            if (fields.isNull()) {
+                this.fields = null;
+            } else if (fields.isEmpty()) {
+                this.fields = Optional.empty();
+            } else {
+                this.fields = Optional.of(fields.get());
+            }
             return this;
         }
 
@@ -164,7 +196,7 @@ public final class TargetResponse {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -175,7 +207,18 @@ public final class TargetResponse {
         }
 
         public Builder modes(List<Mode> modes) {
-            this.modes = Optional.of(modes);
+            this.modes = Optional.ofNullable(modes);
+            return this;
+        }
+
+        public Builder modes(Nullable<List<Mode>> modes) {
+            if (modes.isNull()) {
+                this.modes = null;
+            } else if (modes.isEmpty()) {
+                this.modes = Optional.empty();
+            } else {
+                this.modes = Optional.of(modes.get());
+            }
             return this;
         }
 
@@ -186,7 +229,7 @@ public final class TargetResponse {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -197,7 +240,7 @@ public final class TargetResponse {
         }
 
         public Builder properties(SyncDestinationProperties properties) {
-            this.properties = Optional.of(properties);
+            this.properties = Optional.ofNullable(properties);
             return this;
         }
 
@@ -208,12 +251,22 @@ public final class TargetResponse {
         }
 
         public Builder refreshedAt(OffsetDateTime refreshedAt) {
-            this.refreshedAt = Optional.of(refreshedAt);
+            this.refreshedAt = Optional.ofNullable(refreshedAt);
             return this;
         }
 
         public TargetResponse build() {
             return new TargetResponse(fields, id, modes, name, properties, refreshedAt, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
