@@ -3,10 +3,7 @@
  */
 package com.polytomic.api.resources.models;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.models.requests.GetEnrichmentInputFieldsRequest;
 import com.polytomic.api.resources.models.requests.ModelsCreateRequest;
@@ -16,78 +13,59 @@ import com.polytomic.api.resources.models.requests.ModelsPreviewRequest;
 import com.polytomic.api.resources.models.requests.ModelsRemoveRequest;
 import com.polytomic.api.resources.models.requests.ModelsSampleRequest;
 import com.polytomic.api.resources.models.requests.UpdateModelRequest;
+import com.polytomic.api.types.CreateModelRequest;
 import com.polytomic.api.types.GetModelSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ModelListResponseEnvelope;
 import com.polytomic.api.types.ModelResponseEnvelope;
 import com.polytomic.api.types.ModelSampleResponseEnvelope;
 import com.polytomic.api.types.V2GetEnrichmentInputFieldsResponseEnvelope;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ModelsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawModelsClient rawClient;
+
     public ModelsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawModelsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawModelsClient withRawResponse() {
+        return this.rawClient;
     }
 
     public GetModelSyncSourceMetaEnvelope getEnrichmentSource(String id) {
-        return getEnrichmentSource(
-                id, ModelsGetEnrichmentSourceRequest.builder().build());
+        return this.rawClient.getEnrichmentSource(id).body();
+    }
+
+    public GetModelSyncSourceMetaEnvelope getEnrichmentSource(String id, RequestOptions requestOptions) {
+        return this.rawClient.getEnrichmentSource(id, requestOptions).body();
     }
 
     public GetModelSyncSourceMetaEnvelope getEnrichmentSource(String id, ModelsGetEnrichmentSourceRequest request) {
-        return getEnrichmentSource(id, request, null);
+        return this.rawClient.getEnrichmentSource(id, request).body();
     }
 
     public GetModelSyncSourceMetaEnvelope getEnrichmentSource(
             String id, ModelsGetEnrichmentSourceRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/enrichment-source");
-        if (request.getParams().isPresent()) {
-            httpUrl.addQueryParameter("params", request.getParams().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetModelSyncSourceMetaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getEnrichmentSource(id, request, requestOptions).body();
     }
 
     /**
      * For a given connection and enrichment configuration, provides the valid sets of input fields.
      */
     public V2GetEnrichmentInputFieldsResponseEnvelope post(String connectionId) {
-        return post(connectionId, GetEnrichmentInputFieldsRequest.builder().build());
+        return this.rawClient.post(connectionId).body();
+    }
+
+    /**
+     * For a given connection and enrichment configuration, provides the valid sets of input fields.
+     */
+    public V2GetEnrichmentInputFieldsResponseEnvelope post(String connectionId, RequestOptions requestOptions) {
+        return this.rawClient.post(connectionId, requestOptions).body();
     }
 
     /**
@@ -95,7 +73,7 @@ public class ModelsClient {
      */
     public V2GetEnrichmentInputFieldsResponseEnvelope post(
             String connectionId, GetEnrichmentInputFieldsRequest request) {
-        return post(connectionId, request, null);
+        return this.rawClient.post(connectionId, request).body();
     }
 
     /**
@@ -103,372 +81,114 @@ public class ModelsClient {
      */
     public V2GetEnrichmentInputFieldsResponseEnvelope post(
             String connectionId, GetEnrichmentInputFieldsRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/enrichment")
-                .addPathSegment(connectionId)
-                .addPathSegments("inputfields")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V2GetEnrichmentInputFieldsResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.post(connectionId, request, requestOptions).body();
+    }
+
+    public ModelResponseEnvelope preview(CreateModelRequest body) {
+        return this.rawClient.preview(body).body();
+    }
+
+    public ModelResponseEnvelope preview(CreateModelRequest body, RequestOptions requestOptions) {
+        return this.rawClient.preview(body, requestOptions).body();
     }
 
     public ModelResponseEnvelope preview(ModelsPreviewRequest request) {
-        return preview(request, null);
+        return this.rawClient.preview(request).body();
     }
 
     public ModelResponseEnvelope preview(ModelsPreviewRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/model-preview");
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.preview(request, requestOptions).body();
     }
 
     public ModelListResponseEnvelope list() {
-        return list(null);
+        return this.rawClient.list().body();
     }
 
     public ModelListResponseEnvelope list(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/models")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelListResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    public ModelResponseEnvelope create(CreateModelRequest body) {
+        return this.rawClient.create(body).body();
+    }
+
+    public ModelResponseEnvelope create(CreateModelRequest body, RequestOptions requestOptions) {
+        return this.rawClient.create(body, requestOptions).body();
     }
 
     public ModelResponseEnvelope create(ModelsCreateRequest request) {
-        return create(request, null);
+        return this.rawClient.create(request).body();
     }
 
     public ModelResponseEnvelope create(ModelsCreateRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/models");
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request.getBody()), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.create(request, requestOptions).body();
     }
 
     public ModelResponseEnvelope get(String id) {
-        return get(id, ModelsGetRequest.builder().build());
+        return this.rawClient.get(id).body();
+    }
+
+    public ModelResponseEnvelope get(String id, RequestOptions requestOptions) {
+        return this.rawClient.get(id, requestOptions).body();
     }
 
     public ModelResponseEnvelope get(String id, ModelsGetRequest request) {
-        return get(id, request, null);
+        return this.rawClient.get(id, request).body();
     }
 
     public ModelResponseEnvelope get(String id, ModelsGetRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/models")
-                .addPathSegment(id);
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, request, requestOptions).body();
     }
 
     public ModelResponseEnvelope update(String id, UpdateModelRequest request) {
-        return update(id, request, null);
+        return this.rawClient.update(id, request).body();
     }
 
     public ModelResponseEnvelope update(String id, UpdateModelRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/models")
-                .addPathSegment(id);
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        Map<String, Object> properties = new HashMap<>();
-        if (request.getAdditionalFields().isPresent()) {
-            properties.put("additional_fields", request.getAdditionalFields());
-        }
-        properties.put("configuration", request.getConfiguration());
-        properties.put("connection_id", request.getConnectionId());
-        if (request.getEnricher().isPresent()) {
-            properties.put("enricher", request.getEnricher());
-        }
-        if (request.getFields().isPresent()) {
-            properties.put("fields", request.getFields());
-        }
-        if (request.getIdentifier().isPresent()) {
-            properties.put("identifier", request.getIdentifier());
-        }
-        if (request.getLabels().isPresent()) {
-            properties.put("labels", request.getLabels());
-        }
-        properties.put("name", request.getName());
-        if (request.getOrganizationId().isPresent()) {
-            properties.put("organization_id", request.getOrganizationId());
-        }
-        if (request.getPolicies().isPresent()) {
-            properties.put("policies", request.getPolicies());
-        }
-        if (request.getRefresh().isPresent()) {
-            properties.put("refresh", request.getRefresh());
-        }
-        if (request.getRelations().isPresent()) {
-            properties.put("relations", request.getRelations());
-        }
-        if (request.getTrackingColumns().isPresent()) {
-            properties.put("tracking_columns", request.getTrackingColumns());
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(properties), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.update(id, request, requestOptions).body();
     }
 
     public void remove(String id) {
-        remove(id, ModelsRemoveRequest.builder().build());
+        this.rawClient.remove(id).body();
+    }
+
+    public void remove(String id, RequestOptions requestOptions) {
+        this.rawClient.remove(id, requestOptions).body();
     }
 
     public void remove(String id, ModelsRemoveRequest request) {
-        remove(id, request, null);
+        this.rawClient.remove(id, request).body();
     }
 
     public void remove(String id, ModelsRemoveRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/models")
-                .addPathSegment(id);
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)));
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.rawClient.remove(id, request, requestOptions).body();
     }
 
     /**
      * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
      */
     public ModelSampleResponseEnvelope sample(String id) {
-        return sample(id, ModelsSampleRequest.builder().build());
+        return this.rawClient.sample(id).body();
+    }
+
+    /**
+     * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
+     */
+    public ModelSampleResponseEnvelope sample(String id, RequestOptions requestOptions) {
+        return this.rawClient.sample(id, requestOptions).body();
     }
 
     /**
      * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
      */
     public ModelSampleResponseEnvelope sample(String id, ModelsSampleRequest request) {
-        return sample(id, request, null);
+        return this.rawClient.sample(id, request).body();
     }
 
     /**
      * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
      */
     public ModelSampleResponseEnvelope sample(String id, ModelsSampleRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/models")
-                .addPathSegment(id)
-                .addPathSegments("sample");
-        if (request.getAsync().isPresent()) {
-            httpUrl.addQueryParameter("async", request.getAsync().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelSampleResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.sample(id, request, requestOptions).body();
     }
 }

@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncRemoveRequest.Builder.class)
 public final class BulkSyncRemoveRequest {
     private final Optional<Boolean> refreshSchemas;
@@ -29,7 +29,7 @@ public final class BulkSyncRemoveRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("refresh_schemas")
+    @JsonIgnore
     public Optional<Boolean> getRefreshSchemas() {
         return refreshSchemas;
     }
@@ -84,12 +84,22 @@ public final class BulkSyncRemoveRequest {
         }
 
         public Builder refreshSchemas(Boolean refreshSchemas) {
-            this.refreshSchemas = Optional.of(refreshSchemas);
+            this.refreshSchemas = Optional.ofNullable(refreshSchemas);
             return this;
         }
 
         public BulkSyncRemoveRequest build() {
             return new BulkSyncRemoveRequest(refreshSchemas, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

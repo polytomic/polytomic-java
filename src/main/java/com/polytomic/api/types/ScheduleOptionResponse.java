@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ScheduleOptionResponse.Builder.class)
 public final class ScheduleOptionResponse {
     private final Optional<List<ScheduleScheduleOption>> scheduleOptions;
@@ -86,12 +86,22 @@ public final class ScheduleOptionResponse {
         }
 
         public Builder scheduleOptions(List<ScheduleScheduleOption> scheduleOptions) {
-            this.scheduleOptions = Optional.of(scheduleOptions);
+            this.scheduleOptions = Optional.ofNullable(scheduleOptions);
             return this;
         }
 
         public ScheduleOptionResponse build() {
             return new ScheduleOptionResponse(scheduleOptions, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

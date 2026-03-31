@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConfigurationValue.Builder.class)
 public final class ConfigurationValue {
     private final Optional<List<Object>> items;
@@ -97,7 +97,7 @@ public final class ConfigurationValue {
         }
 
         public Builder items(List<Object> items) {
-            this.items = Optional.of(items);
+            this.items = Optional.ofNullable(items);
             return this;
         }
 
@@ -108,12 +108,22 @@ public final class ConfigurationValue {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         public ConfigurationValue build() {
             return new ConfigurationValue(items, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSyncSourceMetaResponse.Builder.class)
 public final class ModelSyncSourceMetaResponse {
     private final Optional<Map<String, ConfigurationValue>> configuration;
@@ -113,7 +113,7 @@ public final class ModelSyncSourceMetaResponse {
         }
 
         public Builder configuration(Map<String, ConfigurationValue> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -124,7 +124,7 @@ public final class ModelSyncSourceMetaResponse {
         }
 
         public Builder items(Map<String, Optional<SourceMeta>> items) {
-            this.items = Optional.of(items);
+            this.items = Optional.ofNullable(items);
             return this;
         }
 
@@ -135,12 +135,22 @@ public final class ModelSyncSourceMetaResponse {
         }
 
         public Builder requiresOneOf(List<String> requiresOneOf) {
-            this.requiresOneOf = Optional.of(requiresOneOf);
+            this.requiresOneOf = Optional.ofNullable(requiresOneOf);
             return this;
         }
 
         public ModelSyncSourceMetaResponse build() {
             return new ModelSyncSourceMetaResponse(configuration, items, requiresOneOf, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

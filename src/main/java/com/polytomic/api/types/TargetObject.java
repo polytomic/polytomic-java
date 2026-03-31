@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetObject.Builder.class)
 public final class TargetObject {
     private final Optional<String> id;
@@ -113,6 +113,9 @@ public final class TargetObject {
             return this;
         }
 
+        /**
+         * <p>The identifier of the target object.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -120,10 +123,13 @@ public final class TargetObject {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>The supported sync modes and their properties for the target object.</p>
+         */
         @JsonSetter(value = "modes", nulls = Nulls.SKIP)
         public Builder modes(Optional<List<SupportedMode>> modes) {
             this.modes = modes;
@@ -131,10 +137,13 @@ public final class TargetObject {
         }
 
         public Builder modes(List<SupportedMode> modes) {
-            this.modes = Optional.of(modes);
+            this.modes = Optional.ofNullable(modes);
             return this;
         }
 
+        /**
+         * <p>The name of the target object.</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -142,12 +151,22 @@ public final class TargetObject {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
         public TargetObject build() {
             return new TargetObject(id, modes, name, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

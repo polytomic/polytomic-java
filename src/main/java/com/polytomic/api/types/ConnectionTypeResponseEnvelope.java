@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionTypeResponseEnvelope.Builder.class)
 public final class ConnectionTypeResponseEnvelope {
     private final Optional<List<ConnectionType>> data;
@@ -86,12 +86,22 @@ public final class ConnectionTypeResponseEnvelope {
         }
 
         public Builder data(List<ConnectionType> data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
         public ConnectionTypeResponseEnvelope build() {
             return new ConnectionTypeResponseEnvelope(data, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

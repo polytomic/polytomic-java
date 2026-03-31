@@ -14,8 +14,9 @@ import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkItemizedSchedule.Builder.class)
 public final class BulkItemizedSchedule {
     private final BulkSelectiveMode item;
@@ -71,17 +72,21 @@ public final class BulkItemizedSchedule {
     }
 
     public interface ItemStage {
-        ScheduleStage item(BulkSelectiveMode item);
+        ScheduleStage item(@NotNull BulkSelectiveMode item);
 
         Builder from(BulkItemizedSchedule other);
     }
 
     public interface ScheduleStage {
-        _FinalStage schedule(BulkSchedule schedule);
+        _FinalStage schedule(@NotNull BulkSchedule schedule);
     }
 
     public interface _FinalStage {
         BulkItemizedSchedule build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -104,14 +109,14 @@ public final class BulkItemizedSchedule {
 
         @java.lang.Override
         @JsonSetter("item")
-        public ScheduleStage item(BulkSelectiveMode item) {
+        public ScheduleStage item(@NotNull BulkSelectiveMode item) {
             this.item = item;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("schedule")
-        public _FinalStage schedule(BulkSchedule schedule) {
+        public _FinalStage schedule(@NotNull BulkSchedule schedule) {
             this.schedule = schedule;
             return this;
         }
@@ -119,6 +124,18 @@ public final class BulkItemizedSchedule {
         @java.lang.Override
         public BulkItemizedSchedule build() {
             return new BulkItemizedSchedule(item, schedule, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

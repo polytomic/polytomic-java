@@ -14,8 +14,9 @@ import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Source.Builder.class)
 public final class Source {
     private final String field;
@@ -70,17 +71,21 @@ public final class Source {
     }
 
     public interface FieldStage {
-        ModelIdStage field(String field);
+        ModelIdStage field(@NotNull String field);
 
         Builder from(Source other);
     }
 
     public interface ModelIdStage {
-        _FinalStage modelId(String modelId);
+        _FinalStage modelId(@NotNull String modelId);
     }
 
     public interface _FinalStage {
         Source build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -103,14 +108,14 @@ public final class Source {
 
         @java.lang.Override
         @JsonSetter("field")
-        public ModelIdStage field(String field) {
+        public ModelIdStage field(@NotNull String field) {
             this.field = field;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("model_id")
-        public _FinalStage modelId(String modelId) {
+        public _FinalStage modelId(@NotNull String modelId) {
             this.modelId = modelId;
             return this;
         }
@@ -118,6 +123,18 @@ public final class Source {
         @java.lang.Override
         public Source build() {
             return new Source(field, modelId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

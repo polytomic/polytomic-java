@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncDest.Builder.class)
 public final class BulkSyncDest {
     private final Optional<Map<String, Object>> configuration;
@@ -99,7 +99,7 @@ public final class BulkSyncDest {
         }
 
         public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -110,12 +110,22 @@ public final class BulkSyncDest {
         }
 
         public Builder modes(List<SupportedBulkMode> modes) {
-            this.modes = Optional.of(modes);
+            this.modes = Optional.ofNullable(modes);
             return this;
         }
 
         public BulkSyncDest build() {
             return new BulkSyncDest(configuration, modes, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

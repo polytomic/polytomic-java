@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = FieldConfiguration.Builder.class)
 public final class FieldConfiguration {
     private final Optional<Boolean> enabled;
@@ -109,6 +109,9 @@ public final class FieldConfiguration {
             return this;
         }
 
+        /**
+         * <p>Whether the field is enabled for syncing.</p>
+         */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
             this.enabled = enabled;
@@ -116,7 +119,7 @@ public final class FieldConfiguration {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
@@ -127,10 +130,13 @@ public final class FieldConfiguration {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>Whether the field should be obfuscated.</p>
+         */
         @JsonSetter(value = "obfuscate", nulls = Nulls.SKIP)
         public Builder obfuscate(Optional<Boolean> obfuscate) {
             this.obfuscate = obfuscate;
@@ -138,12 +144,22 @@ public final class FieldConfiguration {
         }
 
         public Builder obfuscate(Boolean obfuscate) {
-            this.obfuscate = Optional.of(obfuscate);
+            this.obfuscate = Optional.ofNullable(obfuscate);
             return this;
         }
 
         public FieldConfiguration build() {
             return new FieldConfiguration(enabled, id, obfuscate, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

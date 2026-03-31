@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionsExportLogsRequest.Builder.class)
 public final class ExecutionsExportLogsRequest {
     private final Optional<Boolean> notify;
@@ -32,7 +32,7 @@ public final class ExecutionsExportLogsRequest {
     /**
      * @return Send a notification to the user when the logs are ready for download.
      */
-    @JsonProperty("notify")
+    @JsonIgnore
     public Optional<Boolean> getNotify() {
         return notify;
     }
@@ -80,6 +80,9 @@ public final class ExecutionsExportLogsRequest {
             return this;
         }
 
+        /**
+         * <p>Send a notification to the user when the logs are ready for download.</p>
+         */
         @JsonSetter(value = "notify", nulls = Nulls.SKIP)
         public Builder notify(Optional<Boolean> notify) {
             this.notify = notify;
@@ -87,12 +90,22 @@ public final class ExecutionsExportLogsRequest {
         }
 
         public Builder notify(Boolean notify) {
-            this.notify = Optional.of(notify);
+            this.notify = Optional.ofNullable(notify);
             return this;
         }
 
         public ExecutionsExportLogsRequest build() {
             return new ExecutionsExportLogsRequest(notify, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

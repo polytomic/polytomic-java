@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncExecutionStatus.Builder.class)
 public final class BulkSyncExecutionStatus {
     private final Optional<OffsetDateTime> nextExecutionTime;
@@ -127,7 +127,7 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder nextExecutionTime(OffsetDateTime nextExecutionTime) {
-            this.nextExecutionTime = Optional.of(nextExecutionTime);
+            this.nextExecutionTime = Optional.ofNullable(nextExecutionTime);
             return this;
         }
 
@@ -138,7 +138,7 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder schemas(List<BulkSyncSchemaExecutionStatus> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
@@ -149,7 +149,7 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder status(BulkExecutionStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -160,12 +160,22 @@ public final class BulkSyncExecutionStatus {
         }
 
         public Builder syncId(String syncId) {
-            this.syncId = Optional.of(syncId);
+            this.syncId = Optional.ofNullable(syncId);
             return this;
         }
 
         public BulkSyncExecutionStatus build() {
             return new BulkSyncExecutionStatus(nextExecutionTime, schemas, status, syncId, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

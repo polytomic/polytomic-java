@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4ExportSyncLogsResponse.Builder.class)
 public final class V4ExportSyncLogsResponse {
     private final Optional<String> url;
@@ -84,12 +84,22 @@ public final class V4ExportSyncLogsResponse {
         }
 
         public Builder url(String url) {
-            this.url = Optional.of(url);
+            this.url = Optional.ofNullable(url);
             return this;
         }
 
         public V4ExportSyncLogsResponse build() {
             return new V4ExportSyncLogsResponse(url, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

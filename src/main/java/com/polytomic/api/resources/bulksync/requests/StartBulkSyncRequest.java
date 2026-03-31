@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = StartBulkSyncRequest.Builder.class)
 public final class StartBulkSyncRequest {
     private final Optional<BulkFetchMode> fetchMode;
@@ -127,7 +127,7 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder fetchMode(BulkFetchMode fetchMode) {
-            this.fetchMode = Optional.of(fetchMode);
+            this.fetchMode = Optional.ofNullable(fetchMode);
             return this;
         }
 
@@ -138,7 +138,7 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder resync(Boolean resync) {
-            this.resync = Optional.of(resync);
+            this.resync = Optional.ofNullable(resync);
             return this;
         }
 
@@ -149,7 +149,7 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder schemas(List<String> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
@@ -160,12 +160,22 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder test(Boolean test) {
-            this.test = Optional.of(test);
+            this.test = Optional.ofNullable(test);
             return this;
         }
 
         public StartBulkSyncRequest build() {
             return new StartBulkSyncRequest(fetchMode, resync, schemas, test, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

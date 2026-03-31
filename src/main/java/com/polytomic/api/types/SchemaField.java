@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SchemaField.Builder.class)
 public final class SchemaField {
     private final Optional<SchemaAssociation> association;
@@ -33,7 +33,7 @@ public final class SchemaField {
 
     private final Optional<UtilFieldType> type;
 
-    private final Optional<Object> typeSpec;
+    private final Optional<TypesType> typeSpec;
 
     private final Optional<List<PickValue>> values;
 
@@ -46,7 +46,7 @@ public final class SchemaField {
             Optional<String> name,
             Optional<String> remoteType,
             Optional<UtilFieldType> type,
-            Optional<Object> typeSpec,
+            Optional<TypesType> typeSpec,
             Optional<List<PickValue>> values,
             Map<String, Object> additionalProperties) {
         this.association = association;
@@ -97,7 +97,7 @@ public final class SchemaField {
     }
 
     @JsonProperty("type_spec")
-    public Optional<Object> getTypeSpec() {
+    public Optional<TypesType> getTypeSpec() {
         return typeSpec;
     }
 
@@ -164,7 +164,7 @@ public final class SchemaField {
 
         private Optional<UtilFieldType> type = Optional.empty();
 
-        private Optional<Object> typeSpec = Optional.empty();
+        private Optional<TypesType> typeSpec = Optional.empty();
 
         private Optional<List<PickValue>> values = Optional.empty();
 
@@ -192,7 +192,7 @@ public final class SchemaField {
         }
 
         public Builder association(SchemaAssociation association) {
-            this.association = Optional.of(association);
+            this.association = Optional.ofNullable(association);
             return this;
         }
 
@@ -203,10 +203,13 @@ public final class SchemaField {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>Whether this field is part of the schema's primary key.</p>
+         */
         @JsonSetter(value = "is_primary_key", nulls = Nulls.SKIP)
         public Builder isPrimaryKey(Optional<Boolean> isPrimaryKey) {
             this.isPrimaryKey = isPrimaryKey;
@@ -214,7 +217,7 @@ public final class SchemaField {
         }
 
         public Builder isPrimaryKey(Boolean isPrimaryKey) {
-            this.isPrimaryKey = Optional.of(isPrimaryKey);
+            this.isPrimaryKey = Optional.ofNullable(isPrimaryKey);
             return this;
         }
 
@@ -225,10 +228,13 @@ public final class SchemaField {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
+        /**
+         * <p>The type of the field from the remote system.</p>
+         */
         @JsonSetter(value = "remote_type", nulls = Nulls.SKIP)
         public Builder remoteType(Optional<String> remoteType) {
             this.remoteType = remoteType;
@@ -236,7 +242,7 @@ public final class SchemaField {
         }
 
         public Builder remoteType(String remoteType) {
-            this.remoteType = Optional.of(remoteType);
+            this.remoteType = Optional.ofNullable(remoteType);
             return this;
         }
 
@@ -247,18 +253,18 @@ public final class SchemaField {
         }
 
         public Builder type(UtilFieldType type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         @JsonSetter(value = "type_spec", nulls = Nulls.SKIP)
-        public Builder typeSpec(Optional<Object> typeSpec) {
+        public Builder typeSpec(Optional<TypesType> typeSpec) {
             this.typeSpec = typeSpec;
             return this;
         }
 
-        public Builder typeSpec(Object typeSpec) {
-            this.typeSpec = Optional.of(typeSpec);
+        public Builder typeSpec(TypesType typeSpec) {
+            this.typeSpec = Optional.ofNullable(typeSpec);
             return this;
         }
 
@@ -269,13 +275,23 @@ public final class SchemaField {
         }
 
         public Builder values(List<PickValue> values) {
-            this.values = Optional.of(values);
+            this.values = Optional.ofNullable(values);
             return this;
         }
 
         public SchemaField build() {
             return new SchemaField(
                     association, id, isPrimaryKey, name, remoteType, type, typeSpec, values, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -16,30 +16,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ApiRequest.Builder.class)
 public final class ApiRequest {
-    private final Optional<String> name;
+    private final String childOrganizationId;
 
-    private final String organizationId;
+    private final Optional<String> name;
 
     private final Map<String, Object> additionalProperties;
 
-    private ApiRequest(Optional<String> name, String organizationId, Map<String, Object> additionalProperties) {
+    private ApiRequest(String childOrganizationId, Optional<String> name, Map<String, Object> additionalProperties) {
+        this.childOrganizationId = childOrganizationId;
         this.name = name;
-        this.organizationId = organizationId;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("child_organization_id")
+    public String getChildOrganizationId() {
+        return childOrganizationId;
     }
 
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
-    }
-
-    @JsonProperty("organization_id")
-    public String getOrganizationId() {
-        return organizationId;
     }
 
     @java.lang.Override
@@ -54,12 +55,12 @@ public final class ApiRequest {
     }
 
     private boolean equalTo(ApiRequest other) {
-        return name.equals(other.name) && organizationId.equals(other.organizationId);
+        return childOrganizationId.equals(other.childOrganizationId) && name.equals(other.name);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.name, this.organizationId);
+        return Objects.hash(this.childOrganizationId, this.name);
     }
 
     @java.lang.Override
@@ -67,12 +68,12 @@ public final class ApiRequest {
         return ObjectMappers.stringify(this);
     }
 
-    public static OrganizationIdStage builder() {
+    public static ChildOrganizationIdStage builder() {
         return new Builder();
     }
 
-    public interface OrganizationIdStage {
-        _FinalStage organizationId(String organizationId);
+    public interface ChildOrganizationIdStage {
+        _FinalStage childOrganizationId(@NotNull String childOrganizationId);
 
         Builder from(ApiRequest other);
     }
@@ -80,14 +81,18 @@ public final class ApiRequest {
     public interface _FinalStage {
         ApiRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage name(Optional<String> name);
 
         _FinalStage name(String name);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements OrganizationIdStage, _FinalStage {
-        private String organizationId;
+    public static final class Builder implements ChildOrganizationIdStage, _FinalStage {
+        private String childOrganizationId;
 
         private Optional<String> name = Optional.empty();
 
@@ -98,21 +103,21 @@ public final class ApiRequest {
 
         @java.lang.Override
         public Builder from(ApiRequest other) {
+            childOrganizationId(other.getChildOrganizationId());
             name(other.getName());
-            organizationId(other.getOrganizationId());
             return this;
         }
 
         @java.lang.Override
-        @JsonSetter("organization_id")
-        public _FinalStage organizationId(String organizationId) {
-            this.organizationId = organizationId;
+        @JsonSetter("child_organization_id")
+        public _FinalStage childOrganizationId(@NotNull String childOrganizationId) {
+            this.childOrganizationId = childOrganizationId;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -125,7 +130,19 @@ public final class ApiRequest {
 
         @java.lang.Override
         public ApiRequest build() {
-            return new ApiRequest(name, organizationId, additionalProperties);
+            return new ApiRequest(childOrganizationId, name, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

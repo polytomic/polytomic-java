@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateBulkSyncRequest.Builder.class)
 public final class CreateBulkSyncRequest {
     private final Optional<Boolean> active;
@@ -285,25 +286,29 @@ public final class CreateBulkSyncRequest {
     }
 
     public interface DestinationConnectionIdStage {
-        NameStage destinationConnectionId(String destinationConnectionId);
+        NameStage destinationConnectionId(@NotNull String destinationConnectionId);
 
         Builder from(CreateBulkSyncRequest other);
     }
 
     public interface NameStage {
-        ScheduleStage name(String name);
+        ScheduleStage name(@NotNull String name);
     }
 
     public interface ScheduleStage {
-        SourceConnectionIdStage schedule(BulkSchedule schedule);
+        SourceConnectionIdStage schedule(@NotNull BulkSchedule schedule);
     }
 
     public interface SourceConnectionIdStage {
-        _FinalStage sourceConnectionId(String sourceConnectionId);
+        _FinalStage sourceConnectionId(@NotNull String sourceConnectionId);
     }
 
     public interface _FinalStage {
         CreateBulkSyncRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage active(Optional<Boolean> active);
 
@@ -317,6 +322,9 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
 
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         */
         _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit);
 
         _FinalStage concurrencyLimit(Integer concurrencyLimit);
@@ -335,6 +343,9 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps);
 
+        /**
+         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+         */
         _FinalStage discover(Optional<Boolean> discover);
 
         _FinalStage discover(Boolean discover);
@@ -355,10 +366,16 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage policies(List<String> policies);
 
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         */
         _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit);
 
         _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit);
 
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         */
         _FinalStage schemas(Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas);
 
         _FinalStage schemas(List<V2CreateBulkSyncRequestSchemasItem> schemas);
@@ -440,35 +457,35 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         @JsonSetter("destination_connection_id")
-        public NameStage destinationConnectionId(String destinationConnectionId) {
+        public NameStage destinationConnectionId(@NotNull String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("name")
-        public ScheduleStage name(String name) {
+        public ScheduleStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("schedule")
-        public SourceConnectionIdStage schedule(BulkSchedule schedule) {
+        public SourceConnectionIdStage schedule(@NotNull BulkSchedule schedule) {
             this.schedule = schedule;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("source_connection_id")
-        public _FinalStage sourceConnectionId(String sourceConnectionId) {
+        public _FinalStage sourceConnectionId(@NotNull String sourceConnectionId) {
             this.sourceConnectionId = sourceConnectionId;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage sourceConfiguration(Map<String, Object> sourceConfiguration) {
-            this.sourceConfiguration = Optional.of(sourceConfiguration);
+            this.sourceConfiguration = Optional.ofNullable(sourceConfiguration);
             return this;
         }
 
@@ -485,10 +502,13 @@ public final class CreateBulkSyncRequest {
          */
         @java.lang.Override
         public _FinalStage schemas(List<V2CreateBulkSyncRequestSchemasItem> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public _FinalStage schemas(Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas) {
@@ -502,10 +522,13 @@ public final class CreateBulkSyncRequest {
          */
         @java.lang.Override
         public _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit) {
-            this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit);
+            this.resyncConcurrencyLimit = Optional.ofNullable(resyncConcurrencyLimit);
             return this;
         }
 
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "resync_concurrency_limit", nulls = Nulls.SKIP)
         public _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit) {
@@ -515,7 +538,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -528,7 +551,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -541,7 +564,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage normalizeNames(BulkNormalizeNames normalizeNames) {
-            this.normalizeNames = Optional.of(normalizeNames);
+            this.normalizeNames = Optional.ofNullable(normalizeNames);
             return this;
         }
 
@@ -554,7 +577,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage mode(BulkSyncMode mode) {
-            this.mode = Optional.of(mode);
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
@@ -571,10 +594,13 @@ public final class CreateBulkSyncRequest {
          */
         @java.lang.Override
         public _FinalStage discover(Boolean discover) {
-            this.discover = Optional.of(discover);
+            this.discover = Optional.ofNullable(discover);
             return this;
         }
 
+        /**
+         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "discover", nulls = Nulls.SKIP)
         public _FinalStage discover(Optional<Boolean> discover) {
@@ -584,7 +610,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps) {
-            this.disableRecordTimestamps = Optional.of(disableRecordTimestamps);
+            this.disableRecordTimestamps = Optional.ofNullable(disableRecordTimestamps);
             return this;
         }
 
@@ -603,7 +629,9 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage putAllDestinationConfiguration(Map<String, Object> destinationConfiguration) {
-            this.destinationConfiguration.putAll(destinationConfiguration);
+            if (destinationConfiguration != null) {
+                this.destinationConfiguration.putAll(destinationConfiguration);
+            }
             return this;
         }
 
@@ -611,13 +639,15 @@ public final class CreateBulkSyncRequest {
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
         public _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration) {
             this.destinationConfiguration.clear();
-            this.destinationConfiguration.putAll(destinationConfiguration);
+            if (destinationConfiguration != null) {
+                this.destinationConfiguration.putAll(destinationConfiguration);
+            }
             return this;
         }
 
         @java.lang.Override
         public _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
             return this;
         }
 
@@ -634,10 +664,13 @@ public final class CreateBulkSyncRequest {
          */
         @java.lang.Override
         public _FinalStage concurrencyLimit(Integer concurrencyLimit) {
-            this.concurrencyLimit = Optional.of(concurrencyLimit);
+            this.concurrencyLimit = Optional.ofNullable(concurrencyLimit);
             return this;
         }
 
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "concurrency_limit", nulls = Nulls.SKIP)
         public _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit) {
@@ -647,7 +680,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
-            this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
+            this.automaticallyAddNewObjects = Optional.ofNullable(automaticallyAddNewObjects);
             return this;
         }
 
@@ -660,7 +693,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
-            this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
+            this.automaticallyAddNewFields = Optional.ofNullable(automaticallyAddNewFields);
             return this;
         }
 
@@ -673,7 +706,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage active(Boolean active) {
-            this.active = Optional.of(active);
+            this.active = Optional.ofNullable(active);
             return this;
         }
 
@@ -707,6 +740,18 @@ public final class CreateBulkSyncRequest {
                     sourceConfiguration,
                     sourceConnectionId,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

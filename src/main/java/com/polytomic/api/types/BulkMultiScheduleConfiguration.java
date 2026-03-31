@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkMultiScheduleConfiguration.Builder.class)
 public final class BulkMultiScheduleConfiguration {
     private final Optional<List<BulkItemizedSchedule>> schedules;
@@ -99,7 +99,7 @@ public final class BulkMultiScheduleConfiguration {
         }
 
         public Builder schedules(List<BulkItemizedSchedule> schedules) {
-            this.schedules = Optional.of(schedules);
+            this.schedules = Optional.ofNullable(schedules);
             return this;
         }
 
@@ -110,12 +110,22 @@ public final class BulkMultiScheduleConfiguration {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         public BulkMultiScheduleConfiguration build() {
             return new BulkMultiScheduleConfiguration(schedules, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

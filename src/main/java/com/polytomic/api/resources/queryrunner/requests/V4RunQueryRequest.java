@@ -5,9 +5,9 @@ package com.polytomic.api.resources.queryrunner.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4RunQueryRequest.Builder.class)
 public final class V4RunQueryRequest {
     private final Optional<String> query;
@@ -32,7 +32,7 @@ public final class V4RunQueryRequest {
     /**
      * @return The query to execute against the connection.
      */
-    @JsonProperty("query")
+    @JsonIgnore
     public Optional<String> getQuery() {
         return query;
     }
@@ -80,6 +80,9 @@ public final class V4RunQueryRequest {
             return this;
         }
 
+        /**
+         * <p>The query to execute against the connection.</p>
+         */
         @JsonSetter(value = "query", nulls = Nulls.SKIP)
         public Builder query(Optional<String> query) {
             this.query = query;
@@ -87,12 +90,22 @@ public final class V4RunQueryRequest {
         }
 
         public Builder query(String query) {
-            this.query = Optional.of(query);
+            this.query = Optional.ofNullable(query);
             return this;
         }
 
         public V4RunQueryRequest build() {
             return new V4RunQueryRequest(query, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

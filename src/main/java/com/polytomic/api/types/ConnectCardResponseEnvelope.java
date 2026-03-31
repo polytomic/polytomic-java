@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectCardResponseEnvelope.Builder.class)
 public final class ConnectCardResponseEnvelope {
     private final Optional<ConnectCardResponse> data;
@@ -84,12 +84,22 @@ public final class ConnectCardResponseEnvelope {
         }
 
         public Builder data(ConnectCardResponse data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
         public ConnectCardResponseEnvelope build() {
             return new ConnectCardResponseEnvelope(data, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

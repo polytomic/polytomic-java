@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateUserRequestSchema.Builder.class)
 public final class UpdateUserRequestSchema {
     private final String email;
@@ -85,13 +86,17 @@ public final class UpdateUserRequestSchema {
     }
 
     public interface EmailStage {
-        _FinalStage email(String email);
+        _FinalStage email(@NotNull String email);
 
         Builder from(UpdateUserRequestSchema other);
     }
 
     public interface _FinalStage {
         UpdateUserRequestSchema build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage role(Optional<String> role);
 
@@ -125,14 +130,14 @@ public final class UpdateUserRequestSchema {
 
         @java.lang.Override
         @JsonSetter("email")
-        public _FinalStage email(String email) {
+        public _FinalStage email(@NotNull String email) {
             this.email = email;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage roleIds(List<String> roleIds) {
-            this.roleIds = Optional.of(roleIds);
+            this.roleIds = Optional.ofNullable(roleIds);
             return this;
         }
 
@@ -145,7 +150,7 @@ public final class UpdateUserRequestSchema {
 
         @java.lang.Override
         public _FinalStage role(String role) {
-            this.role = Optional.of(role);
+            this.role = Optional.ofNullable(role);
             return this;
         }
 
@@ -159,6 +164,18 @@ public final class UpdateUserRequestSchema {
         @java.lang.Override
         public UpdateUserRequestSchema build() {
             return new UpdateUserRequestSchema(email, role, roleIds, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V2ConnectionForm.Builder.class)
 public final class V2ConnectionForm {
     private final Optional<Object> jsonschema;
@@ -96,7 +96,7 @@ public final class V2ConnectionForm {
         }
 
         public Builder jsonschema(Object jsonschema) {
-            this.jsonschema = Optional.of(jsonschema);
+            this.jsonschema = Optional.ofNullable(jsonschema);
             return this;
         }
 
@@ -107,12 +107,22 @@ public final class V2ConnectionForm {
         }
 
         public Builder uischema(Object uischema) {
-            this.uischema = Optional.of(uischema);
+            this.uischema = Optional.ofNullable(uischema);
             return this;
         }
 
         public V2ConnectionForm build() {
             return new V2ConnectionForm(jsonschema, uischema, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

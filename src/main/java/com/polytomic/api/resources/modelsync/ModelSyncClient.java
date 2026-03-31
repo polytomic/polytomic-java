@@ -3,10 +3,7 @@
  */
 package com.polytomic.api.resources.modelsync;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
@@ -27,18 +24,12 @@ import com.polytomic.api.types.ModelSyncResponseEnvelope;
 import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
 import com.polytomic.api.types.StartModelSyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
-import java.io.IOException;
 import java.util.function.Supplier;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ModelSyncClient {
     protected final ClientOptions clientOptions;
+
+    private final RawModelSyncClient rawClient;
 
     protected final Supplier<TargetsClient> targetsClient;
 
@@ -46,141 +37,66 @@ public class ModelSyncClient {
 
     public ModelSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawModelSyncClient(clientOptions);
         this.targetsClient = Suppliers.memoize(() -> new TargetsClient(clientOptions));
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
     }
 
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawModelSyncClient withRawResponse() {
+        return this.rawClient;
+    }
+
     public GetModelSyncSourceMetaEnvelope getSource(String id) {
-        return getSource(id, ModelSyncGetSourceRequest.builder().build());
+        return this.rawClient.getSource(id).body();
+    }
+
+    public GetModelSyncSourceMetaEnvelope getSource(String id, RequestOptions requestOptions) {
+        return this.rawClient.getSource(id, requestOptions).body();
     }
 
     public GetModelSyncSourceMetaEnvelope getSource(String id, ModelSyncGetSourceRequest request) {
-        return getSource(id, request, null);
+        return this.rawClient.getSource(id, request).body();
     }
 
     public GetModelSyncSourceMetaEnvelope getSource(
             String id, ModelSyncGetSourceRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/source");
-        if (request.getParams().isPresent()) {
-            httpUrl.addQueryParameter("params", request.getParams().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetModelSyncSourceMetaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getSource(id, request, requestOptions).body();
     }
 
     public ModelFieldResponse getSourceFields(String id) {
-        return getSourceFields(id, ModelSyncGetSourceFieldsRequest.builder().build());
+        return this.rawClient.getSourceFields(id).body();
+    }
+
+    public ModelFieldResponse getSourceFields(String id, RequestOptions requestOptions) {
+        return this.rawClient.getSourceFields(id, requestOptions).body();
     }
 
     public ModelFieldResponse getSourceFields(String id, ModelSyncGetSourceFieldsRequest request) {
-        return getSourceFields(id, request, null);
+        return this.rawClient.getSourceFields(id, request).body();
     }
 
     public ModelFieldResponse getSourceFields(
             String id, ModelSyncGetSourceFieldsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/source/fields");
-        if (request.getParams().isPresent()) {
-            httpUrl.addQueryParameter("params", request.getParams().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelFieldResponse.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getSourceFields(id, request, requestOptions).body();
     }
 
     public ListModelSyncResponseEnvelope list() {
-        return list(ModelSyncListRequest.builder().build());
+        return this.rawClient.list().body();
+    }
+
+    public ListModelSyncResponseEnvelope list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
     }
 
     public ListModelSyncResponseEnvelope list(ModelSyncListRequest request) {
-        return list(request, null);
+        return this.rawClient.list(request).body();
     }
 
     public ListModelSyncResponseEnvelope list(ModelSyncListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs");
-        if (request.getActive().isPresent()) {
-            httpUrl.addQueryParameter("active", request.getActive().get().toString());
-        }
-        if (request.getMode().isPresent()) {
-            httpUrl.addQueryParameter("mode", request.getMode().get().toString());
-        }
-        if (request.getTargetConnectionId().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "target_connection_id", request.getTargetConnectionId().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(request, requestOptions).body();
     }
 
     /**
@@ -229,7 +145,7 @@ public class ModelSyncClient {
      * a connection supports target creation.</p>
      */
     public ModelSyncResponseEnvelope create(CreateModelSyncRequest request) {
-        return create(request, null);
+        return this.rawClient.create(request).body();
     }
 
     /**
@@ -278,265 +194,55 @@ public class ModelSyncClient {
      * a connection supports target creation.</p>
      */
     public ModelSyncResponseEnvelope create(CreateModelSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.create(request, requestOptions).body();
     }
 
     public ScheduleOptionResponseEnvelope getScheduleOptions() {
-        return getScheduleOptions(null);
+        return this.rawClient.getScheduleOptions().body();
     }
 
     public ScheduleOptionResponseEnvelope getScheduleOptions(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs/schedules")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ScheduleOptionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getScheduleOptions(requestOptions).body();
     }
 
     public ModelSyncResponseEnvelope get(String id) {
-        return get(id, null);
+        return this.rawClient.get(id).body();
     }
 
     public ModelSyncResponseEnvelope get(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, requestOptions).body();
     }
 
     public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request) {
-        return update(id, request, null);
+        return this.rawClient.update(id, request).body();
     }
 
     public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.update(id, request, requestOptions).body();
     }
 
     public void remove(String id) {
-        remove(id, null);
+        this.rawClient.remove(id).body();
     }
 
     public void remove(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.rawClient.remove(id, requestOptions).body();
     }
 
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
-        return activate(id, request, null);
+        return this.rawClient.activate(id, request).body();
     }
 
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("activate")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ActivateSyncEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.activate(id, request, requestOptions).body();
     }
 
     public CancelModelSyncResponseEnvelope cancel(String id) {
-        return cancel(id, null);
+        return this.rawClient.cancel(id).body();
     }
 
     public CancelModelSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("cancel")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), CancelModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.cancel(id, requestOptions).body();
     }
 
     /**
@@ -546,7 +252,17 @@ public class ModelSyncClient {
      * </blockquote>
      */
     public StartModelSyncResponseEnvelope start(String id) {
-        return start(id, StartModelSyncRequest.builder().build());
+        return this.rawClient.start(id).body();
+    }
+
+    /**
+     * <blockquote>
+     * 🚧 Force full resync
+     * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
+     * </blockquote>
+     */
+    public StartModelSyncResponseEnvelope start(String id, RequestOptions requestOptions) {
+        return this.rawClient.start(id, requestOptions).body();
     }
 
     /**
@@ -556,7 +272,7 @@ public class ModelSyncClient {
      * </blockquote>
      */
     public StartModelSyncResponseEnvelope start(String id, StartModelSyncRequest request) {
-        return start(id, request, null);
+        return this.rawClient.start(id, request).body();
     }
 
     /**
@@ -567,78 +283,15 @@ public class ModelSyncClient {
      */
     public StartModelSyncResponseEnvelope start(
             String id, StartModelSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), StartModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.start(id, request, requestOptions).body();
     }
 
     public SyncStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
+        return this.rawClient.getStatus(id).body();
     }
 
     public SyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("status")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), SyncStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getStatus(id, requestOptions).body();
     }
 
     public TargetsClient targets() {

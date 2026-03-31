@@ -15,8 +15,9 @@ import com.polytomic.api.types.ExecutionStatus;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateExecutionRequest.Builder.class)
 public final class UpdateExecutionRequest {
     private final ExecutionStatus status;
@@ -63,13 +64,17 @@ public final class UpdateExecutionRequest {
     }
 
     public interface StatusStage {
-        _FinalStage status(ExecutionStatus status);
+        _FinalStage status(@NotNull ExecutionStatus status);
 
         Builder from(UpdateExecutionRequest other);
     }
 
     public interface _FinalStage {
         UpdateExecutionRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -89,7 +94,7 @@ public final class UpdateExecutionRequest {
 
         @java.lang.Override
         @JsonSetter("status")
-        public _FinalStage status(ExecutionStatus status) {
+        public _FinalStage status(@NotNull ExecutionStatus status) {
             this.status = status;
             return this;
         }
@@ -97,6 +102,18 @@ public final class UpdateExecutionRequest {
         @java.lang.Override
         public UpdateExecutionRequest build() {
             return new UpdateExecutionRequest(status, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -17,8 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TestConnectionRequest.Builder.class)
 public final class TestConnectionRequest {
     private final Map<String, Object> configuration;
@@ -96,7 +97,10 @@ public final class TestConnectionRequest {
     }
 
     public interface TypeStage {
-        _FinalStage type(String type);
+        /**
+         * <p>The type of connection to test.</p>
+         */
+        _FinalStage type(@NotNull String type);
 
         Builder from(TestConnectionRequest other);
     }
@@ -104,12 +108,22 @@ public final class TestConnectionRequest {
     public interface _FinalStage {
         TestConnectionRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Connection configuration to test.</p>
+         */
         _FinalStage configuration(Map<String, Object> configuration);
 
         _FinalStage putAllConfiguration(Map<String, Object> configuration);
 
         _FinalStage configuration(String key, Object value);
 
+        /**
+         * <p>Optional existing connection ID to use as a base for testing. The provided configuration will be merged over the stored configuration for this connection before testing.</p>
+         */
         _FinalStage connectionId(Optional<String> connectionId);
 
         _FinalStage connectionId(String connectionId);
@@ -138,11 +152,12 @@ public final class TestConnectionRequest {
 
         /**
          * <p>The type of connection to test.</p>
+         * <p>The type of connection to test.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("type")
-        public _FinalStage type(String type) {
+        public _FinalStage type(@NotNull String type) {
             this.type = type;
             return this;
         }
@@ -153,10 +168,13 @@ public final class TestConnectionRequest {
          */
         @java.lang.Override
         public _FinalStage connectionId(String connectionId) {
-            this.connectionId = Optional.of(connectionId);
+            this.connectionId = Optional.ofNullable(connectionId);
             return this;
         }
 
+        /**
+         * <p>Optional existing connection ID to use as a base for testing. The provided configuration will be merged over the stored configuration for this connection before testing.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public _FinalStage connectionId(Optional<String> connectionId) {
@@ -180,21 +198,40 @@ public final class TestConnectionRequest {
          */
         @java.lang.Override
         public _FinalStage putAllConfiguration(Map<String, Object> configuration) {
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
             return this;
         }
 
+        /**
+         * <p>Connection configuration to test.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration.clear();
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
             return this;
         }
 
         @java.lang.Override
         public TestConnectionRequest build() {
             return new TestConnectionRequest(configuration, connectionId, type, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

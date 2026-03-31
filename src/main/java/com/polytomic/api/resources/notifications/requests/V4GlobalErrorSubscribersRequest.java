@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4GlobalErrorSubscribersRequest.Builder.class)
 public final class V4GlobalErrorSubscribersRequest {
     private final Optional<List<String>> emails;
@@ -85,12 +85,22 @@ public final class V4GlobalErrorSubscribersRequest {
         }
 
         public Builder emails(List<String> emails) {
-            this.emails = Optional.of(emails);
+            this.emails = Optional.ofNullable(emails);
             return this;
         }
 
         public V4GlobalErrorSubscribersRequest build() {
             return new V4GlobalErrorSubscribersRequest(emails, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

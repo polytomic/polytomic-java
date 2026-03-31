@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4UserFieldRequest.Builder.class)
 public final class V4UserFieldRequest {
     private final Optional<Object> example;
@@ -106,21 +107,25 @@ public final class V4UserFieldRequest {
     }
 
     public interface FieldIdStage {
-        LabelStage fieldId(String fieldId);
+        LabelStage fieldId(@NotNull String fieldId);
 
         Builder from(V4UserFieldRequest other);
     }
 
     public interface LabelStage {
-        TypeStage label(String label);
+        TypeStage label(@NotNull String label);
     }
 
     public interface TypeStage {
-        _FinalStage type(String type);
+        _FinalStage type(@NotNull String type);
     }
 
     public interface _FinalStage {
         V4UserFieldRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage example(Optional<Object> example);
 
@@ -160,28 +165,28 @@ public final class V4UserFieldRequest {
 
         @java.lang.Override
         @JsonSetter("field_id")
-        public LabelStage fieldId(String fieldId) {
+        public LabelStage fieldId(@NotNull String fieldId) {
             this.fieldId = fieldId;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("label")
-        public TypeStage label(String label) {
+        public TypeStage label(@NotNull String label) {
             this.label = label;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("type")
-        public _FinalStage type(String type) {
+        public _FinalStage type(@NotNull String type) {
             this.type = type;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage path(String path) {
-            this.path = Optional.of(path);
+            this.path = Optional.ofNullable(path);
             return this;
         }
 
@@ -194,7 +199,7 @@ public final class V4UserFieldRequest {
 
         @java.lang.Override
         public _FinalStage example(Object example) {
-            this.example = Optional.of(example);
+            this.example = Optional.ofNullable(example);
             return this;
         }
 
@@ -208,6 +213,18 @@ public final class V4UserFieldRequest {
         @java.lang.Override
         public V4UserFieldRequest build() {
             return new V4UserFieldRequest(example, fieldId, label, path, type, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

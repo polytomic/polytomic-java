@@ -5,9 +5,9 @@ package com.polytomic.api.resources.events.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = EventsListRequest.Builder.class)
 public final class EventsListRequest {
     private final Optional<String> organizationId;
@@ -48,27 +48,27 @@ public final class EventsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("organization_id")
+    @JsonIgnore
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
-    @JsonProperty("type")
+    @JsonIgnore
     public Optional<String> getType() {
         return type;
     }
 
-    @JsonProperty("starting_after")
+    @JsonIgnore
     public Optional<OffsetDateTime> getStartingAfter() {
         return startingAfter;
     }
 
-    @JsonProperty("ending_before")
+    @JsonIgnore
     public Optional<OffsetDateTime> getEndingBefore() {
         return endingBefore;
     }
 
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -139,7 +139,7 @@ public final class EventsListRequest {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -150,7 +150,7 @@ public final class EventsListRequest {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -161,7 +161,7 @@ public final class EventsListRequest {
         }
 
         public Builder startingAfter(OffsetDateTime startingAfter) {
-            this.startingAfter = Optional.of(startingAfter);
+            this.startingAfter = Optional.ofNullable(startingAfter);
             return this;
         }
 
@@ -172,7 +172,7 @@ public final class EventsListRequest {
         }
 
         public Builder endingBefore(OffsetDateTime endingBefore) {
-            this.endingBefore = Optional.of(endingBefore);
+            this.endingBefore = Optional.ofNullable(endingBefore);
             return this;
         }
 
@@ -183,13 +183,23 @@ public final class EventsListRequest {
         }
 
         public Builder limit(Integer limit) {
-            this.limit = Optional.of(limit);
+            this.limit = Optional.ofNullable(limit);
             return this;
         }
 
         public EventsListRequest build() {
             return new EventsListRequest(
                     organizationId, type, startingAfter, endingBefore, limit, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

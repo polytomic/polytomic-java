@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Organization.Builder.class)
 public final class Organization {
     private final Optional<String> id;
@@ -138,7 +138,7 @@ public final class Organization {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -149,7 +149,7 @@ public final class Organization {
         }
 
         public Builder issuer(String issuer) {
-            this.issuer = Optional.of(issuer);
+            this.issuer = Optional.ofNullable(issuer);
             return this;
         }
 
@@ -160,7 +160,7 @@ public final class Organization {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -171,7 +171,7 @@ public final class Organization {
         }
 
         public Builder ssoDomain(String ssoDomain) {
-            this.ssoDomain = Optional.of(ssoDomain);
+            this.ssoDomain = Optional.ofNullable(ssoDomain);
             return this;
         }
 
@@ -182,12 +182,22 @@ public final class Organization {
         }
 
         public Builder ssoOrgId(String ssoOrgId) {
-            this.ssoOrgId = Optional.of(ssoOrgId);
+            this.ssoOrgId = Optional.ofNullable(ssoOrgId);
             return this;
         }
 
         public Organization build() {
             return new Organization(id, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

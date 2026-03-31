@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4TargetCreator.Builder.class)
 public final class V4TargetCreator {
     private final Optional<List<TargetCreateInput>> properties;
@@ -98,6 +98,9 @@ public final class V4TargetCreator {
             return this;
         }
 
+        /**
+         * <p>The properties that are required for target creation.</p>
+         */
         @JsonSetter(value = "properties", nulls = Nulls.SKIP)
         public Builder properties(Optional<List<TargetCreateInput>> properties) {
             this.properties = properties;
@@ -105,10 +108,13 @@ public final class V4TargetCreator {
         }
 
         public Builder properties(List<TargetCreateInput> properties) {
-            this.properties = Optional.of(properties);
+            this.properties = Optional.ofNullable(properties);
             return this;
         }
 
+        /**
+         * <p>True if the connection supports target creation.</p>
+         */
         @JsonSetter(value = "supported", nulls = Nulls.SKIP)
         public Builder supported(Optional<Boolean> supported) {
             this.supported = supported;
@@ -116,12 +122,22 @@ public final class V4TargetCreator {
         }
 
         public Builder supported(Boolean supported) {
-            this.supported = Optional.of(supported);
+            this.supported = Optional.ofNullable(supported);
             return this;
         }
 
         public V4TargetCreator build() {
             return new V4TargetCreator(properties, supported, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

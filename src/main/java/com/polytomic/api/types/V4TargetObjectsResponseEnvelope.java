@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4TargetObjectsResponseEnvelope.Builder.class)
 public final class V4TargetObjectsResponseEnvelope {
     private final Optional<List<TargetObject>> data;
@@ -99,7 +99,7 @@ public final class V4TargetObjectsResponseEnvelope {
         }
 
         public Builder data(List<TargetObject> data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
@@ -110,12 +110,22 @@ public final class V4TargetObjectsResponseEnvelope {
         }
 
         public Builder targetCreation(V4TargetCreator targetCreation) {
-            this.targetCreation = Optional.of(targetCreation);
+            this.targetCreation = Optional.ofNullable(targetCreation);
             return this;
         }
 
         public V4TargetObjectsResponseEnvelope build() {
             return new V4TargetObjectsResponseEnvelope(data, targetCreation, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

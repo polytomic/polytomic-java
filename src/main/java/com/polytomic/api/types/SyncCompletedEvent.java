@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SyncCompletedEvent.Builder.class)
 public final class SyncCompletedEvent {
     private final Optional<List<String>> deletedRecords;
@@ -340,7 +340,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder deletedRecords(List<String> deletedRecords) {
-            this.deletedRecords = Optional.of(deletedRecords);
+            this.deletedRecords = Optional.ofNullable(deletedRecords);
             return this;
         }
 
@@ -351,7 +351,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder errorCount(Integer errorCount) {
-            this.errorCount = Optional.of(errorCount);
+            this.errorCount = Optional.ofNullable(errorCount);
             return this;
         }
 
@@ -362,7 +362,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder erroredRecords(List<String> erroredRecords) {
-            this.erroredRecords = Optional.of(erroredRecords);
+            this.erroredRecords = Optional.ofNullable(erroredRecords);
             return this;
         }
 
@@ -373,7 +373,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder executionId(String executionId) {
-            this.executionId = Optional.of(executionId);
+            this.executionId = Optional.ofNullable(executionId);
             return this;
         }
 
@@ -384,7 +384,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder insertedCount(Integer insertedCount) {
-            this.insertedCount = Optional.of(insertedCount);
+            this.insertedCount = Optional.ofNullable(insertedCount);
             return this;
         }
 
@@ -395,7 +395,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder insertedRecords(List<String> insertedRecords) {
-            this.insertedRecords = Optional.of(insertedRecords);
+            this.insertedRecords = Optional.ofNullable(insertedRecords);
             return this;
         }
 
@@ -406,7 +406,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -417,7 +417,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder recordCount(Integer recordCount) {
-            this.recordCount = Optional.of(recordCount);
+            this.recordCount = Optional.ofNullable(recordCount);
             return this;
         }
 
@@ -428,7 +428,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder status(ExecutionStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -439,7 +439,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder syncId(String syncId) {
-            this.syncId = Optional.of(syncId);
+            this.syncId = Optional.ofNullable(syncId);
             return this;
         }
 
@@ -450,7 +450,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder syncName(String syncName) {
-            this.syncName = Optional.of(syncName);
+            this.syncName = Optional.ofNullable(syncName);
             return this;
         }
 
@@ -461,7 +461,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder targetConnectionId(String targetConnectionId) {
-            this.targetConnectionId = Optional.of(targetConnectionId);
+            this.targetConnectionId = Optional.ofNullable(targetConnectionId);
             return this;
         }
 
@@ -472,7 +472,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder totalRecords(List<String> totalRecords) {
-            this.totalRecords = Optional.of(totalRecords);
+            this.totalRecords = Optional.ofNullable(totalRecords);
             return this;
         }
 
@@ -483,7 +483,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder trigger(String trigger) {
-            this.trigger = Optional.of(trigger);
+            this.trigger = Optional.ofNullable(trigger);
             return this;
         }
 
@@ -494,7 +494,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder updatedCount(Integer updatedCount) {
-            this.updatedCount = Optional.of(updatedCount);
+            this.updatedCount = Optional.ofNullable(updatedCount);
             return this;
         }
 
@@ -505,7 +505,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder updatedRecords(List<String> updatedRecords) {
-            this.updatedRecords = Optional.of(updatedRecords);
+            this.updatedRecords = Optional.ofNullable(updatedRecords);
             return this;
         }
 
@@ -516,7 +516,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder upsertedCount(Integer upsertedCount) {
-            this.upsertedCount = Optional.of(upsertedCount);
+            this.upsertedCount = Optional.ofNullable(upsertedCount);
             return this;
         }
 
@@ -527,7 +527,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder warningCount(Integer warningCount) {
-            this.warningCount = Optional.of(warningCount);
+            this.warningCount = Optional.ofNullable(warningCount);
             return this;
         }
 
@@ -538,7 +538,7 @@ public final class SyncCompletedEvent {
         }
 
         public Builder warnings(List<String> warnings) {
-            this.warnings = Optional.of(warnings);
+            this.warnings = Optional.ofNullable(warnings);
             return this;
         }
 
@@ -564,6 +564,16 @@ public final class SyncCompletedEvent {
                     warningCount,
                     warnings,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

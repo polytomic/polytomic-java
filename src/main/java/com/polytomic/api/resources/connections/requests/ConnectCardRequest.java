@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectCardRequest.Builder.class)
 public final class ConnectCardRequest {
     private final Optional<String> connection;
@@ -152,22 +153,38 @@ public final class ConnectCardRequest {
     }
 
     public interface NameStage {
-        RedirectUrlStage name(String name);
+        /**
+         * <p>Name of the new connection. Must be unique per organization.</p>
+         */
+        RedirectUrlStage name(@NotNull String name);
 
         Builder from(ConnectCardRequest other);
     }
 
     public interface RedirectUrlStage {
-        _FinalStage redirectUrl(String redirectUrl);
+        /**
+         * <p>URL to redirect to after connection is created.</p>
+         */
+        _FinalStage redirectUrl(@NotNull String redirectUrl);
     }
 
     public interface _FinalStage {
         ConnectCardRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>The id of an existing connection to update.</p>
+         */
         _FinalStage connection(Optional<String> connection);
 
         _FinalStage connection(String connection);
 
+        /**
+         * <p>Whether to use the dark theme for the Connect modal.</p>
+         */
         _FinalStage dark(Optional<Boolean> dark);
 
         _FinalStage dark(Boolean dark);
@@ -176,10 +193,16 @@ public final class ConnectCardRequest {
 
         _FinalStage organizationId(String organizationId);
 
+        /**
+         * <p>Connection type to create.</p>
+         */
         _FinalStage type(Optional<String> type);
 
         _FinalStage type(String type);
 
+        /**
+         * <p>List of connection types which are allowed to be created. Ignored if type is set.</p>
+         */
         _FinalStage whitelist(Optional<List<String>> whitelist);
 
         _FinalStage whitelist(List<String> whitelist);
@@ -220,22 +243,24 @@ public final class ConnectCardRequest {
 
         /**
          * <p>Name of the new connection. Must be unique per organization.</p>
+         * <p>Name of the new connection. Must be unique per organization.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("name")
-        public RedirectUrlStage name(String name) {
+        public RedirectUrlStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         /**
          * <p>URL to redirect to after connection is created.</p>
+         * <p>URL to redirect to after connection is created.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("redirect_url")
-        public _FinalStage redirectUrl(String redirectUrl) {
+        public _FinalStage redirectUrl(@NotNull String redirectUrl) {
             this.redirectUrl = redirectUrl;
             return this;
         }
@@ -246,10 +271,13 @@ public final class ConnectCardRequest {
          */
         @java.lang.Override
         public _FinalStage whitelist(List<String> whitelist) {
-            this.whitelist = Optional.of(whitelist);
+            this.whitelist = Optional.ofNullable(whitelist);
             return this;
         }
 
+        /**
+         * <p>List of connection types which are allowed to be created. Ignored if type is set.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "whitelist", nulls = Nulls.SKIP)
         public _FinalStage whitelist(Optional<List<String>> whitelist) {
@@ -263,10 +291,13 @@ public final class ConnectCardRequest {
          */
         @java.lang.Override
         public _FinalStage type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
+        /**
+         * <p>Connection type to create.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public _FinalStage type(Optional<String> type) {
@@ -276,7 +307,7 @@ public final class ConnectCardRequest {
 
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -293,10 +324,13 @@ public final class ConnectCardRequest {
          */
         @java.lang.Override
         public _FinalStage dark(Boolean dark) {
-            this.dark = Optional.of(dark);
+            this.dark = Optional.ofNullable(dark);
             return this;
         }
 
+        /**
+         * <p>Whether to use the dark theme for the Connect modal.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "dark", nulls = Nulls.SKIP)
         public _FinalStage dark(Optional<Boolean> dark) {
@@ -310,10 +344,13 @@ public final class ConnectCardRequest {
          */
         @java.lang.Override
         public _FinalStage connection(String connection) {
-            this.connection = Optional.of(connection);
+            this.connection = Optional.ofNullable(connection);
             return this;
         }
 
+        /**
+         * <p>The id of an existing connection to update.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "connection", nulls = Nulls.SKIP)
         public _FinalStage connection(Optional<String> connection) {
@@ -325,6 +362,18 @@ public final class ConnectCardRequest {
         public ConnectCardRequest build() {
             return new ConnectCardRequest(
                     connection, dark, name, organizationId, redirectUrl, type, whitelist, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

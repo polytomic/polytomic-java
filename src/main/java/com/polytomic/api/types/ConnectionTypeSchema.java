@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionTypeSchema.Builder.class)
 public final class ConnectionTypeSchema {
     private final Optional<String> id;
@@ -126,7 +126,7 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -137,7 +137,7 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder logoUrl(String logoUrl) {
-            this.logoUrl = Optional.of(logoUrl);
+            this.logoUrl = Optional.ofNullable(logoUrl);
             return this;
         }
 
@@ -148,7 +148,7 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -159,12 +159,22 @@ public final class ConnectionTypeSchema {
         }
 
         public Builder operations(List<String> operations) {
-            this.operations = Optional.of(operations);
+            this.operations = Optional.ofNullable(operations);
             return this;
         }
 
         public ConnectionTypeSchema build() {
             return new ConnectionTypeSchema(id, logoUrl, name, operations, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

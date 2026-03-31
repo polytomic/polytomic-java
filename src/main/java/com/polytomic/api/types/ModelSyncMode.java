@@ -16,7 +16,9 @@ public enum ModelSyncMode {
 
     APPEND("append"),
 
-    REMOVE("remove");
+    REMOVE("remove"),
+
+    SNAPSHOT("snapshot");
 
     private final String value;
 

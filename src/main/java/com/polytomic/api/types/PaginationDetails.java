@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PaginationDetails.Builder.class)
 public final class PaginationDetails {
     private final Optional<String> nextPageToken;
@@ -84,12 +84,22 @@ public final class PaginationDetails {
         }
 
         public Builder nextPageToken(String nextPageToken) {
-            this.nextPageToken = Optional.of(nextPageToken);
+            this.nextPageToken = Optional.ofNullable(nextPageToken);
             return this;
         }
 
         public PaginationDetails build() {
             return new PaginationDetails(nextPageToken, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

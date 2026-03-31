@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSyncField.Builder.class)
 public final class ModelSyncField {
     private final Optional<Boolean> encryptionEnabled;
@@ -132,7 +133,10 @@ public final class ModelSyncField {
     }
 
     public interface TargetStage {
-        _FinalStage target(String target);
+        /**
+         * <p>Target field ID the source field value will be written to.</p>
+         */
+        _FinalStage target(@NotNull String target);
 
         Builder from(ModelSyncField other);
     }
@@ -140,14 +144,27 @@ public final class ModelSyncField {
     public interface _FinalStage {
         ModelSyncField build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Whether the field should be encrypted.</p>
+         */
         _FinalStage encryptionEnabled(Optional<Boolean> encryptionEnabled);
 
         _FinalStage encryptionEnabled(Boolean encryptionEnabled);
 
+        /**
+         * <p>New is set to true if the target field should be created by Polytomic. This is not supported by all backends.</p>
+         */
         _FinalStage new_(Optional<Boolean> new_);
 
         _FinalStage new_(Boolean new_);
 
+        /**
+         * <p>Value to set in the target field; if provided, 'source' is ignored.</p>
+         */
         _FinalStage overrideValue(Optional<String> overrideValue);
 
         _FinalStage overrideValue(String overrideValue);
@@ -156,6 +173,9 @@ public final class ModelSyncField {
 
         _FinalStage source(Source source);
 
+        /**
+         * <p>Sync mode for the field; defaults to 'updateOrCreate'. If set to 'create', the field will not be synced if it already has a value. This is not supported by all backends.</p>
+         */
         _FinalStage syncMode(Optional<String> syncMode);
 
         _FinalStage syncMode(String syncMode);
@@ -193,11 +213,12 @@ public final class ModelSyncField {
 
         /**
          * <p>Target field ID the source field value will be written to.</p>
+         * <p>Target field ID the source field value will be written to.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("target")
-        public _FinalStage target(String target) {
+        public _FinalStage target(@NotNull String target) {
             this.target = target;
             return this;
         }
@@ -208,10 +229,13 @@ public final class ModelSyncField {
          */
         @java.lang.Override
         public _FinalStage syncMode(String syncMode) {
-            this.syncMode = Optional.of(syncMode);
+            this.syncMode = Optional.ofNullable(syncMode);
             return this;
         }
 
+        /**
+         * <p>Sync mode for the field; defaults to 'updateOrCreate'. If set to 'create', the field will not be synced if it already has a value. This is not supported by all backends.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "sync_mode", nulls = Nulls.SKIP)
         public _FinalStage syncMode(Optional<String> syncMode) {
@@ -221,7 +245,7 @@ public final class ModelSyncField {
 
         @java.lang.Override
         public _FinalStage source(Source source) {
-            this.source = Optional.of(source);
+            this.source = Optional.ofNullable(source);
             return this;
         }
 
@@ -238,10 +262,13 @@ public final class ModelSyncField {
          */
         @java.lang.Override
         public _FinalStage overrideValue(String overrideValue) {
-            this.overrideValue = Optional.of(overrideValue);
+            this.overrideValue = Optional.ofNullable(overrideValue);
             return this;
         }
 
+        /**
+         * <p>Value to set in the target field; if provided, 'source' is ignored.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "override_value", nulls = Nulls.SKIP)
         public _FinalStage overrideValue(Optional<String> overrideValue) {
@@ -255,10 +282,13 @@ public final class ModelSyncField {
          */
         @java.lang.Override
         public _FinalStage new_(Boolean new_) {
-            this.new_ = Optional.of(new_);
+            this.new_ = Optional.ofNullable(new_);
             return this;
         }
 
+        /**
+         * <p>New is set to true if the target field should be created by Polytomic. This is not supported by all backends.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "new", nulls = Nulls.SKIP)
         public _FinalStage new_(Optional<Boolean> new_) {
@@ -272,10 +302,13 @@ public final class ModelSyncField {
          */
         @java.lang.Override
         public _FinalStage encryptionEnabled(Boolean encryptionEnabled) {
-            this.encryptionEnabled = Optional.of(encryptionEnabled);
+            this.encryptionEnabled = Optional.ofNullable(encryptionEnabled);
             return this;
         }
 
+        /**
+         * <p>Whether the field should be encrypted.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "encryption_enabled", nulls = Nulls.SKIP)
         public _FinalStage encryptionEnabled(Optional<Boolean> encryptionEnabled) {
@@ -287,6 +320,18 @@ public final class ModelSyncField {
         public ModelSyncField build() {
             return new ModelSyncField(
                     encryptionEnabled, new_, overrideValue, source, syncMode, target, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SupportedBulkMode.Builder.class)
 public final class SupportedBulkMode {
     private final Optional<String> description;
@@ -157,7 +157,7 @@ public final class SupportedBulkMode {
         }
 
         public Builder description(String description) {
-            this.description = Optional.of(description);
+            this.description = Optional.ofNullable(description);
             return this;
         }
 
@@ -168,7 +168,7 @@ public final class SupportedBulkMode {
         }
 
         public Builder id(BulkSyncMode id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -179,7 +179,7 @@ public final class SupportedBulkMode {
         }
 
         public Builder label(String label) {
-            this.label = Optional.of(label);
+            this.label = Optional.ofNullable(label);
             return this;
         }
 
@@ -190,7 +190,7 @@ public final class SupportedBulkMode {
         }
 
         public Builder requiresIdentity(Boolean requiresIdentity) {
-            this.requiresIdentity = Optional.of(requiresIdentity);
+            this.requiresIdentity = Optional.ofNullable(requiresIdentity);
             return this;
         }
 
@@ -201,7 +201,7 @@ public final class SupportedBulkMode {
         }
 
         public Builder supportsFieldSyncMode(Boolean supportsFieldSyncMode) {
-            this.supportsFieldSyncMode = Optional.of(supportsFieldSyncMode);
+            this.supportsFieldSyncMode = Optional.ofNullable(supportsFieldSyncMode);
             return this;
         }
 
@@ -212,7 +212,7 @@ public final class SupportedBulkMode {
         }
 
         public Builder supportsTargetFilters(Boolean supportsTargetFilters) {
-            this.supportsTargetFilters = Optional.of(supportsTargetFilters);
+            this.supportsTargetFilters = Optional.ofNullable(supportsTargetFilters);
             return this;
         }
 
@@ -225,6 +225,16 @@ public final class SupportedBulkMode {
                     supportsFieldSyncMode,
                     supportsTargetFilters,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

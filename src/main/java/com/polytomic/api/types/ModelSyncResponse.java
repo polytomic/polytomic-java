@@ -19,14 +19,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSyncResponse.Builder.class)
 public final class ModelSyncResponse {
     private final Optional<Boolean> active;
 
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<CommonOutputActor> createdBy;
+    private final Optional<OutputActor> createdBy;
 
     private final Optional<String> encryptionPassphrase;
 
@@ -66,14 +66,14 @@ public final class ModelSyncResponse {
 
     private final Optional<OffsetDateTime> updatedAt;
 
-    private final Optional<CommonOutputActor> updatedBy;
+    private final Optional<OutputActor> updatedBy;
 
     private final Map<String, Object> additionalProperties;
 
     private ModelSyncResponse(
             Optional<Boolean> active,
             Optional<OffsetDateTime> createdAt,
-            Optional<CommonOutputActor> createdBy,
+            Optional<OutputActor> createdBy,
             Optional<String> encryptionPassphrase,
             Optional<List<ModelSyncField>> fields,
             Optional<String> filterLogic,
@@ -93,7 +93,7 @@ public final class ModelSyncResponse {
             Optional<Boolean> syncAllRecords,
             Optional<Target> target,
             Optional<OffsetDateTime> updatedAt,
-            Optional<CommonOutputActor> updatedBy,
+            Optional<OutputActor> updatedBy,
             Map<String, Object> additionalProperties) {
         this.active = active;
         this.createdAt = createdAt;
@@ -132,7 +132,7 @@ public final class ModelSyncResponse {
     }
 
     @JsonProperty("created_by")
-    public Optional<CommonOutputActor> getCreatedBy() {
+    public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
@@ -235,7 +235,7 @@ public final class ModelSyncResponse {
     }
 
     @JsonProperty("updated_by")
-    public Optional<CommonOutputActor> getUpdatedBy() {
+    public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
     }
 
@@ -319,7 +319,7 @@ public final class ModelSyncResponse {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<CommonOutputActor> createdBy = Optional.empty();
+        private Optional<OutputActor> createdBy = Optional.empty();
 
         private Optional<String> encryptionPassphrase = Optional.empty();
 
@@ -359,7 +359,7 @@ public final class ModelSyncResponse {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        private Optional<CommonOutputActor> updatedBy = Optional.empty();
+        private Optional<OutputActor> updatedBy = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -400,7 +400,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder active(Boolean active) {
-            this.active = Optional.of(active);
+            this.active = Optional.ofNullable(active);
             return this;
         }
 
@@ -411,18 +411,18 @@ public final class ModelSyncResponse {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
-        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+        public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
             return this;
         }
 
-        public Builder createdBy(CommonOutputActor createdBy) {
-            this.createdBy = Optional.of(createdBy);
+        public Builder createdBy(OutputActor createdBy) {
+            this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
@@ -433,7 +433,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder encryptionPassphrase(String encryptionPassphrase) {
-            this.encryptionPassphrase = Optional.of(encryptionPassphrase);
+            this.encryptionPassphrase = Optional.ofNullable(encryptionPassphrase);
             return this;
         }
 
@@ -444,7 +444,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder fields(List<ModelSyncField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -455,7 +455,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder filterLogic(String filterLogic) {
-            this.filterLogic = Optional.of(filterLogic);
+            this.filterLogic = Optional.ofNullable(filterLogic);
             return this;
         }
 
@@ -466,7 +466,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder filters(List<Filter> filters) {
-            this.filters = Optional.of(filters);
+            this.filters = Optional.ofNullable(filters);
             return this;
         }
 
@@ -477,7 +477,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -488,7 +488,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder identity(Identity identity) {
-            this.identity = Optional.of(identity);
+            this.identity = Optional.ofNullable(identity);
             return this;
         }
 
@@ -499,10 +499,13 @@ public final class ModelSyncResponse {
         }
 
         public Builder mode(ModelSyncMode mode) {
-            this.mode = Optional.of(mode);
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
+        /**
+         * <p>Model IDs used in the sync.</p>
+         */
         @JsonSetter(value = "model_ids", nulls = Nulls.SKIP)
         public Builder modelIds(Optional<List<String>> modelIds) {
             this.modelIds = modelIds;
@@ -510,7 +513,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder modelIds(List<String> modelIds) {
-            this.modelIds = Optional.of(modelIds);
+            this.modelIds = Optional.ofNullable(modelIds);
             return this;
         }
 
@@ -521,7 +524,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -532,7 +535,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder onlyEnrichUpdates(Boolean onlyEnrichUpdates) {
-            this.onlyEnrichUpdates = Optional.of(onlyEnrichUpdates);
+            this.onlyEnrichUpdates = Optional.ofNullable(onlyEnrichUpdates);
             return this;
         }
 
@@ -543,7 +546,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -554,7 +557,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder overrideFields(List<ModelSyncField> overrideFields) {
-            this.overrideFields = Optional.of(overrideFields);
+            this.overrideFields = Optional.ofNullable(overrideFields);
             return this;
         }
 
@@ -565,7 +568,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder overrides(List<Override> overrides) {
-            this.overrides = Optional.of(overrides);
+            this.overrides = Optional.ofNullable(overrides);
             return this;
         }
 
@@ -576,7 +579,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -587,7 +590,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder schedule(Schedule schedule) {
-            this.schedule = Optional.of(schedule);
+            this.schedule = Optional.ofNullable(schedule);
             return this;
         }
 
@@ -598,7 +601,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder skipInitialBackfill(Boolean skipInitialBackfill) {
-            this.skipInitialBackfill = Optional.of(skipInitialBackfill);
+            this.skipInitialBackfill = Optional.ofNullable(skipInitialBackfill);
             return this;
         }
 
@@ -609,7 +612,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder syncAllRecords(Boolean syncAllRecords) {
-            this.syncAllRecords = Optional.of(syncAllRecords);
+            this.syncAllRecords = Optional.ofNullable(syncAllRecords);
             return this;
         }
 
@@ -620,7 +623,7 @@ public final class ModelSyncResponse {
         }
 
         public Builder target(Target target) {
-            this.target = Optional.of(target);
+            this.target = Optional.ofNullable(target);
             return this;
         }
 
@@ -631,18 +634,18 @@ public final class ModelSyncResponse {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
-        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+        public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
             return this;
         }
 
-        public Builder updatedBy(CommonOutputActor updatedBy) {
-            this.updatedBy = Optional.of(updatedBy);
+        public Builder updatedBy(OutputActor updatedBy) {
+            this.updatedBy = Optional.ofNullable(updatedBy);
             return this;
         }
 
@@ -672,6 +675,16 @@ public final class ModelSyncResponse {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

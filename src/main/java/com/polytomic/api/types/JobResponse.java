@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = JobResponse.Builder.class)
 public final class JobResponse {
     private final Optional<String> error;
@@ -138,7 +138,7 @@ public final class JobResponse {
         }
 
         public Builder error(String error) {
-            this.error = Optional.of(error);
+            this.error = Optional.ofNullable(error);
             return this;
         }
 
@@ -149,7 +149,7 @@ public final class JobResponse {
         }
 
         public Builder jobId(String jobId) {
-            this.jobId = Optional.of(jobId);
+            this.jobId = Optional.ofNullable(jobId);
             return this;
         }
 
@@ -160,7 +160,7 @@ public final class JobResponse {
         }
 
         public Builder result(Object result) {
-            this.result = Optional.of(result);
+            this.result = Optional.ofNullable(result);
             return this;
         }
 
@@ -171,7 +171,7 @@ public final class JobResponse {
         }
 
         public Builder status(WorkTaskStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -182,12 +182,22 @@ public final class JobResponse {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         public JobResponse build() {
             return new JobResponse(error, jobId, result, status, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

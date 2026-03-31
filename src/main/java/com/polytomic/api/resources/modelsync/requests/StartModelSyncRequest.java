@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = StartModelSyncRequest.Builder.class)
 public final class StartModelSyncRequest {
     private final Optional<List<String>> identities;
@@ -111,7 +111,7 @@ public final class StartModelSyncRequest {
         }
 
         public Builder identities(List<String> identities) {
-            this.identities = Optional.of(identities);
+            this.identities = Optional.ofNullable(identities);
             return this;
         }
 
@@ -122,7 +122,7 @@ public final class StartModelSyncRequest {
         }
 
         public Builder resync(Boolean resync) {
-            this.resync = Optional.of(resync);
+            this.resync = Optional.ofNullable(resync);
             return this;
         }
 
@@ -133,12 +133,22 @@ public final class StartModelSyncRequest {
         }
 
         public Builder test(Boolean test) {
-            this.test = Optional.of(test);
+            this.test = Optional.ofNullable(test);
             return this;
         }
 
         public StartModelSyncRequest build() {
             return new StartModelSyncRequest(identities, resync, test, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

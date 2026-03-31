@@ -18,12 +18,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelField.Builder.class)
 public final class ModelField {
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<CommonOutputActor> createdBy;
+    private final Optional<OutputActor> createdBy;
 
     private final Optional<String> description;
 
@@ -49,7 +49,7 @@ public final class ModelField {
 
     private ModelField(
             Optional<OffsetDateTime> createdAt,
-            Optional<CommonOutputActor> createdBy,
+            Optional<OutputActor> createdBy,
             Optional<String> description,
             Optional<Object> example,
             Optional<String> id,
@@ -82,7 +82,7 @@ public final class ModelField {
     }
 
     @JsonProperty("created_by")
-    public Optional<CommonOutputActor> getCreatedBy() {
+    public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
@@ -192,7 +192,7 @@ public final class ModelField {
     public static final class Builder {
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<CommonOutputActor> createdBy = Optional.empty();
+        private Optional<OutputActor> createdBy = Optional.empty();
 
         private Optional<String> description = Optional.empty();
 
@@ -242,18 +242,18 @@ public final class ModelField {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
-        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+        public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
             return this;
         }
 
-        public Builder createdBy(CommonOutputActor createdBy) {
-            this.createdBy = Optional.of(createdBy);
+        public Builder createdBy(OutputActor createdBy) {
+            this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
@@ -264,7 +264,7 @@ public final class ModelField {
         }
 
         public Builder description(String description) {
-            this.description = Optional.of(description);
+            this.description = Optional.ofNullable(description);
             return this;
         }
 
@@ -275,7 +275,7 @@ public final class ModelField {
         }
 
         public Builder example(Object example) {
-            this.example = Optional.of(example);
+            this.example = Optional.ofNullable(example);
             return this;
         }
 
@@ -286,7 +286,7 @@ public final class ModelField {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -297,7 +297,7 @@ public final class ModelField {
         }
 
         public Builder label(String label) {
-            this.label = Optional.of(label);
+            this.label = Optional.ofNullable(label);
             return this;
         }
 
@@ -308,7 +308,7 @@ public final class ModelField {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -319,7 +319,7 @@ public final class ModelField {
         }
 
         public Builder remoteType(String remoteType) {
-            this.remoteType = Optional.of(remoteType);
+            this.remoteType = Optional.ofNullable(remoteType);
             return this;
         }
 
@@ -330,7 +330,7 @@ public final class ModelField {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -341,7 +341,7 @@ public final class ModelField {
         }
 
         public Builder unique(Boolean unique) {
-            this.unique = Optional.of(unique);
+            this.unique = Optional.ofNullable(unique);
             return this;
         }
 
@@ -352,7 +352,7 @@ public final class ModelField {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
@@ -363,7 +363,7 @@ public final class ModelField {
         }
 
         public Builder userAdded(Boolean userAdded) {
-            this.userAdded = Optional.of(userAdded);
+            this.userAdded = Optional.ofNullable(userAdded);
             return this;
         }
 
@@ -382,6 +382,16 @@ public final class ModelField {
                     updatedAt,
                     userAdded,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateBulkSchema.Builder.class)
 public final class UpdateBulkSchema {
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
@@ -189,7 +189,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
             return this;
         }
 
@@ -200,7 +200,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder disableDataCutoff(Boolean disableDataCutoff) {
-            this.disableDataCutoff = Optional.of(disableDataCutoff);
+            this.disableDataCutoff = Optional.ofNullable(disableDataCutoff);
             return this;
         }
 
@@ -211,7 +211,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
@@ -222,7 +222,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder fields(List<UpdateBulkField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -233,7 +233,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder filters(List<BulkFilter> filters) {
-            this.filters = Optional.of(filters);
+            this.filters = Optional.ofNullable(filters);
             return this;
         }
 
@@ -244,7 +244,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder partitionKey(String partitionKey) {
-            this.partitionKey = Optional.of(partitionKey);
+            this.partitionKey = Optional.ofNullable(partitionKey);
             return this;
         }
 
@@ -255,7 +255,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder trackingField(String trackingField) {
-            this.trackingField = Optional.of(trackingField);
+            this.trackingField = Optional.ofNullable(trackingField);
             return this;
         }
 
@@ -266,7 +266,7 @@ public final class UpdateBulkSchema {
         }
 
         public Builder userOutputName(String userOutputName) {
-            this.userOutputName = Optional.of(userOutputName);
+            this.userOutputName = Optional.ofNullable(userOutputName);
             return this;
         }
 
@@ -281,6 +281,16 @@ public final class UpdateBulkSchema {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

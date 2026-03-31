@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionResponseSchema.Builder.class)
 public final class ConnectionResponseSchema {
     private final Optional<Integer> apiCallsLast24Hours;
@@ -28,7 +28,7 @@ public final class ConnectionResponseSchema {
 
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<CommonOutputActor> createdBy;
+    private final Optional<OutputActor> createdBy;
 
     private final Optional<String> id;
 
@@ -50,7 +50,7 @@ public final class ConnectionResponseSchema {
 
     private final Optional<OffsetDateTime> updatedAt;
 
-    private final Optional<CommonOutputActor> updatedBy;
+    private final Optional<OutputActor> updatedBy;
 
     private final Map<String, Object> additionalProperties;
 
@@ -58,7 +58,7 @@ public final class ConnectionResponseSchema {
             Optional<Integer> apiCallsLast24Hours,
             Optional<Map<String, Object>> configuration,
             Optional<OffsetDateTime> createdAt,
-            Optional<CommonOutputActor> createdBy,
+            Optional<OutputActor> createdBy,
             Optional<String> id,
             Optional<String> name,
             Optional<String> organizationId,
@@ -69,7 +69,7 @@ public final class ConnectionResponseSchema {
             Optional<String> statusError,
             Optional<ConnectionTypeSchema> type,
             Optional<OffsetDateTime> updatedAt,
-            Optional<CommonOutputActor> updatedBy,
+            Optional<OutputActor> updatedBy,
             Map<String, Object> additionalProperties) {
         this.apiCallsLast24Hours = apiCallsLast24Hours;
         this.configuration = configuration;
@@ -108,7 +108,7 @@ public final class ConnectionResponseSchema {
     }
 
     @JsonProperty("created_by")
-    public Optional<CommonOutputActor> getCreatedBy() {
+    public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
@@ -166,7 +166,7 @@ public final class ConnectionResponseSchema {
     }
 
     @JsonProperty("updated_by")
-    public Optional<CommonOutputActor> getUpdatedBy() {
+    public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
     }
 
@@ -236,7 +236,7 @@ public final class ConnectionResponseSchema {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<CommonOutputActor> createdBy = Optional.empty();
+        private Optional<OutputActor> createdBy = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -258,7 +258,7 @@ public final class ConnectionResponseSchema {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        private Optional<CommonOutputActor> updatedBy = Optional.empty();
+        private Optional<OutputActor> updatedBy = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -284,6 +284,9 @@ public final class ConnectionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>API calls made to service in the last 24h (supported integrations only).</p>
+         */
         @JsonSetter(value = "api_calls_last_24_hours", nulls = Nulls.SKIP)
         public Builder apiCallsLast24Hours(Optional<Integer> apiCallsLast24Hours) {
             this.apiCallsLast24Hours = apiCallsLast24Hours;
@@ -291,7 +294,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder apiCallsLast24Hours(Integer apiCallsLast24Hours) {
-            this.apiCallsLast24Hours = Optional.of(apiCallsLast24Hours);
+            this.apiCallsLast24Hours = Optional.ofNullable(apiCallsLast24Hours);
             return this;
         }
 
@@ -302,7 +305,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -313,18 +316,18 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
-        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+        public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
             return this;
         }
 
-        public Builder createdBy(CommonOutputActor createdBy) {
-            this.createdBy = Optional.of(createdBy);
+        public Builder createdBy(OutputActor createdBy) {
+            this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
@@ -335,7 +338,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -346,7 +349,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -357,10 +360,13 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>For shared connections, the ID of the parent connection.</p>
+         */
         @JsonSetter(value = "parent_connection_id", nulls = Nulls.SKIP)
         public Builder parentConnectionId(Optional<String> parentConnectionId) {
             this.parentConnectionId = parentConnectionId;
@@ -368,7 +374,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder parentConnectionId(String parentConnectionId) {
-            this.parentConnectionId = Optional.of(parentConnectionId);
+            this.parentConnectionId = Optional.ofNullable(parentConnectionId);
             return this;
         }
 
@@ -379,7 +385,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -390,7 +396,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder saved(Boolean saved) {
-            this.saved = Optional.of(saved);
+            this.saved = Optional.ofNullable(saved);
             return this;
         }
 
@@ -401,7 +407,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder status(String status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -412,7 +418,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder statusError(String statusError) {
-            this.statusError = Optional.of(statusError);
+            this.statusError = Optional.ofNullable(statusError);
             return this;
         }
 
@@ -423,7 +429,7 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder type(ConnectionTypeSchema type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -434,18 +440,18 @@ public final class ConnectionResponseSchema {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
-        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+        public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
             return this;
         }
 
-        public Builder updatedBy(CommonOutputActor updatedBy) {
-            this.updatedBy = Optional.of(updatedBy);
+        public Builder updatedBy(OutputActor updatedBy) {
+            this.updatedBy = Optional.ofNullable(updatedBy);
             return this;
         }
 
@@ -467,6 +473,16 @@ public final class ConnectionResponseSchema {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

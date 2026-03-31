@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ApiError.Builder.class)
 public final class ApiError {
     private final Optional<String> key;
@@ -125,7 +125,7 @@ public final class ApiError {
         }
 
         public Builder key(String key) {
-            this.key = Optional.of(key);
+            this.key = Optional.ofNullable(key);
             return this;
         }
 
@@ -136,7 +136,7 @@ public final class ApiError {
         }
 
         public Builder message(String message) {
-            this.message = Optional.of(message);
+            this.message = Optional.ofNullable(message);
             return this;
         }
 
@@ -147,7 +147,7 @@ public final class ApiError {
         }
 
         public Builder metadata(Map<String, Object> metadata) {
-            this.metadata = Optional.of(metadata);
+            this.metadata = Optional.ofNullable(metadata);
             return this;
         }
 
@@ -158,12 +158,22 @@ public final class ApiError {
         }
 
         public Builder status(Integer status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
         public ApiError build() {
             return new ApiError(key, message, metadata, status, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

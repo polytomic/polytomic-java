@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncRunningEvent.Builder.class)
 public final class BulkSyncRunningEvent {
     private final Optional<String> destinationConnectionId;
@@ -157,7 +157,7 @@ public final class BulkSyncRunningEvent {
         }
 
         public Builder destinationConnectionId(String destinationConnectionId) {
-            this.destinationConnectionId = Optional.of(destinationConnectionId);
+            this.destinationConnectionId = Optional.ofNullable(destinationConnectionId);
             return this;
         }
 
@@ -168,7 +168,7 @@ public final class BulkSyncRunningEvent {
         }
 
         public Builder executionId(String executionId) {
-            this.executionId = Optional.of(executionId);
+            this.executionId = Optional.ofNullable(executionId);
             return this;
         }
 
@@ -179,7 +179,7 @@ public final class BulkSyncRunningEvent {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -190,7 +190,7 @@ public final class BulkSyncRunningEvent {
         }
 
         public Builder sourceConnectionId(String sourceConnectionId) {
-            this.sourceConnectionId = Optional.of(sourceConnectionId);
+            this.sourceConnectionId = Optional.ofNullable(sourceConnectionId);
             return this;
         }
 
@@ -201,7 +201,7 @@ public final class BulkSyncRunningEvent {
         }
 
         public Builder syncId(String syncId) {
-            this.syncId = Optional.of(syncId);
+            this.syncId = Optional.ofNullable(syncId);
             return this;
         }
 
@@ -212,7 +212,7 @@ public final class BulkSyncRunningEvent {
         }
 
         public Builder syncName(String syncName) {
-            this.syncName = Optional.of(syncName);
+            this.syncName = Optional.ofNullable(syncName);
             return this;
         }
 
@@ -225,6 +225,16 @@ public final class BulkSyncRunningEvent {
                     syncId,
                     syncName,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

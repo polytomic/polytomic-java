@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetExecutionResponseSchema.Builder.class)
 public final class GetExecutionResponseSchema {
     private final Optional<OffsetDateTime> completedAt;
@@ -187,7 +187,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder completedAt(OffsetDateTime completedAt) {
-            this.completedAt = Optional.of(completedAt);
+            this.completedAt = Optional.ofNullable(completedAt);
             return this;
         }
 
@@ -198,7 +198,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder counts(ExecutionCounts counts) {
-            this.counts = Optional.of(counts);
+            this.counts = Optional.ofNullable(counts);
             return this;
         }
 
@@ -209,7 +209,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
@@ -220,7 +220,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder errors(List<String> errors) {
-            this.errors = Optional.of(errors);
+            this.errors = Optional.ofNullable(errors);
             return this;
         }
 
@@ -231,7 +231,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -242,7 +242,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder startedAt(OffsetDateTime startedAt) {
-            this.startedAt = Optional.of(startedAt);
+            this.startedAt = Optional.ofNullable(startedAt);
             return this;
         }
 
@@ -253,7 +253,7 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder status(ExecutionStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -264,13 +264,23 @@ public final class GetExecutionResponseSchema {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         public GetExecutionResponseSchema build() {
             return new GetExecutionResponseSchema(
                     completedAt, counts, createdAt, errors, id, startedAt, status, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

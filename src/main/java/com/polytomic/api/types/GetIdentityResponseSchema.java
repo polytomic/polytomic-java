@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetIdentityResponseSchema.Builder.class)
 public final class GetIdentityResponseSchema {
     private final Optional<String> email;
@@ -213,6 +213,9 @@ public final class GetIdentityResponseSchema {
             return this;
         }
 
+        /**
+         * <p>The email of the caller.</p>
+         */
         @JsonSetter(value = "email", nulls = Nulls.SKIP)
         public Builder email(Optional<String> email) {
             this.email = email;
@@ -220,10 +223,13 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder email(String email) {
-            this.email = Optional.of(email);
+            this.email = Optional.ofNullable(email);
             return this;
         }
 
+        /**
+         * <p>The ID of the caller; this will be omitted for non-user callers.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -231,10 +237,13 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>Whether the caller is using an organization key.</p>
+         */
         @JsonSetter(value = "is_organization", nulls = Nulls.SKIP)
         public Builder isOrganization(Optional<Boolean> isOrganization) {
             this.isOrganization = isOrganization;
@@ -242,10 +251,13 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder isOrganization(Boolean isOrganization) {
-            this.isOrganization = Optional.of(isOrganization);
+            this.isOrganization = Optional.ofNullable(isOrganization);
             return this;
         }
 
+        /**
+         * <p>Whether the caller is using a partner key.</p>
+         */
         @JsonSetter(value = "is_partner", nulls = Nulls.SKIP)
         public Builder isPartner(Optional<Boolean> isPartner) {
             this.isPartner = isPartner;
@@ -253,7 +265,7 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder isPartner(Boolean isPartner) {
-            this.isPartner = Optional.of(isPartner);
+            this.isPartner = Optional.ofNullable(isPartner);
             return this;
         }
 
@@ -264,10 +276,13 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder isSystem(Boolean isSystem) {
-            this.isSystem = Optional.of(isSystem);
+            this.isSystem = Optional.ofNullable(isSystem);
             return this;
         }
 
+        /**
+         * <p>Whether the caller is a user.</p>
+         */
         @JsonSetter(value = "is_user", nulls = Nulls.SKIP)
         public Builder isUser(Optional<Boolean> isUser) {
             this.isUser = isUser;
@@ -275,10 +290,13 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder isUser(Boolean isUser) {
-            this.isUser = Optional.of(isUser);
+            this.isUser = Optional.ofNullable(isUser);
             return this;
         }
 
+        /**
+         * <p>The ID of the organization the caller belongs to.</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -286,10 +304,13 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>The name of the organization the caller belongs to.</p>
+         */
         @JsonSetter(value = "organization_name", nulls = Nulls.SKIP)
         public Builder organizationName(Optional<String> organizationName) {
             this.organizationName = organizationName;
@@ -297,7 +318,7 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder organizationName(String organizationName) {
-            this.organizationName = Optional.of(organizationName);
+            this.organizationName = Optional.ofNullable(organizationName);
             return this;
         }
 
@@ -308,7 +329,7 @@ public final class GetIdentityResponseSchema {
         }
 
         public Builder role(String role) {
-            this.role = Optional.of(role);
+            this.role = Optional.ofNullable(role);
             return this;
         }
 
@@ -324,6 +345,16 @@ public final class GetIdentityResponseSchema {
                     organizationName,
                     role,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

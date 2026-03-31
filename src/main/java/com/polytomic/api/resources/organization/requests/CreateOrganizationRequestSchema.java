@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateOrganizationRequestSchema.Builder.class)
 public final class CreateOrganizationRequestSchema {
     private final Optional<String> clientId;
@@ -116,13 +117,17 @@ public final class CreateOrganizationRequestSchema {
     }
 
     public interface NameStage {
-        _FinalStage name(String name);
+        _FinalStage name(@NotNull String name);
 
         Builder from(CreateOrganizationRequestSchema other);
     }
 
     public interface _FinalStage {
         CreateOrganizationRequestSchema build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage clientId(Optional<String> clientId);
 
@@ -177,14 +182,14 @@ public final class CreateOrganizationRequestSchema {
 
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage ssoOrgId(String ssoOrgId) {
-            this.ssoOrgId = Optional.of(ssoOrgId);
+            this.ssoOrgId = Optional.ofNullable(ssoOrgId);
             return this;
         }
 
@@ -197,7 +202,7 @@ public final class CreateOrganizationRequestSchema {
 
         @java.lang.Override
         public _FinalStage ssoDomain(String ssoDomain) {
-            this.ssoDomain = Optional.of(ssoDomain);
+            this.ssoDomain = Optional.ofNullable(ssoDomain);
             return this;
         }
 
@@ -210,7 +215,7 @@ public final class CreateOrganizationRequestSchema {
 
         @java.lang.Override
         public _FinalStage issuer(String issuer) {
-            this.issuer = Optional.of(issuer);
+            this.issuer = Optional.ofNullable(issuer);
             return this;
         }
 
@@ -223,7 +228,7 @@ public final class CreateOrganizationRequestSchema {
 
         @java.lang.Override
         public _FinalStage clientSecret(String clientSecret) {
-            this.clientSecret = Optional.of(clientSecret);
+            this.clientSecret = Optional.ofNullable(clientSecret);
             return this;
         }
 
@@ -236,7 +241,7 @@ public final class CreateOrganizationRequestSchema {
 
         @java.lang.Override
         public _FinalStage clientId(String clientId) {
-            this.clientId = Optional.of(clientId);
+            this.clientId = Optional.ofNullable(clientId);
             return this;
         }
 
@@ -251,6 +256,18 @@ public final class CreateOrganizationRequestSchema {
         public CreateOrganizationRequestSchema build() {
             return new CreateOrganizationRequestSchema(
                     clientId, clientSecret, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

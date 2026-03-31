@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncSchemasRequest.Builder.class)
 public final class BulkSyncSchemasRequest {
     private final Optional<List<BulkSchema>> schemas;
@@ -86,12 +86,22 @@ public final class BulkSyncSchemasRequest {
         }
 
         public Builder schemas(List<BulkSchema> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
         public BulkSyncSchemasRequest build() {
             return new BulkSyncSchemasRequest(schemas, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

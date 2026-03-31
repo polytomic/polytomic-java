@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4RunQueryEnvelope.Builder.class)
 public final class V4RunQueryEnvelope {
     private final Optional<V4RunQueryResult> data;
@@ -84,12 +84,22 @@ public final class V4RunQueryEnvelope {
         }
 
         public Builder data(V4RunQueryResult data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
         public V4RunQueryEnvelope build() {
             return new V4RunQueryEnvelope(data, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

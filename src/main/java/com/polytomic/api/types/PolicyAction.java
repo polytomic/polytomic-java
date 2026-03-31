@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PolicyAction.Builder.class)
 public final class PolicyAction {
     private final String action;
@@ -73,13 +74,17 @@ public final class PolicyAction {
     }
 
     public interface ActionStage {
-        _FinalStage action(String action);
+        _FinalStage action(@NotNull String action);
 
         Builder from(PolicyAction other);
     }
 
     public interface _FinalStage {
         PolicyAction build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage roleIds(Optional<List<String>> roleIds);
 
@@ -106,14 +111,14 @@ public final class PolicyAction {
 
         @java.lang.Override
         @JsonSetter("action")
-        public _FinalStage action(String action) {
+        public _FinalStage action(@NotNull String action) {
             this.action = action;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage roleIds(List<String> roleIds) {
-            this.roleIds = Optional.of(roleIds);
+            this.roleIds = Optional.ofNullable(roleIds);
             return this;
         }
 
@@ -127,6 +132,18 @@ public final class PolicyAction {
         @java.lang.Override
         public PolicyAction build() {
             return new PolicyAction(action, roleIds, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

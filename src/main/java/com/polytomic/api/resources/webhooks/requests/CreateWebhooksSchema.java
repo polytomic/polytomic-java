@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateWebhooksSchema.Builder.class)
 public final class CreateWebhooksSchema {
     private final String endpoint;
@@ -83,17 +84,21 @@ public final class CreateWebhooksSchema {
     }
 
     public interface EndpointStage {
-        SecretStage endpoint(String endpoint);
+        SecretStage endpoint(@NotNull String endpoint);
 
         Builder from(CreateWebhooksSchema other);
     }
 
     public interface SecretStage {
-        _FinalStage secret(String secret);
+        _FinalStage secret(@NotNull String secret);
     }
 
     public interface _FinalStage {
         CreateWebhooksSchema build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
@@ -123,21 +128,21 @@ public final class CreateWebhooksSchema {
 
         @java.lang.Override
         @JsonSetter("endpoint")
-        public SecretStage endpoint(String endpoint) {
+        public SecretStage endpoint(@NotNull String endpoint) {
             this.endpoint = endpoint;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("secret")
-        public _FinalStage secret(String secret) {
+        public _FinalStage secret(@NotNull String secret) {
             this.secret = secret;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -151,6 +156,18 @@ public final class CreateWebhooksSchema {
         @java.lang.Override
         public CreateWebhooksSchema build() {
             return new CreateWebhooksSchema(endpoint, organizationId, secret, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

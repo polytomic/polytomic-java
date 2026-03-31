@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SyncDestinationProperties.Builder.class)
 public final class SyncDestinationProperties {
     private final Optional<Boolean> doesNotReportOperationCounts;
@@ -255,7 +255,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder doesNotReportOperationCounts(Boolean doesNotReportOperationCounts) {
-            this.doesNotReportOperationCounts = Optional.of(doesNotReportOperationCounts);
+            this.doesNotReportOperationCounts = Optional.ofNullable(doesNotReportOperationCounts);
             return this;
         }
 
@@ -266,7 +266,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder mappingsNotRequired(Boolean mappingsNotRequired) {
-            this.mappingsNotRequired = Optional.of(mappingsNotRequired);
+            this.mappingsNotRequired = Optional.ofNullable(mappingsNotRequired);
             return this;
         }
 
@@ -277,7 +277,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder newTargetLabel(String newTargetLabel) {
-            this.newTargetLabel = Optional.of(newTargetLabel);
+            this.newTargetLabel = Optional.ofNullable(newTargetLabel);
             return this;
         }
 
@@ -288,7 +288,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder optionalTargetMappings(Boolean optionalTargetMappings) {
-            this.optionalTargetMappings = Optional.of(optionalTargetMappings);
+            this.optionalTargetMappings = Optional.ofNullable(optionalTargetMappings);
             return this;
         }
 
@@ -299,7 +299,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder primaryMetadataObject(String primaryMetadataObject) {
-            this.primaryMetadataObject = Optional.of(primaryMetadataObject);
+            this.primaryMetadataObject = Optional.ofNullable(primaryMetadataObject);
             return this;
         }
 
@@ -310,7 +310,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder requiresConfiguration(Boolean requiresConfiguration) {
-            this.requiresConfiguration = Optional.of(requiresConfiguration);
+            this.requiresConfiguration = Optional.ofNullable(requiresConfiguration);
             return this;
         }
 
@@ -321,7 +321,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder supportsFieldCreation(Boolean supportsFieldCreation) {
-            this.supportsFieldCreation = Optional.of(supportsFieldCreation);
+            this.supportsFieldCreation = Optional.ofNullable(supportsFieldCreation);
             return this;
         }
 
@@ -332,7 +332,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder supportsFieldEncryption(Boolean supportsFieldEncryption) {
-            this.supportsFieldEncryption = Optional.of(supportsFieldEncryption);
+            this.supportsFieldEncryption = Optional.ofNullable(supportsFieldEncryption);
             return this;
         }
 
@@ -343,7 +343,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder supportsFieldTypeSelection(Boolean supportsFieldTypeSelection) {
-            this.supportsFieldTypeSelection = Optional.of(supportsFieldTypeSelection);
+            this.supportsFieldTypeSelection = Optional.ofNullable(supportsFieldTypeSelection);
             return this;
         }
 
@@ -354,7 +354,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder supportsIdentityFieldCreation(Boolean supportsIdentityFieldCreation) {
-            this.supportsIdentityFieldCreation = Optional.of(supportsIdentityFieldCreation);
+            this.supportsIdentityFieldCreation = Optional.ofNullable(supportsIdentityFieldCreation);
             return this;
         }
 
@@ -365,7 +365,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder supportsTargetFilters(Boolean supportsTargetFilters) {
-            this.supportsTargetFilters = Optional.of(supportsTargetFilters);
+            this.supportsTargetFilters = Optional.ofNullable(supportsTargetFilters);
             return this;
         }
 
@@ -376,7 +376,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder targetCreator(Boolean targetCreator) {
-            this.targetCreator = Optional.of(targetCreator);
+            this.targetCreator = Optional.ofNullable(targetCreator);
             return this;
         }
 
@@ -387,7 +387,7 @@ public final class SyncDestinationProperties {
         }
 
         public Builder useFieldNamesAsLabels(Boolean useFieldNamesAsLabels) {
-            this.useFieldNamesAsLabels = Optional.of(useFieldNamesAsLabels);
+            this.useFieldNamesAsLabels = Optional.ofNullable(useFieldNamesAsLabels);
             return this;
         }
 
@@ -407,6 +407,16 @@ public final class SyncDestinationProperties {
                     targetCreator,
                     useFieldNamesAsLabels,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncExecution.Builder.class)
 public final class BulkSyncExecution {
     private final Optional<OffsetDateTime> completedAt;
@@ -299,7 +299,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder completedAt(OffsetDateTime completedAt) {
-            this.completedAt = Optional.of(completedAt);
+            this.completedAt = Optional.ofNullable(completedAt);
             return this;
         }
 
@@ -310,7 +310,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
@@ -321,7 +321,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder errorCount(Integer errorCount) {
-            this.errorCount = Optional.of(errorCount);
+            this.errorCount = Optional.ofNullable(errorCount);
             return this;
         }
 
@@ -332,7 +332,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder fetchMode(BulkFetchMode fetchMode) {
-            this.fetchMode = Optional.of(fetchMode);
+            this.fetchMode = Optional.ofNullable(fetchMode);
             return this;
         }
 
@@ -343,7 +343,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -354,7 +354,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder isPartial(Boolean isPartial) {
-            this.isPartial = Optional.of(isPartial);
+            this.isPartial = Optional.ofNullable(isPartial);
             return this;
         }
 
@@ -365,7 +365,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder isResync(Boolean isResync) {
-            this.isResync = Optional.of(isResync);
+            this.isResync = Optional.ofNullable(isResync);
             return this;
         }
 
@@ -376,7 +376,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder isTest(Boolean isTest) {
-            this.isTest = Optional.of(isTest);
+            this.isTest = Optional.ofNullable(isTest);
             return this;
         }
 
@@ -387,7 +387,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder recordCount(Integer recordCount) {
-            this.recordCount = Optional.of(recordCount);
+            this.recordCount = Optional.ofNullable(recordCount);
             return this;
         }
 
@@ -398,7 +398,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder schemas(List<BulkSyncSchemaExecution> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
@@ -409,7 +409,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder startedAt(OffsetDateTime startedAt) {
-            this.startedAt = Optional.of(startedAt);
+            this.startedAt = Optional.ofNullable(startedAt);
             return this;
         }
 
@@ -420,7 +420,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder status(BulkExecutionStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -431,7 +431,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder statusMessage(String statusMessage) {
-            this.statusMessage = Optional.of(statusMessage);
+            this.statusMessage = Optional.ofNullable(statusMessage);
             return this;
         }
 
@@ -442,7 +442,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
@@ -453,7 +453,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
@@ -464,7 +464,7 @@ public final class BulkSyncExecution {
         }
 
         public Builder warningCount(Integer warningCount) {
-            this.warningCount = Optional.of(warningCount);
+            this.warningCount = Optional.ofNullable(warningCount);
             return this;
         }
 
@@ -487,6 +487,16 @@ public final class BulkSyncExecution {
                     updatedAt,
                     warningCount,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

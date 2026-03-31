@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionParameterValuesResp.Builder.class)
 public final class ConnectionParameterValuesResp {
     private final Optional<Boolean> allowsCreation;
@@ -99,7 +99,7 @@ public final class ConnectionParameterValuesResp {
         }
 
         public Builder allowsCreation(Boolean allowsCreation) {
-            this.allowsCreation = Optional.of(allowsCreation);
+            this.allowsCreation = Optional.ofNullable(allowsCreation);
             return this;
         }
 
@@ -110,12 +110,22 @@ public final class ConnectionParameterValuesResp {
         }
 
         public Builder values(List<ConnectionParameterValue> values) {
-            this.values = Optional.of(values);
+            this.values = Optional.ofNullable(values);
             return this;
         }
 
         public ConnectionParameterValuesResp build() {
             return new ConnectionParameterValuesResp(allowsCreation, values, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

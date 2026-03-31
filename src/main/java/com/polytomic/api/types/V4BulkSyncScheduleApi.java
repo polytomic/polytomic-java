@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = V4BulkSyncScheduleApi.Builder.class)
 public final class V4BulkSyncScheduleApi {
     private final Optional<String> dayOfMonth;
@@ -133,13 +134,17 @@ public final class V4BulkSyncScheduleApi {
     }
 
     public interface FrequencyStage {
-        _FinalStage frequency(ScheduleFrequency frequency);
+        _FinalStage frequency(@NotNull ScheduleFrequency frequency);
 
         Builder from(V4BulkSyncScheduleApi other);
     }
 
     public interface _FinalStage {
         V4BulkSyncScheduleApi build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage dayOfMonth(Optional<String> dayOfMonth);
 
@@ -201,14 +206,14 @@ public final class V4BulkSyncScheduleApi {
 
         @java.lang.Override
         @JsonSetter("frequency")
-        public _FinalStage frequency(ScheduleFrequency frequency) {
+        public _FinalStage frequency(@NotNull ScheduleFrequency frequency) {
             this.frequency = frequency;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage selectiveMode(BulkSelectiveMode selectiveMode) {
-            this.selectiveMode = Optional.of(selectiveMode);
+            this.selectiveMode = Optional.ofNullable(selectiveMode);
             return this;
         }
 
@@ -221,7 +226,7 @@ public final class V4BulkSyncScheduleApi {
 
         @java.lang.Override
         public _FinalStage month(String month) {
-            this.month = Optional.of(month);
+            this.month = Optional.ofNullable(month);
             return this;
         }
 
@@ -234,7 +239,7 @@ public final class V4BulkSyncScheduleApi {
 
         @java.lang.Override
         public _FinalStage minute(String minute) {
-            this.minute = Optional.of(minute);
+            this.minute = Optional.ofNullable(minute);
             return this;
         }
 
@@ -247,7 +252,7 @@ public final class V4BulkSyncScheduleApi {
 
         @java.lang.Override
         public _FinalStage hour(String hour) {
-            this.hour = Optional.of(hour);
+            this.hour = Optional.ofNullable(hour);
             return this;
         }
 
@@ -260,7 +265,7 @@ public final class V4BulkSyncScheduleApi {
 
         @java.lang.Override
         public _FinalStage dayOfWeek(String dayOfWeek) {
-            this.dayOfWeek = Optional.of(dayOfWeek);
+            this.dayOfWeek = Optional.ofNullable(dayOfWeek);
             return this;
         }
 
@@ -273,7 +278,7 @@ public final class V4BulkSyncScheduleApi {
 
         @java.lang.Override
         public _FinalStage dayOfMonth(String dayOfMonth) {
-            this.dayOfMonth = Optional.of(dayOfMonth);
+            this.dayOfMonth = Optional.ofNullable(dayOfMonth);
             return this;
         }
 
@@ -288,6 +293,18 @@ public final class V4BulkSyncScheduleApi {
         public V4BulkSyncScheduleApi build() {
             return new V4BulkSyncScheduleApi(
                     dayOfMonth, dayOfWeek, frequency, hour, minute, month, selectiveMode, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

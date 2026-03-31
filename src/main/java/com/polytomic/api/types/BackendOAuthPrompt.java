@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BackendOAuthPrompt.Builder.class)
 public final class BackendOAuthPrompt {
     private final Optional<String> key;
@@ -110,7 +110,7 @@ public final class BackendOAuthPrompt {
         }
 
         public Builder key(String key) {
-            this.key = Optional.of(key);
+            this.key = Optional.ofNullable(key);
             return this;
         }
 
@@ -121,7 +121,7 @@ public final class BackendOAuthPrompt {
         }
 
         public Builder value(String value) {
-            this.value = Optional.of(value);
+            this.value = Optional.ofNullable(value);
             return this;
         }
 
@@ -132,12 +132,22 @@ public final class BackendOAuthPrompt {
         }
 
         public Builder when(String when) {
-            this.when = Optional.of(when);
+            this.when = Optional.ofNullable(when);
             return this;
         }
 
         public BackendOAuthPrompt build() {
             return new BackendOAuthPrompt(key, value, when, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

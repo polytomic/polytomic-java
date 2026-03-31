@@ -5,9 +5,9 @@ package com.polytomic.api.resources.modelsync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSyncGetSourceFieldsRequest.Builder.class)
 public final class ModelSyncGetSourceFieldsRequest {
     private final Optional<Map<String, Optional<List<String>>>> params;
@@ -31,7 +31,7 @@ public final class ModelSyncGetSourceFieldsRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("params")
+    @JsonIgnore
     public Optional<Map<String, Optional<List<String>>>> getParams() {
         return params;
     }
@@ -86,12 +86,22 @@ public final class ModelSyncGetSourceFieldsRequest {
         }
 
         public Builder params(Map<String, Optional<List<String>>> params) {
-            this.params = Optional.of(params);
+            this.params = Optional.ofNullable(params);
             return this;
         }
 
         public ModelSyncGetSourceFieldsRequest build() {
             return new ModelSyncGetSourceFieldsRequest(params, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

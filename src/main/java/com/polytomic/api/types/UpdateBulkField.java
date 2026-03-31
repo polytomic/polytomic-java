@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateBulkField.Builder.class)
 public final class UpdateBulkField {
     private final Optional<Boolean> enabled;
@@ -125,7 +125,7 @@ public final class UpdateBulkField {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
@@ -136,7 +136,7 @@ public final class UpdateBulkField {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -147,7 +147,7 @@ public final class UpdateBulkField {
         }
 
         public Builder obfuscated(Boolean obfuscated) {
-            this.obfuscated = Optional.of(obfuscated);
+            this.obfuscated = Optional.ofNullable(obfuscated);
             return this;
         }
 
@@ -158,12 +158,22 @@ public final class UpdateBulkField {
         }
 
         public Builder userOutputName(String userOutputName) {
-            this.userOutputName = Optional.of(userOutputName);
+            this.userOutputName = Optional.ofNullable(userOutputName);
             return this;
         }
 
         public UpdateBulkField build() {
             return new UpdateBulkField(enabled, id, obfuscated, userOutputName, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

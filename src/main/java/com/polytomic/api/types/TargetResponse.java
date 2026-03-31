@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetResponse.Builder.class)
 public final class TargetResponse {
     private final Optional<List<TargetField>> fields;
@@ -153,7 +153,7 @@ public final class TargetResponse {
         }
 
         public Builder fields(List<TargetField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -164,7 +164,7 @@ public final class TargetResponse {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -175,7 +175,7 @@ public final class TargetResponse {
         }
 
         public Builder modes(List<Mode> modes) {
-            this.modes = Optional.of(modes);
+            this.modes = Optional.ofNullable(modes);
             return this;
         }
 
@@ -186,7 +186,7 @@ public final class TargetResponse {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -197,7 +197,7 @@ public final class TargetResponse {
         }
 
         public Builder properties(SyncDestinationProperties properties) {
-            this.properties = Optional.of(properties);
+            this.properties = Optional.ofNullable(properties);
             return this;
         }
 
@@ -208,12 +208,22 @@ public final class TargetResponse {
         }
 
         public Builder refreshedAt(OffsetDateTime refreshedAt) {
-            this.refreshedAt = Optional.of(refreshedAt);
+            this.refreshedAt = Optional.ofNullable(refreshedAt);
             return this;
         }
 
         public TargetResponse build() {
             return new TargetResponse(fields, id, modes, name, properties, refreshedAt, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

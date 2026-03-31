@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionMeta.Builder.class)
 public final class ConnectionMeta {
     private final Optional<Boolean> hasItems;
@@ -113,7 +113,7 @@ public final class ConnectionMeta {
         }
 
         public Builder hasItems(Boolean hasItems) {
-            this.hasItems = Optional.of(hasItems);
+            this.hasItems = Optional.ofNullable(hasItems);
             return this;
         }
 
@@ -124,7 +124,7 @@ public final class ConnectionMeta {
         }
 
         public Builder items(List<Object> items) {
-            this.items = Optional.of(items);
+            this.items = Optional.ofNullable(items);
             return this;
         }
 
@@ -135,12 +135,22 @@ public final class ConnectionMeta {
         }
 
         public Builder requiresOneOf(List<String> requiresOneOf) {
-            this.requiresOneOf = Optional.of(requiresOneOf);
+            this.requiresOneOf = Optional.ofNullable(requiresOneOf);
             return this;
         }
 
         public ConnectionMeta build() {
             return new ConnectionMeta(hasItems, items, requiresOneOf, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
