@@ -39,15 +39,57 @@ public class ModelsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Describes the enrichment source configuration available on a connection.
+     * <p>Not all connections support enrichment. Call this endpoint to determine
+     * whether a connection can serve as an enrichment source in a model sync and,
+     * if so, what configuration it accepts.</p>
+     * <blockquote>
+     * <p>⚠️ If the connection does not support enrichment, this endpoint returns
+     * <code>404</code>. Check for that status before attempting to configure an enrichment
+     * source on a sync.</p>
+     * </blockquote>
+     * <p>When a connection does support enrichment, the response describes the
+     * configuration fields required to set it up. Pass those values in the
+     * <code>enrichment</code> block when creating or updating a model sync.</p>
+     */
     public GetModelSyncSourceMetaEnvelope getEnrichmentSource(String id) {
         return getEnrichmentSource(
                 id, ModelsGetEnrichmentSourceRequest.builder().build());
     }
 
+    /**
+     * Describes the enrichment source configuration available on a connection.
+     * <p>Not all connections support enrichment. Call this endpoint to determine
+     * whether a connection can serve as an enrichment source in a model sync and,
+     * if so, what configuration it accepts.</p>
+     * <blockquote>
+     * <p>⚠️ If the connection does not support enrichment, this endpoint returns
+     * <code>404</code>. Check for that status before attempting to configure an enrichment
+     * source on a sync.</p>
+     * </blockquote>
+     * <p>When a connection does support enrichment, the response describes the
+     * configuration fields required to set it up. Pass those values in the
+     * <code>enrichment</code> block when creating or updating a model sync.</p>
+     */
     public GetModelSyncSourceMetaEnvelope getEnrichmentSource(String id, ModelsGetEnrichmentSourceRequest request) {
         return getEnrichmentSource(id, request, null);
     }
 
+    /**
+     * Describes the enrichment source configuration available on a connection.
+     * <p>Not all connections support enrichment. Call this endpoint to determine
+     * whether a connection can serve as an enrichment source in a model sync and,
+     * if so, what configuration it accepts.</p>
+     * <blockquote>
+     * <p>⚠️ If the connection does not support enrichment, this endpoint returns
+     * <code>404</code>. Check for that status before attempting to configure an enrichment
+     * source on a sync.</p>
+     * </blockquote>
+     * <p>When a connection does support enrichment, the response describes the
+     * configuration fields required to set it up. Pass those values in the
+     * <code>enrichment</code> block when creating or updating a model sync.</p>
+     */
     public GetModelSyncSourceMetaEnvelope getEnrichmentSource(
             String id, ModelsGetEnrichmentSourceRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -84,14 +126,24 @@ public class ModelsClient {
     }
 
     /**
-     * For a given connection and enrichment configuration, provides the valid sets of input fields.
+     * Returns the valid input field sets for an enrichment configuration on a connection.
+     * <p>When configuring an enrichment source in a model sync, use this endpoint to
+     * discover which input fields the enrichment connection requires. Pass the
+     * proposed enrichment configuration in the request body; the response lists the
+     * valid input field sets that map your model's fields to the enrichment service's
+     * expected inputs.</p>
      */
     public V2GetEnrichmentInputFieldsResponseEnvelope post(String connectionId) {
         return post(connectionId, GetEnrichmentInputFieldsRequest.builder().build());
     }
 
     /**
-     * For a given connection and enrichment configuration, provides the valid sets of input fields.
+     * Returns the valid input field sets for an enrichment configuration on a connection.
+     * <p>When configuring an enrichment source in a model sync, use this endpoint to
+     * discover which input fields the enrichment connection requires. Pass the
+     * proposed enrichment configuration in the request body; the response lists the
+     * valid input field sets that map your model's fields to the enrichment service's
+     * expected inputs.</p>
      */
     public V2GetEnrichmentInputFieldsResponseEnvelope post(
             String connectionId, GetEnrichmentInputFieldsRequest request) {
@@ -99,7 +151,12 @@ public class ModelsClient {
     }
 
     /**
-     * For a given connection and enrichment configuration, provides the valid sets of input fields.
+     * Returns the valid input field sets for an enrichment configuration on a connection.
+     * <p>When configuring an enrichment source in a model sync, use this endpoint to
+     * discover which input fields the enrichment connection requires. Pass the
+     * proposed enrichment configuration in the request body; the response lists the
+     * valid input field sets that map your model's fields to the enrichment service's
+     * expected inputs.</p>
      */
     public V2GetEnrichmentInputFieldsResponseEnvelope post(
             String connectionId, GetEnrichmentInputFieldsRequest request, RequestOptions requestOptions) {
@@ -142,10 +199,24 @@ public class ModelsClient {
         }
     }
 
+    /**
+     * Submits a job that previews the fields a model would expose without persisting it.
+     * <p>The response contains a job ID that resolves to the list of fields the model
+     * would expose. Poll the job until it completes to retrieve the field list. The
+     * model is not persisted — this endpoint is useful for validating a query or
+     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     */
     public ModelResponseEnvelope preview(ModelsPreviewRequest request) {
         return preview(request, null);
     }
 
+    /**
+     * Submits a job that previews the fields a model would expose without persisting it.
+     * <p>The response contains a job ID that resolves to the list of fields the model
+     * would expose. Poll the job until it completes to retrieve the field list. The
+     * model is not persisted — this endpoint is useful for validating a query or
+     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     */
     public ModelResponseEnvelope preview(ModelsPreviewRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -185,10 +256,28 @@ public class ModelsClient {
         }
     }
 
+    /**
+     * Lists all models in the caller's organization.
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
+     * If more results are available, the response includes <code>pagination.next_page_token</code>.
+     * Pass that token back unchanged to continue from the last item you received.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
+     * non-positive values fall back to the same default.</p>
+     */
     public ModelListResponseEnvelope list() {
         return list(null);
     }
 
+    /**
+     * Lists all models in the caller's organization.
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
+     * If more results are available, the response includes <code>pagination.next_page_token</code>.
+     * Pass that token back unchanged to continue from the last item you received.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
+     * non-positive values fall back to the same default.</p>
+     */
     public ModelListResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -219,10 +308,28 @@ public class ModelsClient {
         }
     }
 
+    /**
+     * Creates a new model.
+     * <p>A model defines a query or view over a connection's data — for example, a SQL
+     * query, a filtered object, or a joined dataset. Models are used as sources when
+     * creating model syncs.</p>
+     * <p>The connection referenced by <code>connection_id</code> must have source capabilities. Use
+     * <a href="../../api-reference/connections/get-connection-type-schema"><code>GET /api/connection_types/{id}</code></a> to check
+     * whether a connection type supports use as a source.</p>
+     */
     public ModelResponseEnvelope create(ModelsCreateRequest request) {
         return create(request, null);
     }
 
+    /**
+     * Creates a new model.
+     * <p>A model defines a query or view over a connection's data — for example, a SQL
+     * query, a filtered object, or a joined dataset. Models are used as sources when
+     * creating model syncs.</p>
+     * <p>The connection referenced by <code>connection_id</code> must have source capabilities. Use
+     * <a href="../../api-reference/connections/get-connection-type-schema"><code>GET /api/connection_types/{id}</code></a> to check
+     * whether a connection type supports use as a source.</p>
+     */
     public ModelResponseEnvelope create(ModelsCreateRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -262,14 +369,32 @@ public class ModelsClient {
         }
     }
 
+    /**
+     * Returns a single model by ID, including its source fields, identity, and filters.
+     * <p>The response includes the model's source fields, identity column, and any
+     * configured filters. To preview the data a model would return without saving
+     * changes, use <a href="./sample/get"><code>GET /api/models/{id}/sample</code></a>.</p>
+     */
     public ModelResponseEnvelope get(String id) {
         return get(id, ModelsGetRequest.builder().build());
     }
 
+    /**
+     * Returns a single model by ID, including its source fields, identity, and filters.
+     * <p>The response includes the model's source fields, identity column, and any
+     * configured filters. To preview the data a model would return without saving
+     * changes, use <a href="./sample/get"><code>GET /api/models/{id}/sample</code></a>.</p>
+     */
     public ModelResponseEnvelope get(String id, ModelsGetRequest request) {
         return get(id, request, null);
     }
 
+    /**
+     * Returns a single model by ID, including its source fields, identity, and filters.
+     * <p>The response includes the model's source fields, identity column, and any
+     * configured filters. To preview the data a model would return without saving
+     * changes, use <a href="./sample/get"><code>GET /api/models/{id}/sample</code></a>.</p>
+     */
     public ModelResponseEnvelope get(String id, ModelsGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -303,10 +428,32 @@ public class ModelsClient {
         }
     }
 
+    /**
+     * Updates a model's configuration.
+     * <p>Updating a model is a <strong>full replacement</strong> of its configuration. Every field in
+     * the request body is written to the model; any field you omit is cleared or reset
+     * to its default value.</p>
+     * <p>To make a partial change, fetch the current model with
+     * <a href="./get"><code>GET /api/models/{id}</code></a>, modify the fields you want to change, and send
+     * the complete object back in the update request.</p>
+     * <p>Changes to source fields, filters, or the identity column take effect on the
+     * next sync execution that uses this model.</p>
+     */
     public ModelResponseEnvelope update(String id, UpdateModelRequest request) {
         return update(id, request, null);
     }
 
+    /**
+     * Updates a model's configuration.
+     * <p>Updating a model is a <strong>full replacement</strong> of its configuration. Every field in
+     * the request body is written to the model; any field you omit is cleared or reset
+     * to its default value.</p>
+     * <p>To make a partial change, fetch the current model with
+     * <a href="./get"><code>GET /api/models/{id}</code></a>, modify the fields you want to change, and send
+     * the complete object back in the update request.</p>
+     * <p>Changes to source fields, filters, or the identity column take effect on the
+     * next sync execution that uses this model.</p>
+     */
     public ModelResponseEnvelope update(String id, UpdateModelRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -381,14 +528,35 @@ public class ModelsClient {
         }
     }
 
+    /**
+     * Deletes a model.
+     * <blockquote>
+     * <p>🚧 Deleting a model used by one or more syncs will break those syncs. Remove
+     * or reconfigure any syncs that reference this model before deleting it.</p>
+     * </blockquote>
+     */
     public void remove(String id) {
         remove(id, ModelsRemoveRequest.builder().build());
     }
 
+    /**
+     * Deletes a model.
+     * <blockquote>
+     * <p>🚧 Deleting a model used by one or more syncs will break those syncs. Remove
+     * or reconfigure any syncs that reference this model before deleting it.</p>
+     * </blockquote>
+     */
     public void remove(String id, ModelsRemoveRequest request) {
         remove(id, request, null);
     }
 
+    /**
+     * Deletes a model.
+     * <blockquote>
+     * <p>🚧 Deleting a model used by one or more syncs will break those syncs. Remove
+     * or reconfigure any syncs that reference this model before deleting it.</p>
+     * </blockquote>
+     */
     public void remove(String id, ModelsRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -422,21 +590,30 @@ public class ModelsClient {
     }
 
     /**
-     * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
+     * Returns a sample of records from a model.
+     * <p>Synchronous requests must complete within 10 seconds. If the source query or
+     * enrichment step can exceed that budget, use the asynchronous option so the
+     * work runs as a background job.</p>
      */
     public ModelSampleResponseEnvelope sample(String id) {
         return sample(id, ModelsSampleRequest.builder().build());
     }
 
     /**
-     * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
+     * Returns a sample of records from a model.
+     * <p>Synchronous requests must complete within 10 seconds. If the source query or
+     * enrichment step can exceed that budget, use the asynchronous option so the
+     * work runs as a background job.</p>
      */
     public ModelSampleResponseEnvelope sample(String id, ModelsSampleRequest request) {
         return sample(id, request, null);
     }
 
     /**
-     * Returns sample records from the model. The first ten records that the source provides will be returned after being enriched (if applicable). Synchronous requests must complete within 10s. If either querying or enrichment exceeds 10s, please use the async option.
+     * Returns a sample of records from a model.
+     * <p>Synchronous requests must complete within 10 seconds. If the source query or
+     * enrichment step can exceed that budget, use the asynchronous option so the
+     * work runs as a background job.</p>
      */
     public ModelSampleResponseEnvelope sample(String id, ModelsSampleRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

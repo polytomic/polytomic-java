@@ -39,10 +39,30 @@ public class ConnectionsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists all connection types supported by this deployment.
+     * <p>Each entry includes per-type metadata:</p>
+     * <ul>
+     * <li>The available operations the connection type supports.</li>
+     * <li>Its category.</li>
+     * <li>Whether the connection type is enabled for the caller's organization.</li>
+     * <li>Which modes (source, destination, enrichment) it can act as.</li>
+     * </ul>
+     */
     public ConnectionTypeResponseEnvelope getTypes() {
         return getTypes(null);
     }
 
+    /**
+     * Lists all connection types supported by this deployment.
+     * <p>Each entry includes per-type metadata:</p>
+     * <ul>
+     * <li>The available operations the connection type supports.</li>
+     * <li>Its category.</li>
+     * <li>Whether the connection type is enabled for the caller's organization.</li>
+     * <li>Which modes (source, destination, enrichment) it can act as.</li>
+     * </ul>
+     */
     public ConnectionTypeResponseEnvelope getTypes(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -73,10 +93,26 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Returns the JSON schema for a connection type.
+     * <p>This schema is intended for building forms or validating configuration payloads
+     * client-side. It describes the structure Polytomic expects when you create or
+     * update a connection of the given type.</p>
+     * <p>The response is metadata about the shape of the configuration, not a live
+     * connection instance and not a set of current credential values.</p>
+     */
     public JsonschemaSchema getConnectionTypeSchema(String id) {
         return getConnectionTypeSchema(id, null);
     }
 
+    /**
+     * Returns the JSON schema for a connection type.
+     * <p>This schema is intended for building forms or validating configuration payloads
+     * client-side. It describes the structure Polytomic expects when you create or
+     * update a connection of the given type.</p>
+     * <p>The response is metadata about the shape of the configuration, not a live
+     * connection instance and not a set of current credential values.</p>
+     */
     public JsonschemaSchema getConnectionTypeSchema(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -108,11 +144,29 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Returns completion values for parameter fields on a connection type.
+     * <p>This endpoint is useful during connection setup, before a connection exists or
+     * before you want to persist it. The supplied <code>parameters</code> are applied to a
+     * temporary in-memory connection shape and used to resolve dependent options.</p>
+     * <p>When an endpoint requires upstream authorization before it can return values,
+     * Polytomic returns an error instead of guessing. In that case, complete the
+     * authorization flow first and call the endpoint again.</p>
+     */
     public ConnectionParameterValuesResponseEnvelope getTypeParameterValues(
             String type, GetConnectionTypeParameterValuesRequestSchema request) {
         return getTypeParameterValues(type, request, null);
     }
 
+    /**
+     * Returns completion values for parameter fields on a connection type.
+     * <p>This endpoint is useful during connection setup, before a connection exists or
+     * before you want to persist it. The supplied <code>parameters</code> are applied to a
+     * temporary in-memory connection shape and used to resolve dependent options.</p>
+     * <p>When an endpoint requires upstream authorization before it can return values,
+     * Polytomic returns an error instead of guessing. In that case, complete the
+     * authorization flow first and call the endpoint again.</p>
+     */
     public ConnectionParameterValuesResponseEnvelope getTypeParameterValues(
             String type, GetConnectionTypeParameterValuesRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -154,10 +208,30 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Lists every connection in the caller's organization, with sensitive fields redacted.
+     * <p>Sensitive configuration values — passwords, API tokens, private keys — are
+     * redacted from all responses. To understand which fields a connection type
+     * exposes, consult the parameter schema returned by
+     * <a href="../../api-reference/connections/get-types"><code>GET /api/connection_types</code></a>.</p>
+     * <p>To inspect the data objects available on a specific connection, use
+     * <a href="../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * followed by <a href="../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     */
     public ConnectionListResponseEnvelope list() {
         return list(null);
     }
 
+    /**
+     * Lists every connection in the caller's organization, with sensitive fields redacted.
+     * <p>Sensitive configuration values — passwords, API tokens, private keys — are
+     * redacted from all responses. To understand which fields a connection type
+     * exposes, consult the parameter schema returned by
+     * <a href="../../api-reference/connections/get-types"><code>GET /api/connection_types</code></a>.</p>
+     * <p>To inspect the data objects available on a specific connection, use
+     * <a href="../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * followed by <a href="../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     */
     public ConnectionListResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -188,10 +262,36 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Creates a new connection of the specified type.
+     * <p>Use <a href="../../api-reference/connections/get-types"><code>GET /api/connection_types</code></a> to retrieve the
+     * list of available types and their parameter schemas. The <code>configuration</code>
+     * object is type-specific; consult the <a href="../../guides/configuring-your-connections/overview">integration
+     * guides</a>
+     * for the required and optional fields for each type.</p>
+     * <blockquote>
+     * <p>📘 Polytomic validates the connection against the upstream service
+     * immediately on creation. The request will fail if the credentials or
+     * endpoint cannot be reached.</p>
+     * </blockquote>
+     */
     public CreateConnectionResponseEnvelope create(CreateConnectionRequestSchema request) {
         return create(request, null);
     }
 
+    /**
+     * Creates a new connection of the specified type.
+     * <p>Use <a href="../../api-reference/connections/get-types"><code>GET /api/connection_types</code></a> to retrieve the
+     * list of available types and their parameter schemas. The <code>configuration</code>
+     * object is type-specific; consult the <a href="../../guides/configuring-your-connections/overview">integration
+     * guides</a>
+     * for the required and optional fields for each type.</p>
+     * <blockquote>
+     * <p>📘 Polytomic validates the connection against the upstream service
+     * immediately on creation. The request will fail if the credentials or
+     * endpoint cannot be reached.</p>
+     * </blockquote>
+     */
     public CreateConnectionResponseEnvelope create(
             CreateConnectionRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -232,13 +332,10 @@ public class ConnectionsClient {
     }
 
     /**
-     * Creates a new request for <a href="https://www.polytomic.com/connect">Polytomic Connect</a>.
-     * <p>This endpoint configures a Polytomic Connect request and returns the URL to
-     * redirect users to. This allows embedding Polytomic connection authorization in
-     * other applications.</p>
+     * Creates a Polytomic Connect session and returns a redirect URL that embeds the Connect modal.
      * <p>See also:</p>
      * <ul>
-     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
+     * <li><a href="../../../guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
      * </ul>
      */
     public ConnectCardResponseEnvelope connect(ConnectCardRequest request) {
@@ -246,13 +343,10 @@ public class ConnectionsClient {
     }
 
     /**
-     * Creates a new request for <a href="https://www.polytomic.com/connect">Polytomic Connect</a>.
-     * <p>This endpoint configures a Polytomic Connect request and returns the URL to
-     * redirect users to. This allows embedding Polytomic connection authorization in
-     * other applications.</p>
+     * Creates a Polytomic Connect session and returns a redirect URL that embeds the Connect modal.
      * <p>See also:</p>
      * <ul>
-     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
+     * <li><a href="../../../guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
      * </ul>
      */
     public ConnectCardResponseEnvelope connect(ConnectCardRequest request, RequestOptions requestOptions) {
@@ -294,6 +388,14 @@ public class ConnectionsClient {
 
     /**
      * Tests a connection configuration.
+     * <p>This endpoint is useful for setup flows that want to verify credentials before
+     * persisting them.</p>
+     * <p>If you provide <code>connection_id</code>, Polytomic starts from the saved configuration
+     * for that connection and then applies the request's <code>configuration</code> values on
+     * top. This lets callers test a partial change without resending every existing
+     * field.</p>
+     * <p>The request does not persist any configuration changes even when validation
+     * succeeds.</p>
      */
     public void testConnection(TestConnectionRequest request) {
         testConnection(request, null);
@@ -301,6 +403,14 @@ public class ConnectionsClient {
 
     /**
      * Tests a connection configuration.
+     * <p>This endpoint is useful for setup flows that want to verify credentials before
+     * persisting them.</p>
+     * <p>If you provide <code>connection_id</code>, Polytomic starts from the saved configuration
+     * for that connection and then applies the request's <code>configuration</code> values on
+     * top. This lets callers test a partial change without resending every existing
+     * field.</p>
+     * <p>The request does not persist any configuration changes even when validation
+     * succeeds.</p>
      */
     public void testConnection(TestConnectionRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -339,10 +449,24 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Returns a single connection by ID, with sensitive fields redacted.
+     * <p>To inspect the schemas available on this connection, trigger a refresh with
+     * <a href="./schemas/refresh/post"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
+     * track progress via
+     * <a href="./schemas/status/get"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     */
     public ConnectionResponseEnvelope get(String id) {
         return get(id, null);
     }
 
+    /**
+     * Returns a single connection by ID, with sensitive fields redacted.
+     * <p>To inspect the schemas available on this connection, trigger a refresh with
+     * <a href="./schemas/refresh/post"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
+     * track progress via
+     * <a href="./schemas/status/get"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     */
     public ConnectionResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -374,10 +498,40 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Updates a connection's configuration.
+     * <p>Updating a connection is a <strong>full replacement</strong> of its configuration. Any
+     * <code>configuration</code> field you omit is cleared. To make a partial change, fetch
+     * the current connection with
+     * <a href="./get"><code>GET /api/connections/{id}</code></a>, apply your edits, and send the
+     * complete object back.</p>
+     * <blockquote>
+     * <p>📘 The connection is re-validated against the upstream service after every
+     * update. The request will fail if the new credentials or endpoint cannot be
+     * reached.</p>
+     * </blockquote>
+     * <p>Syncs that are already running when the update is submitted are not
+     * interrupted; the updated configuration takes effect on their next execution.</p>
+     */
     public CreateConnectionResponseEnvelope update(String id, UpdateConnectionRequestSchema request) {
         return update(id, request, null);
     }
 
+    /**
+     * Updates a connection's configuration.
+     * <p>Updating a connection is a <strong>full replacement</strong> of its configuration. Any
+     * <code>configuration</code> field you omit is cleared. To make a partial change, fetch
+     * the current connection with
+     * <a href="./get"><code>GET /api/connections/{id}</code></a>, apply your edits, and send the
+     * complete object back.</p>
+     * <blockquote>
+     * <p>📘 The connection is re-validated against the upstream service after every
+     * update. The request will fail if the new credentials or endpoint cannot be
+     * reached.</p>
+     * </blockquote>
+     * <p>Syncs that are already running when the update is submitted are not
+     * interrupted; the updated configuration takes effect on their next execution.</p>
+     */
     public CreateConnectionResponseEnvelope update(
             String id, UpdateConnectionRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -418,14 +572,41 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Deletes a connection.
+     * <blockquote>
+     * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
+     * syncs, or schedules returns <code>422 connection in use</code> unless you pass
+     * <code>force=true</code>. With <code>force=true</code>, the API deletes those dependent
+     * resources before removing the connection.</p>
+     * </blockquote>
+     */
     public void remove(String id) {
         remove(id, ConnectionsRemoveRequest.builder().build());
     }
 
+    /**
+     * Deletes a connection.
+     * <blockquote>
+     * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
+     * syncs, or schedules returns <code>422 connection in use</code> unless you pass
+     * <code>force=true</code>. With <code>force=true</code>, the API deletes those dependent
+     * resources before removing the connection.</p>
+     * </blockquote>
+     */
     public void remove(String id, ConnectionsRemoveRequest request) {
         remove(id, request, null);
     }
 
+    /**
+     * Deletes a connection.
+     * <blockquote>
+     * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
+     * syncs, or schedules returns <code>422 connection in use</code> unless you pass
+     * <code>force=true</code>. With <code>force=true</code>, the API deletes those dependent
+     * resources before removing the connection.</p>
+     * </blockquote>
+     */
     public void remove(String id, ConnectionsRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -458,10 +639,30 @@ public class ConnectionsClient {
         }
     }
 
+    /**
+     * Returns completion values for parameter fields on a persisted connection.
+     * <p>Use this endpoint when the available options for one parameter depend on the
+     * connection's saved credentials or previously selected settings. For example,
+     * after a connection is authorized, the upstream service may be able to return
+     * lists of databases, schemas, or similar selectable values.</p>
+     * <p>For new setup flows, prefer
+     * <a href="./get-type-parameter-values"><code>POST /api/connection_types/{type}/parameter_values</code></a>,
+     * which lets you resolve completions before the connection has been created.</p>
+     */
     public ConnectionParameterValuesResponseEnvelope getParameterValues(String id) {
         return getParameterValues(id, null);
     }
 
+    /**
+     * Returns completion values for parameter fields on a persisted connection.
+     * <p>Use this endpoint when the available options for one parameter depend on the
+     * connection's saved credentials or previously selected settings. For example,
+     * after a connection is authorized, the upstream service may be able to return
+     * lists of databases, schemas, or similar selectable values.</p>
+     * <p>For new setup flows, prefer
+     * <a href="./get-type-parameter-values"><code>POST /api/connection_types/{type}/parameter_values</code></a>,
+     * which lets you resolve completions before the connection has been created.</p>
+     */
     public ConnectionParameterValuesResponseEnvelope getParameterValues(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -495,16 +696,31 @@ public class ConnectionsClient {
         }
     }
 
-    public V2CreateSharedConnectionResponseEnvelope apiV2CreateSharedConnection(String id, ApiRequest request) {
-        return apiV2CreateSharedConnection(id, request, null);
+    /**
+     * Shares a connection with another organization in the caller's partner account.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>Shared connections can only be created by using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
+    public V2CreateSharedConnectionResponseEnvelope createSharedConnection(
+            String parentConnectionId, ApiRequest request) {
+        return createSharedConnection(parentConnectionId, request, null);
     }
 
-    public V2CreateSharedConnectionResponseEnvelope apiV2CreateSharedConnection(
-            String id, ApiRequest request, RequestOptions requestOptions) {
+    /**
+     * Shares a connection with another organization in the caller's partner account.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>Shared connections can only be created by using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
+    public V2CreateSharedConnectionResponseEnvelope createSharedConnection(
+            String parentConnectionId, ApiRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
-                .addPathSegment(id)
+                .addPathSegment(parentConnectionId)
                 .addPathSegments("share")
                 .build();
         RequestBody body;
@@ -530,6 +746,49 @@ public class ConnectionsClient {
             if (response.isSuccessful()) {
                 return ObjectMappers.JSON_MAPPER.readValue(
                         responseBody.string(), V2CreateSharedConnectionResponseEnvelope.class);
+            }
+            throw new ApiError(
+                    response.code(),
+                    ObjectMappers.JSON_MAPPER.readValue(
+                            responseBody != null ? responseBody.string() : "{}", Object.class));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Lists shared copies of a connection.
+     */
+    public ConnectionListResponseEnvelope listSharedConnections(String parentConnectionId) {
+        return listSharedConnections(parentConnectionId, null);
+    }
+
+    /**
+     * Lists shared copies of a connection.
+     */
+    public ConnectionListResponseEnvelope listSharedConnections(
+            String parentConnectionId, RequestOptions requestOptions) {
+        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(parentConnectionId)
+                .addPathSegments("shared")
+                .build();
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl)
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            OkHttpClient client = clientOptions.httpClient();
+            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+                client = clientOptions.httpClientWithTimeout(requestOptions);
+            }
+            Response response = client.newCall(okhttpRequest).execute();
+            ResponseBody responseBody = response.body();
+            if (response.isSuccessful()) {
+                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectionListResponseEnvelope.class);
             }
             throw new ApiError(
                     response.code(),

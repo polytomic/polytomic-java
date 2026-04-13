@@ -31,6 +31,9 @@ public final class ModelSyncGetSourceRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Query parameters used to incrementally refine a dependent source configuration. Keys correspond to configuration fields returned by previous calls to this endpoint.
+     */
     @JsonProperty("params")
     public Optional<Map<String, Optional<List<String>>>> getParams() {
         return params;

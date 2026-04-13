@@ -32,14 +32,50 @@ public class ExecutionsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Returns a concise per-schema status for one or more bulk syncs.
+     * <p>This endpoint is a summary view, not an execution-history view. Each schema is
+     * represented at most once with its most recent execution status, and running
+     * executions are preferred over older terminal ones.</p>
+     * <p>Use this endpoint when you want a dashboard-style answer to &quot;what is each sync
+     * doing now?&quot; If you need the full execution history or a single execution's
+     * details, use <a href="./list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
+     * <a href="./get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
+     * <p>Setting <code>all=true</code> or <code>active=true</code> ignores any explicit <code>sync_id</code> filters and
+     * expands the request to the caller's organization scope.</p>
+     */
     public ListBulkSyncExecutionStatusEnvelope listStatus() {
         return listStatus(ExecutionsListStatusRequest.builder().build());
     }
 
+    /**
+     * Returns a concise per-schema status for one or more bulk syncs.
+     * <p>This endpoint is a summary view, not an execution-history view. Each schema is
+     * represented at most once with its most recent execution status, and running
+     * executions are preferred over older terminal ones.</p>
+     * <p>Use this endpoint when you want a dashboard-style answer to &quot;what is each sync
+     * doing now?&quot; If you need the full execution history or a single execution's
+     * details, use <a href="./list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
+     * <a href="./get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
+     * <p>Setting <code>all=true</code> or <code>active=true</code> ignores any explicit <code>sync_id</code> filters and
+     * expands the request to the caller's organization scope.</p>
+     */
     public ListBulkSyncExecutionStatusEnvelope listStatus(ExecutionsListStatusRequest request) {
         return listStatus(request, null);
     }
 
+    /**
+     * Returns a concise per-schema status for one or more bulk syncs.
+     * <p>This endpoint is a summary view, not an execution-history view. Each schema is
+     * represented at most once with its most recent execution status, and running
+     * executions are preferred over older terminal ones.</p>
+     * <p>Use this endpoint when you want a dashboard-style answer to &quot;what is each sync
+     * doing now?&quot; If you need the full execution history or a single execution's
+     * details, use <a href="./list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
+     * <a href="./get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
+     * <p>Setting <code>all=true</code> or <code>active=true</code> ignores any explicit <code>sync_id</code> filters and
+     * expands the request to the caller's organization scope.</p>
+     */
     public ListBulkSyncExecutionStatusEnvelope listStatus(
             ExecutionsListStatusRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -80,14 +116,53 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Lists executions for a bulk sync.
+     * <p>Results are ordered by start time descending by default. When more results are
+     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
+     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
+     * parameter is optional, and the maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
+     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
+     * starting with the newest execution.</p>
+     * <p>For the full details of a single run — including per-schema execution status —
+     * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
+     */
     public ListBulkSyncExecutionsEnvelope list(String id) {
         return list(id, ExecutionsListRequest.builder().build());
     }
 
+    /**
+     * Lists executions for a bulk sync.
+     * <p>Results are ordered by start time descending by default. When more results are
+     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
+     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
+     * parameter is optional, and the maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
+     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
+     * starting with the newest execution.</p>
+     * <p>For the full details of a single run — including per-schema execution status —
+     * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
+     */
     public ListBulkSyncExecutionsEnvelope list(String id, ExecutionsListRequest request) {
         return list(id, request, null);
     }
 
+    /**
+     * Lists executions for a bulk sync.
+     * <p>Results are ordered by start time descending by default. When more results are
+     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
+     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
+     * parameter is optional, and the maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
+     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
+     * starting with the newest execution.</p>
+     * <p>For the full details of a single run — including per-schema execution status —
+     * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
+     */
     public ListBulkSyncExecutionsEnvelope list(
             String id, ExecutionsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -133,10 +208,24 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Returns a single bulk sync execution, including per-schema execution status.
+     * <p>The response includes a breakdown of each schema (table or object) that
+     * participated in the execution, with its individual status, row counts, and any
+     * error details. This makes it suitable for diagnosing partial failures where
+     * some schemas succeeded while others did not.</p>
+     */
     public BulkSyncExecutionEnvelope get(String id, String execId) {
         return get(id, execId, null);
     }
 
+    /**
+     * Returns a single bulk sync execution, including per-schema execution status.
+     * <p>The response includes a breakdown of each schema (table or object) that
+     * participated in the execution, with its individual status, row counts, and any
+     * error details. This makes it suitable for diagnosing partial failures where
+     * some schemas succeeded while others did not.</p>
+     */
     public BulkSyncExecutionEnvelope get(String id, String execId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -170,10 +259,26 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Requests cancellation of a specific bulk sync execution.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal has been queued; the execution continues to run until the signal is
+     * processed. Poll <code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code> until the
+     * execution reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to
+     * confirm cancellation has taken effect.</p>
+     */
     public CancelBulkSyncResponseEnvelope cancel(String id, String execId) {
         return cancel(id, execId, null);
     }
 
+    /**
+     * Requests cancellation of a specific bulk sync execution.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal has been queued; the execution continues to run until the signal is
+     * processed. Poll <code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code> until the
+     * execution reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to
+     * confirm cancellation has taken effect.</p>
+     */
     public CancelBulkSyncResponseEnvelope cancel(String id, String execId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -208,10 +313,34 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Returns signed URLs for the log files produced by a single bulk sync execution.
+     * <p>Each URL in the response is pre-signed and grants temporary read access to the
+     * corresponding log file. URLs expire after a short period; if you need to access
+     * a file after the URL has expired, call this endpoint again to obtain a fresh set
+     * of signed URLs.</p>
+     * <blockquote>
+     * <p>📘 To export logs asynchronously to a destination of your choice, use
+     * <a href="../../../../../../../api-reference/bulk-sync/executions/export-logs"><code>POST /api/bulk/syncs/{sync_id}/executions/{execution_id}/logs/export</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId) {
         return getLogs(syncId, executionId, null);
     }
 
+    /**
+     * Returns signed URLs for the log files produced by a single bulk sync execution.
+     * <p>Each URL in the response is pre-signed and grants temporary read access to the
+     * corresponding log file. URLs expire after a short period; if you need to access
+     * a file after the URL has expired, call this endpoint again to obtain a fresh set
+     * of signed URLs.</p>
+     * <blockquote>
+     * <p>📘 To export logs asynchronously to a destination of your choice, use
+     * <a href="../../../../../../../api-reference/bulk-sync/executions/export-logs"><code>POST /api/bulk/syncs/{sync_id}/executions/{execution_id}/logs/export</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -247,15 +376,57 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Starts an asynchronous job that packages the log files for a single bulk sync execution into a downloadable archive.
+     * <blockquote>
+     * <p>📘 Log export is asynchronous</p>
+     * <p>This endpoint starts a background job that packages an execution's log
+     * files into a downloadable archive. The first call typically returns a
+     * <code>job</code> descriptor instead of a completed result. Poll
+     * <a href="../../../../../../../../api-reference/jobs/get"><code>GET /api/jobs/exportlogs/{id}</code></a>
+     * with the returned <code>job_id</code> until <code>status</code> is <code>done</code>; the final response
+     * contains a signed <code>url</code> that can be used to download the archive.</p>
+     * <p>Set <code>notify=true</code> to also email the requesting user when the archive is
+     * ready.</p>
+     * </blockquote>
+     */
     public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId) {
         return exportLogs(
                 syncId, executionId, ExecutionsExportLogsRequest.builder().build());
     }
 
+    /**
+     * Starts an asynchronous job that packages the log files for a single bulk sync execution into a downloadable archive.
+     * <blockquote>
+     * <p>📘 Log export is asynchronous</p>
+     * <p>This endpoint starts a background job that packages an execution's log
+     * files into a downloadable archive. The first call typically returns a
+     * <code>job</code> descriptor instead of a completed result. Poll
+     * <a href="../../../../../../../../api-reference/jobs/get"><code>GET /api/jobs/exportlogs/{id}</code></a>
+     * with the returned <code>job_id</code> until <code>status</code> is <code>done</code>; the final response
+     * contains a signed <code>url</code> that can be used to download the archive.</p>
+     * <p>Set <code>notify=true</code> to also email the requesting user when the archive is
+     * ready.</p>
+     * </blockquote>
+     */
     public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId, ExecutionsExportLogsRequest request) {
         return exportLogs(syncId, executionId, request, null);
     }
 
+    /**
+     * Starts an asynchronous job that packages the log files for a single bulk sync execution into a downloadable archive.
+     * <blockquote>
+     * <p>📘 Log export is asynchronous</p>
+     * <p>This endpoint starts a background job that packages an execution's log
+     * files into a downloadable archive. The first call typically returns a
+     * <code>job</code> descriptor instead of a completed result. Poll
+     * <a href="../../../../../../../../api-reference/jobs/get"><code>GET /api/jobs/exportlogs/{id}</code></a>
+     * with the returned <code>job_id</code> until <code>status</code> is <code>done</code>; the final response
+     * contains a signed <code>url</code> that can be used to download the archive.</p>
+     * <p>Set <code>notify=true</code> to also email the requesting user when the archive is
+     * ready.</p>
+     * </blockquote>
+     */
     public V4ExportSyncLogsEnvelope exportLogs(
             String syncId, String executionId, ExecutionsExportLogsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

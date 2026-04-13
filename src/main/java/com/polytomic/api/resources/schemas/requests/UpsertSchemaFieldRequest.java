@@ -32,6 +32,9 @@ public final class UpsertSchemaFieldRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Fields to create or update on the schema. Existing user-defined fields with the same field_id are replaced.
+     */
     @JsonProperty("fields")
     public Optional<List<V4UserFieldRequest>> getFields() {
         return fields;

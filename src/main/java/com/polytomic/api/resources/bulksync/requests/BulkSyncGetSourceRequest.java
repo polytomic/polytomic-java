@@ -29,6 +29,9 @@ public final class BulkSyncGetSourceRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return When true, include per-schema field lists in the response. Set to false for a smaller payload when field details are not needed.
+     */
     @JsonProperty("include_fields")
     public Optional<Boolean> getIncludeFields() {
         return includeFields;

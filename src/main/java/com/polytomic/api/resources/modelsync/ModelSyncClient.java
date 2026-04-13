@@ -50,14 +50,35 @@ public class ModelSyncClient {
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
     }
 
+    /**
+     * Describes the source configuration available on a connection for use as a model sync source.
+     * <p>Use this endpoint before creating a model to understand what configuration is
+     * available. Once you have a configuration, resolve the fields available for
+     * sync mapping with
+     * <a href="./fields/get"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     */
     public GetModelSyncSourceMetaEnvelope getSource(String id) {
         return getSource(id, ModelSyncGetSourceRequest.builder().build());
     }
 
+    /**
+     * Describes the source configuration available on a connection for use as a model sync source.
+     * <p>Use this endpoint before creating a model to understand what configuration is
+     * available. Once you have a configuration, resolve the fields available for
+     * sync mapping with
+     * <a href="./fields/get"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     */
     public GetModelSyncSourceMetaEnvelope getSource(String id, ModelSyncGetSourceRequest request) {
         return getSource(id, request, null);
     }
 
+    /**
+     * Describes the source configuration available on a connection for use as a model sync source.
+     * <p>Use this endpoint before creating a model to understand what configuration is
+     * available. Once you have a configuration, resolve the fields available for
+     * sync mapping with
+     * <a href="./fields/get"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     */
     public GetModelSyncSourceMetaEnvelope getSource(
             String id, ModelSyncGetSourceRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -93,14 +114,53 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Returns the source fields available on a connection for a given source configuration.
+     * <p>Pass the model's source configuration as query parameters to resolve the
+     * fields that the connection will expose for that specific configuration. The
+     * returned fields are what can be referenced in sync field mappings.</p>
+     * <blockquote>
+     * <p>📘 Results depend on the source configuration you supply. A different
+     * table or query in the configuration may return a completely different field
+     * list.</p>
+     * </blockquote>
+     * <p>The available source configuration parameters are described by
+     * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     */
     public ModelFieldResponse getSourceFields(String id) {
         return getSourceFields(id, ModelSyncGetSourceFieldsRequest.builder().build());
     }
 
+    /**
+     * Returns the source fields available on a connection for a given source configuration.
+     * <p>Pass the model's source configuration as query parameters to resolve the
+     * fields that the connection will expose for that specific configuration. The
+     * returned fields are what can be referenced in sync field mappings.</p>
+     * <blockquote>
+     * <p>📘 Results depend on the source configuration you supply. A different
+     * table or query in the configuration may return a completely different field
+     * list.</p>
+     * </blockquote>
+     * <p>The available source configuration parameters are described by
+     * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     */
     public ModelFieldResponse getSourceFields(String id, ModelSyncGetSourceFieldsRequest request) {
         return getSourceFields(id, request, null);
     }
 
+    /**
+     * Returns the source fields available on a connection for a given source configuration.
+     * <p>Pass the model's source configuration as query parameters to resolve the
+     * fields that the connection will expose for that specific configuration. The
+     * returned fields are what can be referenced in sync field mappings.</p>
+     * <blockquote>
+     * <p>📘 Results depend on the source configuration you supply. A different
+     * table or query in the configuration may return a completely different field
+     * list.</p>
+     * </blockquote>
+     * <p>The available source configuration parameters are described by
+     * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     */
     public ModelFieldResponse getSourceFields(
             String id, ModelSyncGetSourceFieldsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -136,14 +196,50 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Lists all model syncs in the caller's organization.
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
+     * If more results are available, the response includes <code>pagination.next_page_token</code>.
+     * Pass that token back unchanged to continue from the last item you received.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
+     * non-positive values fall back to the same default.</p>
+     * <p>This endpoint returns syncs visible to the current caller's organization scope.
+     * To inspect a specific sync in more detail, follow up with
+     * <a href="./get"><code>GET /api/syncs/{id}</code></a>.</p>
+     */
     public ListModelSyncResponseEnvelope list() {
         return list(ModelSyncListRequest.builder().build());
     }
 
+    /**
+     * Lists all model syncs in the caller's organization.
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
+     * If more results are available, the response includes <code>pagination.next_page_token</code>.
+     * Pass that token back unchanged to continue from the last item you received.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
+     * non-positive values fall back to the same default.</p>
+     * <p>This endpoint returns syncs visible to the current caller's organization scope.
+     * To inspect a specific sync in more detail, follow up with
+     * <a href="./get"><code>GET /api/syncs/{id}</code></a>.</p>
+     */
     public ListModelSyncResponseEnvelope list(ModelSyncListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Lists all model syncs in the caller's organization.
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
+     * If more results are available, the response includes <code>pagination.next_page_token</code>.
+     * Pass that token back unchanged to continue from the last item you received.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
+     * non-positive values fall back to the same default.</p>
+     * <p>This endpoint returns syncs visible to the current caller's organization scope.
+     * To inspect a specific sync in more detail, follow up with
+     * <a href="./get"><code>GET /api/syncs/{id}</code></a>.</p>
+     */
     public ListModelSyncResponseEnvelope list(ModelSyncListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -184,14 +280,15 @@ public class ModelSyncClient {
     }
 
     /**
-     * Create a new sync from one or more models to a destination.
+     * Creates a new model sync.
+     * <p>Create a new sync from one or more models to a destination.</p>
      * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/sync-destinations">the product
      * documentation</a> is
      * configurable via the API.</p>
      * <p>Guides:</p>
      * <ul>
-     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/model-sync-reverse-etl-from-snowflake-query-to-salesforce">Model sync (Reverse ETL) from Snowflake query to Salesforce</a></li>
-     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/joined-model-sync-from-postgres-airtable-and-stripe-to-hubspot">Joined model sync from Postgres, Airtable, and Stripe to Hubspot</a></li>
+     * <li><a href="../../guides/code-examples/model-sync-reverse-etl-from-snowflake-query-to-salesforce">Model sync (Reverse ETL) from Snowflake query to Salesforce</a></li>
+     * <li><a href="../../guides/code-examples/joined-model-sync-from-postgres-airtable-and-stripe-to-hubspot">Joined model sync from Postgres, Airtable, and Stripe to Hubspot</a></li>
      * </ul>
      * <h2>Targets (Destinations)</h2>
      * <p>Polytomic refers to a model sync's destination as the &quot;target object&quot;, or
@@ -205,10 +302,10 @@ public class ModelSyncClient {
      * },
      * </code></pre>
      * <p>Some connections support additional configuration for targets. For example,
-     * <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/salesforce#target">Salesforce
+     * <a href="../../guides/configuring-your-connections/connections/salesforce#target">Salesforce
      * connections</a>
      * support optionally specifying the ingestion API to use. The target specific
-     * options are passed as <code>configuration</code>; consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">integration
+     * options are passed as <code>configuration</code>; consult the <a href="../../guides/configuring-your-connections/overview">integration
      * guides</a>
      * for details about specific connection configurations.</p>
      * <h3>Creating a new target</h3>
@@ -233,14 +330,15 @@ public class ModelSyncClient {
     }
 
     /**
-     * Create a new sync from one or more models to a destination.
+     * Creates a new model sync.
+     * <p>Create a new sync from one or more models to a destination.</p>
      * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/sync-destinations">the product
      * documentation</a> is
      * configurable via the API.</p>
      * <p>Guides:</p>
      * <ul>
-     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/model-sync-reverse-etl-from-snowflake-query-to-salesforce">Model sync (Reverse ETL) from Snowflake query to Salesforce</a></li>
-     * <li><a href="https://apidocs.polytomic.com/2024-02-08/guides/code-examples/joined-model-sync-from-postgres-airtable-and-stripe-to-hubspot">Joined model sync from Postgres, Airtable, and Stripe to Hubspot</a></li>
+     * <li><a href="../../guides/code-examples/model-sync-reverse-etl-from-snowflake-query-to-salesforce">Model sync (Reverse ETL) from Snowflake query to Salesforce</a></li>
+     * <li><a href="../../guides/code-examples/joined-model-sync-from-postgres-airtable-and-stripe-to-hubspot">Joined model sync from Postgres, Airtable, and Stripe to Hubspot</a></li>
      * </ul>
      * <h2>Targets (Destinations)</h2>
      * <p>Polytomic refers to a model sync's destination as the &quot;target object&quot;, or
@@ -254,10 +352,10 @@ public class ModelSyncClient {
      * },
      * </code></pre>
      * <p>Some connections support additional configuration for targets. For example,
-     * <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/salesforce#target">Salesforce
+     * <a href="../../guides/configuring-your-connections/connections/salesforce#target">Salesforce
      * connections</a>
      * support optionally specifying the ingestion API to use. The target specific
-     * options are passed as <code>configuration</code>; consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">integration
+     * options are passed as <code>configuration</code>; consult the <a href="../../guides/configuring-your-connections/overview">integration
      * guides</a>
      * for details about specific connection configurations.</p>
      * <h3>Creating a new target</h3>
@@ -314,10 +412,22 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Returns the schedule types available when creating or updating a model sync.
+     * <p>Use the <code>type</code> identifiers returned by this endpoint in the <code>schedule</code> field
+     * when creating or updating a sync via
+     * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> or <a href="../../../api-reference/model-sync/update"><code>PUT /api/syncs/{id}</code></a>.</p>
+     */
     public ScheduleOptionResponseEnvelope getScheduleOptions() {
         return getScheduleOptions(null);
     }
 
+    /**
+     * Returns the schedule types available when creating or updating a model sync.
+     * <p>Use the <code>type</code> identifiers returned by this endpoint in the <code>schedule</code> field
+     * when creating or updating a sync via
+     * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> or <a href="../../../api-reference/model-sync/update"><code>PUT /api/syncs/{id}</code></a>.</p>
+     */
     public ScheduleOptionResponseEnvelope getScheduleOptions(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -348,10 +458,22 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Returns a single model sync by ID.
+     * <p>To check whether a sync is currently running or has recently completed, use
+     * <a href="./status/get"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
+     * executions, use <a href="./executions/get"><code>GET /api/syncs/{id}/executions</code></a>.</p>
+     */
     public ModelSyncResponseEnvelope get(String id) {
         return get(id, null);
     }
 
+    /**
+     * Returns a single model sync by ID.
+     * <p>To check whether a sync is currently running or has recently completed, use
+     * <a href="./status/get"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
+     * executions, use <a href="./executions/get"><code>GET /api/syncs/{id}/executions</code></a>.</p>
+     */
     public ModelSyncResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -383,10 +505,38 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Updates a model sync's configuration.
+     * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
+     * Every field in the request body is written to the sync; any field you omit is
+     * cleared or reset to its default value.</p>
+     * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
+     * single field mapping — fetch the current sync with
+     * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,
+     * modify the fields you want to change, and send the complete object back in
+     * the update request.</p>
+     * <p>Updates to <code>active</code>, <code>schedule</code>, and <code>policies</code> take effect immediately.
+     * Changes to source fields, target configuration, filters, or field mappings
+     * take effect on the sync's next execution.</p>
+     */
     public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request) {
         return update(id, request, null);
     }
 
+    /**
+     * Updates a model sync's configuration.
+     * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
+     * Every field in the request body is written to the sync; any field you omit is
+     * cleared or reset to its default value.</p>
+     * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
+     * single field mapping — fetch the current sync with
+     * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,
+     * modify the fields you want to change, and send the complete object back in
+     * the update request.</p>
+     * <p>Updates to <code>active</code>, <code>schedule</code>, and <code>policies</code> take effect immediately.
+     * Changes to source fields, target configuration, filters, or field mappings
+     * take effect on the sync's next execution.</p>
+     */
     public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -425,10 +575,22 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Deletes a model sync, cancelling any running executions.
+     * <p>Deletion is permanent. Any running execution is cancelled before the sync
+     * record is removed. Deleted syncs cannot be recovered; recreate them using
+     * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
+     */
     public void remove(String id) {
         remove(id, null);
     }
 
+    /**
+     * Deletes a model sync, cancelling any running executions.
+     * <p>Deletion is permanent. Any running execution is cancelled before the sync
+     * record is removed. Deleted syncs cannot be recovered; recreate them using
+     * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
+     */
     public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -459,10 +621,30 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Sets whether a model sync is active.
+     * <p>Only active syncs execute on schedule or in response to a manual trigger. Set
+     * <code>active</code> to <code>false</code> to pause a sync without deleting it.</p>
+     * <blockquote>
+     * <p>📘 Deactivating a sync does not cancel an execution that is already in
+     * progress. Use <a href="../../../../api-reference/model-sync/cancel"><code>POST /api/syncs/{id}/cancel</code></a> to stop a
+     * running execution.</p>
+     * </blockquote>
+     */
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
         return activate(id, request, null);
     }
 
+    /**
+     * Sets whether a model sync is active.
+     * <p>Only active syncs execute on schedule or in response to a manual trigger. Set
+     * <code>active</code> to <code>false</code> to pause a sync without deleting it.</p>
+     * <blockquote>
+     * <p>📘 Deactivating a sync does not cancel an execution that is already in
+     * progress. Use <a href="../../../../api-reference/model-sync/cancel"><code>POST /api/syncs/{id}/cancel</code></a> to stop a
+     * running execution.</p>
+     * </blockquote>
+     */
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -502,10 +684,26 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Requests cancellation of any running executions on a model sync.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal has been queued; the running execution continues until the signal is
+     * processed. Poll <code>GET /api/syncs/{id}/status</code> until the current execution
+     * reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to confirm
+     * cancellation has taken effect.</p>
+     */
     public CancelModelSyncResponseEnvelope cancel(String id) {
         return cancel(id, null);
     }
 
+    /**
+     * Requests cancellation of any running executions on a model sync.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal has been queued; the running execution continues until the signal is
+     * processed. Poll <code>GET /api/syncs/{id}/status</code> until the current execution
+     * reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to confirm
+     * cancellation has taken effect.</p>
+     */
     public CancelModelSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -540,8 +738,9 @@ public class ModelSyncClient {
     }
 
     /**
+     * Starts a new execution of a model sync.
      * <blockquote>
-     * 🚧 Force full resync
+     * <p>🚧 Force full resync</p>
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
@@ -550,8 +749,9 @@ public class ModelSyncClient {
     }
 
     /**
+     * Starts a new execution of a model sync.
      * <blockquote>
-     * 🚧 Force full resync
+     * <p>🚧 Force full resync</p>
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
@@ -560,8 +760,9 @@ public class ModelSyncClient {
     }
 
     /**
+     * Starts a new execution of a model sync.
      * <blockquote>
-     * 🚧 Force full resync
+     * <p>🚧 Force full resync</p>
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
@@ -605,10 +806,22 @@ public class ModelSyncClient {
         }
     }
 
+    /**
+     * Returns the current status of a model sync.
+     * <p>The response includes a summary of the most recent execution, including its
+     * start time, completion time, and record counts. For the complete execution
+     * history, use <a href="../../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
+     */
     public SyncStatusEnvelope getStatus(String id) {
         return getStatus(id, null);
     }
 
+    /**
+     * Returns the current status of a model sync.
+     * <p>The response includes a summary of the most recent execution, including its
+     * start time, completion time, and record counts. For the complete execution
+     * history, use <a href="../../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
+     */
     public SyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

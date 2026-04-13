@@ -43,21 +43,33 @@ public final class ExecutionsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Pagination cursor returned in the previous response. Omit on the first request.
+     */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
         return pageToken;
     }
 
+    /**
+     * @return When true, only return executions that have finished. Terminal executions are ordered by updated_at.
+     */
     @JsonProperty("only_terminal")
     public Optional<Boolean> getOnlyTerminal() {
         return onlyTerminal;
     }
 
+    /**
+     * @return When true, return executions from oldest to newest. Default is newest first.
+     */
     @JsonProperty("ascending")
     public Optional<Boolean> getAscending() {
         return ascending;
     }
 
+    /**
+     * @return Maximum number of executions to return. Capped at 100.
+     */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;

@@ -23,10 +23,30 @@ public class JobsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Returns the current state of an asynchronous job.
+     * <p>This endpoint is used as a polling target by other asynchronous workflows such
+     * as model preview and log export. The caller must know the job <code>type</code> and <code>id</code>
+     * that were returned when the job was created.</p>
+     * <p>If the job is still running, the response returns <code>status: running</code> and may not
+     * include a <code>result</code> yet. Once complete, <code>status</code> becomes <code>done</code> or <code>failed</code>.</p>
+     * <p>Only specific job types are supported by this endpoint. Passing an unknown
+     * <code>type</code> returns <code>400</code>.</p>
+     */
     public JobResponseEnvelope get(String id, String type) {
         return get(id, type, null);
     }
 
+    /**
+     * Returns the current state of an asynchronous job.
+     * <p>This endpoint is used as a polling target by other asynchronous workflows such
+     * as model preview and log export. The caller must know the job <code>type</code> and <code>id</code>
+     * that were returned when the job was created.</p>
+     * <p>If the job is still running, the response returns <code>status: running</code> and may not
+     * include a <code>result</code> yet. Once complete, <code>status</code> becomes <code>done</code> or <code>failed</code>.</p>
+     * <p>Only specific job types are supported by this endpoint. Passing an unknown
+     * <code>type</code> returns <code>400</code>.</p>
+     */
     public JobResponseEnvelope get(String id, String type, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

@@ -84,11 +84,17 @@ public final class BulkSchema {
         return enabled;
     }
 
+    /**
+     * @return fields is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for fields.
+     */
     @JsonProperty("fields")
     public Optional<List<BulkField>> getFields() {
         return fields;
     }
 
+    /**
+     * @return filters is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for filters.
+     */
     @JsonProperty("filters")
     public Optional<List<BulkFilter>> getFilters() {
         return filters;

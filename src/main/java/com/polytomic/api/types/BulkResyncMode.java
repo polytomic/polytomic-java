@@ -5,24 +5,16 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ModelSyncMode {
-    CREATE("create"),
+public enum BulkResyncMode {
+    REFETCH("refetch"),
 
-    UPDATE("update"),
+    RESYNC("resync"),
 
-    UPDATE_OR_CREATE("updateOrCreate"),
-
-    REPLACE("replace"),
-
-    APPEND("append"),
-
-    REMOVE("remove"),
-
-    SNAPSHOT("snapshot");
+    REBUILD("rebuild");
 
     private final String value;
 
-    ModelSyncMode(String value) {
+    BulkResyncMode(String value) {
         this.value = value;
     }
 

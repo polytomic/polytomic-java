@@ -33,11 +33,17 @@ public final class TargetsGetTargetFieldsRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination).
+     */
     @JsonProperty("target")
     public String getTarget() {
         return target;
     }
 
+    /**
+     * @return When true, force a cache refresh of the target's schema before returning its fields.
+     */
     @JsonProperty("refresh")
     public Optional<Boolean> getRefresh() {
         return refresh;
@@ -104,6 +110,10 @@ public final class TargetsGetTargetFieldsRequest {
             return this;
         }
 
+        /**
+         * <p>Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination).</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(String target) {
@@ -111,6 +121,10 @@ public final class TargetsGetTargetFieldsRequest {
             return this;
         }
 
+        /**
+         * <p>When true, force a cache refresh of the target's schema before returning its fields.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage refresh(Boolean refresh) {
             this.refresh = Optional.of(refresh);

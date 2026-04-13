@@ -45,11 +45,17 @@ public final class BulkSyncExecutionStatus {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Next scheduled execution time, if the sync has a schedule configured.
+     */
     @JsonProperty("nextExecutionTime")
     public Optional<OffsetDateTime> getNextExecutionTime() {
         return nextExecutionTime;
     }
 
+    /**
+     * @return Most recent execution status for each enabled schema in the sync.
+     */
     @JsonProperty("schemas")
     public Optional<List<BulkSyncSchemaExecutionStatus>> getSchemas() {
         return schemas;
@@ -60,6 +66,9 @@ public final class BulkSyncExecutionStatus {
         return status;
     }
 
+    /**
+     * @return Unique identifier of the bulk sync.
+     */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;

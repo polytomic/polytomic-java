@@ -28,10 +28,26 @@ public class RolesClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists all permissions roles available in the caller's organization, including built-in system roles.
+     * <p>System roles such as Admin and Member are always present in every organization
+     * and cannot be modified or deleted. Custom roles appear alongside them and can
+     * be created, updated, or removed as needed.</p>
+     * <p>To inspect or modify a specific role, use
+     * <a href="./%7Bid%7D/get"><code>GET /api/permissions/roles/{id}</code></a>.</p>
+     */
     public RoleListResponseEnvelope list() {
         return list(null);
     }
 
+    /**
+     * Lists all permissions roles available in the caller's organization, including built-in system roles.
+     * <p>System roles such as Admin and Member are always present in every organization
+     * and cannot be modified or deleted. Custom roles appear alongside them and can
+     * be created, updated, or removed as needed.</p>
+     * <p>To inspect or modify a specific role, use
+     * <a href="./%7Bid%7D/get"><code>GET /api/permissions/roles/{id}</code></a>.</p>
+     */
     public RoleListResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -62,10 +78,24 @@ public class RolesClient {
         }
     }
 
+    /**
+     * Creates a new permissions role.
+     * <p>Provide a <code>name</code> for the new role. The role is immediately available for use
+     * in permission policies.</p>
+     * <p>To attach the role to resources, create or update a policy using
+     * <a href="../../../api-reference/permissions/policies/create"><code>POST /api/permissions/policies</code></a>.</p>
+     */
     public RoleResponseEnvelope create(CreateRoleRequest request) {
         return create(request, null);
     }
 
+    /**
+     * Creates a new permissions role.
+     * <p>Provide a <code>name</code> for the new role. The role is immediately available for use
+     * in permission policies.</p>
+     * <p>To attach the role to resources, create or update a policy using
+     * <a href="../../../api-reference/permissions/policies/create"><code>POST /api/permissions/policies</code></a>.</p>
+     */
     public RoleResponseEnvelope create(CreateRoleRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -103,10 +133,18 @@ public class RolesClient {
         }
     }
 
+    /**
+     * Returns a single permissions role by ID.
+     * <p>Returns the role's name, action set, and whether it is a built-in system role.</p>
+     */
     public RoleResponseEnvelope get(String id) {
         return get(id, null);
     }
 
+    /**
+     * Returns a single permissions role by ID.
+     * <p>Returns the role's name, action set, and whether it is a built-in system role.</p>
+     */
     public RoleResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -138,10 +176,26 @@ public class RolesClient {
         }
     }
 
+    /**
+     * Updates an existing permissions role's name and action set.
+     * <p>The update is a <strong>full replacement</strong> of the role definition.</p>
+     * <blockquote>
+     * <p>🚧 Built-in system roles (such as Admin and Member) cannot be updated.
+     * Attempting to modify a system role returns an error.</p>
+     * </blockquote>
+     */
     public RoleResponseEnvelope update(String id, UpdateRoleRequest request) {
         return update(id, request, null);
     }
 
+    /**
+     * Updates an existing permissions role's name and action set.
+     * <p>The update is a <strong>full replacement</strong> of the role definition.</p>
+     * <blockquote>
+     * <p>🚧 Built-in system roles (such as Admin and Member) cannot be updated.
+     * Attempting to modify a system role returns an error.</p>
+     * </blockquote>
+     */
     public RoleResponseEnvelope update(String id, UpdateRoleRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -180,10 +234,32 @@ public class RolesClient {
         }
     }
 
+    /**
+     * Deletes a permissions role.
+     * <blockquote>
+     * <p>🚧 Built-in system roles (such as Admin and Member) cannot be deleted.
+     * Attempting to delete a system role returns an error.</p>
+     * </blockquote>
+     * <p>Deleting a role does not automatically remove it from any policies that
+     * reference it. Update those policies separately using
+     * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
+     * leaving stale role references.</p>
+     */
     public void remove(String id) {
         remove(id, null);
     }
 
+    /**
+     * Deletes a permissions role.
+     * <blockquote>
+     * <p>🚧 Built-in system roles (such as Admin and Member) cannot be deleted.
+     * Attempting to delete a system role returns an error.</p>
+     * </blockquote>
+     * <p>Deleting a role does not automatically remove it from any policies that
+     * reference it. Update those policies separately using
+     * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
+     * leaving stale role references.</p>
+     */
     public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

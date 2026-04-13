@@ -29,20 +29,38 @@ public class OrganizationClient {
     }
 
     /**
+     * Lists organizations accessible to the caller.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>The result depends on the caller type:</p>
+     * <ul>
+     * <li>User-scoped callers receive their current organization.</li>
+     * <li>Partner callers receive the organizations available within their partner
+     * scope.</li>
+     * <li>Deployment-level callers may receive a broader organization list, depending
+     * on deployment configuration.</li>
+     * </ul>
      */
     public OrganizationsEnvelope list() {
         return list(null);
     }
 
     /**
+     * Lists organizations accessible to the caller.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>The result depends on the caller type:</p>
+     * <ul>
+     * <li>User-scoped callers receive their current organization.</li>
+     * <li>Partner callers receive the organizations available within their partner
+     * scope.</li>
+     * <li>Deployment-level callers may receive a broader organization list, depending
+     * on deployment configuration.</li>
+     * </ul>
      */
     public OrganizationsEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -75,9 +93,10 @@ public class OrganizationClient {
     }
 
     /**
+     * Creates a new organization under the calling partner account, optionally configuring SSO or OIDC at creation time.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public OrganizationEnvelope create(CreateOrganizationRequestSchema request) {
@@ -85,9 +104,10 @@ public class OrganizationClient {
     }
 
     /**
+     * Creates a new organization under the calling partner account, optionally configuring SSO or OIDC at creation time.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public OrganizationEnvelope create(CreateOrganizationRequestSchema request, RequestOptions requestOptions) {
@@ -128,9 +148,10 @@ public class OrganizationClient {
     }
 
     /**
+     * Returns a single organization by ID.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public OrganizationEnvelope get(String id) {
@@ -138,9 +159,10 @@ public class OrganizationClient {
     }
 
     /**
+     * Returns a single organization by ID.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public OrganizationEnvelope get(String id, RequestOptions requestOptions) {
@@ -175,9 +197,10 @@ public class OrganizationClient {
     }
 
     /**
+     * Updates an organization's configuration.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public OrganizationEnvelope update(String id, UpdateOrganizationRequestSchema request) {
@@ -185,9 +208,10 @@ public class OrganizationClient {
     }
 
     /**
+     * Updates an organization's configuration.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public OrganizationEnvelope update(
@@ -230,20 +254,24 @@ public class OrganizationClient {
     }
 
     /**
+     * Deletes an organization.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>Partner callers cannot delete their own owner organization.</p>
      */
     public void remove(String id) {
         remove(id, null);
     }
 
     /**
+     * Deletes an organization.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>Organization endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>This endpoint is only accessible using <a href="../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>Partner callers cannot delete their own owner organization.</p>
      */
     public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

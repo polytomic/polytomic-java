@@ -29,14 +29,44 @@ public class SchemasClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Creates or updates user-defined fields on a schema, matched by field_id.
+     * <p>Fields are matched by <code>field_id</code>. Reusing an existing <code>field_id</code> updates that
+     * field; using a new <code>field_id</code> creates a new user-defined field.</p>
+     * <p>This makes the endpoint safe to retry when you are intentionally upserting the
+     * same field definitions. It is not a patch-by-position operation.</p>
+     * <p>If some fields succeed and others fail, the endpoint can return a partial
+     * success response. Validate the response status and message rather than assuming
+     * the whole batch was applied uniformly.</p>
+     */
     public void upsertField(String connectionId, String schemaId) {
         upsertField(connectionId, schemaId, UpsertSchemaFieldRequest.builder().build());
     }
 
+    /**
+     * Creates or updates user-defined fields on a schema, matched by field_id.
+     * <p>Fields are matched by <code>field_id</code>. Reusing an existing <code>field_id</code> updates that
+     * field; using a new <code>field_id</code> creates a new user-defined field.</p>
+     * <p>This makes the endpoint safe to retry when you are intentionally upserting the
+     * same field definitions. It is not a patch-by-position operation.</p>
+     * <p>If some fields succeed and others fail, the endpoint can return a partial
+     * success response. Validate the response status and message rather than assuming
+     * the whole batch was applied uniformly.</p>
+     */
     public void upsertField(String connectionId, String schemaId, UpsertSchemaFieldRequest request) {
         upsertField(connectionId, schemaId, request, null);
     }
 
+    /**
+     * Creates or updates user-defined fields on a schema, matched by field_id.
+     * <p>Fields are matched by <code>field_id</code>. Reusing an existing <code>field_id</code> updates that
+     * field; using a new <code>field_id</code> creates a new user-defined field.</p>
+     * <p>This makes the endpoint safe to retry when you are intentionally upserting the
+     * same field definitions. It is not a patch-by-position operation.</p>
+     * <p>If some fields succeed and others fail, the endpoint can return a partial
+     * success response. Validate the response status and message rather than assuming
+     * the whole batch was applied uniformly.</p>
+     */
     public void upsertField(
             String connectionId, String schemaId, UpsertSchemaFieldRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -79,10 +109,34 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Removes a user-defined field from a schema.
+     * <p>Only user-defined fields — those created via
+     * <a href="../../../../../../../api-reference/schemas/upsert-field"><code>POST /api/connections/{connection_id}/schemas/{schema_id}/fields</code></a>
+     * — can be removed through this endpoint. Fields detected automatically from
+     * the source cannot be deleted here; they are managed through schema refresh.</p>
+     * <blockquote>
+     * <p>🚧 Deleting a field that is referenced in an active sync mapping may cause
+     * that sync to error on its next execution. Remove or update any dependent
+     * mappings before deleting the field.</p>
+     * </blockquote>
+     */
     public void deleteField(String connectionId, String schemaId, String fieldId) {
         deleteField(connectionId, schemaId, fieldId, null);
     }
 
+    /**
+     * Removes a user-defined field from a schema.
+     * <p>Only user-defined fields — those created via
+     * <a href="../../../../../../../api-reference/schemas/upsert-field"><code>POST /api/connections/{connection_id}/schemas/{schema_id}/fields</code></a>
+     * — can be removed through this endpoint. Fields detected automatically from
+     * the source cannot be deleted here; they are managed through schema refresh.</p>
+     * <blockquote>
+     * <p>🚧 Deleting a field that is referenced in an active sync mapping may cause
+     * that sync to error on its next execution. Remove or update any dependent
+     * mappings before deleting the field.</p>
+     * </blockquote>
+     */
     public void deleteField(String connectionId, String schemaId, String fieldId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -117,14 +171,53 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Overrides the primary key detected on a schema.
+     * <p>This is a full replacement: the keys you supply become the complete override
+     * set, replacing any previously configured overrides. Omitting a key that was
+     * previously set removes it.</p>
+     * <p>Primary key overrides are useful when the source does not expose a primary
+     * key or when the source-detected key is not the correct deduplication
+     * identifier for your use case.</p>
+     * <blockquote>
+     * <p>📘 To revert to the source-detected primary keys and remove all overrides,
+     * use <a href="./delete"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
+     * </blockquote>
+     */
     public void setPrimaryKeys(String connectionId, String schemaId) {
         setPrimaryKeys(connectionId, schemaId, SetPrimaryKeysRequest.builder().build());
     }
 
+    /**
+     * Overrides the primary key detected on a schema.
+     * <p>This is a full replacement: the keys you supply become the complete override
+     * set, replacing any previously configured overrides. Omitting a key that was
+     * previously set removes it.</p>
+     * <p>Primary key overrides are useful when the source does not expose a primary
+     * key or when the source-detected key is not the correct deduplication
+     * identifier for your use case.</p>
+     * <blockquote>
+     * <p>📘 To revert to the source-detected primary keys and remove all overrides,
+     * use <a href="./delete"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
+     * </blockquote>
+     */
     public void setPrimaryKeys(String connectionId, String schemaId, SetPrimaryKeysRequest request) {
         setPrimaryKeys(connectionId, schemaId, request, null);
     }
 
+    /**
+     * Overrides the primary key detected on a schema.
+     * <p>This is a full replacement: the keys you supply become the complete override
+     * set, replacing any previously configured overrides. Omitting a key that was
+     * previously set removes it.</p>
+     * <p>Primary key overrides are useful when the source does not expose a primary
+     * key or when the source-detected key is not the correct deduplication
+     * identifier for your use case.</p>
+     * <blockquote>
+     * <p>📘 To revert to the source-detected primary keys and remove all overrides,
+     * use <a href="./delete"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
+     * </blockquote>
+     */
     public void setPrimaryKeys(
             String connectionId, String schemaId, SetPrimaryKeysRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -168,14 +261,20 @@ public class SchemasClient {
     }
 
     /**
-     * Delete all primary key overrides for a schema. After this call the schema will use the primary keys detected from the source connection, if any.
+     * Deletes all primary key overrides for a schema, reverting to the primary keys detected from the source.
+     * <p>To replace the overrides with a new set rather than clearing them entirely,
+     * use <a href="./put"><code>PUT /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>
+     * instead.</p>
      */
     public void resetPrimaryKeys(String connectionId, String schemaId) {
         resetPrimaryKeys(connectionId, schemaId, null);
     }
 
     /**
-     * Delete all primary key overrides for a schema. After this call the schema will use the primary keys detected from the source connection, if any.
+     * Deletes all primary key overrides for a schema, reverting to the primary keys detected from the source.
+     * <p>To replace the overrides with a new set rather than clearing them entirely,
+     * use <a href="./put"><code>PUT /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>
+     * instead.</p>
      */
     public void resetPrimaryKeys(String connectionId, String schemaId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -210,10 +309,48 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Refreshes a connection's cached schemas.
+     * <p>Call this when the upstream source has added, removed, or changed tables,
+     * objects, or fields and you need Polytomic to re-inspect the connection before
+     * creating or updating sync configuration.</p>
+     * <p>This endpoint does not return the refreshed schemas directly. Follow the
+     * <code>Location</code> header or poll <a href="./get-status"><code>GET /api/connections/{id}/schemas/status</code></a>
+     * until the refresh completes, then fetch the schemas you need.</p>
+     * <blockquote>
+     * <p>📘 Schema refresh is asynchronous</p>
+     * <p>This endpoint kicks off a background refresh of the connection's cached
+     * schemas and returns a <code>Location</code> header pointing at
+     * <a href="../../../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.
+     * Poll that endpoint until <code>cache_status</code> transitions from <code>refreshing</code> to
+     * <code>fresh</code> (or until <code>last_refresh_finished</code> advances past
+     * <code>last_refresh_started</code>) to observe completion.</p>
+     * <p>Only connections whose current health status is healthy may be refreshed.</p>
+     * </blockquote>
+     */
     public void refresh(String id) {
         refresh(id, null);
     }
 
+    /**
+     * Refreshes a connection's cached schemas.
+     * <p>Call this when the upstream source has added, removed, or changed tables,
+     * objects, or fields and you need Polytomic to re-inspect the connection before
+     * creating or updating sync configuration.</p>
+     * <p>This endpoint does not return the refreshed schemas directly. Follow the
+     * <code>Location</code> header or poll <a href="./get-status"><code>GET /api/connections/{id}/schemas/status</code></a>
+     * until the refresh completes, then fetch the schemas you need.</p>
+     * <blockquote>
+     * <p>📘 Schema refresh is asynchronous</p>
+     * <p>This endpoint kicks off a background refresh of the connection's cached
+     * schemas and returns a <code>Location</code> header pointing at
+     * <a href="../../../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.
+     * Poll that endpoint until <code>cache_status</code> transitions from <code>refreshing</code> to
+     * <code>fresh</code> (or until <code>last_refresh_finished</code> advances past
+     * <code>last_refresh_started</code>) to observe completion.</p>
+     * <p>Only connections whose current health status is healthy may be refreshed.</p>
+     * </blockquote>
+     */
     public void refresh(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -246,14 +383,42 @@ public class SchemasClient {
     }
 
     /**
-     * Polytomic periodically inspects the schemas for connections to discover new fields and update metadata. This endpoint returns the current inspection status.
+     * Returns the current schema inspection status for a connection.
+     * <p>Poll this endpoint after calling
+     * <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> to track
+     * progress. When <code>status</code> transitions to <code>completed</code>, the refreshed schemas
+     * are available for use in sync configuration.</p>
+     * <blockquote>
+     * <p>📘 Schema refresh is asynchronous</p>
+     * <p>This endpoint kicks off a background refresh of the connection's cached
+     * schemas and returns a <code>Location</code> header pointing at
+     * <a href="../../../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.
+     * Poll that endpoint until <code>cache_status</code> transitions from <code>refreshing</code> to
+     * <code>fresh</code> (or until <code>last_refresh_finished</code> advances past
+     * <code>last_refresh_started</code>) to observe completion.</p>
+     * <p>Only connections whose current health status is healthy may be refreshed.</p>
+     * </blockquote>
      */
     public BulkSyncSourceStatusEnvelope getStatus(String id) {
         return getStatus(id, null);
     }
 
     /**
-     * Polytomic periodically inspects the schemas for connections to discover new fields and update metadata. This endpoint returns the current inspection status.
+     * Returns the current schema inspection status for a connection.
+     * <p>Poll this endpoint after calling
+     * <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> to track
+     * progress. When <code>status</code> transitions to <code>completed</code>, the refreshed schemas
+     * are available for use in sync configuration.</p>
+     * <blockquote>
+     * <p>📘 Schema refresh is asynchronous</p>
+     * <p>This endpoint kicks off a background refresh of the connection's cached
+     * schemas and returns a <code>Location</code> header pointing at
+     * <a href="../../../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.
+     * Poll that endpoint until <code>cache_status</code> transitions from <code>refreshing</code> to
+     * <code>fresh</code> (or until <code>last_refresh_finished</code> advances past
+     * <code>last_refresh_started</code>) to observe completion.</p>
+     * <p>Only connections whose current health status is healthy may be refreshed.</p>
+     * </blockquote>
      */
     public BulkSyncSourceStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -287,10 +452,32 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Returns a single schema on a connection.
+     * <p>The schema is returned from the connection's cached schema set. If the
+     * upstream source has changed since the last inspection, the result may be
+     * stale.</p>
+     * <blockquote>
+     * <p>📘 Trigger <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * and wait for it to complete before fetching this endpoint if you need
+     * up-to-date field definitions.</p>
+     * </blockquote>
+     */
     public BulkSyncSourceSchemaEnvelope get(String id, String schemaId) {
         return get(id, schemaId, null);
     }
 
+    /**
+     * Returns a single schema on a connection.
+     * <p>The schema is returned from the connection's cached schema set. If the
+     * upstream source has changed since the last inspection, the result may be
+     * stale.</p>
+     * <blockquote>
+     * <p>📘 Trigger <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * and wait for it to complete before fetching this endpoint if you need
+     * up-to-date field definitions.</p>
+     * </blockquote>
+     */
     public BulkSyncSourceSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -324,10 +511,40 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Returns a sample of records from a schema on a connection.
+     * <p>The sample is intended for previewing the shape and values of data before
+     * committing to a sync configuration, not for full data export.</p>
+     * <blockquote>
+     * <p>🚧 The sample is not guaranteed to be representative of the full dataset.
+     * Row selection is implementation-defined and may differ across connection
+     * types.</p>
+     * </blockquote>
+     * <blockquote>
+     * <p>📘 If the schema's field definitions are stale, refresh them first with
+     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> to ensure
+     * the sample aligns with the current schema structure.</p>
+     * </blockquote>
+     */
     public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId) {
         return getRecords(id, schemaId, null);
     }
 
+    /**
+     * Returns a sample of records from a schema on a connection.
+     * <p>The sample is intended for previewing the shape and values of data before
+     * committing to a sync configuration, not for full data export.</p>
+     * <blockquote>
+     * <p>🚧 The sample is not guaranteed to be representative of the full dataset.
+     * Row selection is implementation-defined and may differ across connection
+     * types.</p>
+     * </blockquote>
+     * <blockquote>
+     * <p>📘 If the schema's field definitions are stale, refresh them first with
+     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> to ensure
+     * the sample aligns with the current schema structure.</p>
+     * </blockquote>
+     */
     public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

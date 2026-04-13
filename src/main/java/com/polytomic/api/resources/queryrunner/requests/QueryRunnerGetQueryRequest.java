@@ -29,6 +29,9 @@ public final class QueryRunnerGetQueryRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Opaque pagination token returned in the links.next or links.previous URL of the previous response.
+     */
     @JsonProperty("page")
     public Optional<String> getPage() {
         return page;

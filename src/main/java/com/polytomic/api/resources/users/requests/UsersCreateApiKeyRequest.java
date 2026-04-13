@@ -29,6 +29,9 @@ public final class UsersCreateApiKeyRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return If true, revoke any existing API key for the user before creating a new one.
+     */
     @JsonProperty("force")
     public Optional<Boolean> getForce() {
         return force;

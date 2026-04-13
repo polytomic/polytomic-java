@@ -5,24 +5,16 @@ package com.polytomic.api.types;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ModelSyncMode {
-    CREATE("create"),
+public enum IngestionStatusLevel {
+    OK("ok"),
 
-    UPDATE("update"),
+    WARNING("warning"),
 
-    UPDATE_OR_CREATE("updateOrCreate"),
-
-    REPLACE("replace"),
-
-    APPEND("append"),
-
-    REMOVE("remove"),
-
-    SNAPSHOT("snapshot");
+    ERROR("error");
 
     private final String value;
 
-    ModelSyncMode(String value) {
+    IngestionStatusLevel(String value) {
         this.value = value;
     }
 

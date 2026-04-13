@@ -48,6 +48,9 @@ public final class Event {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Timestamp the event was emitted.
+     */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
@@ -58,16 +61,25 @@ public final class Event {
         return event;
     }
 
+    /**
+     * @return Unique identifier of the event.
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Organization the event belongs to.
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Event type identifier.
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;

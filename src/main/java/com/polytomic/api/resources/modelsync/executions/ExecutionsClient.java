@@ -30,14 +30,44 @@ public class ExecutionsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists executions for a model sync.
+     * <p>Results are ordered by start time descending. If more results are available, the
+     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
+     * to continue paging.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>For full details about a specific execution — including record counts and error
+     * summaries — use
+     * <a href="./{id}/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
+     */
     public ListExecutionResponseEnvelope list(String syncId) {
         return list(syncId, ExecutionsListRequest.builder().build());
     }
 
+    /**
+     * Lists executions for a model sync.
+     * <p>Results are ordered by start time descending. If more results are available, the
+     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
+     * to continue paging.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>For full details about a specific execution — including record counts and error
+     * summaries — use
+     * <a href="./{id}/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
+     */
     public ListExecutionResponseEnvelope list(String syncId, ExecutionsListRequest request) {
         return list(syncId, request, null);
     }
 
+    /**
+     * Lists executions for a model sync.
+     * <p>Results are ordered by start time descending. If more results are available, the
+     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
+     * to continue paging.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>For full details about a specific execution — including record counts and error
+     * summaries — use
+     * <a href="./{id}/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
+     */
     public ListExecutionResponseEnvelope list(
             String syncId, ExecutionsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -80,10 +110,22 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Returns a single model sync execution.
+     * <p>For the log files produced by this execution, use
+     * <a href="../../../../../api-reference/model-sync/executions/get-log-urls"><code>GET /api/syncs/{sync_id}/executions/{id}/{type}</code></a> to retrieve
+     * signed URLs grouped by log category.</p>
+     */
     public GetExecutionResponseEnvelope get(String syncId, String id) {
         return get(syncId, id, null);
     }
 
+    /**
+     * Returns a single model sync execution.
+     * <p>For the log files produced by this execution, use
+     * <a href="../../../../../api-reference/model-sync/executions/get-log-urls"><code>GET /api/syncs/{sync_id}/executions/{id}/{type}</code></a> to retrieve
+     * signed URLs grouped by log category.</p>
+     */
     public GetExecutionResponseEnvelope get(String syncId, String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -117,10 +159,16 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Updates a model sync execution's state, used to retry or resolve stalled executions.
+     */
     public GetExecutionResponseEnvelope update(String syncId, String id, UpdateExecutionRequest request) {
         return update(syncId, id, request, null);
     }
 
+    /**
+     * Updates a model sync execution's state, used to retry or resolve stalled executions.
+     */
     public GetExecutionResponseEnvelope update(
             String syncId, String id, UpdateExecutionRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -162,10 +210,30 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Returns signed URLs for every log file of a given type on a model sync execution.
+     * <p><code>{type}</code> identifies the log category, such as <code>errors</code> or <code>warnings</code>. The
+     * response contains a signed URL for each log file in that category.</p>
+     * <blockquote>
+     * <p>🚧 Signed URLs expire after a short period. If a URL has expired, re-request
+     * it from this endpoint. To fetch a single file's URL directly, use
+     * <a href="../../../../../../api-reference/model-sync/executions/get-logs"><code>GET /api/syncs/{sync_id}/executions/{id}/{type}/{filename}</code></a>.</p>
+     * </blockquote>
+     */
     public ExecutionLogsResponseEnvelope getLogUrls(String syncId, String id, V2ExecutionLogType type) {
         return getLogUrls(syncId, id, type, null);
     }
 
+    /**
+     * Returns signed URLs for every log file of a given type on a model sync execution.
+     * <p><code>{type}</code> identifies the log category, such as <code>errors</code> or <code>warnings</code>. The
+     * response contains a signed URL for each log file in that category.</p>
+     * <blockquote>
+     * <p>🚧 Signed URLs expire after a short period. If a URL has expired, re-request
+     * it from this endpoint. To fetch a single file's URL directly, use
+     * <a href="../../../../../../api-reference/model-sync/executions/get-logs"><code>GET /api/syncs/{sync_id}/executions/{id}/{type}/{filename}</code></a>.</p>
+     * </blockquote>
+     */
     public ExecutionLogsResponseEnvelope getLogUrls(
             String syncId, String id, V2ExecutionLogType type, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -201,10 +269,20 @@ public class ExecutionsClient {
         }
     }
 
+    /**
+     * Returns a signed URL for a specific log file produced by a model sync execution.
+     * <p>The URL is signed and expires after a short period. If it has expired before
+     * you download the file, call this endpoint again to obtain a fresh URL.</p>
+     */
     public void getLogs(String syncId, String id, V2ExecutionLogType type, String filename) {
         getLogs(syncId, id, type, filename, null);
     }
 
+    /**
+     * Returns a signed URL for a specific log file produced by a model sync execution.
+     * <p>The URL is signed and expires after a short period. If it has expired before
+     * you download the file, call this endpoint again to obtain a fresh URL.</p>
+     */
     public void getLogs(
             String syncId, String id, V2ExecutionLogType type, String filename, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

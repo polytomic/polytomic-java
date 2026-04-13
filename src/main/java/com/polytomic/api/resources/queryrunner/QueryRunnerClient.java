@@ -30,14 +30,41 @@ public class QueryRunnerClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Submits a query for asynchronous execution against the connection.
+     * <p>This endpoint returns immediately with a query task ID. It does not wait for
+     * the query to finish. Poll <a href="./get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
+     * reaches <code>done</code> or <code>failed</code>.</p>
+     * <p>Only the user who created the query can fetch its results later. Query results
+     * are stored temporarily and may expire; use the <code>expires</code> field from the result
+     * endpoint to understand how long they will remain available.</p>
+     */
     public V4RunQueryEnvelope runQuery(String connectionId) {
         return runQuery(connectionId, V4RunQueryRequest.builder().build());
     }
 
+    /**
+     * Submits a query for asynchronous execution against the connection.
+     * <p>This endpoint returns immediately with a query task ID. It does not wait for
+     * the query to finish. Poll <a href="./get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
+     * reaches <code>done</code> or <code>failed</code>.</p>
+     * <p>Only the user who created the query can fetch its results later. Query results
+     * are stored temporarily and may expire; use the <code>expires</code> field from the result
+     * endpoint to understand how long they will remain available.</p>
+     */
     public V4RunQueryEnvelope runQuery(String connectionId, V4RunQueryRequest request) {
         return runQuery(connectionId, request, null);
     }
 
+    /**
+     * Submits a query for asynchronous execution against the connection.
+     * <p>This endpoint returns immediately with a query task ID. It does not wait for
+     * the query to finish. Poll <a href="./get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
+     * reaches <code>done</code> or <code>failed</code>.</p>
+     * <p>Only the user who created the query can fetch its results later. Query results
+     * are stored temporarily and may expire; use the <code>expires</code> field from the result
+     * endpoint to understand how long they will remain available.</p>
+     */
     public V4RunQueryEnvelope runQuery(String connectionId, V4RunQueryRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -80,14 +107,50 @@ public class QueryRunnerClient {
         }
     }
 
+    /**
+     * Fetches the latest status for a submitted query and, once complete, returns fields and paginated results.
+     * <p>This endpoint is the second step of the query-runner flow. First call
+     * <a href="./run-query"><code>POST /api/connections/{connection_id}/query</code></a>,
+     * then poll this endpoint with the returned ID.</p>
+     * <p>Results may be paginated across multiple blobs. When that happens, use the
+     * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
+     * construct the <code>page</code> token yourself.</p>
+     * <p>If the query is still running, the response may include only status metadata.
+     * If the task is complete but the caller is not the same user that created it,
+     * the endpoint returns <code>404</code>.</p>
+     */
     public V4QueryResultsEnvelope getQuery(String id) {
         return getQuery(id, QueryRunnerGetQueryRequest.builder().build());
     }
 
+    /**
+     * Fetches the latest status for a submitted query and, once complete, returns fields and paginated results.
+     * <p>This endpoint is the second step of the query-runner flow. First call
+     * <a href="./run-query"><code>POST /api/connections/{connection_id}/query</code></a>,
+     * then poll this endpoint with the returned ID.</p>
+     * <p>Results may be paginated across multiple blobs. When that happens, use the
+     * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
+     * construct the <code>page</code> token yourself.</p>
+     * <p>If the query is still running, the response may include only status metadata.
+     * If the task is complete but the caller is not the same user that created it,
+     * the endpoint returns <code>404</code>.</p>
+     */
     public V4QueryResultsEnvelope getQuery(String id, QueryRunnerGetQueryRequest request) {
         return getQuery(id, request, null);
     }
 
+    /**
+     * Fetches the latest status for a submitted query and, once complete, returns fields and paginated results.
+     * <p>This endpoint is the second step of the query-runner flow. First call
+     * <a href="./run-query"><code>POST /api/connections/{connection_id}/query</code></a>,
+     * then poll this endpoint with the returned ID.</p>
+     * <p>Results may be paginated across multiple blobs. When that happens, use the
+     * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
+     * construct the <code>page</code> token yourself.</p>
+     * <p>If the query is still running, the response may include only status metadata.
+     * If the task is complete but the caller is not the same user that created it,
+     * the endpoint returns <code>404</code>.</p>
+     */
     public V4QueryResultsEnvelope getQuery(
             String id, QueryRunnerGetQueryRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

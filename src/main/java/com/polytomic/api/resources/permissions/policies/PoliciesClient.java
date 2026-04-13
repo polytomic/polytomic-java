@@ -28,10 +28,24 @@ public class PoliciesClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists all policies in the caller's organization.
+     * <p>Each policy binds one or more roles to a set of resources, controlling what
+     * actions members with those roles can perform on those resources.</p>
+     * <p>To inspect a specific policy in detail, use
+     * <a href="./%7Bid%7D/get"><code>GET /api/permissions/policies/{id}</code></a>.</p>
+     */
     public ListPoliciesResponseEnvelope list() {
         return list(null);
     }
 
+    /**
+     * Lists all policies in the caller's organization.
+     * <p>Each policy binds one or more roles to a set of resources, controlling what
+     * actions members with those roles can perform on those resources.</p>
+     * <p>To inspect a specific policy in detail, use
+     * <a href="./%7Bid%7D/get"><code>GET /api/permissions/policies/{id}</code></a>.</p>
+     */
     public ListPoliciesResponseEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -62,10 +76,24 @@ public class PoliciesClient {
         }
     }
 
+    /**
+     * Creates a new policy.
+     * <p>A policy binds one or more roles to a set of resources, granting members who
+     * hold those roles the actions defined by them. Roles must already exist before
+     * they are referenced in a policy; create roles using
+     * <a href="../../../api-reference/permissions/roles/create"><code>POST /api/permissions/roles</code></a>.</p>
+     */
     public PolicyResponseEnvelope create(CreatePolicyRequest request) {
         return create(request, null);
     }
 
+    /**
+     * Creates a new policy.
+     * <p>A policy binds one or more roles to a set of resources, granting members who
+     * hold those roles the actions defined by them. Roles must already exist before
+     * they are referenced in a policy; create roles using
+     * <a href="../../../api-reference/permissions/roles/create"><code>POST /api/permissions/roles</code></a>.</p>
+     */
     public PolicyResponseEnvelope create(CreatePolicyRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -103,10 +131,20 @@ public class PoliciesClient {
         }
     }
 
+    /**
+     * Returns a single policy by ID, including all action/role bindings it defines.
+     * <p>Returns the full set of action/role bindings defined by the policy, including
+     * the resources it applies to.</p>
+     */
     public PolicyResponseEnvelope get(String id) {
         return get(id, null);
     }
 
+    /**
+     * Returns a single policy by ID, including all action/role bindings it defines.
+     * <p>Returns the full set of action/role bindings defined by the policy, including
+     * the resources it applies to.</p>
+     */
     public PolicyResponseEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -138,10 +176,26 @@ public class PoliciesClient {
         }
     }
 
+    /**
+     * Updates an existing policy.
+     * <p>The update is a <strong>full replacement</strong> of the policy's bindings. Any role or
+     * resource binding not included in the request body is removed. To make a
+     * partial change, fetch the current policy with
+     * <a href="./get"><code>GET /api/permissions/policies/{id}</code></a>, modify the relevant bindings,
+     * and send the complete object back.</p>
+     */
     public PolicyResponseEnvelope update(String id, UpdatePolicyRequest request) {
         return update(id, request, null);
     }
 
+    /**
+     * Updates an existing policy.
+     * <p>The update is a <strong>full replacement</strong> of the policy's bindings. Any role or
+     * resource binding not included in the request body is removed. To make a
+     * partial change, fetch the current policy with
+     * <a href="./get"><code>GET /api/permissions/policies/{id}</code></a>, modify the relevant bindings,
+     * and send the complete object back.</p>
+     */
     public PolicyResponseEnvelope update(String id, UpdatePolicyRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -180,10 +234,20 @@ public class PoliciesClient {
         }
     }
 
+    /**
+     * Deletes a policy.
+     * <p>Deletion is permanent. Any access that was granted solely through this policy
+     * is revoked immediately for all users who depended on it.</p>
+     */
     public void remove(String id) {
         remove(id, null);
     }
 
+    /**
+     * Deletes a policy.
+     * <p>Deletion is permanent. Any access that was granted solely through this policy
+     * is revoked immediately for all users who depended on it.</p>
+     */
     public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

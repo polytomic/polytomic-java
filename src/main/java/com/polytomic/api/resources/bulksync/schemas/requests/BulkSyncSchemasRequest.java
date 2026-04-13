@@ -31,6 +31,9 @@ public final class BulkSyncSchemasRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Schemas to patch. Schemas are matched by id; only schemas present in this list are updated.
+     */
     @JsonProperty("schemas")
     public Optional<List<BulkSchema>> getSchemas() {
         return schemas;

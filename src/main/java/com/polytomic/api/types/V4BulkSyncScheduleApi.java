@@ -55,11 +55,17 @@ public final class V4BulkSyncScheduleApi {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Day of the month (1-31) for monthly schedules.
+     */
     @JsonProperty("dayOfMonth")
     public Optional<String> getDayOfMonth() {
         return dayOfMonth;
     }
 
+    /**
+     * @return Day of the week for weekly schedules.
+     */
     @JsonProperty("dayOfWeek")
     public Optional<String> getDayOfWeek() {
         return dayOfWeek;
@@ -70,16 +76,25 @@ public final class V4BulkSyncScheduleApi {
         return frequency;
     }
 
+    /**
+     * @return Hour of the day (0-23, in UTC) the schedule fires.
+     */
     @JsonProperty("hour")
     public Optional<String> getHour() {
         return hour;
     }
 
+    /**
+     * @return Minute of the hour (0-59) the schedule fires.
+     */
     @JsonProperty("minute")
     public Optional<String> getMinute() {
         return minute;
     }
 
+    /**
+     * @return Month of the year (1-12) for yearly schedules.
+     */
     @JsonProperty("month")
     public Optional<String> getMonth() {
         return month;
@@ -219,6 +234,10 @@ public final class V4BulkSyncScheduleApi {
             return this;
         }
 
+        /**
+         * <p>Month of the year (1-12) for yearly schedules.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage month(String month) {
             this.month = Optional.of(month);
@@ -232,6 +251,10 @@ public final class V4BulkSyncScheduleApi {
             return this;
         }
 
+        /**
+         * <p>Minute of the hour (0-59) the schedule fires.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage minute(String minute) {
             this.minute = Optional.of(minute);
@@ -245,6 +268,10 @@ public final class V4BulkSyncScheduleApi {
             return this;
         }
 
+        /**
+         * <p>Hour of the day (0-23, in UTC) the schedule fires.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage hour(String hour) {
             this.hour = Optional.of(hour);
@@ -258,6 +285,10 @@ public final class V4BulkSyncScheduleApi {
             return this;
         }
 
+        /**
+         * <p>Day of the week for weekly schedules.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage dayOfWeek(String dayOfWeek) {
             this.dayOfWeek = Optional.of(dayOfWeek);
@@ -271,6 +302,10 @@ public final class V4BulkSyncScheduleApi {
             return this;
         }
 
+        /**
+         * <p>Day of the month (1-31) for monthly schedules.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage dayOfMonth(String dayOfMonth) {
             this.dayOfMonth = Optional.of(dayOfMonth);

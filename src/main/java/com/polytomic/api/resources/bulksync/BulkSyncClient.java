@@ -54,14 +54,53 @@ public class BulkSyncClient {
         this.schedulesClient = Suppliers.memoize(() -> new SchedulesClient(clientOptions));
     }
 
+    /**
+     * Lists bulk syncs in the caller's organization.
+     * <p>Results are returned as a single <code>data</code> array. This version of the endpoint
+     * supports the <code>active</code> filter but does not support cursor pagination, <code>limit</code>,
+     * or <code>page_token</code> query parameters.</p>
+     * <p>If you need a cursor-paginated bulk sync list, use API version <code>2025-09-18</code> or
+     * later.</p>
+     * <blockquote>
+     * <p>📘 To retrieve a specific sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
+     * instead of filtering the list client-side.</p>
+     * </blockquote>
+     */
     public BulkSyncListEnvelope list() {
         return list(BulkSyncListRequest.builder().build());
     }
 
+    /**
+     * Lists bulk syncs in the caller's organization.
+     * <p>Results are returned as a single <code>data</code> array. This version of the endpoint
+     * supports the <code>active</code> filter but does not support cursor pagination, <code>limit</code>,
+     * or <code>page_token</code> query parameters.</p>
+     * <p>If you need a cursor-paginated bulk sync list, use API version <code>2025-09-18</code> or
+     * later.</p>
+     * <blockquote>
+     * <p>📘 To retrieve a specific sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
+     * instead of filtering the list client-side.</p>
+     * </blockquote>
+     */
     public BulkSyncListEnvelope list(BulkSyncListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Lists bulk syncs in the caller's organization.
+     * <p>Results are returned as a single <code>data</code> array. This version of the endpoint
+     * supports the <code>active</code> filter but does not support cursor pagination, <code>limit</code>,
+     * or <code>page_token</code> query parameters.</p>
+     * <p>If you need a cursor-paginated bulk sync list, use API version <code>2025-09-18</code> or
+     * later.</p>
+     * <blockquote>
+     * <p>📘 To retrieve a specific sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
+     * instead of filtering the list client-side.</p>
+     * </blockquote>
+     */
     public BulkSyncListEnvelope list(BulkSyncListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -95,16 +134,16 @@ public class BulkSyncClient {
     }
 
     /**
-     * Create a new Bulk Sync from a source to a destination (data warehouse, database, or cloud storage bucket like S3).
-     * <p>Bulk Syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
+     * Creates a new bulk sync from a source connection to a destination connection.
+     * <p>Bulk syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
      * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/bulk-syncs">the product
      * documentation</a> is configurable via
      * the API.</p>
      * <p>Sample code examples:</p>
      * <ul>
-     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-s-3">Bulk sync (ELT) from Salesforce to S3</a></li>
-     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-snowflake">Bulk sync (ELT) from Salesforce to Snowflake</a></li>
-     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-hub-spot-to-postgre-sql">Bulk sync (ELT) from HubSpot to PostgreSQL</a></li>
+     * <li><a href="../../../guides/code-examples/bulk-sync-elt-from-salesforce-to-s-3">Bulk sync (ELT) from Salesforce to S3</a></li>
+     * <li><a href="../../../guides/code-examples/bulk-sync-elt-from-salesforce-to-snowflake">Bulk sync (ELT) from Salesforce to Snowflake</a></li>
+     * <li><a href="../../../guides/code-examples/bulk-sync-elt-from-hub-spot-to-postgre-sql">Bulk sync (ELT) from HubSpot to PostgreSQL</a></li>
      * </ul>
      * <h2>Connection specific configuration</h2>
      * <p>The <code>destination_configuration</code> is integration-specific configuration for the
@@ -113,24 +152,37 @@ public class BulkSyncClient {
      * <p>The <code>source_configuration</code> is optional. It allows configuration for how
      * Polytomic reads data from the source connection. This will not be available for
      * integrations that do not support additional configuration.</p>
-     * <p>Consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">connection configurations</a>
-     * to see configurations for particular integrations (for example, <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/postgre-sql#source-1">here</a> is the available source configuration for the PostgreSQL bulk sync source).</p>
+     * <p>Consult the <a href="../../../guides/configuring-your-connections/overview">connection configurations</a>
+     * to see configurations for particular integrations (for example, <a href="../../../guides/configuring-your-connections/connections/postgre-sql#source-1">here</a> is the available source configuration for the PostgreSQL bulk sync source).</p>
+     * <h2>Defaults and selection behavior</h2>
+     * <p>If <code>schemas</code> is omitted, the sync is created with all available source schemas
+     * selected. Pass <code>schemas</code> explicitly if you want the initial sync to include
+     * only a subset of tables or objects.</p>
+     * <p>Schedule times are interpreted in UTC.</p>
+     * <p>When omitted, automatic discovery defaults are conservative:</p>
+     * <ul>
+     * <li><code>automatically_add_new_objects</code> defaults to not enabling newly discovered
+     * source objects automatically.</li>
+     * <li><code>automatically_add_new_fields</code> defaults to enabling newly discovered fields
+     * on already selected objects.</li>
+     * <li><code>normalize_names</code> defaults to enabled.</li>
+     * </ul>
      */
     public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request) {
         return create(request, null);
     }
 
     /**
-     * Create a new Bulk Sync from a source to a destination (data warehouse, database, or cloud storage bucket like S3).
-     * <p>Bulk Syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
+     * Creates a new bulk sync from a source connection to a destination connection.
+     * <p>Bulk syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
      * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/bulk-syncs">the product
      * documentation</a> is configurable via
      * the API.</p>
      * <p>Sample code examples:</p>
      * <ul>
-     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-s-3">Bulk sync (ELT) from Salesforce to S3</a></li>
-     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-salesforce-to-snowflake">Bulk sync (ELT) from Salesforce to Snowflake</a></li>
-     * <li><a href="https://apidocs.polytomic.com/guides/code-examples/bulk-sync-elt-from-hub-spot-to-postgre-sql">Bulk sync (ELT) from HubSpot to PostgreSQL</a></li>
+     * <li><a href="../../../guides/code-examples/bulk-sync-elt-from-salesforce-to-s-3">Bulk sync (ELT) from Salesforce to S3</a></li>
+     * <li><a href="../../../guides/code-examples/bulk-sync-elt-from-salesforce-to-snowflake">Bulk sync (ELT) from Salesforce to Snowflake</a></li>
+     * <li><a href="../../../guides/code-examples/bulk-sync-elt-from-hub-spot-to-postgre-sql">Bulk sync (ELT) from HubSpot to PostgreSQL</a></li>
      * </ul>
      * <h2>Connection specific configuration</h2>
      * <p>The <code>destination_configuration</code> is integration-specific configuration for the
@@ -139,8 +191,21 @@ public class BulkSyncClient {
      * <p>The <code>source_configuration</code> is optional. It allows configuration for how
      * Polytomic reads data from the source connection. This will not be available for
      * integrations that do not support additional configuration.</p>
-     * <p>Consult the <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/overview">connection configurations</a>
-     * to see configurations for particular integrations (for example, <a href="https://apidocs.polytomic.com/2024-02-08/guides/configuring-your-connections/connections/postgre-sql#source-1">here</a> is the available source configuration for the PostgreSQL bulk sync source).</p>
+     * <p>Consult the <a href="../../../guides/configuring-your-connections/overview">connection configurations</a>
+     * to see configurations for particular integrations (for example, <a href="../../../guides/configuring-your-connections/connections/postgre-sql#source-1">here</a> is the available source configuration for the PostgreSQL bulk sync source).</p>
+     * <h2>Defaults and selection behavior</h2>
+     * <p>If <code>schemas</code> is omitted, the sync is created with all available source schemas
+     * selected. Pass <code>schemas</code> explicitly if you want the initial sync to include
+     * only a subset of tables or objects.</p>
+     * <p>Schedule times are interpreted in UTC.</p>
+     * <p>When omitted, automatic discovery defaults are conservative:</p>
+     * <ul>
+     * <li><code>automatically_add_new_objects</code> defaults to not enabling newly discovered
+     * source objects automatically.</li>
+     * <li><code>automatically_add_new_fields</code> defaults to enabling newly discovered fields
+     * on already selected objects.</li>
+     * <li><code>normalize_names</code> defaults to enabled.</li>
+     * </ul>
      */
     public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -179,14 +244,47 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Returns a single bulk sync by ID.
+     * <p>The response includes the sync's top-level configuration — source, destination,
+     * schedules, and discovery settings.</p>
+     * <ul>
+     * <li>To check whether the sync is running and see the most-recent execution result,
+     * use <a href="../../../../api-reference/bulk-sync/get-status"><code>GET /api/bulk/syncs/{id}/status</code></a>.</li>
+     * <li>To inspect which schemas are selected and how they are configured, use
+     * <a href="../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</li>
+     * </ul>
+     */
     public BulkSyncResponseEnvelope get(String id) {
         return get(id, BulkSyncGetRequest.builder().build());
     }
 
+    /**
+     * Returns a single bulk sync by ID.
+     * <p>The response includes the sync's top-level configuration — source, destination,
+     * schedules, and discovery settings.</p>
+     * <ul>
+     * <li>To check whether the sync is running and see the most-recent execution result,
+     * use <a href="../../../../api-reference/bulk-sync/get-status"><code>GET /api/bulk/syncs/{id}/status</code></a>.</li>
+     * <li>To inspect which schemas are selected and how they are configured, use
+     * <a href="../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</li>
+     * </ul>
+     */
     public BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request) {
         return get(id, request, null);
     }
 
+    /**
+     * Returns a single bulk sync by ID.
+     * <p>The response includes the sync's top-level configuration — source, destination,
+     * schedules, and discovery settings.</p>
+     * <ul>
+     * <li>To check whether the sync is running and see the most-recent execution result,
+     * use <a href="../../../../api-reference/bulk-sync/get-status"><code>GET /api/bulk/syncs/{id}/status</code></a>.</li>
+     * <li>To inspect which schemas are selected and how they are configured, use
+     * <a href="../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</li>
+     * </ul>
+     */
     public BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -222,9 +320,36 @@ public class BulkSyncClient {
     }
 
     /**
+     * Updates an existing bulk sync's top-level configuration.
+     * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
+     * configuration. Every field in the request body is written to the sync; any
+     * field you omit is cleared or reset to its default value.</p>
+     * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
+     * schedule — fetch the current sync with
+     * <a href="./get"><code>GET /api/bulk/syncs/{id}</code></a>,
+     * modify the fields you want to change, and send the complete object back in
+     * the update request.</p>
+     * <p>Updates to <code>active</code>, <code>schedules</code>, and <code>policies</code> take effect immediately.
+     * Changes to source or destination configuration take effect on the sync's
+     * next execution.</p>
+     * <p>Because omitted fields are reset to their defaults, the discovery and
+     * naming options behave the same as on create when left out:</p>
+     * <ul>
+     * <li><code>automatically_add_new_objects</code> resets to not enabling newly discovered
+     * source objects automatically.</li>
+     * <li><code>automatically_add_new_fields</code> resets to enabling newly discovered
+     * fields on already selected objects.</li>
+     * <li><code>normalize_names</code> resets to enabled.</li>
+     * </ul>
+     * <p>Send the existing values explicitly if you want to preserve a non-default or
+     * non-empty setting, including schema and field selections.</p>
      * <blockquote>
-     * 📘 Updating schemas
-     * <p>Schema updates can be performed using the <a href="https://apidocs.polytomic.com/api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a> endpoint.</p>
+     * <p>📘 Updating schemas</p>
+     * <p>Schema updates are not performed through this endpoint. Use the
+     * <a href="./schemas/patch">Update Bulk Sync Schemas</a>
+     * endpoint to change a subset of schemas, or
+     * <a href="./schemas/%7Bschema_id%7D/put">Update Bulk Sync Schema</a>
+     * to replace a single schema's configuration.</p>
      * </blockquote>
      */
     public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request) {
@@ -232,9 +357,36 @@ public class BulkSyncClient {
     }
 
     /**
+     * Updates an existing bulk sync's top-level configuration.
+     * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
+     * configuration. Every field in the request body is written to the sync; any
+     * field you omit is cleared or reset to its default value.</p>
+     * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
+     * schedule — fetch the current sync with
+     * <a href="./get"><code>GET /api/bulk/syncs/{id}</code></a>,
+     * modify the fields you want to change, and send the complete object back in
+     * the update request.</p>
+     * <p>Updates to <code>active</code>, <code>schedules</code>, and <code>policies</code> take effect immediately.
+     * Changes to source or destination configuration take effect on the sync's
+     * next execution.</p>
+     * <p>Because omitted fields are reset to their defaults, the discovery and
+     * naming options behave the same as on create when left out:</p>
+     * <ul>
+     * <li><code>automatically_add_new_objects</code> resets to not enabling newly discovered
+     * source objects automatically.</li>
+     * <li><code>automatically_add_new_fields</code> resets to enabling newly discovered
+     * fields on already selected objects.</li>
+     * <li><code>normalize_names</code> resets to enabled.</li>
+     * </ul>
+     * <p>Send the existing values explicitly if you want to preserve a non-default or
+     * non-empty setting, including schema and field selections.</p>
      * <blockquote>
-     * 📘 Updating schemas
-     * <p>Schema updates can be performed using the <a href="https://apidocs.polytomic.com/api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a> endpoint.</p>
+     * <p>📘 Updating schemas</p>
+     * <p>Schema updates are not performed through this endpoint. Use the
+     * <a href="./schemas/patch">Update Bulk Sync Schemas</a>
+     * endpoint to change a subset of schemas, or
+     * <a href="./schemas/%7Bschema_id%7D/put">Update Bulk Sync Schema</a>
+     * to replace a single schema's configuration.</p>
      * </blockquote>
      */
     public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request, RequestOptions requestOptions) {
@@ -275,14 +427,41 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Deletes a bulk sync, cancelling any running executions.
+     * <p>Any execution that is currently running is cancelled before the sync record is
+     * removed.</p>
+     * <blockquote>
+     * <p>🚧 All associated schedules, schema configurations, and execution history are
+     * deleted along with the sync.</p>
+     * </blockquote>
+     */
     public void remove(String id) {
         remove(id, BulkSyncRemoveRequest.builder().build());
     }
 
+    /**
+     * Deletes a bulk sync, cancelling any running executions.
+     * <p>Any execution that is currently running is cancelled before the sync record is
+     * removed.</p>
+     * <blockquote>
+     * <p>🚧 All associated schedules, schema configurations, and execution history are
+     * deleted along with the sync.</p>
+     * </blockquote>
+     */
     public void remove(String id, BulkSyncRemoveRequest request) {
         remove(id, request, null);
     }
 
+    /**
+     * Deletes a bulk sync, cancelling any running executions.
+     * <p>Any execution that is currently running is cancelled before the sync record is
+     * removed.</p>
+     * <blockquote>
+     * <p>🚧 All associated schedules, schema configurations, and execution history are
+     * deleted along with the sync.</p>
+     * </blockquote>
+     */
     public void remove(String id, BulkSyncRemoveRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -316,10 +495,34 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Sets whether a bulk sync is active.
+     * <p>Only active syncs are eligible to execute on their configured schedule.
+     * Deactivating a sync prevents future scheduled runs and requests cancellation of
+     * any execution that is currently in progress.</p>
+     * <blockquote>
+     * <p>📘 To start or stop a running execution directly, use
+     * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>
+     * or
+     * <a href="../../../../../api-reference/bulk-sync/cancel"><code>POST /api/bulk/syncs/{id}/cancel</code></a>.</p>
+     * </blockquote>
+     */
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
         return activate(id, request, null);
     }
 
+    /**
+     * Sets whether a bulk sync is active.
+     * <p>Only active syncs are eligible to execute on their configured schedule.
+     * Deactivating a sync prevents future scheduled runs and requests cancellation of
+     * any execution that is currently in progress.</p>
+     * <blockquote>
+     * <p>📘 To start or stop a running execution directly, use
+     * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>
+     * or
+     * <a href="../../../../../api-reference/bulk-sync/cancel"><code>POST /api/bulk/syncs/{id}/cancel</code></a>.</p>
+     * </blockquote>
+     */
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -359,10 +562,26 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Requests cancellation of any running executions on a bulk sync.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal has been queued; the running execution continues until the signal is
+     * processed. Poll <code>GET /api/bulk/syncs/{id}/status</code> until the current execution
+     * reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to confirm
+     * cancellation has taken effect.</p>
+     */
     public CancelBulkSyncResponseEnvelope cancel(String id) {
         return cancel(id, null);
     }
 
+    /**
+     * Requests cancellation of any running executions on a bulk sync.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal has been queued; the running execution continues until the signal is
+     * processed. Poll <code>GET /api/bulk/syncs/{id}/status</code> until the current execution
+     * reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to confirm
+     * cancellation has taken effect.</p>
+     */
     public CancelBulkSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -395,14 +614,59 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Starts a new execution of a bulk sync.
+     * <p>This endpoint returns the execution record immediately after the run is queued
+     * or started. Use the execution ID with the bulk-sync execution endpoints if you
+     * need to monitor progress in detail.</p>
+     * <h2>Execution modes</h2>
+     * <ul>
+     * <li>Set <code>test=true</code> to validate the sync without writing to the destination.</li>
+     * <li>Use <code>resync_mode</code> for destructive or full-refresh style reruns.</li>
+     * <li><code>test</code> and <code>resync_mode</code> are mutually exclusive.</li>
+     * </ul>
+     * <p>The legacy <code>resync</code> boolean is no longer accepted on this v5 endpoint. Send
+     * <code>resync_mode</code> instead.</p>
+     * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
+     */
     public BulkSyncExecutionEnvelope start(String id) {
         return start(id, StartBulkSyncRequest.builder().build());
     }
 
+    /**
+     * Starts a new execution of a bulk sync.
+     * <p>This endpoint returns the execution record immediately after the run is queued
+     * or started. Use the execution ID with the bulk-sync execution endpoints if you
+     * need to monitor progress in detail.</p>
+     * <h2>Execution modes</h2>
+     * <ul>
+     * <li>Set <code>test=true</code> to validate the sync without writing to the destination.</li>
+     * <li>Use <code>resync_mode</code> for destructive or full-refresh style reruns.</li>
+     * <li><code>test</code> and <code>resync_mode</code> are mutually exclusive.</li>
+     * </ul>
+     * <p>The legacy <code>resync</code> boolean is no longer accepted on this v5 endpoint. Send
+     * <code>resync_mode</code> instead.</p>
+     * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
+     */
     public BulkSyncExecutionEnvelope start(String id, StartBulkSyncRequest request) {
         return start(id, request, null);
     }
 
+    /**
+     * Starts a new execution of a bulk sync.
+     * <p>This endpoint returns the execution record immediately after the run is queued
+     * or started. Use the execution ID with the bulk-sync execution endpoints if you
+     * need to monitor progress in detail.</p>
+     * <h2>Execution modes</h2>
+     * <ul>
+     * <li>Set <code>test=true</code> to validate the sync without writing to the destination.</li>
+     * <li>Use <code>resync_mode</code> for destructive or full-refresh style reruns.</li>
+     * <li><code>test</code> and <code>resync_mode</code> are mutually exclusive.</li>
+     * </ul>
+     * <p>The legacy <code>resync</code> boolean is no longer accepted on this v5 endpoint. Send
+     * <code>resync_mode</code> instead.</p>
+     * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
+     */
     public BulkSyncExecutionEnvelope start(String id, StartBulkSyncRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -442,10 +706,32 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Returns the current status of a bulk sync.
+     * <p>The response includes the sync's current active/inactive state together with
+     * information about the most recent execution — its status, start time, and any
+     * errors — making this endpoint well-suited for health checks and monitoring
+     * dashboards.</p>
+     * <p>For the complete execution history, use
+     * <a href="../../../../../api-reference/bulk-sync/executions/list"><code>GET /api/bulk/syncs/{id}/executions</code></a>.
+     * For the full details of a specific run, including per-schema breakdowns, use
+     * <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
+     */
     public BulkSyncStatusEnvelope getStatus(String id) {
         return getStatus(id, null);
     }
 
+    /**
+     * Returns the current status of a bulk sync.
+     * <p>The response includes the sync's current active/inactive state together with
+     * information about the most recent execution — its status, start time, and any
+     * errors — making this endpoint well-suited for health checks and monitoring
+     * dashboards.</p>
+     * <p>For the complete execution history, use
+     * <a href="../../../../../api-reference/bulk-sync/executions/list"><code>GET /api/bulk/syncs/{id}/executions</code></a>.
+     * For the full details of a specific run, including per-schema breakdowns, use
+     * <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
+     */
     public BulkSyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -478,14 +764,53 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Lists the schemas (tables or objects) available on a connection for use as a bulk sync source, optionally including per-schema field details.
+     * <p>The response reflects what the
+     * connection currently has cached; if the upstream source has changed, trigger
+     * a refresh first with
+     * <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>.</p>
+     * <p>These are the schemas available for selection, not the schemas already
+     * configured on any particular sync. To inspect schemas on a running sync, use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</p>
+     * <p>Pass <code>include_fields=true</code> to receive per-schema field details in a single call.
+     * Omit it when you only need the schema list, as field enumeration can be slow for
+     * large sources.</p>
+     */
     public BulkSyncSourceEnvelope getSource(String id) {
         return getSource(id, BulkSyncGetSourceRequest.builder().build());
     }
 
+    /**
+     * Lists the schemas (tables or objects) available on a connection for use as a bulk sync source, optionally including per-schema field details.
+     * <p>The response reflects what the
+     * connection currently has cached; if the upstream source has changed, trigger
+     * a refresh first with
+     * <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>.</p>
+     * <p>These are the schemas available for selection, not the schemas already
+     * configured on any particular sync. To inspect schemas on a running sync, use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</p>
+     * <p>Pass <code>include_fields=true</code> to receive per-schema field details in a single call.
+     * Omit it when you only need the schema list, as field enumeration can be slow for
+     * large sources.</p>
+     */
     public BulkSyncSourceEnvelope getSource(String id, BulkSyncGetSourceRequest request) {
         return getSource(id, request, null);
     }
 
+    /**
+     * Lists the schemas (tables or objects) available on a connection for use as a bulk sync source, optionally including per-schema field details.
+     * <p>The response reflects what the
+     * connection currently has cached; if the upstream source has changed, trigger
+     * a refresh first with
+     * <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>.</p>
+     * <p>These are the schemas available for selection, not the schemas already
+     * configured on any particular sync. To inspect schemas on a running sync, use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</p>
+     * <p>Pass <code>include_fields=true</code> to receive per-schema field details in a single call.
+     * Omit it when you only need the schema list, as field enumeration can be slow for
+     * large sources.</p>
+     */
     public BulkSyncSourceEnvelope getSource(
             String id, BulkSyncGetSourceRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -522,10 +847,36 @@ public class BulkSyncClient {
         }
     }
 
+    /**
+     * Describes the destination configuration schema a connection accepts when used as a bulk sync destination.
+     * <p>The response is a JSON Schema object describing the shape of the
+     * <code>destination_configuration</code> field you must supply when
+     * <a href="../../../../../api-reference/bulk-sync/create">creating</a> or
+     * <a href="../../../../../api-reference/bulk-sync/update">updating</a> a bulk sync that uses this
+     * connection as its destination. Required fields vary by connection type.</p>
+     * <blockquote>
+     * <p>📘 Fetch this endpoint once per connection type rather than once per sync.
+     * The configuration schema is the same for all syncs sharing the same
+     * destination connection.</p>
+     * </blockquote>
+     */
     public BulkSyncDestEnvelope getDestination(String id) {
         return getDestination(id, null);
     }
 
+    /**
+     * Describes the destination configuration schema a connection accepts when used as a bulk sync destination.
+     * <p>The response is a JSON Schema object describing the shape of the
+     * <code>destination_configuration</code> field you must supply when
+     * <a href="../../../../../api-reference/bulk-sync/create">creating</a> or
+     * <a href="../../../../../api-reference/bulk-sync/update">updating</a> a bulk sync that uses this
+     * connection as its destination. Required fields vary by connection type.</p>
+     * <blockquote>
+     * <p>📘 Fetch this endpoint once per connection type rather than once per sync.
+     * The configuration schema is the same for all syncs sharing the same
+     * destination connection.</p>
+     * </blockquote>
+     */
     public BulkSyncDestEnvelope getDestination(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

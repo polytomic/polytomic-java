@@ -64,11 +64,17 @@ public final class BulkSyncSchemaExecutionStatus {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Timestamp when the most recent execution finished. Null while the execution is still running.
+     */
     @JsonProperty("completed_at")
     public Optional<OffsetDateTime> getCompletedAt() {
         return completedAt;
     }
 
+    /**
+     * @return Number of errors emitted during the most recent execution.
+     */
     @JsonProperty("error_count")
     public Optional<Integer> getErrorCount() {
         return errorCount;
@@ -82,16 +88,25 @@ public final class BulkSyncSchemaExecutionStatus {
         return executionId;
     }
 
+    /**
+     * @return Number of records processed in the most recent execution.
+     */
     @JsonProperty("record_count")
     public Optional<Integer> getRecordCount() {
         return recordCount;
     }
 
+    /**
+     * @return Schema (table or object) identifier.
+     */
     @JsonProperty("schema")
     public Optional<String> getSchema() {
         return schema;
     }
 
+    /**
+     * @return Timestamp when the most recent execution started.
+     */
     @JsonProperty("started_at")
     public Optional<OffsetDateTime> getStartedAt() {
         return startedAt;
@@ -102,11 +117,17 @@ public final class BulkSyncSchemaExecutionStatus {
         return status;
     }
 
+    /**
+     * @return Human-readable detail for the current status (e.g. an error message when status is failed).
+     */
     @JsonProperty("status_message")
     public Optional<String> getStatusMessage() {
         return statusMessage;
     }
 
+    /**
+     * @return Number of warnings emitted during the most recent execution.
+     */
     @JsonProperty("warning_count")
     public Optional<Integer> getWarningCount() {
         return warningCount;

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.BulkFetchMode;
+import com.polytomic.api.types.BulkResyncMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ public final class StartBulkSyncRequest {
 
     private final Optional<Boolean> resync;
 
+    private final Optional<BulkResyncMode> resyncMode;
+
     private final Optional<List<String>> schemas;
 
     private final Optional<Boolean> test;
@@ -35,11 +38,13 @@ public final class StartBulkSyncRequest {
     private StartBulkSyncRequest(
             Optional<BulkFetchMode> fetchMode,
             Optional<Boolean> resync,
+            Optional<BulkResyncMode> resyncMode,
             Optional<List<String>> schemas,
             Optional<Boolean> test,
             Map<String, Object> additionalProperties) {
         this.fetchMode = fetchMode;
         this.resync = resync;
+        this.resyncMode = resyncMode;
         this.schemas = schemas;
         this.test = test;
         this.additionalProperties = additionalProperties;
@@ -50,16 +55,30 @@ public final class StartBulkSyncRequest {
         return fetchMode;
     }
 
+    /**
+     * @return Deprecated: use resync_mode instead. Equivalent to resync_mode=rebuild.
+     */
     @JsonProperty("resync")
     public Optional<Boolean> getResync() {
         return resync;
     }
 
+    @JsonProperty("resync_mode")
+    public Optional<BulkResyncMode> getResyncMode() {
+        return resyncMode;
+    }
+
+    /**
+     * @return Optional list of schema IDs to include in this execution. If empty, all enabled schemas are included.
+     */
     @JsonProperty("schemas")
     public Optional<List<String>> getSchemas() {
         return schemas;
     }
 
+    /**
+     * @return When true, runs a test execution that validates the configuration without writing to the destination. Mutually exclusive with resync and resync_mode.
+     */
     @JsonProperty("test")
     public Optional<Boolean> getTest() {
         return test;
@@ -79,13 +98,14 @@ public final class StartBulkSyncRequest {
     private boolean equalTo(StartBulkSyncRequest other) {
         return fetchMode.equals(other.fetchMode)
                 && resync.equals(other.resync)
+                && resyncMode.equals(other.resyncMode)
                 && schemas.equals(other.schemas)
                 && test.equals(other.test);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.fetchMode, this.resync, this.schemas, this.test);
+        return Objects.hash(this.fetchMode, this.resync, this.resyncMode, this.schemas, this.test);
     }
 
     @java.lang.Override
@@ -103,6 +123,8 @@ public final class StartBulkSyncRequest {
 
         private Optional<Boolean> resync = Optional.empty();
 
+        private Optional<BulkResyncMode> resyncMode = Optional.empty();
+
         private Optional<List<String>> schemas = Optional.empty();
 
         private Optional<Boolean> test = Optional.empty();
@@ -115,6 +137,7 @@ public final class StartBulkSyncRequest {
         public Builder from(StartBulkSyncRequest other) {
             fetchMode(other.getFetchMode());
             resync(other.getResync());
+            resyncMode(other.getResyncMode());
             schemas(other.getSchemas());
             test(other.getTest());
             return this;
@@ -142,6 +165,17 @@ public final class StartBulkSyncRequest {
             return this;
         }
 
+        @JsonSetter(value = "resync_mode", nulls = Nulls.SKIP)
+        public Builder resyncMode(Optional<BulkResyncMode> resyncMode) {
+            this.resyncMode = resyncMode;
+            return this;
+        }
+
+        public Builder resyncMode(BulkResyncMode resyncMode) {
+            this.resyncMode = Optional.of(resyncMode);
+            return this;
+        }
+
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public Builder schemas(Optional<List<String>> schemas) {
             this.schemas = schemas;
@@ -165,7 +199,7 @@ public final class StartBulkSyncRequest {
         }
 
         public StartBulkSyncRequest build() {
-            return new StartBulkSyncRequest(fetchMode, resync, schemas, test, additionalProperties);
+            return new StartBulkSyncRequest(fetchMode, resync, resyncMode, schemas, test, additionalProperties);
         }
     }
 }

@@ -64,6 +64,9 @@ public final class V4RunQueryResult {
         return count;
     }
 
+    /**
+     * @return Error message if the query failed.
+     */
     @JsonProperty("error")
     public Optional<String> getError() {
         return error;
@@ -86,7 +89,7 @@ public final class V4RunQueryResult {
     }
 
     /**
-     * @return The ID of the query task.
+     * @return The ID of the query task. Poll GET /api/queries/{id} until the task reaches done or failed to retrieve results.
      */
     @JsonProperty("id")
     public Optional<String> getId() {

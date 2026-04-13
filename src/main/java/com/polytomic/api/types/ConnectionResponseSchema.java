@@ -28,7 +28,7 @@ public final class ConnectionResponseSchema {
 
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<CommonOutputActor> createdBy;
+    private final Optional<OutputActor> createdBy;
 
     private final Optional<String> id;
 
@@ -50,7 +50,7 @@ public final class ConnectionResponseSchema {
 
     private final Optional<OffsetDateTime> updatedAt;
 
-    private final Optional<CommonOutputActor> updatedBy;
+    private final Optional<OutputActor> updatedBy;
 
     private final Map<String, Object> additionalProperties;
 
@@ -58,7 +58,7 @@ public final class ConnectionResponseSchema {
             Optional<Integer> apiCallsLast24Hours,
             Optional<Map<String, Object>> configuration,
             Optional<OffsetDateTime> createdAt,
-            Optional<CommonOutputActor> createdBy,
+            Optional<OutputActor> createdBy,
             Optional<String> id,
             Optional<String> name,
             Optional<String> organizationId,
@@ -69,7 +69,7 @@ public final class ConnectionResponseSchema {
             Optional<String> statusError,
             Optional<ConnectionTypeSchema> type,
             Optional<OffsetDateTime> updatedAt,
-            Optional<CommonOutputActor> updatedBy,
+            Optional<OutputActor> updatedBy,
             Map<String, Object> additionalProperties) {
         this.apiCallsLast24Hours = apiCallsLast24Hours;
         this.configuration = configuration;
@@ -108,7 +108,7 @@ public final class ConnectionResponseSchema {
     }
 
     @JsonProperty("created_by")
-    public Optional<CommonOutputActor> getCreatedBy() {
+    public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
@@ -166,7 +166,7 @@ public final class ConnectionResponseSchema {
     }
 
     @JsonProperty("updated_by")
-    public Optional<CommonOutputActor> getUpdatedBy() {
+    public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
     }
 
@@ -236,7 +236,7 @@ public final class ConnectionResponseSchema {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<CommonOutputActor> createdBy = Optional.empty();
+        private Optional<OutputActor> createdBy = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -258,7 +258,7 @@ public final class ConnectionResponseSchema {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        private Optional<CommonOutputActor> updatedBy = Optional.empty();
+        private Optional<OutputActor> updatedBy = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -318,12 +318,12 @@ public final class ConnectionResponseSchema {
         }
 
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
-        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+        public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
             return this;
         }
 
-        public Builder createdBy(CommonOutputActor createdBy) {
+        public Builder createdBy(OutputActor createdBy) {
             this.createdBy = Optional.of(createdBy);
             return this;
         }
@@ -439,12 +439,12 @@ public final class ConnectionResponseSchema {
         }
 
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
-        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+        public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
             return this;
         }
 
-        public Builder updatedBy(CommonOutputActor updatedBy) {
+        public Builder updatedBy(OutputActor updatedBy) {
             this.updatedBy = Optional.of(updatedBy);
             return this;
         }

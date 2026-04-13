@@ -25,14 +25,18 @@ public final class BulkSyncDest {
 
     private final Optional<List<SupportedBulkMode>> modes;
 
+    private final Optional<List<BulkResyncMode>> supportedResyncModes;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncDest(
             Optional<Map<String, Object>> configuration,
             Optional<List<SupportedBulkMode>> modes,
+            Optional<List<BulkResyncMode>> supportedResyncModes,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
         this.modes = modes;
+        this.supportedResyncModes = supportedResyncModes;
         this.additionalProperties = additionalProperties;
     }
 
@@ -44,6 +48,14 @@ public final class BulkSyncDest {
     @JsonProperty("modes")
     public Optional<List<SupportedBulkMode>> getModes() {
         return modes;
+    }
+
+    /**
+     * @return Resync modes supported by this destination (refetch, resync, rebuild).
+     */
+    @JsonProperty("supported_resync_modes")
+    public Optional<List<BulkResyncMode>> getSupportedResyncModes() {
+        return supportedResyncModes;
     }
 
     @java.lang.Override
@@ -58,12 +70,14 @@ public final class BulkSyncDest {
     }
 
     private boolean equalTo(BulkSyncDest other) {
-        return configuration.equals(other.configuration) && modes.equals(other.modes);
+        return configuration.equals(other.configuration)
+                && modes.equals(other.modes)
+                && supportedResyncModes.equals(other.supportedResyncModes);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.configuration, this.modes);
+        return Objects.hash(this.configuration, this.modes, this.supportedResyncModes);
     }
 
     @java.lang.Override
@@ -81,6 +95,8 @@ public final class BulkSyncDest {
 
         private Optional<List<SupportedBulkMode>> modes = Optional.empty();
 
+        private Optional<List<BulkResyncMode>> supportedResyncModes = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -89,6 +105,7 @@ public final class BulkSyncDest {
         public Builder from(BulkSyncDest other) {
             configuration(other.getConfiguration());
             modes(other.getModes());
+            supportedResyncModes(other.getSupportedResyncModes());
             return this;
         }
 
@@ -114,8 +131,19 @@ public final class BulkSyncDest {
             return this;
         }
 
+        @JsonSetter(value = "supported_resync_modes", nulls = Nulls.SKIP)
+        public Builder supportedResyncModes(Optional<List<BulkResyncMode>> supportedResyncModes) {
+            this.supportedResyncModes = supportedResyncModes;
+            return this;
+        }
+
+        public Builder supportedResyncModes(List<BulkResyncMode> supportedResyncModes) {
+            this.supportedResyncModes = Optional.of(supportedResyncModes);
+            return this;
+        }
+
         public BulkSyncDest build() {
-            return new BulkSyncDest(configuration, modes, additionalProperties);
+            return new BulkSyncDest(configuration, modes, supportedResyncModes, additionalProperties);
         }
     }
 }

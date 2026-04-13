@@ -25,14 +25,53 @@ public class EventsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists audit events for the caller's organization.
+     * <p>Results are paginated. If more events are available, the response includes
+     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
+     * the last item you received.</p>
+     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
+     * narrow results to a specific category of activity.</p>
+     * <blockquote>
+     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * The log captures both user-initiated and API-initiated actions.</p>
+     * </blockquote>
+     */
     public EventsEnvelope list() {
         return list(EventsListRequest.builder().build());
     }
 
+    /**
+     * Lists audit events for the caller's organization.
+     * <p>Results are paginated. If more events are available, the response includes
+     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
+     * the last item you received.</p>
+     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
+     * narrow results to a specific category of activity.</p>
+     * <blockquote>
+     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * The log captures both user-initiated and API-initiated actions.</p>
+     * </blockquote>
+     */
     public EventsEnvelope list(EventsListRequest request) {
         return list(request, null);
     }
 
+    /**
+     * Lists audit events for the caller's organization.
+     * <p>Results are paginated. If more events are available, the response includes
+     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
+     * the last item you received.</p>
+     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
+     * narrow results to a specific category of activity.</p>
+     * <blockquote>
+     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * The log captures both user-initiated and API-initiated actions.</p>
+     * </blockquote>
+     */
     public EventsEnvelope list(EventsListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -80,10 +119,20 @@ public class EventsClient {
         }
     }
 
+    /**
+     * Returns the set of event type identifiers supported by GET /api/events.
+     * <p>Use the identifiers returned here as the <code>event_type</code> filter value when calling
+     * <a href="../../api-reference/events/list"><code>GET /api/events</code></a>.</p>
+     */
     public EventTypesEnvelope getTypes() {
         return getTypes(null);
     }
 
+    /**
+     * Returns the set of event type identifiers supported by GET /api/events.
+     * <p>Use the identifiers returned here as the <code>event_type</code> filter value when calling
+     * <a href="../../api-reference/events/list"><code>GET /api/events</code></a>.</p>
+     */
     public EventTypesEnvelope getTypes(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

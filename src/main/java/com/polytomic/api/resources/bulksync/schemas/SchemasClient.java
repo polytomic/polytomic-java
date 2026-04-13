@@ -30,14 +30,50 @@ public class SchemasClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists the schemas configured on a bulk sync.
+     * <p>This endpoint returns the schemas that have been added to and configured on this
+     * specific bulk sync — not the full set of schemas available from the source
+     * connection. To discover what the source connection exposes, use the source
+     * schemas endpoint for the relevant connection type.</p>
+     * <p>Each schema in the response includes its sync mode, field selections, and any
+     * custom configuration applied via
+     * <a href="../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * or
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
+     */
     public ListBulkSchema list(String id) {
         return list(id, SchemasListRequest.builder().build());
     }
 
+    /**
+     * Lists the schemas configured on a bulk sync.
+     * <p>This endpoint returns the schemas that have been added to and configured on this
+     * specific bulk sync — not the full set of schemas available from the source
+     * connection. To discover what the source connection exposes, use the source
+     * schemas endpoint for the relevant connection type.</p>
+     * <p>Each schema in the response includes its sync mode, field selections, and any
+     * custom configuration applied via
+     * <a href="../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * or
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
+     */
     public ListBulkSchema list(String id, SchemasListRequest request) {
         return list(id, request, null);
     }
 
+    /**
+     * Lists the schemas configured on a bulk sync.
+     * <p>This endpoint returns the schemas that have been added to and configured on this
+     * specific bulk sync — not the full set of schemas available from the source
+     * connection. To discover what the source connection exposes, use the source
+     * schemas endpoint for the relevant connection type.</p>
+     * <p>Each schema in the response includes its sync mode, field selections, and any
+     * custom configuration applied via
+     * <a href="../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * or
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
+     */
     public ListBulkSchema list(String id, SchemasListRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -72,14 +108,62 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Patches one or more schemas on a bulk sync at once.
+     * <p>Only schemas explicitly included in the request body are modified; schemas
+     * omitted from the request are left unchanged. This makes PATCH the right choice
+     * when you want to update a subset of tables without affecting the rest of the
+     * sync's schema configuration.</p>
+     * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
+     * that schema. To control which fields are enabled, include the <code>fields</code> array
+     * with explicit <code>enabled</code> values for each field.</p>
+     * <blockquote>
+     * <p>📘 To replace a single schema's configuration in full (clearing any fields you
+     * omit), use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public ListBulkSchema patch(String id) {
         return patch(id, BulkSyncSchemasRequest.builder().build());
     }
 
+    /**
+     * Patches one or more schemas on a bulk sync at once.
+     * <p>Only schemas explicitly included in the request body are modified; schemas
+     * omitted from the request are left unchanged. This makes PATCH the right choice
+     * when you want to update a subset of tables without affecting the rest of the
+     * sync's schema configuration.</p>
+     * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
+     * that schema. To control which fields are enabled, include the <code>fields</code> array
+     * with explicit <code>enabled</code> values for each field.</p>
+     * <blockquote>
+     * <p>📘 To replace a single schema's configuration in full (clearing any fields you
+     * omit), use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public ListBulkSchema patch(String id, BulkSyncSchemasRequest request) {
         return patch(id, request, null);
     }
 
+    /**
+     * Patches one or more schemas on a bulk sync at once.
+     * <p>Only schemas explicitly included in the request body are modified; schemas
+     * omitted from the request are left unchanged. This makes PATCH the right choice
+     * when you want to update a subset of tables without affecting the rest of the
+     * sync's schema configuration.</p>
+     * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
+     * that schema. To control which fields are enabled, include the <code>fields</code> array
+     * with explicit <code>enabled</code> values for each field.</p>
+     * <blockquote>
+     * <p>📘 To replace a single schema's configuration in full (clearing any fields you
+     * omit), use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public ListBulkSchema patch(String id, BulkSyncSchemasRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -119,10 +203,30 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Returns the configuration of a single schema on a bulk sync.
+     * <p>Returns the sync mode, field selections, and any other configuration applied to
+     * this schema on the bulk sync.</p>
+     * <p>To modify the configuration, use
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * for a partial update across multiple schemas, or
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * to fully replace this schema's configuration.</p>
+     */
     public BulkSchemaEnvelope get(String id, String schemaId) {
         return get(id, schemaId, null);
     }
 
+    /**
+     * Returns the configuration of a single schema on a bulk sync.
+     * <p>Returns the sync mode, field selections, and any other configuration applied to
+     * this schema on the bulk sync.</p>
+     * <p>To modify the configuration, use
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * for a partial update across multiple schemas, or
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * to fully replace this schema's configuration.</p>
+     */
     public BulkSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -156,14 +260,62 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Replaces the configuration of a single schema on a bulk sync.
+     * <p>This is a full replacement: every field in the request body is written to the
+     * schema, and any field you omit is cleared or reset to its default. Fetch the
+     * current configuration with
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * first if you want to preserve existing settings while changing only a subset.</p>
+     * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * <blockquote>
+     * <p>📘 To update multiple schemas in a single request without affecting others,
+     * use the partial-update endpoint
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public BulkSchemaEnvelope update(String id, String schemaId) {
         return update(id, schemaId, UpdateBulkSchema.builder().build());
     }
 
+    /**
+     * Replaces the configuration of a single schema on a bulk sync.
+     * <p>This is a full replacement: every field in the request body is written to the
+     * schema, and any field you omit is cleared or reset to its default. Fetch the
+     * current configuration with
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * first if you want to preserve existing settings while changing only a subset.</p>
+     * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * <blockquote>
+     * <p>📘 To update multiple schemas in a single request without affecting others,
+     * use the partial-update endpoint
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public BulkSchemaEnvelope update(String id, String schemaId, UpdateBulkSchema request) {
         return update(id, schemaId, request, null);
     }
 
+    /**
+     * Replaces the configuration of a single schema on a bulk sync.
+     * <p>This is a full replacement: every field in the request body is written to the
+     * schema, and any field you omit is cleared or reset to its default. Fetch the
+     * current configuration with
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * first if you want to preserve existing settings while changing only a subset.</p>
+     * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * <blockquote>
+     * <p>📘 To update multiple schemas in a single request without affecting others,
+     * use the partial-update endpoint
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
     public BulkSchemaEnvelope update(
             String id, String schemaId, UpdateBulkSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -205,10 +357,28 @@ public class SchemasClient {
         }
     }
 
+    /**
+     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal for this schema has been queued; the schema's in-flight work continues
+     * until the signal is processed. Poll
+     * <code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code> and the parent execution via
+     * <code>GET /api/bulk/syncs/{id}/status</code> to confirm the schema has reached a terminal
+     * state.</p>
+     */
     public CancelBulkSyncResponseEnvelope cancel(String id, String schemaId) {
         return cancel(id, schemaId, null);
     }
 
+    /**
+     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * <p>Cancellation is asynchronous. A successful response means the cancellation
+     * signal for this schema has been queued; the schema's in-flight work continues
+     * until the signal is processed. Poll
+     * <code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code> and the parent execution via
+     * <code>GET /api/bulk/syncs/{id}/status</code> to confirm the schema has reached a terminal
+     * state.</p>
+     */
     public CancelBulkSyncResponseEnvelope cancel(String id, String schemaId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

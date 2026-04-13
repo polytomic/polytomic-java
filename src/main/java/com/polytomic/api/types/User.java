@@ -48,26 +48,41 @@ public final class User {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Email address used to sign in and receive notifications.
+     */
     @JsonProperty("email")
     public Optional<String> getEmail() {
         return email;
     }
 
+    /**
+     * @return Unique identifier of the user.
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Unique identifier of the organization the user belongs to.
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Deprecated legacy role name. Use role_ids instead.
+     */
     @JsonProperty("role")
     public Optional<String> getRole() {
         return role;
     }
 
+    /**
+     * @return Identifiers of the permissions roles assigned to the user.
+     */
     @JsonProperty("role_ids")
     public Optional<List<String>> getRoleIds() {
         return roleIds;

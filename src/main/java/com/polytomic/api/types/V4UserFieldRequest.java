@@ -52,21 +52,33 @@ public final class V4UserFieldRequest {
         return example;
     }
 
+    /**
+     * @return Stable identifier for the user-defined field. Reuse an existing field_id to update a field in place.
+     */
     @JsonProperty("field_id")
     public String getFieldId() {
         return fieldId;
     }
 
+    /**
+     * @return Human-readable label shown to users selecting this field in the app.
+     */
     @JsonProperty("label")
     public String getLabel() {
         return label;
     }
 
+    /**
+     * @return JSON path expression that extracts the field's value from the source record. Required for nested or computed fields; omit for top-level fields.
+     */
     @JsonProperty("path")
     public Optional<String> getPath() {
         return path;
     }
 
+    /**
+     * @return Polytomic type of the field (e.g. string, integer, boolean).
+     */
     @JsonProperty("type")
     public String getType() {
         return type;
@@ -158,6 +170,10 @@ public final class V4UserFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Stable identifier for the user-defined field. Reuse an existing field_id to update a field in place.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("field_id")
         public LabelStage fieldId(String fieldId) {
@@ -165,6 +181,10 @@ public final class V4UserFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Human-readable label shown to users selecting this field in the app.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("label")
         public TypeStage label(String label) {
@@ -172,6 +192,10 @@ public final class V4UserFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Polytomic type of the field (e.g. string, integer, boolean).</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("type")
         public _FinalStage type(String type) {
@@ -179,6 +203,10 @@ public final class V4UserFieldRequest {
             return this;
         }
 
+        /**
+         * <p>JSON path expression that extracts the field's value from the source record. Required for nested or computed fields; omit for top-level fields.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage path(String path) {
             this.path = Optional.of(path);

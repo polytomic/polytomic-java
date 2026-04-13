@@ -28,10 +28,20 @@ public class SchedulesClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists all schedules configured for a bulk sync.
+     * <p>A bulk sync can have multiple schedules attached; this endpoint returns all
+     * of them. Schedule times are returned in UTC.</p>
+     */
     public SchedulesEnvelope list(String syncId) {
         return list(syncId, null);
     }
 
+    /**
+     * Lists all schedules configured for a bulk sync.
+     * <p>A bulk sync can have multiple schedules attached; this endpoint returns all
+     * of them. Schedule times are returned in UTC.</p>
+     */
     public SchedulesEnvelope list(String syncId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -64,10 +74,26 @@ public class SchedulesClient {
         }
     }
 
+    /**
+     * Adds a new schedule to a bulk sync.
+     * <p>A bulk sync can have multiple schedules attached; adding one here does not
+     * replace existing schedules. Schedule times are interpreted in UTC.</p>
+     * <p>Creating a schedule only affects future automatic executions. To run the
+     * sync immediately, call
+     * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>.</p>
+     */
     public ScheduleEnvelope create(String syncId, CreateScheduleRequest request) {
         return create(syncId, request, null);
     }
 
+    /**
+     * Adds a new schedule to a bulk sync.
+     * <p>A bulk sync can have multiple schedules attached; adding one here does not
+     * replace existing schedules. Schedule times are interpreted in UTC.</p>
+     * <p>Creating a schedule only affects future automatic executions. To run the
+     * sync immediately, call
+     * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>.</p>
+     */
     public ScheduleEnvelope create(String syncId, CreateScheduleRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -107,10 +133,26 @@ public class SchedulesClient {
         }
     }
 
+    /**
+     * Returns a single schedule configured on a bulk sync.
+     * <p>Schedule times are returned in UTC.</p>
+     * <p>To see all schedules on this sync, use
+     * <a href="../../../../../../api-reference/bulk-sync/schedules/list"><code>GET /api/bulk/syncs/{sync_id}/schedules</code></a>.
+     * To update the schedule, use
+     * <a href="../../../../../../api-reference/bulk-sync/schedules/update"><code>PUT /api/bulk/syncs/{sync_id}/schedules/{schedule_id}</code></a>.</p>
+     */
     public ScheduleEnvelope get(String syncId, String scheduleId) {
         return get(syncId, scheduleId, null);
     }
 
+    /**
+     * Returns a single schedule configured on a bulk sync.
+     * <p>Schedule times are returned in UTC.</p>
+     * <p>To see all schedules on this sync, use
+     * <a href="../../../../../../api-reference/bulk-sync/schedules/list"><code>GET /api/bulk/syncs/{sync_id}/schedules</code></a>.
+     * To update the schedule, use
+     * <a href="../../../../../../api-reference/bulk-sync/schedules/update"><code>PUT /api/bulk/syncs/{sync_id}/schedules/{schedule_id}</code></a>.</p>
+     */
     public ScheduleEnvelope get(String syncId, String scheduleId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -144,10 +186,22 @@ public class SchedulesClient {
         }
     }
 
+    /**
+     * Updates an existing schedule on a bulk sync.
+     * <p>Updates replace the stored schedule. Send the full schedule definition
+     * rather than only the field you want to change. Schedule times are
+     * interpreted in UTC.</p>
+     */
     public ScheduleEnvelope update(String syncId, String scheduleId, UpdateScheduleRequest request) {
         return update(syncId, scheduleId, request, null);
     }
 
+    /**
+     * Updates an existing schedule on a bulk sync.
+     * <p>Updates replace the stored schedule. Send the full schedule definition
+     * rather than only the field you want to change. Schedule times are
+     * interpreted in UTC.</p>
+     */
     public ScheduleEnvelope update(
             String syncId, String scheduleId, UpdateScheduleRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -189,10 +243,20 @@ public class SchedulesClient {
         }
     }
 
+    /**
+     * Removes a schedule from a bulk sync.
+     * <p>Deleting a schedule only stops future automatic executions. It does not
+     * cancel an execution that is already running.</p>
+     */
     public void delete(String syncId, String scheduleId) {
         delete(syncId, scheduleId, null);
     }
 
+    /**
+     * Removes a schedule from a bulk sync.
+     * <p>Deleting a schedule only stops future automatic executions. It does not
+     * cancel an execution that is already running.</p>
+     */
     public void delete(String syncId, String scheduleId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

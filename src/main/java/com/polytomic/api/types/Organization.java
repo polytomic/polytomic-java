@@ -47,26 +47,41 @@ public final class Organization {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Unique identifier of the organization.
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return OIDC issuer URL for organizations using OpenID Connect single sign-on.
+     */
     @JsonProperty("issuer")
     public Optional<String> getIssuer() {
         return issuer;
     }
 
+    /**
+     * @return Human-readable name of the organization.
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Email domain used to match users to this organization during SSO sign-in.
+     */
     @JsonProperty("sso_domain")
     public Optional<String> getSsoDomain() {
         return ssoDomain;
     }
 
+    /**
+     * @return WorkOS organization identifier linking this organization to its SAML/SSO configuration.
+     */
     @JsonProperty("sso_org_id")
     public Optional<String> getSsoOrgId() {
         return ssoOrgId;

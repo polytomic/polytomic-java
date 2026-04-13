@@ -21,6 +21,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = BulkSyncSource.Builder.class)
 public final class BulkSyncSource {
+    private final Optional<V3BulkSyncSourceCapabilities> capabilities;
+
     private final Optional<Object> configuration;
 
     private final Optional<List<Schema>> schemas;
@@ -28,10 +30,19 @@ public final class BulkSyncSource {
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncSource(
-            Optional<Object> configuration, Optional<List<Schema>> schemas, Map<String, Object> additionalProperties) {
+            Optional<V3BulkSyncSourceCapabilities> capabilities,
+            Optional<Object> configuration,
+            Optional<List<Schema>> schemas,
+            Map<String, Object> additionalProperties) {
+        this.capabilities = capabilities;
         this.configuration = configuration;
         this.schemas = schemas;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("capabilities")
+    public Optional<V3BulkSyncSourceCapabilities> getCapabilities() {
+        return capabilities;
     }
 
     @JsonProperty("configuration")
@@ -56,12 +67,14 @@ public final class BulkSyncSource {
     }
 
     private boolean equalTo(BulkSyncSource other) {
-        return configuration.equals(other.configuration) && schemas.equals(other.schemas);
+        return capabilities.equals(other.capabilities)
+                && configuration.equals(other.configuration)
+                && schemas.equals(other.schemas);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.configuration, this.schemas);
+        return Objects.hash(this.capabilities, this.configuration, this.schemas);
     }
 
     @java.lang.Override
@@ -75,6 +88,8 @@ public final class BulkSyncSource {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<V3BulkSyncSourceCapabilities> capabilities = Optional.empty();
+
         private Optional<Object> configuration = Optional.empty();
 
         private Optional<List<Schema>> schemas = Optional.empty();
@@ -85,8 +100,20 @@ public final class BulkSyncSource {
         private Builder() {}
 
         public Builder from(BulkSyncSource other) {
+            capabilities(other.getCapabilities());
             configuration(other.getConfiguration());
             schemas(other.getSchemas());
+            return this;
+        }
+
+        @JsonSetter(value = "capabilities", nulls = Nulls.SKIP)
+        public Builder capabilities(Optional<V3BulkSyncSourceCapabilities> capabilities) {
+            this.capabilities = capabilities;
+            return this;
+        }
+
+        public Builder capabilities(V3BulkSyncSourceCapabilities capabilities) {
+            this.capabilities = Optional.of(capabilities);
             return this;
         }
 
@@ -113,7 +140,7 @@ public final class BulkSyncSource {
         }
 
         public BulkSyncSource build() {
-            return new BulkSyncSource(configuration, schemas, additionalProperties);
+            return new BulkSyncSource(capabilities, configuration, schemas, additionalProperties);
         }
     }
 }

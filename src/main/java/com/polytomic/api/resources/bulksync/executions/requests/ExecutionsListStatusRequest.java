@@ -40,7 +40,7 @@ public final class ExecutionsListStatusRequest {
     }
 
     /**
-     * @return Return the execution status of all syncs in the organization
+     * @return When true, return status for every sync in the caller's organization. Overrides any sync_id values.
      */
     @JsonProperty("all")
     public Optional<Boolean> getAll() {
@@ -48,7 +48,7 @@ public final class ExecutionsListStatusRequest {
     }
 
     /**
-     * @return Return the execution status of all active syncs in the organization
+     * @return When true, return status only for active syncs in the caller's organization. Overrides any sync_id values.
      */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
@@ -56,7 +56,7 @@ public final class ExecutionsListStatusRequest {
     }
 
     /**
-     * @return Return the execution status of the specified sync; this may be supplied multiple times.
+     * @return Return status for the specified bulk sync. Repeat the parameter to target multiple syncs. Ignored if all or active is true.
      */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {

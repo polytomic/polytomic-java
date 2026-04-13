@@ -40,16 +40,25 @@ public final class UpdateUserRequestSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Email address used to sign the user in and receive notifications.
+     */
     @JsonProperty("email")
     public String getEmail() {
         return email;
     }
 
+    /**
+     * @return Deprecated legacy role name. Use role_ids instead; setting both role and role_ids in the same request is rejected.
+     */
     @JsonProperty("role")
     public Optional<String> getRole() {
         return role;
     }
 
+    /**
+     * @return Identifiers of the permissions roles to assign to the user. Must contain at least one entry when provided.
+     */
     @JsonProperty("role_ids")
     public Optional<List<String>> getRoleIds() {
         return roleIds;
@@ -123,6 +132,10 @@ public final class UpdateUserRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Email address used to sign the user in and receive notifications.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("email")
         public _FinalStage email(String email) {
@@ -130,6 +143,10 @@ public final class UpdateUserRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Identifiers of the permissions roles to assign to the user. Must contain at least one entry when provided.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage roleIds(List<String> roleIds) {
             this.roleIds = Optional.of(roleIds);
@@ -143,6 +160,10 @@ public final class UpdateUserRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Deprecated legacy role name. Use role_ids instead; setting both role and role_ids in the same request is rejected.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage role(String role) {
             this.role = Optional.of(role);

@@ -31,6 +31,9 @@ public final class ModelSyncGetSourceFieldsRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for.
+     */
     @JsonProperty("params")
     public Optional<Map<String, Optional<List<String>>>> getParams() {
         return params;

@@ -63,36 +63,57 @@ public final class UpdateBulkSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Per-schema cutoff. Records older than this timestamp are excluded from sync runs.
+     */
     @JsonProperty("data_cutoff_timestamp")
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
         return dataCutoffTimestamp;
     }
 
+    /**
+     * @return When true, the sync ignores any configured data_cutoff_timestamp for this schema.
+     */
     @JsonProperty("disable_data_cutoff")
     public Optional<Boolean> getDisableDataCutoff() {
         return disableDataCutoff;
     }
 
+    /**
+     * @return Whether this schema is included in sync runs.
+     */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
     }
 
+    /**
+     * @return Field-level configuration. Supplying an empty list enables every field discovered on the source.
+     */
     @JsonProperty("fields")
     public Optional<List<UpdateBulkField>> getFields() {
         return fields;
     }
 
+    /**
+     * @return Row-level filters applied when reading from the source.
+     */
     @JsonProperty("filters")
     public Optional<List<BulkFilter>> getFilters() {
         return filters;
     }
 
+    /**
+     * @return Source field used to partition rows when writing to the destination.
+     */
     @JsonProperty("partition_key")
     public Optional<String> getPartitionKey() {
         return partitionKey;
     }
 
+    /**
+     * @return Source field used to detect changes between incremental sync runs.
+     */
     @JsonProperty("tracking_field")
     public Optional<String> getTrackingField() {
         return trackingField;

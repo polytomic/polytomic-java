@@ -30,6 +30,9 @@ public final class V4GlobalErrorSubscribersResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Email addresses subscribed to global sync error notifications for the organization.
+     */
     @JsonProperty("emails")
     public Optional<List<String>> getEmails() {
         return emails;

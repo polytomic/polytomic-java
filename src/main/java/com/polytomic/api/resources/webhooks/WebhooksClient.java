@@ -29,20 +29,28 @@ public class WebhooksClient {
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Lists the webhooks for the caller's organization.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookListEnvelope list() {
         return list(null);
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Lists the webhooks for the caller's organization.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookListEnvelope list(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -75,20 +83,28 @@ public class WebhooksClient {
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Creates the organization's webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookEnvelope create(CreateWebhooksSchema request) {
         return create(request, null);
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Creates the organization's webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookEnvelope create(CreateWebhooksSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -128,20 +144,28 @@ public class WebhooksClient {
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Returns a single webhook by ID.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookEnvelope get(String id) {
         return get(id, null);
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Returns a single webhook by ID.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookEnvelope get(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -175,20 +199,28 @@ public class WebhooksClient {
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Updates an existing webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookEnvelope update(String id, UpdateWebhooksSchema request) {
         return update(id, request, null);
     }
 
     /**
-     * Webooks can be set up using the webhook API endpoints. Currently, only one
-     * webhook may be created per organization. The webhook will be called for events
-     * in that organization.
-     * <p>Consult the <a href="https://apidocs.polytomic.com/guides/events">Events documentation</a> for more information.</p>
+     * Updates an existing webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
      */
     public WebhookEnvelope update(String id, UpdateWebhooksSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -228,10 +260,36 @@ public class WebhooksClient {
         }
     }
 
+    /**
+     * Deletes a webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
+     * <p>Deletion is permanent. To stop delivery without losing the webhook
+     * configuration, use
+     * <a href="./disable/post"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
+     */
     public void remove(String id) {
         remove(id, null);
     }
 
+    /**
+     * Deletes a webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
+     * <p>Deletion is permanent. To stop delivery without losing the webhook
+     * configuration, use
+     * <a href="./disable/post"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
+     */
     public void remove(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -262,10 +320,38 @@ public class WebhooksClient {
         }
     }
 
+    /**
+     * Disables a webhook without deleting it.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
+     * <p>Events are not queued while the webhook is disabled — any activity that occurs
+     * during the disabled period is not delivered retroactively. To resume
+     * delivery, re-enable the webhook using
+     * <a href="../../../../api-reference/webhooks/enable"><code>POST /api/webhooks/{id}/enable</code></a>.</p>
+     */
     public WebhookEnvelope disable(String id) {
         return disable(id, null);
     }
 
+    /**
+     * Disables a webhook without deleting it.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
+     * <p>Events are not queued while the webhook is disabled — any activity that occurs
+     * during the disabled period is not delivered retroactively. To resume
+     * delivery, re-enable the webhook using
+     * <a href="../../../../api-reference/webhooks/enable"><code>POST /api/webhooks/{id}/enable</code></a>.</p>
+     */
     public WebhookEnvelope disable(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -298,10 +384,34 @@ public class WebhooksClient {
         }
     }
 
+    /**
+     * Re-enables a previously disabled webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
+     * <p>Delivery resumes from the next event generated after this call. Events that
+     * occurred while the webhook was disabled are not replayed.</p>
+     */
     public WebhookEnvelope enable(String id) {
         return enable(id, null);
     }
 
+    /**
+     * Re-enables a previously disabled webhook.
+     * <blockquote>
+     * <p>📘 One webhook per organization</p>
+     * <p>An organization can register a single webhook, which receives every event
+     * produced in that organization. See the
+     * <a href="../../../../guides/events">Events documentation</a> for the
+     * list of event types and payload shapes.</p>
+     * </blockquote>
+     * <p>Delivery resumes from the next event generated after this call. Events that
+     * occurred while the webhook was disabled are not replayed.</p>
+     */
     public WebhookEnvelope enable(String id, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

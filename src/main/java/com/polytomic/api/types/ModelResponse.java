@@ -28,7 +28,7 @@ public final class ModelResponse {
 
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<CommonOutputActor> createdBy;
+    private final Optional<OutputActor> createdBy;
 
     private final Optional<Enrichment> enricher;
 
@@ -54,7 +54,7 @@ public final class ModelResponse {
 
     private final Optional<OffsetDateTime> updatedAt;
 
-    private final Optional<CommonOutputActor> updatedBy;
+    private final Optional<OutputActor> updatedBy;
 
     private final Optional<Integer> version;
 
@@ -64,7 +64,7 @@ public final class ModelResponse {
             Optional<Map<String, Object>> configuration,
             Optional<String> connectionId,
             Optional<OffsetDateTime> createdAt,
-            Optional<CommonOutputActor> createdBy,
+            Optional<OutputActor> createdBy,
             Optional<Enrichment> enricher,
             Optional<List<ModelField>> fields,
             Optional<String> id,
@@ -77,7 +77,7 @@ public final class ModelResponse {
             Optional<List<String>> trackingColumns,
             Optional<String> type,
             Optional<OffsetDateTime> updatedAt,
-            Optional<CommonOutputActor> updatedBy,
+            Optional<OutputActor> updatedBy,
             Optional<Integer> version,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
@@ -117,7 +117,7 @@ public final class ModelResponse {
     }
 
     @JsonProperty("created_by")
-    public Optional<CommonOutputActor> getCreatedBy() {
+    public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
@@ -182,7 +182,7 @@ public final class ModelResponse {
     }
 
     @JsonProperty("updated_by")
-    public Optional<CommonOutputActor> getUpdatedBy() {
+    public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
     }
 
@@ -263,7 +263,7 @@ public final class ModelResponse {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<CommonOutputActor> createdBy = Optional.empty();
+        private Optional<OutputActor> createdBy = Optional.empty();
 
         private Optional<Enrichment> enricher = Optional.empty();
 
@@ -289,7 +289,7 @@ public final class ModelResponse {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        private Optional<CommonOutputActor> updatedBy = Optional.empty();
+        private Optional<OutputActor> updatedBy = Optional.empty();
 
         private Optional<Integer> version = Optional.empty();
 
@@ -354,12 +354,12 @@ public final class ModelResponse {
         }
 
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
-        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+        public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
             return this;
         }
 
-        public Builder createdBy(CommonOutputActor createdBy) {
+        public Builder createdBy(OutputActor createdBy) {
             this.createdBy = Optional.of(createdBy);
             return this;
         }
@@ -497,12 +497,12 @@ public final class ModelResponse {
         }
 
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
-        public Builder updatedBy(Optional<CommonOutputActor> updatedBy) {
+        public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
             return this;
         }
 
-        public Builder updatedBy(CommonOutputActor updatedBy) {
+        public Builder updatedBy(OutputActor updatedBy) {
             this.updatedBy = Optional.of(updatedBy);
             return this;
         }

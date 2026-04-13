@@ -18,8 +18,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = CommonOutputActor.Builder.class)
-public final class CommonOutputActor {
+@JsonDeserialize(builder = OutputActor.Builder.class)
+public final class OutputActor {
     private final Optional<String> id;
 
     private final Optional<String> name;
@@ -28,7 +28,7 @@ public final class CommonOutputActor {
 
     private final Map<String, Object> additionalProperties;
 
-    private CommonOutputActor(
+    private OutputActor(
             Optional<String> id,
             Optional<String> name,
             Optional<String> type,
@@ -57,7 +57,7 @@ public final class CommonOutputActor {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof CommonOutputActor && equalTo((CommonOutputActor) other);
+        return other instanceof OutputActor && equalTo((OutputActor) other);
     }
 
     @JsonAnyGetter
@@ -65,7 +65,7 @@ public final class CommonOutputActor {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(CommonOutputActor other) {
+    private boolean equalTo(OutputActor other) {
         return id.equals(other.id) && name.equals(other.name) && type.equals(other.type);
     }
 
@@ -96,7 +96,7 @@ public final class CommonOutputActor {
 
         private Builder() {}
 
-        public Builder from(CommonOutputActor other) {
+        public Builder from(OutputActor other) {
             id(other.getId());
             name(other.getName());
             type(other.getType());
@@ -136,8 +136,8 @@ public final class CommonOutputActor {
             return this;
         }
 
-        public CommonOutputActor build() {
-            return new CommonOutputActor(id, name, type, additionalProperties);
+        public OutputActor build() {
+            return new OutputActor(id, name, type, additionalProperties);
         }
     }
 }

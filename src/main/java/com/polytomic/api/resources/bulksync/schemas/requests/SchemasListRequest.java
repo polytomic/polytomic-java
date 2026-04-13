@@ -30,6 +30,9 @@ public final class SchemasListRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Optional filters applied to the returned schemas. Supports enabled=true to return only enabled schemas and enabled=false to return only disabled schemas.
+     */
     @JsonProperty("filters")
     public Optional<Map<String, Optional<String>>> getFilters() {
         return filters;

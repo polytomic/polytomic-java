@@ -29,6 +29,9 @@ public final class BulkSyncListRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Filter to only active (true) or only paused (false) syncs. Omit to return both.
+     */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;

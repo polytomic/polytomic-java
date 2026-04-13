@@ -48,26 +48,41 @@ public final class EventsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Organization to list events for. Only used by system callers; normal and partner callers are always scoped to their own organization.
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Filter to a single event type. Use GET /api/events_types to list valid values.
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return Return events created strictly after this timestamp.
+     */
     @JsonProperty("starting_after")
     public Optional<OffsetDateTime> getStartingAfter() {
         return startingAfter;
     }
 
+    /**
+     * @return Return events created strictly before this timestamp.
+     */
     @JsonProperty("ending_before")
     public Optional<OffsetDateTime> getEndingBefore() {
         return endingBefore;
     }
 
+    /**
+     * @return Maximum number of events to return. Default 10, maximum 100.
+     */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;

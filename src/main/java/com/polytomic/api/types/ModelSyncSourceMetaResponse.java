@@ -40,16 +40,25 @@ public final class ModelSyncSourceMetaResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Additional configuration fields available for this source, keyed by field name.
+     */
     @JsonProperty("configuration")
     public Optional<Map<String, ConfigurationValue>> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Map of configuration item name to its metadata (available values, required-one-of groups).
+     */
     @JsonProperty("items")
     public Optional<Map<String, Optional<SourceMeta>>> getItems() {
         return items;
     }
 
+    /**
+     * @return Configuration items where exactly one must be selected by the caller.
+     */
     @JsonProperty("requires_one_of")
     public Optional<List<String>> getRequiresOneOf() {
         return requiresOneOf;

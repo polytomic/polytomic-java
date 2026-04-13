@@ -47,11 +47,17 @@ public final class JobResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Error message if the job failed.
+     */
     @JsonProperty("error")
     public Optional<String> getError() {
         return error;
     }
 
+    /**
+     * @return Identifier of the job.
+     */
     @JsonProperty("job_id")
     public Optional<String> getJobId() {
         return jobId;
@@ -67,6 +73,9 @@ public final class JobResponse {
         return status;
     }
 
+    /**
+     * @return Job type. Matches the type used to fetch the job.
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;

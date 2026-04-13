@@ -95,6 +95,9 @@ public final class GetIdentityResponseSchema {
         return isPartner;
     }
 
+    /**
+     * @return Whether the caller is a system actor.
+     */
     @JsonProperty("is_system")
     public Optional<Boolean> getIsSystem() {
         return isSystem;
@@ -124,6 +127,9 @@ public final class GetIdentityResponseSchema {
         return organizationName;
     }
 
+    /**
+     * @return Deprecated legacy role name. Populated only for user callers.
+     */
     @JsonProperty("role")
     public Optional<String> getRole() {
         return role;

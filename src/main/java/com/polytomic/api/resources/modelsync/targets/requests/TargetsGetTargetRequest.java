@@ -33,11 +33,17 @@ public final class TargetsGetTargetRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Target object type to query (e.g. schema name). When supplied, the response is narrowed to objects matching this type.
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return Substring filter applied to target object names. Combine with type to browse large schemas.
+     */
     @JsonProperty("search")
     public Optional<String> getSearch() {
         return search;

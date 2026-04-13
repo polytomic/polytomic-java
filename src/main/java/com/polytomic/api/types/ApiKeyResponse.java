@@ -29,6 +29,9 @@ public final class ApiKeyResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Newly created API key. This value is shown only once; store it securely.
+     */
     @JsonProperty("value")
     public Optional<String> getValue() {
         return value;

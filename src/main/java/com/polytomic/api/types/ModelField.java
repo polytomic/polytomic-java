@@ -23,7 +23,7 @@ import java.util.Optional;
 public final class ModelField {
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<CommonOutputActor> createdBy;
+    private final Optional<OutputActor> createdBy;
 
     private final Optional<String> description;
 
@@ -49,7 +49,7 @@ public final class ModelField {
 
     private ModelField(
             Optional<OffsetDateTime> createdAt,
-            Optional<CommonOutputActor> createdBy,
+            Optional<OutputActor> createdBy,
             Optional<String> description,
             Optional<Object> example,
             Optional<String> id,
@@ -82,7 +82,7 @@ public final class ModelField {
     }
 
     @JsonProperty("created_by")
-    public Optional<CommonOutputActor> getCreatedBy() {
+    public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
@@ -192,7 +192,7 @@ public final class ModelField {
     public static final class Builder {
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<CommonOutputActor> createdBy = Optional.empty();
+        private Optional<OutputActor> createdBy = Optional.empty();
 
         private Optional<String> description = Optional.empty();
 
@@ -247,12 +247,12 @@ public final class ModelField {
         }
 
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
-        public Builder createdBy(Optional<CommonOutputActor> createdBy) {
+        public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
             return this;
         }
 
-        public Builder createdBy(CommonOutputActor createdBy) {
+        public Builder createdBy(OutputActor createdBy) {
             this.createdBy = Optional.of(createdBy);
             return this;
         }

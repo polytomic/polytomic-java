@@ -32,6 +32,9 @@ public final class SetPrimaryKeysRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Ordered list of source fields that together form the primary key. Replaces any existing override; supply an empty list to clear.
+     */
     @JsonProperty("fields")
     public Optional<List<SchemaPrimaryKeyOverrideInput>> getFields() {
         return fields;

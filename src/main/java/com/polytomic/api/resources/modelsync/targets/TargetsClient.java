@@ -28,14 +28,35 @@ public class TargetsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Returns target metadata for a connection.
+     * <blockquote>
+     * <p>🚧 Deprecated</p>
+     * <p>Use <code>GET /api/connections/{id}/modelsync/targetobjects</code> instead.</p>
+     * </blockquote>
+     */
     public GetConnectionMetaEnvelope getTarget(String id) {
         return getTarget(id, TargetsGetTargetRequest.builder().build());
     }
 
+    /**
+     * Returns target metadata for a connection.
+     * <blockquote>
+     * <p>🚧 Deprecated</p>
+     * <p>Use <code>GET /api/connections/{id}/modelsync/targetobjects</code> instead.</p>
+     * </blockquote>
+     */
     public GetConnectionMetaEnvelope getTarget(String id, TargetsGetTargetRequest request) {
         return getTarget(id, request, null);
     }
 
+    /**
+     * Returns target metadata for a connection.
+     * <blockquote>
+     * <p>🚧 Deprecated</p>
+     * <p>Use <code>GET /api/connections/{id}/modelsync/targetobjects</code> instead.</p>
+     * </blockquote>
+     */
     public GetConnectionMetaEnvelope getTarget(
             String id, TargetsGetTargetRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -74,10 +95,38 @@ public class TargetsClient {
         }
     }
 
+    /**
+     * Returns the fields of a specific target object on a connection.
+     * <p>Pass the target object identifier to retrieve the fields available for
+     * mapping on that object. These are the destination fields you can reference
+     * when configuring field mappings in a model sync.</p>
+     * <blockquote>
+     * <p>📘 To list available target objects and their identifiers, use
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>.</p>
+     * </blockquote>
+     * <p>Fields returned here reflect the connection's current cached state. If the
+     * upstream object schema has changed, trigger a schema refresh with
+     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * before calling this endpoint.</p>
+     */
     public TargetResponseEnvelope getTargetFields(String id, TargetsGetTargetFieldsRequest request) {
         return getTargetFields(id, request, null);
     }
 
+    /**
+     * Returns the fields of a specific target object on a connection.
+     * <p>Pass the target object identifier to retrieve the fields available for
+     * mapping on that object. These are the destination fields you can reference
+     * when configuring field mappings in a model sync.</p>
+     * <blockquote>
+     * <p>📘 To list available target objects and their identifiers, use
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>.</p>
+     * </blockquote>
+     * <p>Fields returned here reflect the connection's current cached state. If the
+     * upstream object schema has changed, trigger a schema refresh with
+     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * before calling this endpoint.</p>
+     */
     public TargetResponseEnvelope getTargetFields(
             String id, TargetsGetTargetFieldsRequest request, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -115,12 +164,12 @@ public class TargetsClient {
     }
 
     /**
-     * Returns available model sync destinations for a connection.
+     * Lists the target objects available on a connection for use as a model sync destination.
      * <p>If the connection supports creating new destinations, the <code>target_creation</code>
      * object will contain information on what properties are required to create the
      * target.</p>
      * <p>Target creation properties are all string values; the <code>enum</code> flag indicates if
-     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/targets/get-create-property">Target
+     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="../../../../../api-reference/model-sync/targets/get-create-property">Target
      * Creation Property
      * Values</a>
      * endpoint can be used to retrieve the valid values.</p>
@@ -134,12 +183,12 @@ public class TargetsClient {
     }
 
     /**
-     * Returns available model sync destinations for a connection.
+     * Lists the target objects available on a connection for use as a model sync destination.
      * <p>If the connection supports creating new destinations, the <code>target_creation</code>
      * object will contain information on what properties are required to create the
      * target.</p>
      * <p>Target creation properties are all string values; the <code>enum</code> flag indicates if
-     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/targets/get-create-property">Target
+     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="../../../../../api-reference/model-sync/targets/get-create-property">Target
      * Creation Property
      * Values</a>
      * endpoint can be used to retrieve the valid values.</p>
@@ -182,9 +231,10 @@ public class TargetsClient {
     }
 
     /**
-     * Connections which support creating new sync target objects (destinations) will
+     * Returns the valid values for a target-creation property on a connection that supports creating new target objects.
+     * <p>Connections which support creating new sync target objects (destinations) will
      * return <code>target_creation</code> with their <a href="./list">target object list</a>. This endpoint
-     * will return possible values for properties where <code>enum</code> is <code>true</code>.
+     * will return possible values for properties where <code>enum</code> is <code>true</code>.</p>
      * <p>If the connection does not support creating new target objects, an HTTP 404 will
      * be returned.</p>
      * <p>The <code>values</code> array lists the valid options (and labels) for the property. Each
@@ -205,7 +255,7 @@ public class TargetsClient {
      *   ]
      * }
      * </code></pre>
-     * <p>The <code>value</code> for the selected option should be passed when <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/create">creating a
+     * <p>The <code>value</code> for the selected option should be passed when <a href="../../../../../../../api-reference/model-sync/create">creating a
      * sync</a>.</p>
      */
     public V4TargetPropertyValuesEnvelope getCreateProperty(String id, String property) {
@@ -213,9 +263,10 @@ public class TargetsClient {
     }
 
     /**
-     * Connections which support creating new sync target objects (destinations) will
+     * Returns the valid values for a target-creation property on a connection that supports creating new target objects.
+     * <p>Connections which support creating new sync target objects (destinations) will
      * return <code>target_creation</code> with their <a href="./list">target object list</a>. This endpoint
-     * will return possible values for properties where <code>enum</code> is <code>true</code>.
+     * will return possible values for properties where <code>enum</code> is <code>true</code>.</p>
      * <p>If the connection does not support creating new target objects, an HTTP 404 will
      * be returned.</p>
      * <p>The <code>values</code> array lists the valid options (and labels) for the property. Each
@@ -236,7 +287,7 @@ public class TargetsClient {
      *   ]
      * }
      * </code></pre>
-     * <p>The <code>value</code> for the selected option should be passed when <a href="https://apidocs.polytomic.com/2024-02-08/api-reference/model-sync/create">creating a
+     * <p>The <code>value</code> for the selected option should be passed when <a href="../../../../../../../api-reference/model-sync/create">creating a
      * sync</a>.</p>
      */
     public V4TargetPropertyValuesEnvelope getCreateProperty(String id, String property, RequestOptions requestOptions) {

@@ -30,10 +30,24 @@ public class UsersClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Lists all users in the specified organization.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public ListUsersEnvelope list(String orgId) {
         return list(orgId, null);
     }
 
+    /**
+     * Lists all users in the specified organization.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public ListUsersEnvelope list(String orgId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -66,10 +80,24 @@ public class UsersClient {
         }
     }
 
+    /**
+     * Creates a new user in the specified organization and assigns the requested permissions roles.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope create(String orgId, CreateUserRequestSchema request) {
         return create(orgId, request, null);
     }
 
+    /**
+     * Creates a new user in the specified organization and assigns the requested permissions roles.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope create(String orgId, CreateUserRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -109,10 +137,24 @@ public class UsersClient {
         }
     }
 
+    /**
+     * Returns a single user in the specified organization.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope get(String id, String orgId) {
         return get(id, orgId, null);
     }
 
+    /**
+     * Returns a single user in the specified organization.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope get(String id, String orgId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -146,10 +188,24 @@ public class UsersClient {
         }
     }
 
+    /**
+     * Updates a user's assigned permissions roles.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope update(String id, String orgId, UpdateUserRequestSchema request) {
         return update(id, orgId, request, null);
     }
 
+    /**
+     * Updates a user's assigned permissions roles.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope update(
             String id, String orgId, UpdateUserRequestSchema request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -191,10 +247,24 @@ public class UsersClient {
         }
     }
 
+    /**
+     * Deletes a user from the specified organization.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope remove(String id, String orgId) {
         return remove(id, orgId, null);
     }
 
+    /**
+     * Deletes a user from the specified organization.
+     * <blockquote>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * </blockquote>
+     */
     public UserEnvelope remove(String id, String orgId, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -229,9 +299,10 @@ public class UsersClient {
     }
 
     /**
+     * Issues a new API key for the specified user.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(String orgId, String id) {
@@ -239,9 +310,10 @@ public class UsersClient {
     }
 
     /**
+     * Issues a new API key for the specified user.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(String orgId, String id, UsersCreateApiKeyRequest request) {
@@ -249,9 +321,10 @@ public class UsersClient {
     }
 
     /**
+     * Issues a new API key for the specified user.
      * <blockquote>
-     * 🚧 Requires partner key
-     * <p>User endpoints are only accessible using <a href="https://apidocs.polytomic.com/guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 Requires partner key</p>
+     * <p>User endpoints are only accessible using <a href="../../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(

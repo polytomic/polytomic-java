@@ -26,10 +26,20 @@ public class NotificationsClient {
         this.clientOptions = clientOptions;
     }
 
+    /**
+     * Returns the list of email addresses subscribed to global sync error notifications for the caller's organization.
+     * <p>To update the subscriber list, use
+     * <a href="./put"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
+     */
     public V4GlobalErrorSubscribersResponse getGlobalErrorSubscribers() {
         return getGlobalErrorSubscribers(null);
     }
 
+    /**
+     * Returns the list of email addresses subscribed to global sync error notifications for the caller's organization.
+     * <p>To update the subscriber list, use
+     * <a href="./put"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
+     */
     public V4GlobalErrorSubscribersResponse getGlobalErrorSubscribers(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -61,15 +71,39 @@ public class NotificationsClient {
         }
     }
 
+    /**
+     * Replaces the list of email addresses subscribed to global sync error notifications for the caller's organization.
+     * <p>This is a <strong>full replacement</strong> — the request body becomes the complete
+     * subscriber list. To add or remove a single address without affecting others,
+     * fetch the current list with
+     * <a href="./get"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
+     * and send the modified list back.</p>
+     */
     public V4GlobalErrorSubscribersResponse setGlobalErrorSubscribers() {
         return setGlobalErrorSubscribers(
                 V4GlobalErrorSubscribersRequest.builder().build());
     }
 
+    /**
+     * Replaces the list of email addresses subscribed to global sync error notifications for the caller's organization.
+     * <p>This is a <strong>full replacement</strong> — the request body becomes the complete
+     * subscriber list. To add or remove a single address without affecting others,
+     * fetch the current list with
+     * <a href="./get"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
+     * and send the modified list back.</p>
+     */
     public V4GlobalErrorSubscribersResponse setGlobalErrorSubscribers(V4GlobalErrorSubscribersRequest request) {
         return setGlobalErrorSubscribers(request, null);
     }
 
+    /**
+     * Replaces the list of email addresses subscribed to global sync error notifications for the caller's organization.
+     * <p>This is a <strong>full replacement</strong> — the request body becomes the complete
+     * subscriber list. To add or remove a single address without affecting others,
+     * fetch the current list with
+     * <a href="./get"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
+     * and send the modified list back.</p>
+     */
     public V4GlobalErrorSubscribersResponse setGlobalErrorSubscribers(
             V4GlobalErrorSubscribersRequest request, RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

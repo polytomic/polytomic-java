@@ -23,6 +23,8 @@ import java.util.Optional;
 public final class BulkSyncStatusResponse {
     private final Optional<BulkSyncExecution> currentExecution;
 
+    private final Optional<BulkSyncIngestionStatus> ingestionStatus;
+
     private final Optional<BulkSyncExecution> lastExecution;
 
     private final Optional<OffsetDateTime> nextExecutionTime;
@@ -31,10 +33,12 @@ public final class BulkSyncStatusResponse {
 
     private BulkSyncStatusResponse(
             Optional<BulkSyncExecution> currentExecution,
+            Optional<BulkSyncIngestionStatus> ingestionStatus,
             Optional<BulkSyncExecution> lastExecution,
             Optional<OffsetDateTime> nextExecutionTime,
             Map<String, Object> additionalProperties) {
         this.currentExecution = currentExecution;
+        this.ingestionStatus = ingestionStatus;
         this.lastExecution = lastExecution;
         this.nextExecutionTime = nextExecutionTime;
         this.additionalProperties = additionalProperties;
@@ -43,6 +47,11 @@ public final class BulkSyncStatusResponse {
     @JsonProperty("current_execution")
     public Optional<BulkSyncExecution> getCurrentExecution() {
         return currentExecution;
+    }
+
+    @JsonProperty("ingestion_status")
+    public Optional<BulkSyncIngestionStatus> getIngestionStatus() {
+        return ingestionStatus;
     }
 
     @JsonProperty("last_execution")
@@ -68,13 +77,14 @@ public final class BulkSyncStatusResponse {
 
     private boolean equalTo(BulkSyncStatusResponse other) {
         return currentExecution.equals(other.currentExecution)
+                && ingestionStatus.equals(other.ingestionStatus)
                 && lastExecution.equals(other.lastExecution)
                 && nextExecutionTime.equals(other.nextExecutionTime);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.currentExecution, this.lastExecution, this.nextExecutionTime);
+        return Objects.hash(this.currentExecution, this.ingestionStatus, this.lastExecution, this.nextExecutionTime);
     }
 
     @java.lang.Override
@@ -90,6 +100,8 @@ public final class BulkSyncStatusResponse {
     public static final class Builder {
         private Optional<BulkSyncExecution> currentExecution = Optional.empty();
 
+        private Optional<BulkSyncIngestionStatus> ingestionStatus = Optional.empty();
+
         private Optional<BulkSyncExecution> lastExecution = Optional.empty();
 
         private Optional<OffsetDateTime> nextExecutionTime = Optional.empty();
@@ -101,6 +113,7 @@ public final class BulkSyncStatusResponse {
 
         public Builder from(BulkSyncStatusResponse other) {
             currentExecution(other.getCurrentExecution());
+            ingestionStatus(other.getIngestionStatus());
             lastExecution(other.getLastExecution());
             nextExecutionTime(other.getNextExecutionTime());
             return this;
@@ -114,6 +127,17 @@ public final class BulkSyncStatusResponse {
 
         public Builder currentExecution(BulkSyncExecution currentExecution) {
             this.currentExecution = Optional.of(currentExecution);
+            return this;
+        }
+
+        @JsonSetter(value = "ingestion_status", nulls = Nulls.SKIP)
+        public Builder ingestionStatus(Optional<BulkSyncIngestionStatus> ingestionStatus) {
+            this.ingestionStatus = ingestionStatus;
+            return this;
+        }
+
+        public Builder ingestionStatus(BulkSyncIngestionStatus ingestionStatus) {
+            this.ingestionStatus = Optional.of(ingestionStatus);
             return this;
         }
 
@@ -140,7 +164,8 @@ public final class BulkSyncStatusResponse {
         }
 
         public BulkSyncStatusResponse build() {
-            return new BulkSyncStatusResponse(currentExecution, lastExecution, nextExecutionTime, additionalProperties);
+            return new BulkSyncStatusResponse(
+                    currentExecution, ingestionStatus, lastExecution, nextExecutionTime, additionalProperties);
         }
     }
 }

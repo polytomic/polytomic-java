@@ -18,29 +18,27 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonDeserialize(builder = V4ExportSyncLogsResponse.Builder.class)
-public final class V4ExportSyncLogsResponse {
-    private final Optional<String> url;
+@JsonDeserialize(builder = V3BulkSyncSourceCapabilities.Builder.class)
+public final class V3BulkSyncSourceCapabilities {
+    private final Optional<Boolean> supportsTrackingFields;
 
     private final Map<String, Object> additionalProperties;
 
-    private V4ExportSyncLogsResponse(Optional<String> url, Map<String, Object> additionalProperties) {
-        this.url = url;
+    private V3BulkSyncSourceCapabilities(
+            Optional<Boolean> supportsTrackingFields, Map<String, Object> additionalProperties) {
+        this.supportsTrackingFields = supportsTrackingFields;
         this.additionalProperties = additionalProperties;
     }
 
-    /**
-     * @return Signed URL to download the exported log archive.
-     */
-    @JsonProperty("url")
-    public Optional<String> getUrl() {
-        return url;
+    @JsonProperty("supports_tracking_fields")
+    public Optional<Boolean> getSupportsTrackingFields() {
+        return supportsTrackingFields;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof V4ExportSyncLogsResponse && equalTo((V4ExportSyncLogsResponse) other);
+        return other instanceof V3BulkSyncSourceCapabilities && equalTo((V3BulkSyncSourceCapabilities) other);
     }
 
     @JsonAnyGetter
@@ -48,13 +46,13 @@ public final class V4ExportSyncLogsResponse {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(V4ExportSyncLogsResponse other) {
-        return url.equals(other.url);
+    private boolean equalTo(V3BulkSyncSourceCapabilities other) {
+        return supportsTrackingFields.equals(other.supportsTrackingFields);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.url);
+        return Objects.hash(this.supportsTrackingFields);
     }
 
     @java.lang.Override
@@ -68,31 +66,31 @@ public final class V4ExportSyncLogsResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<String> url = Optional.empty();
+        private Optional<Boolean> supportsTrackingFields = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        public Builder from(V4ExportSyncLogsResponse other) {
-            url(other.getUrl());
+        public Builder from(V3BulkSyncSourceCapabilities other) {
+            supportsTrackingFields(other.getSupportsTrackingFields());
             return this;
         }
 
-        @JsonSetter(value = "url", nulls = Nulls.SKIP)
-        public Builder url(Optional<String> url) {
-            this.url = url;
+        @JsonSetter(value = "supports_tracking_fields", nulls = Nulls.SKIP)
+        public Builder supportsTrackingFields(Optional<Boolean> supportsTrackingFields) {
+            this.supportsTrackingFields = supportsTrackingFields;
             return this;
         }
 
-        public Builder url(String url) {
-            this.url = Optional.of(url);
+        public Builder supportsTrackingFields(Boolean supportsTrackingFields) {
+            this.supportsTrackingFields = Optional.of(supportsTrackingFields);
             return this;
         }
 
-        public V4ExportSyncLogsResponse build() {
-            return new V4ExportSyncLogsResponse(url, additionalProperties);
+        public V3BulkSyncSourceCapabilities build() {
+            return new V3BulkSyncSourceCapabilities(supportsTrackingFields, additionalProperties);
         }
     }
 }

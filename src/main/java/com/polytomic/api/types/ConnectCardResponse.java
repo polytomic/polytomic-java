@@ -41,6 +41,9 @@ public final class ConnectCardResponse {
         return redirectUrl;
     }
 
+    /**
+     * @return Opaque single-use token identifying the Connect session.
+     */
     @JsonProperty("token")
     public Optional<String> getToken() {
         return token;

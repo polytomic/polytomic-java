@@ -24,14 +24,28 @@ public class IdentityClient {
     }
 
     /**
-     * Returns information about the caller's identity.
+     * Returns information about the authenticated caller and, if applicable, the organization they are scoped to.
+     * <p>Use this endpoint to confirm which kind of credential is being used before
+     * calling endpoints with stricter authorization rules.</p>
+     * <p>For user-scoped credentials, the response includes the resolved user and
+     * organization details. For non-user keys, the response identifies the key class
+     * with the corresponding boolean flags instead of impersonating a user.</p>
+     * <p>This endpoint is especially useful when debugging why a request is being
+     * accepted or rejected by endpoints that are limited to particular caller types.</p>
      */
     public GetIdentityResponseEnvelope get() {
         return get(null);
     }
 
     /**
-     * Returns information about the caller's identity.
+     * Returns information about the authenticated caller and, if applicable, the organization they are scoped to.
+     * <p>Use this endpoint to confirm which kind of credential is being used before
+     * calling endpoints with stricter authorization rules.</p>
+     * <p>For user-scoped credentials, the response includes the resolved user and
+     * organization details. For non-user keys, the response identifies the key class
+     * with the corresponding boolean flags instead of impersonating a user.</p>
+     * <p>This endpoint is especially useful when debugging why a request is being
+     * accepted or rejected by endpoints that are limited to particular caller types.</p>
      */
     public GetIdentityResponseEnvelope get(RequestOptions requestOptions) {
         HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

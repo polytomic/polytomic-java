@@ -38,6 +38,8 @@ public final class BulkSyncExecution {
 
     private final Optional<Boolean> isTest;
 
+    private final Optional<BulkOutputDisposition> outputDisposition;
+
     private final Optional<Integer> recordCount;
 
     private final Optional<List<BulkSyncSchemaExecution>> schemas;
@@ -65,6 +67,7 @@ public final class BulkSyncExecution {
             Optional<Boolean> isPartial,
             Optional<Boolean> isResync,
             Optional<Boolean> isTest,
+            Optional<BulkOutputDisposition> outputDisposition,
             Optional<Integer> recordCount,
             Optional<List<BulkSyncSchemaExecution>> schemas,
             Optional<OffsetDateTime> startedAt,
@@ -82,6 +85,7 @@ public final class BulkSyncExecution {
         this.isPartial = isPartial;
         this.isResync = isResync;
         this.isTest = isTest;
+        this.outputDisposition = outputDisposition;
         this.recordCount = recordCount;
         this.schemas = schemas;
         this.startedAt = startedAt;
@@ -131,6 +135,11 @@ public final class BulkSyncExecution {
     @JsonProperty("is_test")
     public Optional<Boolean> getIsTest() {
         return isTest;
+    }
+
+    @JsonProperty("output_disposition")
+    public Optional<BulkOutputDisposition> getOutputDisposition() {
+        return outputDisposition;
     }
 
     @JsonProperty("record_count")
@@ -193,6 +202,7 @@ public final class BulkSyncExecution {
                 && isPartial.equals(other.isPartial)
                 && isResync.equals(other.isResync)
                 && isTest.equals(other.isTest)
+                && outputDisposition.equals(other.outputDisposition)
                 && recordCount.equals(other.recordCount)
                 && schemas.equals(other.schemas)
                 && startedAt.equals(other.startedAt)
@@ -214,6 +224,7 @@ public final class BulkSyncExecution {
                 this.isPartial,
                 this.isResync,
                 this.isTest,
+                this.outputDisposition,
                 this.recordCount,
                 this.schemas,
                 this.startedAt,
@@ -251,6 +262,8 @@ public final class BulkSyncExecution {
 
         private Optional<Boolean> isTest = Optional.empty();
 
+        private Optional<BulkOutputDisposition> outputDisposition = Optional.empty();
+
         private Optional<Integer> recordCount = Optional.empty();
 
         private Optional<List<BulkSyncSchemaExecution>> schemas = Optional.empty();
@@ -281,6 +294,7 @@ public final class BulkSyncExecution {
             isPartial(other.getIsPartial());
             isResync(other.getIsResync());
             isTest(other.getIsTest());
+            outputDisposition(other.getOutputDisposition());
             recordCount(other.getRecordCount());
             schemas(other.getSchemas());
             startedAt(other.getStartedAt());
@@ -377,6 +391,17 @@ public final class BulkSyncExecution {
 
         public Builder isTest(Boolean isTest) {
             this.isTest = Optional.of(isTest);
+            return this;
+        }
+
+        @JsonSetter(value = "output_disposition", nulls = Nulls.SKIP)
+        public Builder outputDisposition(Optional<BulkOutputDisposition> outputDisposition) {
+            this.outputDisposition = outputDisposition;
+            return this;
+        }
+
+        public Builder outputDisposition(BulkOutputDisposition outputDisposition) {
+            this.outputDisposition = Optional.of(outputDisposition);
             return this;
         }
 
@@ -478,6 +503,7 @@ public final class BulkSyncExecution {
                     isPartial,
                     isResync,
                     isTest,
+                    outputDisposition,
                     recordCount,
                     schemas,
                     startedAt,

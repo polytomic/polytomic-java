@@ -40,16 +40,25 @@ public final class SourceMeta {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return True when items is non-empty. Callers should present the values as a picker.
+     */
     @JsonProperty("has_items")
     public Optional<Boolean> getHasItems() {
         return hasItems;
     }
 
+    /**
+     * @return Valid values the caller may choose for this configuration item.
+     */
     @JsonProperty("items")
     public Optional<List<Object>> getItems() {
         return items;
     }
 
+    /**
+     * @return Other configuration items this item depends on; exactly one of the listed items must also be selected.
+     */
     @JsonProperty("requires_one_of")
     public Optional<List<String>> getRequiresOneOf() {
         return requiresOneOf;

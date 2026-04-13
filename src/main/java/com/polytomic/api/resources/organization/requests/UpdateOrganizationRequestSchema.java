@@ -51,31 +51,49 @@ public final class UpdateOrganizationRequestSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return OIDC client ID issued by the identity provider.
+     */
     @JsonProperty("client_id")
     public Optional<String> getClientId() {
         return clientId;
     }
 
+    /**
+     * @return OIDC client secret issued by the identity provider. Write-only; never returned in responses.
+     */
     @JsonProperty("client_secret")
     public Optional<String> getClientSecret() {
         return clientSecret;
     }
 
+    /**
+     * @return OIDC issuer URL for organizations using OpenID Connect single sign-on.
+     */
     @JsonProperty("issuer")
     public Optional<String> getIssuer() {
         return issuer;
     }
 
+    /**
+     * @return Human-readable name of the organization. Must be unique across the partner account.
+     */
     @JsonProperty("name")
     public String getName() {
         return name;
     }
 
+    /**
+     * @return Email domain used to match users to this organization during SSO sign-in.
+     */
     @JsonProperty("sso_domain")
     public Optional<String> getSsoDomain() {
         return ssoDomain;
     }
 
+    /**
+     * @return WorkOS organization identifier linking this organization to its SAML/SSO configuration.
+     */
     @JsonProperty("sso_org_id")
     public Optional<String> getSsoOrgId() {
         return ssoOrgId;
@@ -175,6 +193,10 @@ public final class UpdateOrganizationRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Human-readable name of the organization. Must be unique across the partner account.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("name")
         public _FinalStage name(String name) {
@@ -182,6 +204,10 @@ public final class UpdateOrganizationRequestSchema {
             return this;
         }
 
+        /**
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage ssoOrgId(String ssoOrgId) {
             this.ssoOrgId = Optional.of(ssoOrgId);
@@ -195,6 +221,10 @@ public final class UpdateOrganizationRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage ssoDomain(String ssoDomain) {
             this.ssoDomain = Optional.of(ssoDomain);
@@ -208,6 +238,10 @@ public final class UpdateOrganizationRequestSchema {
             return this;
         }
 
+        /**
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage issuer(String issuer) {
             this.issuer = Optional.of(issuer);
@@ -221,6 +255,10 @@ public final class UpdateOrganizationRequestSchema {
             return this;
         }
 
+        /**
+         * <p>OIDC client secret issued by the identity provider. Write-only; never returned in responses.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage clientSecret(String clientSecret) {
             this.clientSecret = Optional.of(clientSecret);
@@ -234,6 +272,10 @@ public final class UpdateOrganizationRequestSchema {
             return this;
         }
 
+        /**
+         * <p>OIDC client ID issued by the identity provider.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage clientId(String clientId) {
             this.clientId = Optional.of(clientId);

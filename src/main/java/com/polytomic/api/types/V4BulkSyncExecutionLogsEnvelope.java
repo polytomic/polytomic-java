@@ -20,18 +20,18 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonDeserialize(builder = V4BulkSyncExecutionLogsEnvelope.Builder.class)
 public final class V4BulkSyncExecutionLogsEnvelope {
-    private final Optional<Map<String, Object>> data;
+    private final Optional<V4BulkSyncExecutionLogs> data;
 
     private final Map<String, Object> additionalProperties;
 
     private V4BulkSyncExecutionLogsEnvelope(
-            Optional<Map<String, Object>> data, Map<String, Object> additionalProperties) {
+            Optional<V4BulkSyncExecutionLogs> data, Map<String, Object> additionalProperties) {
         this.data = data;
         this.additionalProperties = additionalProperties;
     }
 
     @JsonProperty("data")
-    public Optional<Map<String, Object>> getData() {
+    public Optional<V4BulkSyncExecutionLogs> getData() {
         return data;
     }
 
@@ -66,7 +66,7 @@ public final class V4BulkSyncExecutionLogsEnvelope {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Object>> data = Optional.empty();
+        private Optional<V4BulkSyncExecutionLogs> data = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -79,12 +79,12 @@ public final class V4BulkSyncExecutionLogsEnvelope {
         }
 
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
-        public Builder data(Optional<Map<String, Object>> data) {
+        public Builder data(Optional<V4BulkSyncExecutionLogs> data) {
             this.data = data;
             return this;
         }
 
-        public Builder data(Map<String, Object> data) {
+        public Builder data(V4BulkSyncExecutionLogs data) {
             this.data = Optional.of(data);
             return this;
         }
