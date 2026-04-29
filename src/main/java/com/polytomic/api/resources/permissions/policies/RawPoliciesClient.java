@@ -328,8 +328,8 @@ public class RawPoliciesClient {
      * <p>Deletion is permanent. Any access that was granted solely through this policy
      * is revoked immediately for all users who depended on it.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id) {
-        return remove(id, null);
+    public PolytomicHttpResponse<Void> delete(String id) {
+        return delete(id, null);
     }
 
     /**
@@ -337,7 +337,7 @@ public class RawPoliciesClient {
      * <p>Deletion is permanent. Any access that was granted solely through this policy
      * is revoked immediately for all users who depended on it.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id, IdempotentRequestOptions requestOptions) {
+    public PolytomicHttpResponse<Void> delete(String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/policies")

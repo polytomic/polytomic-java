@@ -327,8 +327,8 @@ public class RawRolesClient {
      * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
      * leaving stale role references.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id) {
-        return remove(id, null);
+    public PolytomicHttpResponse<Void> delete(String id) {
+        return delete(id, null);
     }
 
     /**
@@ -342,7 +342,7 @@ public class RawRolesClient {
      * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
      * leaving stale role references.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id, IdempotentRequestOptions requestOptions) {
+    public PolytomicHttpResponse<Void> delete(String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/permissions/roles")

@@ -414,8 +414,8 @@ public class AsyncModelSyncClient {
      * record is removed. Deleted syncs cannot be recovered; recreate them using
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
-    public CompletableFuture<Void> remove(String id) {
-        return this.rawClient.remove(id).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id) {
+        return this.rawClient.delete(id).thenApply(response -> response.body());
     }
 
     /**
@@ -424,8 +424,8 @@ public class AsyncModelSyncClient {
      * record is removed. Deleted syncs cannot be recovered; recreate them using
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
-    public CompletableFuture<Void> remove(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
     }
 
     /**

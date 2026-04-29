@@ -19,10 +19,10 @@ import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.UnprocessableEntityError;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncListRequest;
-import com.polytomic.api.resources.bulksync.requests.BulkSyncRemoveRequest;
 import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.StartBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
@@ -624,8 +624,8 @@ public class AsyncRawBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id) {
-        return remove(id, BulkSyncRemoveRequest.builder().build());
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id) {
+        return delete(id, BulkSyncDeleteRequest.builder().build());
     }
 
     /**
@@ -637,8 +637,8 @@ public class AsyncRawBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id, IdempotentRequestOptions requestOptions) {
-        return remove(id, BulkSyncRemoveRequest.builder().build(), requestOptions);
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id, IdempotentRequestOptions requestOptions) {
+        return delete(id, BulkSyncDeleteRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -650,8 +650,8 @@ public class AsyncRawBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id, BulkSyncRemoveRequest request) {
-        return remove(id, request, null);
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id, BulkSyncDeleteRequest request) {
+        return delete(id, request, null);
     }
 
     /**
@@ -663,8 +663,8 @@ public class AsyncRawBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(
-            String id, BulkSyncRemoveRequest request, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(
+            String id, BulkSyncDeleteRequest request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")

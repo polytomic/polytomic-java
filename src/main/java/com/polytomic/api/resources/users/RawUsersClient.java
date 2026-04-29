@@ -335,8 +335,8 @@ public class RawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<UserEnvelope> removeCurrentOrgUser(String id) {
-        return removeCurrentOrgUser(id, null);
+    public PolytomicHttpResponse<UserEnvelope> deleteCurrentOrgUser(String id) {
+        return deleteCurrentOrgUser(id, null);
     }
 
     /**
@@ -347,7 +347,7 @@ public class RawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<UserEnvelope> removeCurrentOrgUser(
+    public PolytomicHttpResponse<UserEnvelope> deleteCurrentOrgUser(
             String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -713,8 +713,8 @@ public class RawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<UserEnvelope> remove(String orgId, String id) {
-        return remove(orgId, id, null);
+    public PolytomicHttpResponse<UserEnvelope> delete(String orgId, String id) {
+        return delete(orgId, id, null);
     }
 
     /**
@@ -729,7 +729,7 @@ public class RawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<UserEnvelope> remove(
+    public PolytomicHttpResponse<UserEnvelope> delete(
             String orgId, String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

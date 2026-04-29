@@ -23,7 +23,7 @@ import com.polytomic.api.errors.TooManyRequestsError;
 import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.errors.UnprocessableEntityError;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
-import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
+import com.polytomic.api.resources.connections.requests.ConnectionsDeleteRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.ExecuteConnectionProxyRequest;
 import com.polytomic.api.resources.connections.requests.GetConnectionTypeParameterValuesRequestSchema;
@@ -968,8 +968,8 @@ public class AsyncRawConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id) {
-        return remove(id, ConnectionsRemoveRequest.builder().build());
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id) {
+        return delete(id, ConnectionsDeleteRequest.builder().build());
     }
 
     /**
@@ -981,8 +981,8 @@ public class AsyncRawConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id, IdempotentRequestOptions requestOptions) {
-        return remove(id, ConnectionsRemoveRequest.builder().build(), requestOptions);
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id, IdempotentRequestOptions requestOptions) {
+        return delete(id, ConnectionsDeleteRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -994,8 +994,8 @@ public class AsyncRawConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id, ConnectionsRemoveRequest request) {
-        return remove(id, request, null);
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id, ConnectionsDeleteRequest request) {
+        return delete(id, request, null);
     }
 
     /**
@@ -1007,8 +1007,8 @@ public class AsyncRawConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(
-            String id, ConnectionsRemoveRequest request, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(
+            String id, ConnectionsDeleteRequest request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")

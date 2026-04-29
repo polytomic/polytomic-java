@@ -661,7 +661,7 @@ client.bulkSync().update(
 </dl>
 </details>
 
-<details><summary><code>client.bulkSync.remove(id)</code></summary>
+<details><summary><code>client.bulkSync.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -694,9 +694,9 @@ removed.
 <dd>
 
 ```java
-client.bulkSync().remove(
+client.bulkSync().delete(
     "248df4b7-aa70-47b8-a036-33ac447e668d",
-    BulkSyncRemoveRequest
+    BulkSyncDeleteRequest
         .builder()
         .refreshSchemas(true)
         .build()
@@ -1990,7 +1990,7 @@ client.connections().update(
 </dl>
 </details>
 
-<details><summary><code>client.connections.remove(id)</code></summary>
+<details><summary><code>client.connections.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -2022,9 +2022,9 @@ Deletes a connection.
 <dd>
 
 ```java
-client.connections().remove(
+client.connections().delete(
     "248df4b7-aa70-47b8-a036-33ac447e668d",
-    ConnectionsRemoveRequest
+    ConnectionsDeleteRequest
         .builder()
         .force(true)
         .build()
@@ -3904,7 +3904,7 @@ client.models().update(
 </dl>
 </details>
 
-<details><summary><code>client.models.remove(id)</code></summary>
+<details><summary><code>client.models.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -3934,9 +3934,9 @@ Deletes a model.
 <dd>
 
 ```java
-client.models().remove(
+client.models().delete(
     "248df4b7-aa70-47b8-a036-33ac447e668d",
-    ModelsRemoveRequest
+    ModelsDeleteRequest
         .builder()
         .async(true)
         .build()
@@ -4901,7 +4901,7 @@ client.modelSync().update(
 </dl>
 </details>
 
-<details><summary><code>client.modelSync.remove(id)</code></summary>
+<details><summary><code>client.modelSync.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -4932,7 +4932,7 @@ record is removed. Deleted syncs cannot be recovered; recreate them using
 <dd>
 
 ```java
-client.modelSync().remove("248df4b7-aa70-47b8-a036-33ac447e668d");
+client.modelSync().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 ```
 </dd>
 </dl>
@@ -6186,7 +6186,7 @@ client.organization().update(
 </dl>
 </details>
 
-<details><summary><code>client.organization.remove(id)</code></summary>
+<details><summary><code>client.organization.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -6215,7 +6215,7 @@ Partner callers cannot delete their own owner organization.
 <dd>
 
 ```java
-client.organization().remove("248df4b7-aa70-47b8-a036-33ac447e668d");
+client.organization().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 ```
 </dd>
 </dl>
@@ -6494,7 +6494,7 @@ client.users().updateCurrentOrgUser(
 </dl>
 </details>
 
-<details><summary><code>client.users.removeCurrentOrgUser(id) -> UserEnvelope</code></summary>
+<details><summary><code>client.users.deleteCurrentOrgUser(id) -> UserEnvelope</code></summary>
 <dl>
 <dd>
 
@@ -6525,7 +6525,7 @@ Deletes a user from the caller's current organization.
 <dd>
 
 ```java
-client.users().removeCurrentOrgUser("248df4b7-aa70-47b8-a036-33ac447e668d");
+client.users().deleteCurrentOrgUser("248df4b7-aa70-47b8-a036-33ac447e668d");
 ```
 </dd>
 </dl>
@@ -6869,7 +6869,7 @@ client.users().update(
 </dl>
 </details>
 
-<details><summary><code>client.users.remove(orgId, id) -> UserEnvelope</code></summary>
+<details><summary><code>client.users.delete(orgId, id) -> UserEnvelope</code></summary>
 <dl>
 <dd>
 
@@ -6904,7 +6904,7 @@ Deletes a user from the specified organization.
 <dd>
 
 ```java
-client.users().remove("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+client.users().delete("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
 ```
 </dd>
 </dl>
@@ -7302,7 +7302,7 @@ client.webhooks().update(
 </dl>
 </details>
 
-<details><summary><code>client.webhooks.remove(id)</code></summary>
+<details><summary><code>client.webhooks.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -7340,7 +7340,7 @@ configuration, use
 <dd>
 
 ```java
-client.webhooks().remove("248df4b7-aa70-47b8-a036-33ac447e668d");
+client.webhooks().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 ```
 </dd>
 </dl>
@@ -9973,7 +9973,7 @@ client.permissions().policies().update(
 </dl>
 </details>
 
-<details><summary><code>client.permissions.policies.remove(id)</code></summary>
+<details><summary><code>client.permissions.policies.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -10003,7 +10003,7 @@ is revoked immediately for all users who depended on it.
 <dd>
 
 ```java
-client.permissions().policies().remove("248df4b7-aa70-47b8-a036-33ac447e668d");
+client.permissions().policies().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 ```
 </dd>
 </dl>
@@ -10287,7 +10287,7 @@ client.permissions().roles().update(
 </dl>
 </details>
 
-<details><summary><code>client.permissions.roles.remove(id)</code></summary>
+<details><summary><code>client.permissions.roles.delete(id)</code></summary>
 <dl>
 <dd>
 
@@ -10322,7 +10322,7 @@ leaving stale role references.
 <dd>
 
 ```java
-client.permissions().roles().remove("248df4b7-aa70-47b8-a036-33ac447e668d");
+client.permissions().roles().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 ```
 </dd>
 </dl>

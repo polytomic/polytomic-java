@@ -120,8 +120,8 @@ public class PoliciesClient {
      * <p>Deletion is permanent. Any access that was granted solely through this policy
      * is revoked immediately for all users who depended on it.</p>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
@@ -129,7 +129,7 @@ public class PoliciesClient {
      * <p>Deletion is permanent. Any access that was granted solely through this policy
      * is revoked immediately for all users who depended on it.</p>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 }

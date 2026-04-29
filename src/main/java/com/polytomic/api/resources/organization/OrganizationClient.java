@@ -172,15 +172,15 @@ public class OrganizationClient {
      * Deletes an organization.
      * <p>Partner callers cannot delete their own owner organization.</p>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
      * Deletes an organization.
      * <p>Partner callers cannot delete their own owner organization.</p>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 }

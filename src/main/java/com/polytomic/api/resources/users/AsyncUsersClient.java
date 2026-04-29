@@ -127,8 +127,8 @@ public class AsyncUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<UserEnvelope> removeCurrentOrgUser(String id) {
-        return this.rawClient.removeCurrentOrgUser(id).thenApply(response -> response.body());
+    public CompletableFuture<UserEnvelope> deleteCurrentOrgUser(String id) {
+        return this.rawClient.deleteCurrentOrgUser(id).thenApply(response -> response.body());
     }
 
     /**
@@ -139,8 +139,8 @@ public class AsyncUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<UserEnvelope> removeCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.removeCurrentOrgUser(id, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<UserEnvelope> deleteCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.deleteCurrentOrgUser(id, requestOptions).thenApply(response -> response.body());
     }
 
     /**
@@ -255,8 +255,8 @@ public class AsyncUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<UserEnvelope> remove(String orgId, String id) {
-        return this.rawClient.remove(orgId, id).thenApply(response -> response.body());
+    public CompletableFuture<UserEnvelope> delete(String orgId, String id) {
+        return this.rawClient.delete(orgId, id).thenApply(response -> response.body());
     }
 
     /**
@@ -271,8 +271,8 @@ public class AsyncUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<UserEnvelope> remove(String orgId, String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(orgId, id, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<UserEnvelope> delete(String orgId, String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(orgId, id, requestOptions).thenApply(response -> response.body());
     }
 
     /**

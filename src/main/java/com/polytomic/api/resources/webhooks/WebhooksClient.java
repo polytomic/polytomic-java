@@ -153,8 +153,8 @@ public class WebhooksClient {
      * configuration, use
      * <a href="../../../api-reference/webhooks/disable"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
@@ -170,8 +170,8 @@ public class WebhooksClient {
      * configuration, use
      * <a href="../../../api-reference/webhooks/disable"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 
     /**

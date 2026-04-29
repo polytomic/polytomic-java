@@ -526,15 +526,15 @@ public class AsyncRawOrganizationClient {
      * Deletes an organization.
      * <p>Partner callers cannot delete their own owner organization.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id) {
-        return remove(id, null);
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id) {
+        return delete(id, null);
     }
 
     /**
      * Deletes an organization.
      * <p>Partner callers cannot delete their own owner organization.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organizations")

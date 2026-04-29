@@ -19,10 +19,10 @@ import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.resources.models.requests.EnrichmentInputFieldsRequest;
 import com.polytomic.api.resources.models.requests.ModelsCreateRequest;
+import com.polytomic.api.resources.models.requests.ModelsDeleteRequest;
 import com.polytomic.api.resources.models.requests.ModelsGetEnrichmentSourceRequest;
 import com.polytomic.api.resources.models.requests.ModelsGetRequest;
 import com.polytomic.api.resources.models.requests.ModelsPreviewRequest;
-import com.polytomic.api.resources.models.requests.ModelsRemoveRequest;
 import com.polytomic.api.resources.models.requests.ModelsSampleRequest;
 import com.polytomic.api.resources.models.requests.UpdateModelRequest;
 import com.polytomic.api.types.ApiError;
@@ -752,8 +752,8 @@ public class RawModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<Void> remove(String id) {
-        return remove(id, ModelsRemoveRequest.builder().build());
+    public PolytomicHttpResponse<Void> delete(String id) {
+        return delete(id, ModelsDeleteRequest.builder().build());
     }
 
     /**
@@ -763,8 +763,8 @@ public class RawModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<Void> remove(String id, IdempotentRequestOptions requestOptions) {
-        return remove(id, ModelsRemoveRequest.builder().build(), requestOptions);
+    public PolytomicHttpResponse<Void> delete(String id, IdempotentRequestOptions requestOptions) {
+        return delete(id, ModelsDeleteRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -774,8 +774,8 @@ public class RawModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<Void> remove(String id, ModelsRemoveRequest request) {
-        return remove(id, request, null);
+    public PolytomicHttpResponse<Void> delete(String id, ModelsDeleteRequest request) {
+        return delete(id, request, null);
     }
 
     /**
@@ -785,8 +785,8 @@ public class RawModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<Void> remove(
-            String id, ModelsRemoveRequest request, IdempotentRequestOptions requestOptions) {
+    public PolytomicHttpResponse<Void> delete(
+            String id, ModelsDeleteRequest request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/models")

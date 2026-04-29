@@ -7,7 +7,7 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
-import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
+import com.polytomic.api.resources.connections.requests.ConnectionsDeleteRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.ExecuteConnectionProxyRequest;
 import com.polytomic.api.resources.connections.requests.GetConnectionTypeParameterValuesRequestSchema;
@@ -315,8 +315,8 @@ public class AsyncConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id) {
-        return this.rawClient.remove(id).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id) {
+        return this.rawClient.delete(id).thenApply(response -> response.body());
     }
 
     /**
@@ -328,8 +328,8 @@ public class AsyncConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
     }
 
     /**
@@ -341,8 +341,8 @@ public class AsyncConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id, ConnectionsRemoveRequest request) {
-        return this.rawClient.remove(id, request).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, ConnectionsDeleteRequest request) {
+        return this.rawClient.delete(id, request).thenApply(response -> response.body());
     }
 
     /**
@@ -354,9 +354,9 @@ public class AsyncConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(
-            String id, ConnectionsRemoveRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, request, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(
+            String id, ConnectionsDeleteRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**

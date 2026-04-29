@@ -422,8 +422,8 @@ public class AsyncRawWebhooksClient {
      * configuration, use
      * <a href="../../../api-reference/webhooks/disable"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id) {
-        return remove(id, null);
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id) {
+        return delete(id, null);
     }
 
     /**
@@ -439,7 +439,7 @@ public class AsyncRawWebhooksClient {
      * configuration, use
      * <a href="../../../api-reference/webhooks/disable"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<Void>> remove(String id, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<PolytomicHttpResponse<Void>> delete(String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")

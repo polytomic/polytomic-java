@@ -126,8 +126,8 @@ public class UsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public UserEnvelope removeCurrentOrgUser(String id) {
-        return this.rawClient.removeCurrentOrgUser(id).body();
+    public UserEnvelope deleteCurrentOrgUser(String id) {
+        return this.rawClient.deleteCurrentOrgUser(id).body();
     }
 
     /**
@@ -138,8 +138,8 @@ public class UsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public UserEnvelope removeCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.removeCurrentOrgUser(id, requestOptions).body();
+    public UserEnvelope deleteCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.deleteCurrentOrgUser(id, requestOptions).body();
     }
 
     /**
@@ -253,8 +253,8 @@ public class UsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public UserEnvelope remove(String orgId, String id) {
-        return this.rawClient.remove(orgId, id).body();
+    public UserEnvelope delete(String orgId, String id) {
+        return this.rawClient.delete(orgId, id).body();
     }
 
     /**
@@ -269,8 +269,8 @@ public class UsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public UserEnvelope remove(String orgId, String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(orgId, id, requestOptions).body();
+    public UserEnvelope delete(String orgId, String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(orgId, id, requestOptions).body();
     }
 
     /**

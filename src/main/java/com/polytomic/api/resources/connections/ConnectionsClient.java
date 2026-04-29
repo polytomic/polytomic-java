@@ -7,7 +7,7 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
-import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
+import com.polytomic.api.resources.connections.requests.ConnectionsDeleteRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.ExecuteConnectionProxyRequest;
 import com.polytomic.api.resources.connections.requests.GetConnectionTypeParameterValuesRequestSchema;
@@ -311,8 +311,8 @@ public class ConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
@@ -324,8 +324,8 @@ public class ConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 
     /**
@@ -337,8 +337,8 @@ public class ConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public void remove(String id, ConnectionsRemoveRequest request) {
-        this.rawClient.remove(id, request).body();
+    public void delete(String id, ConnectionsDeleteRequest request) {
+        this.rawClient.delete(id, request).body();
     }
 
     /**
@@ -350,8 +350,8 @@ public class ConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public void remove(String id, ConnectionsRemoveRequest request, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, request, requestOptions).body();
+    public void delete(String id, ConnectionsDeleteRequest request, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, request, requestOptions).body();
     }
 
     /**

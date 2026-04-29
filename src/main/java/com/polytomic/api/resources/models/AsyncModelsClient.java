@@ -8,10 +8,10 @@ import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.models.requests.EnrichmentInputFieldsRequest;
 import com.polytomic.api.resources.models.requests.ModelsCreateRequest;
+import com.polytomic.api.resources.models.requests.ModelsDeleteRequest;
 import com.polytomic.api.resources.models.requests.ModelsGetEnrichmentSourceRequest;
 import com.polytomic.api.resources.models.requests.ModelsGetRequest;
 import com.polytomic.api.resources.models.requests.ModelsPreviewRequest;
-import com.polytomic.api.resources.models.requests.ModelsRemoveRequest;
 import com.polytomic.api.resources.models.requests.ModelsSampleRequest;
 import com.polytomic.api.resources.models.requests.UpdateModelRequest;
 import com.polytomic.api.types.CreateModelRequest;
@@ -369,8 +369,8 @@ public class AsyncModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id) {
-        return this.rawClient.remove(id).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id) {
+        return this.rawClient.delete(id).thenApply(response -> response.body());
     }
 
     /**
@@ -380,8 +380,8 @@ public class AsyncModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
     }
 
     /**
@@ -391,8 +391,8 @@ public class AsyncModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id, ModelsRemoveRequest request) {
-        return this.rawClient.remove(id, request).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, ModelsDeleteRequest request) {
+        return this.rawClient.delete(id, request).thenApply(response -> response.body());
     }
 
     /**
@@ -402,9 +402,9 @@ public class AsyncModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(
-            String id, ModelsRemoveRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, request, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(
+            String id, ModelsDeleteRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**

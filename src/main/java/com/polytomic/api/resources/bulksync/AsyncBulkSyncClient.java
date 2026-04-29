@@ -8,10 +8,10 @@ import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.executions.AsyncExecutionsClient;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncListRequest;
-import com.polytomic.api.resources.bulksync.requests.BulkSyncRemoveRequest;
 import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.StartBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
@@ -347,8 +347,8 @@ public class AsyncBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id) {
-        return this.rawClient.remove(id).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id) {
+        return this.rawClient.delete(id).thenApply(response -> response.body());
     }
 
     /**
@@ -360,8 +360,8 @@ public class AsyncBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
     }
 
     /**
@@ -373,8 +373,8 @@ public class AsyncBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(String id, BulkSyncRemoveRequest request) {
-        return this.rawClient.remove(id, request).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, BulkSyncDeleteRequest request) {
+        return this.rawClient.delete(id, request).thenApply(response -> response.body());
     }
 
     /**
@@ -386,9 +386,9 @@ public class AsyncBulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public CompletableFuture<Void> remove(
-            String id, BulkSyncRemoveRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, request, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(
+            String id, BulkSyncDeleteRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, request, requestOptions).thenApply(response -> response.body());
     }
 
     /**

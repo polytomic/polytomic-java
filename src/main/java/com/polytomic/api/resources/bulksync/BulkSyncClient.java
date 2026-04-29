@@ -8,10 +8,10 @@ import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncListRequest;
-import com.polytomic.api.resources.bulksync.requests.BulkSyncRemoveRequest;
 import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.StartBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
@@ -344,8 +344,8 @@ public class BulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
@@ -357,8 +357,8 @@ public class BulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 
     /**
@@ -370,8 +370,8 @@ public class BulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public void remove(String id, BulkSyncRemoveRequest request) {
-        this.rawClient.remove(id, request).body();
+    public void delete(String id, BulkSyncDeleteRequest request) {
+        this.rawClient.delete(id, request).body();
     }
 
     /**
@@ -383,8 +383,8 @@ public class BulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public void remove(String id, BulkSyncRemoveRequest request, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, request, requestOptions).body();
+    public void delete(String id, BulkSyncDeleteRequest request, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, request, requestOptions).body();
     }
 
     /**

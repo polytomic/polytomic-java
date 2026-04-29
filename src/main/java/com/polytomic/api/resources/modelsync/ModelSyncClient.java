@@ -410,8 +410,8 @@ public class ModelSyncClient {
      * record is removed. Deleted syncs cannot be recovered; recreate them using
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
@@ -420,8 +420,8 @@ public class ModelSyncClient {
      * record is removed. Deleted syncs cannot be recovered; recreate them using
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 
     /**

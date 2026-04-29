@@ -125,8 +125,8 @@ public class RolesClient {
      * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
      * leaving stale role references.</p>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
@@ -140,7 +140,7 @@ public class RolesClient {
      * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
      * leaving stale role references.</p>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 }

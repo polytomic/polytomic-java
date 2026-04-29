@@ -8,10 +8,10 @@ import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.models.requests.EnrichmentInputFieldsRequest;
 import com.polytomic.api.resources.models.requests.ModelsCreateRequest;
+import com.polytomic.api.resources.models.requests.ModelsDeleteRequest;
 import com.polytomic.api.resources.models.requests.ModelsGetEnrichmentSourceRequest;
 import com.polytomic.api.resources.models.requests.ModelsGetRequest;
 import com.polytomic.api.resources.models.requests.ModelsPreviewRequest;
-import com.polytomic.api.resources.models.requests.ModelsRemoveRequest;
 import com.polytomic.api.resources.models.requests.ModelsSampleRequest;
 import com.polytomic.api.resources.models.requests.UpdateModelRequest;
 import com.polytomic.api.types.CreateModelRequest;
@@ -360,8 +360,8 @@ public class ModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public void remove(String id) {
-        this.rawClient.remove(id).body();
+    public void delete(String id) {
+        this.rawClient.delete(id).body();
     }
 
     /**
@@ -371,8 +371,8 @@ public class ModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public void remove(String id, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, requestOptions).body();
+    public void delete(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, requestOptions).body();
     }
 
     /**
@@ -382,8 +382,8 @@ public class ModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public void remove(String id, ModelsRemoveRequest request) {
-        this.rawClient.remove(id, request).body();
+    public void delete(String id, ModelsDeleteRequest request) {
+        this.rawClient.delete(id, request).body();
     }
 
     /**
@@ -393,8 +393,8 @@ public class ModelsClient {
      * or reconfigure any syncs that reference this model before deleting it.</p>
      * </blockquote>
      */
-    public void remove(String id, ModelsRemoveRequest request, IdempotentRequestOptions requestOptions) {
-        this.rawClient.remove(id, request, requestOptions).body();
+    public void delete(String id, ModelsDeleteRequest request, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(id, request, requestOptions).body();
     }
 
     /**

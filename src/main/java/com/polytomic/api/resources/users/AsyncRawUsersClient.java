@@ -417,8 +417,8 @@ public class AsyncRawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> removeCurrentOrgUser(String id) {
-        return removeCurrentOrgUser(id, null);
+    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> deleteCurrentOrgUser(String id) {
+        return deleteCurrentOrgUser(id, null);
     }
 
     /**
@@ -429,7 +429,7 @@ public class AsyncRawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> removeCurrentOrgUser(
+    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> deleteCurrentOrgUser(
             String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -893,8 +893,8 @@ public class AsyncRawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> remove(String orgId, String id) {
-        return remove(orgId, id, null);
+    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> delete(String orgId, String id) {
+        return delete(orgId, id, null);
     }
 
     /**
@@ -909,7 +909,7 @@ public class AsyncRawUsersClient {
      * undone.</p>
      * </blockquote>
      */
-    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> remove(
+    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> delete(
             String orgId, String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()

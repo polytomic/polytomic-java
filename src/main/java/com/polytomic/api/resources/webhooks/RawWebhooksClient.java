@@ -348,8 +348,8 @@ public class RawWebhooksClient {
      * configuration, use
      * <a href="../../../api-reference/webhooks/disable"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id) {
-        return remove(id, null);
+    public PolytomicHttpResponse<Void> delete(String id) {
+        return delete(id, null);
     }
 
     /**
@@ -365,7 +365,7 @@ public class RawWebhooksClient {
      * configuration, use
      * <a href="../../../api-reference/webhooks/disable"><code>POST /api/webhooks/{id}/disable</code></a> instead.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id, IdempotentRequestOptions requestOptions) {
+    public PolytomicHttpResponse<Void> delete(String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/webhooks")

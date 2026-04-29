@@ -798,8 +798,8 @@ public class RawModelSyncClient {
      * record is removed. Deleted syncs cannot be recovered; recreate them using
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id) {
-        return remove(id, null);
+    public PolytomicHttpResponse<Void> delete(String id) {
+        return delete(id, null);
     }
 
     /**
@@ -808,7 +808,7 @@ public class RawModelSyncClient {
      * record is removed. Deleted syncs cannot be recovered; recreate them using
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
-    public PolytomicHttpResponse<Void> remove(String id, IdempotentRequestOptions requestOptions) {
+    public PolytomicHttpResponse<Void> delete(String id, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")

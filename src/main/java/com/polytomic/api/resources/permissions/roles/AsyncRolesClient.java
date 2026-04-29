@@ -128,8 +128,8 @@ public class AsyncRolesClient {
      * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
      * leaving stale role references.</p>
      */
-    public CompletableFuture<Void> remove(String id) {
-        return this.rawClient.remove(id).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id) {
+        return this.rawClient.delete(id).thenApply(response -> response.body());
     }
 
     /**
@@ -143,7 +143,7 @@ public class AsyncRolesClient {
      * <a href="../../../../api-reference/permissions/policies/update"><code>PUT /api/permissions/policies/{id}</code></a> to avoid
      * leaving stale role references.</p>
      */
-    public CompletableFuture<Void> remove(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.remove(id, requestOptions).thenApply(response -> response.body());
+    public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
     }
 }
