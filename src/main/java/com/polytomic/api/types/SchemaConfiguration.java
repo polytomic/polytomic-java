@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SchemaConfiguration.Builder.class)
 public final class SchemaConfiguration {
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
@@ -28,7 +28,7 @@ public final class SchemaConfiguration {
 
     private final Optional<Boolean> enabled;
 
-    private final Optional<List<V2SchemaConfigurationFieldsItem>> fields;
+    private final Optional<List<SchemaConfigurationFieldsItem>> fields;
 
     private final Optional<List<BulkFilter>> filters;
 
@@ -44,7 +44,7 @@ public final class SchemaConfiguration {
             Optional<OffsetDateTime> dataCutoffTimestamp,
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
-            Optional<List<V2SchemaConfigurationFieldsItem>> fields,
+            Optional<List<SchemaConfigurationFieldsItem>> fields,
             Optional<List<BulkFilter>> filters,
             Optional<String> id,
             Optional<String> partitionKey,
@@ -83,7 +83,7 @@ public final class SchemaConfiguration {
     }
 
     @JsonProperty("fields")
-    public Optional<List<V2SchemaConfigurationFieldsItem>> getFields() {
+    public Optional<List<SchemaConfigurationFieldsItem>> getFields() {
         return fields;
     }
 
@@ -159,7 +159,7 @@ public final class SchemaConfiguration {
 
         private Optional<Boolean> enabled = Optional.empty();
 
-        private Optional<List<V2SchemaConfigurationFieldsItem>> fields = Optional.empty();
+        private Optional<List<SchemaConfigurationFieldsItem>> fields = Optional.empty();
 
         private Optional<List<BulkFilter>> filters = Optional.empty();
 
@@ -193,10 +193,13 @@ public final class SchemaConfiguration {
         }
 
         public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
             return this;
         }
 
+        /**
+         * <p>Whether data cutoff is disabled for this schema.</p>
+         */
         @JsonSetter(value = "disable_data_cutoff", nulls = Nulls.SKIP)
         public Builder disableDataCutoff(Optional<Boolean> disableDataCutoff) {
             this.disableDataCutoff = disableDataCutoff;
@@ -204,10 +207,13 @@ public final class SchemaConfiguration {
         }
 
         public Builder disableDataCutoff(Boolean disableDataCutoff) {
-            this.disableDataCutoff = Optional.of(disableDataCutoff);
+            this.disableDataCutoff = Optional.ofNullable(disableDataCutoff);
             return this;
         }
 
+        /**
+         * <p>Whether the schema is enabled for syncing.</p>
+         */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
             this.enabled = enabled;
@@ -215,18 +221,18 @@ public final class SchemaConfiguration {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
-        public Builder fields(Optional<List<V2SchemaConfigurationFieldsItem>> fields) {
+        public Builder fields(Optional<List<SchemaConfigurationFieldsItem>> fields) {
             this.fields = fields;
             return this;
         }
 
-        public Builder fields(List<V2SchemaConfigurationFieldsItem> fields) {
-            this.fields = Optional.of(fields);
+        public Builder fields(List<SchemaConfigurationFieldsItem> fields) {
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -237,7 +243,7 @@ public final class SchemaConfiguration {
         }
 
         public Builder filters(List<BulkFilter> filters) {
-            this.filters = Optional.of(filters);
+            this.filters = Optional.ofNullable(filters);
             return this;
         }
 
@@ -248,7 +254,7 @@ public final class SchemaConfiguration {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -259,7 +265,7 @@ public final class SchemaConfiguration {
         }
 
         public Builder partitionKey(String partitionKey) {
-            this.partitionKey = Optional.of(partitionKey);
+            this.partitionKey = Optional.ofNullable(partitionKey);
             return this;
         }
 
@@ -270,7 +276,7 @@ public final class SchemaConfiguration {
         }
 
         public Builder trackingField(String trackingField) {
-            this.trackingField = Optional.of(trackingField);
+            this.trackingField = Optional.ofNullable(trackingField);
             return this;
         }
 
@@ -285,6 +291,16 @@ public final class SchemaConfiguration {
                     partitionKey,
                     trackingField,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

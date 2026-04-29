@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Override.Builder.class)
 public final class Override {
     private final Optional<Source> field;
@@ -141,10 +141,13 @@ public final class Override {
         }
 
         public Builder field(Source field) {
-            this.field = Optional.of(field);
+            this.field = Optional.ofNullable(field);
             return this;
         }
 
+        /**
+         * <p>Field ID of the model field to override.</p>
+         */
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
         public Builder fieldId(Optional<String> fieldId) {
             this.fieldId = fieldId;
@@ -152,7 +155,7 @@ public final class Override {
         }
 
         public Builder fieldId(String fieldId) {
-            this.fieldId = Optional.of(fieldId);
+            this.fieldId = Optional.ofNullable(fieldId);
             return this;
         }
 
@@ -163,7 +166,7 @@ public final class Override {
         }
 
         public Builder function(FilterFunction function) {
-            this.function = Optional.of(function);
+            this.function = Optional.ofNullable(function);
             return this;
         }
 
@@ -174,7 +177,7 @@ public final class Override {
         }
 
         public Builder override(Object override) {
-            this.override = Optional.of(override);
+            this.override = Optional.ofNullable(override);
             return this;
         }
 
@@ -185,12 +188,22 @@ public final class Override {
         }
 
         public Builder value(Object value) {
-            this.value = Optional.of(value);
+            this.value = Optional.ofNullable(value);
             return this;
         }
 
         public Override build() {
             return new Override(field, fieldId, function, override, value, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

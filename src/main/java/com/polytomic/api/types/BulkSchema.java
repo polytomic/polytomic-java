@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSchema.Builder.class)
 public final class BulkSchema {
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
@@ -221,7 +221,7 @@ public final class BulkSchema {
         }
 
         public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
             return this;
         }
 
@@ -232,7 +232,7 @@ public final class BulkSchema {
         }
 
         public Builder disableDataCutoff(Boolean disableDataCutoff) {
-            this.disableDataCutoff = Optional.of(disableDataCutoff);
+            this.disableDataCutoff = Optional.ofNullable(disableDataCutoff);
             return this;
         }
 
@@ -243,10 +243,13 @@ public final class BulkSchema {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
+        /**
+         * <p>fields is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for fields.</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<BulkField>> fields) {
             this.fields = fields;
@@ -254,10 +257,13 @@ public final class BulkSchema {
         }
 
         public Builder fields(List<BulkField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
+        /**
+         * <p>filters is not populated on the list endpoint and will be removed in a future version; retrieve individual schemas for filters.</p>
+         */
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
         public Builder filters(Optional<List<BulkFilter>> filters) {
             this.filters = filters;
@@ -265,7 +271,7 @@ public final class BulkSchema {
         }
 
         public Builder filters(List<BulkFilter> filters) {
-            this.filters = Optional.of(filters);
+            this.filters = Optional.ofNullable(filters);
             return this;
         }
 
@@ -276,7 +282,7 @@ public final class BulkSchema {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -287,7 +293,7 @@ public final class BulkSchema {
         }
 
         public Builder outputName(String outputName) {
-            this.outputName = Optional.of(outputName);
+            this.outputName = Optional.ofNullable(outputName);
             return this;
         }
 
@@ -298,7 +304,7 @@ public final class BulkSchema {
         }
 
         public Builder partitionKey(String partitionKey) {
-            this.partitionKey = Optional.of(partitionKey);
+            this.partitionKey = Optional.ofNullable(partitionKey);
             return this;
         }
 
@@ -309,7 +315,7 @@ public final class BulkSchema {
         }
 
         public Builder trackingField(String trackingField) {
-            this.trackingField = Optional.of(trackingField);
+            this.trackingField = Optional.ofNullable(trackingField);
             return this;
         }
 
@@ -320,7 +326,7 @@ public final class BulkSchema {
         }
 
         public Builder userOutputName(String userOutputName) {
-            this.userOutputName = Optional.of(userOutputName);
+            this.userOutputName = Optional.ofNullable(userOutputName);
             return this;
         }
 
@@ -337,6 +343,16 @@ public final class BulkSchema {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

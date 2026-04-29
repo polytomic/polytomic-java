@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectCardResponse.Builder.class)
 public final class ConnectCardResponse {
     private final Optional<String> redirectUrl;
@@ -95,6 +95,9 @@ public final class ConnectCardResponse {
             return this;
         }
 
+        /**
+         * <p>URL to redirect the user to in order to create the new connection.</p>
+         */
         @JsonSetter(value = "redirect_url", nulls = Nulls.SKIP)
         public Builder redirectUrl(Optional<String> redirectUrl) {
             this.redirectUrl = redirectUrl;
@@ -102,10 +105,13 @@ public final class ConnectCardResponse {
         }
 
         public Builder redirectUrl(String redirectUrl) {
-            this.redirectUrl = Optional.of(redirectUrl);
+            this.redirectUrl = Optional.ofNullable(redirectUrl);
             return this;
         }
 
+        /**
+         * <p>Opaque single-use token identifying the Connect session.</p>
+         */
         @JsonSetter(value = "token", nulls = Nulls.SKIP)
         public Builder token(Optional<String> token) {
             this.token = token;
@@ -113,12 +119,22 @@ public final class ConnectCardResponse {
         }
 
         public Builder token(String token) {
-            this.token = Optional.of(token);
+            this.token = Optional.ofNullable(token);
             return this;
         }
 
         public ConnectCardResponse build() {
             return new ConnectCardResponse(redirectUrl, token, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

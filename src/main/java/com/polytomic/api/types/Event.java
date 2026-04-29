@@ -18,12 +18,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Event.Builder.class)
 public final class Event {
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<EventBody> event;
+    private final Optional<EventPayload> event;
 
     private final Optional<String> id;
 
@@ -35,7 +35,7 @@ public final class Event {
 
     private Event(
             Optional<OffsetDateTime> createdAt,
-            Optional<EventBody> event,
+            Optional<EventPayload> event,
             Optional<String> id,
             Optional<String> organizationId,
             Optional<String> type,
@@ -57,7 +57,7 @@ public final class Event {
     }
 
     @JsonProperty("event")
-    public Optional<EventBody> getEvent() {
+    public Optional<EventPayload> getEvent() {
         return event;
     }
 
@@ -122,7 +122,7 @@ public final class Event {
     public static final class Builder {
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<EventBody> event = Optional.empty();
+        private Optional<EventPayload> event = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -144,6 +144,9 @@ public final class Event {
             return this;
         }
 
+        /**
+         * <p>Timestamp the event was emitted.</p>
+         */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
             this.createdAt = createdAt;
@@ -151,21 +154,24 @@ public final class Event {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
         @JsonSetter(value = "event", nulls = Nulls.SKIP)
-        public Builder event(Optional<EventBody> event) {
+        public Builder event(Optional<EventPayload> event) {
             this.event = event;
             return this;
         }
 
-        public Builder event(EventBody event) {
-            this.event = Optional.of(event);
+        public Builder event(EventPayload event) {
+            this.event = Optional.ofNullable(event);
             return this;
         }
 
+        /**
+         * <p>Unique identifier of the event.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -173,10 +179,13 @@ public final class Event {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>Organization the event belongs to.</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -184,10 +193,13 @@ public final class Event {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Event type identifier.</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -195,12 +207,22 @@ public final class Event {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         public Event build() {
             return new Event(createdAt, event, id, organizationId, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

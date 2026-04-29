@@ -12,22 +12,22 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.V4UserFieldRequest;
+import com.polytomic.api.types.UserFieldRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpsertSchemaFieldRequest.Builder.class)
 public final class UpsertSchemaFieldRequest {
-    private final Optional<List<V4UserFieldRequest>> fields;
+    private final Optional<List<UserFieldRequest>> fields;
 
     private final Map<String, Object> additionalProperties;
 
     private UpsertSchemaFieldRequest(
-            Optional<List<V4UserFieldRequest>> fields, Map<String, Object> additionalProperties) {
+            Optional<List<UserFieldRequest>> fields, Map<String, Object> additionalProperties) {
         this.fields = fields;
         this.additionalProperties = additionalProperties;
     }
@@ -36,7 +36,7 @@ public final class UpsertSchemaFieldRequest {
      * @return Fields to create or update on the schema. Existing user-defined fields with the same field_id are replaced.
      */
     @JsonProperty("fields")
-    public Optional<List<V4UserFieldRequest>> getFields() {
+    public Optional<List<UserFieldRequest>> getFields() {
         return fields;
     }
 
@@ -71,7 +71,7 @@ public final class UpsertSchemaFieldRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<List<V4UserFieldRequest>> fields = Optional.empty();
+        private Optional<List<UserFieldRequest>> fields = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -83,19 +83,32 @@ public final class UpsertSchemaFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Fields to create or update on the schema. Existing user-defined fields with the same field_id are replaced.</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
-        public Builder fields(Optional<List<V4UserFieldRequest>> fields) {
+        public Builder fields(Optional<List<UserFieldRequest>> fields) {
             this.fields = fields;
             return this;
         }
 
-        public Builder fields(List<V4UserFieldRequest> fields) {
-            this.fields = Optional.of(fields);
+        public Builder fields(List<UserFieldRequest> fields) {
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
         public UpsertSchemaFieldRequest build() {
             return new UpsertSchemaFieldRequest(fields, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

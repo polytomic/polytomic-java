@@ -3,10 +3,8 @@
  */
 package com.polytomic.api.resources.bulksync;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
@@ -28,18 +26,12 @@ import com.polytomic.api.types.BulkSyncResponseEnvelope;
 import com.polytomic.api.types.BulkSyncSourceEnvelope;
 import com.polytomic.api.types.BulkSyncStatusEnvelope;
 import com.polytomic.api.types.CancelBulkSyncResponseEnvelope;
-import java.io.IOException;
 import java.util.function.Supplier;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class BulkSyncClient {
     protected final ClientOptions clientOptions;
+
+    private final RawBulkSyncClient rawClient;
 
     protected final Supplier<ExecutionsClient> executionsClient;
 
@@ -49,18 +41,26 @@ public class BulkSyncClient {
 
     public BulkSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawBulkSyncClient(clientOptions);
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
         this.schedulesClient = Suppliers.memoize(() -> new SchedulesClient(clientOptions));
     }
 
     /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawBulkSyncClient withRawResponse() {
+        return this.rawClient;
+    }
+
+    /**
      * Lists bulk syncs in the caller's organization.
-     * <p>Results are returned as a single <code>data</code> array. This version of the endpoint
-     * supports the <code>active</code> filter but does not support cursor pagination, <code>limit</code>,
-     * or <code>page_token</code> query parameters.</p>
-     * <p>If you need a cursor-paginated bulk sync list, use API version <code>2025-09-18</code> or
-     * later.</p>
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
+     * syncs modified at the same instant. Pagination uses an opaque
+     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
+     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
+     * optional, and the default and maximum page size is 50 syncs.</p>
      * <blockquote>
      * <p>📘 To retrieve a specific sync, use
      * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
@@ -68,16 +68,33 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public BulkSyncListEnvelope list() {
-        return list(BulkSyncListRequest.builder().build());
+        return this.rawClient.list().body();
     }
 
     /**
      * Lists bulk syncs in the caller's organization.
-     * <p>Results are returned as a single <code>data</code> array. This version of the endpoint
-     * supports the <code>active</code> filter but does not support cursor pagination, <code>limit</code>,
-     * or <code>page_token</code> query parameters.</p>
-     * <p>If you need a cursor-paginated bulk sync list, use API version <code>2025-09-18</code> or
-     * later.</p>
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
+     * syncs modified at the same instant. Pagination uses an opaque
+     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
+     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
+     * optional, and the default and maximum page size is 50 syncs.</p>
+     * <blockquote>
+     * <p>📘 To retrieve a specific sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
+     * instead of filtering the list client-side.</p>
+     * </blockquote>
+     */
+    public BulkSyncListEnvelope list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
+    }
+
+    /**
+     * Lists bulk syncs in the caller's organization.
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
+     * syncs modified at the same instant. Pagination uses an opaque
+     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
+     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
+     * optional, and the default and maximum page size is 50 syncs.</p>
      * <blockquote>
      * <p>📘 To retrieve a specific sync, use
      * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
@@ -85,16 +102,16 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public BulkSyncListEnvelope list(BulkSyncListRequest request) {
-        return list(request, null);
+        return this.rawClient.list(request).body();
     }
 
     /**
      * Lists bulk syncs in the caller's organization.
-     * <p>Results are returned as a single <code>data</code> array. This version of the endpoint
-     * supports the <code>active</code> filter but does not support cursor pagination, <code>limit</code>,
-     * or <code>page_token</code> query parameters.</p>
-     * <p>If you need a cursor-paginated bulk sync list, use API version <code>2025-09-18</code> or
-     * later.</p>
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
+     * syncs modified at the same instant. Pagination uses an opaque
+     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
+     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
+     * optional, and the default and maximum page size is 50 syncs.</p>
      * <blockquote>
      * <p>📘 To retrieve a specific sync, use
      * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
@@ -102,39 +119,11 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public BulkSyncListEnvelope list(BulkSyncListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs");
-        if (request.getActive().isPresent()) {
-            httpUrl.addQueryParameter("active", request.getActive().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncListEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(request, requestOptions).body();
     }
 
     /**
-     * Creates a new bulk sync from a source connection to a destination connection.
+     * Creates a new bulk sync.
      * <p>Bulk syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
      * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/bulk-syncs">the product
      * documentation</a> is configurable via
@@ -169,11 +158,11 @@ public class BulkSyncClient {
      * </ul>
      */
     public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request) {
-        return create(request, null);
+        return this.rawClient.create(request).body();
     }
 
     /**
-     * Creates a new bulk sync from a source connection to a destination connection.
+     * Creates a new bulk sync.
      * <p>Bulk syncs are used for the ELT pattern (Extract, Load, and Transform), where you want to sync un-transformed data to your data warehouses, databases, or cloud storage buckets like S3.</p>
      * <p>All of the functionality described in <a href="https://docs.polytomic.com/docs/bulk-syncs">the product
      * documentation</a> is configurable via
@@ -207,45 +196,12 @@ public class BulkSyncClient {
      * <li><code>normalize_names</code> defaults to enabled.</li>
      * </ul>
      */
-    public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.create(request, requestOptions).body();
     }
 
     /**
-     * Returns a single bulk sync by ID.
+     * Returns a bulk sync by ID.
      * <p>The response includes the sync's top-level configuration — source, destination,
      * schedules, and discovery settings.</p>
      * <ul>
@@ -256,11 +212,26 @@ public class BulkSyncClient {
      * </ul>
      */
     public BulkSyncResponseEnvelope get(String id) {
-        return get(id, BulkSyncGetRequest.builder().build());
+        return this.rawClient.get(id).body();
     }
 
     /**
-     * Returns a single bulk sync by ID.
+     * Returns a bulk sync by ID.
+     * <p>The response includes the sync's top-level configuration — source, destination,
+     * schedules, and discovery settings.</p>
+     * <ul>
+     * <li>To check whether the sync is running and see the most-recent execution result,
+     * use <a href="../../../../api-reference/bulk-sync/get-status"><code>GET /api/bulk/syncs/{id}/status</code></a>.</li>
+     * <li>To inspect which schemas are selected and how they are configured, use
+     * <a href="../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</li>
+     * </ul>
+     */
+    public BulkSyncResponseEnvelope get(String id, RequestOptions requestOptions) {
+        return this.rawClient.get(id, requestOptions).body();
+    }
+
+    /**
+     * Returns a bulk sync by ID.
      * <p>The response includes the sync's top-level configuration — source, destination,
      * schedules, and discovery settings.</p>
      * <ul>
@@ -271,11 +242,11 @@ public class BulkSyncClient {
      * </ul>
      */
     public BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request) {
-        return get(id, request, null);
+        return this.rawClient.get(id, request).body();
     }
 
     /**
-     * Returns a single bulk sync by ID.
+     * Returns a bulk sync by ID.
      * <p>The response includes the sync's top-level configuration — source, destination,
      * schedules, and discovery settings.</p>
      * <ul>
@@ -286,37 +257,7 @@ public class BulkSyncClient {
      * </ul>
      */
     public BulkSyncResponseEnvelope get(String id, BulkSyncGetRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id);
-        if (request.getRefreshSchemas().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "refresh_schemas", request.getRefreshSchemas().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, request, requestOptions).body();
     }
 
     /**
@@ -326,7 +267,7 @@ public class BulkSyncClient {
      * field you omit is cleared or reset to its default value.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
-     * <a href="./get"><code>GET /api/bulk/syncs/{id}</code></a>,
+     * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
      * modify the fields you want to change, and send the complete object back in
      * the update request.</p>
      * <p>Updates to <code>active</code>, <code>schedules</code>, and <code>policies</code> take effect immediately.
@@ -346,14 +287,14 @@ public class BulkSyncClient {
      * <blockquote>
      * <p>📘 Updating schemas</p>
      * <p>Schema updates are not performed through this endpoint. Use the
-     * <a href="./schemas/patch">Update Bulk Sync Schemas</a>
+     * <a href="../../../../api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a>
      * endpoint to change a subset of schemas, or
-     * <a href="./schemas/%7Bschema_id%7D/put">Update Bulk Sync Schema</a>
+     * <a href="../../../../api-reference/bulk-sync/schemas/update">Update Bulk Sync Schema</a>
      * to replace a single schema's configuration.</p>
      * </blockquote>
      */
     public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request) {
-        return update(id, request, null);
+        return this.rawClient.update(id, request).body();
     }
 
     /**
@@ -363,7 +304,7 @@ public class BulkSyncClient {
      * field you omit is cleared or reset to its default value.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
-     * <a href="./get"><code>GET /api/bulk/syncs/{id}</code></a>,
+     * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
      * modify the fields you want to change, and send the complete object back in
      * the update request.</p>
      * <p>Updates to <code>active</code>, <code>schedules</code>, and <code>policies</code> take effect immediately.
@@ -383,48 +324,15 @@ public class BulkSyncClient {
      * <blockquote>
      * <p>📘 Updating schemas</p>
      * <p>Schema updates are not performed through this endpoint. Use the
-     * <a href="./schemas/patch">Update Bulk Sync Schemas</a>
+     * <a href="../../../../api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a>
      * endpoint to change a subset of schemas, or
-     * <a href="./schemas/%7Bschema_id%7D/put">Update Bulk Sync Schema</a>
+     * <a href="../../../../api-reference/bulk-sync/schemas/update">Update Bulk Sync Schema</a>
      * to replace a single schema's configuration.</p>
      * </blockquote>
      */
-    public BulkSyncResponseEnvelope update(String id, UpdateBulkSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public BulkSyncResponseEnvelope update(
+            String id, UpdateBulkSyncRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.update(id, request, requestOptions).body();
     }
 
     /**
@@ -437,7 +345,20 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public void remove(String id) {
-        remove(id, BulkSyncRemoveRequest.builder().build());
+        this.rawClient.remove(id).body();
+    }
+
+    /**
+     * Deletes a bulk sync, cancelling any running executions.
+     * <p>Any execution that is currently running is cancelled before the sync record is
+     * removed.</p>
+     * <blockquote>
+     * <p>🚧 All associated schedules, schema configurations, and execution history are
+     * deleted along with the sync.</p>
+     * </blockquote>
+     */
+    public void remove(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.remove(id, requestOptions).body();
     }
 
     /**
@@ -450,7 +371,7 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public void remove(String id, BulkSyncRemoveRequest request) {
-        remove(id, request, null);
+        this.rawClient.remove(id, request).body();
     }
 
     /**
@@ -462,37 +383,8 @@ public class BulkSyncClient {
      * deleted along with the sync.</p>
      * </blockquote>
      */
-    public void remove(String id, BulkSyncRemoveRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id);
-        if (request.getRefreshSchemas().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "refresh_schemas", request.getRefreshSchemas().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)));
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void remove(String id, BulkSyncRemoveRequest request, IdempotentRequestOptions requestOptions) {
+        this.rawClient.remove(id, request, requestOptions).body();
     }
 
     /**
@@ -508,7 +400,7 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
-        return activate(id, request, null);
+        return this.rawClient.activate(id, request).body();
     }
 
     /**
@@ -523,43 +415,9 @@ public class BulkSyncClient {
      * <a href="../../../../../api-reference/bulk-sync/cancel"><code>POST /api/bulk/syncs/{id}/cancel</code></a>.</p>
      * </blockquote>
      */
-    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("activate")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ActivateSyncEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public ActivateSyncEnvelope activate(
+            String id, ActivateSyncInput request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.activate(id, request, requestOptions).body();
     }
 
     /**
@@ -571,7 +429,7 @@ public class BulkSyncClient {
      * cancellation has taken effect.</p>
      */
     public CancelBulkSyncResponseEnvelope cancel(String id) {
-        return cancel(id, null);
+        return this.rawClient.cancel(id).body();
     }
 
     /**
@@ -582,36 +440,8 @@ public class BulkSyncClient {
      * reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to confirm
      * cancellation has taken effect.</p>
      */
-    public CancelBulkSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("cancel")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CancelBulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public CancelBulkSyncResponseEnvelope cancel(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.cancel(id, requestOptions).body();
     }
 
     /**
@@ -630,7 +460,26 @@ public class BulkSyncClient {
      * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
      */
     public BulkSyncExecutionEnvelope start(String id) {
-        return start(id, StartBulkSyncRequest.builder().build());
+        return this.rawClient.start(id).body();
+    }
+
+    /**
+     * Starts a new execution of a bulk sync.
+     * <p>This endpoint returns the execution record immediately after the run is queued
+     * or started. Use the execution ID with the bulk-sync execution endpoints if you
+     * need to monitor progress in detail.</p>
+     * <h2>Execution modes</h2>
+     * <ul>
+     * <li>Set <code>test=true</code> to validate the sync without writing to the destination.</li>
+     * <li>Use <code>resync_mode</code> for destructive or full-refresh style reruns.</li>
+     * <li><code>test</code> and <code>resync_mode</code> are mutually exclusive.</li>
+     * </ul>
+     * <p>The legacy <code>resync</code> boolean is no longer accepted on this v5 endpoint. Send
+     * <code>resync_mode</code> instead.</p>
+     * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
+     */
+    public BulkSyncExecutionEnvelope start(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.start(id, requestOptions).body();
     }
 
     /**
@@ -649,7 +498,7 @@ public class BulkSyncClient {
      * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
      */
     public BulkSyncExecutionEnvelope start(String id, StartBulkSyncRequest request) {
-        return start(id, request, null);
+        return this.rawClient.start(id, request).body();
     }
 
     /**
@@ -667,43 +516,9 @@ public class BulkSyncClient {
      * <code>resync_mode</code> instead.</p>
      * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
      */
-    public BulkSyncExecutionEnvelope start(String id, StartBulkSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncExecutionEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public BulkSyncExecutionEnvelope start(
+            String id, StartBulkSyncRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.start(id, request, requestOptions).body();
     }
 
     /**
@@ -718,7 +533,7 @@ public class BulkSyncClient {
      * <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public BulkSyncStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
+        return this.rawClient.getStatus(id).body();
     }
 
     /**
@@ -733,35 +548,7 @@ public class BulkSyncClient {
      * <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public BulkSyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("status")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getStatus(id, requestOptions).body();
     }
 
     /**
@@ -778,7 +565,24 @@ public class BulkSyncClient {
      * large sources.</p>
      */
     public BulkSyncSourceEnvelope getSource(String id) {
-        return getSource(id, BulkSyncGetSourceRequest.builder().build());
+        return this.rawClient.getSource(id).body();
+    }
+
+    /**
+     * Lists the schemas (tables or objects) available on a connection for use as a bulk sync source, optionally including per-schema field details.
+     * <p>The response reflects what the
+     * connection currently has cached; if the upstream source has changed, trigger
+     * a refresh first with
+     * <a href="../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>.</p>
+     * <p>These are the schemas available for selection, not the schemas already
+     * configured on any particular sync. To inspect schemas on a running sync, use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/list"><code>GET /api/bulk/syncs/{id}/schemas</code></a>.</p>
+     * <p>Pass <code>include_fields=true</code> to receive per-schema field details in a single call.
+     * Omit it when you only need the schema list, as field enumeration can be slow for
+     * large sources.</p>
+     */
+    public BulkSyncSourceEnvelope getSource(String id, RequestOptions requestOptions) {
+        return this.rawClient.getSource(id, requestOptions).body();
     }
 
     /**
@@ -795,7 +599,7 @@ public class BulkSyncClient {
      * large sources.</p>
      */
     public BulkSyncSourceEnvelope getSource(String id, BulkSyncGetSourceRequest request) {
-        return getSource(id, request, null);
+        return this.rawClient.getSource(id, request).body();
     }
 
     /**
@@ -813,38 +617,7 @@ public class BulkSyncClient {
      */
     public BulkSyncSourceEnvelope getSource(
             String id, BulkSyncGetSourceRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("bulksync/source");
-        if (request.getIncludeFields().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "include_fields", request.getIncludeFields().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncSourceEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getSource(id, request, requestOptions).body();
     }
 
     /**
@@ -861,7 +634,7 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public BulkSyncDestEnvelope getDestination(String id) {
-        return getDestination(id, null);
+        return this.rawClient.getDestination(id).body();
     }
 
     /**
@@ -878,35 +651,7 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public BulkSyncDestEnvelope getDestination(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("bulksync/target")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncDestEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getDestination(id, requestOptions).body();
     }
 
     public ExecutionsClient executions() {

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionParameterValuesResponseEnvelope.Builder.class)
 public final class ConnectionParameterValuesResponseEnvelope {
     private final Optional<Map<String, Optional<ConnectionParameterValuesResp>>> data;
@@ -87,12 +87,22 @@ public final class ConnectionParameterValuesResponseEnvelope {
         }
 
         public Builder data(Map<String, Optional<ConnectionParameterValuesResp>> data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
         public ConnectionParameterValuesResponseEnvelope build() {
             return new ConnectionParameterValuesResponseEnvelope(data, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

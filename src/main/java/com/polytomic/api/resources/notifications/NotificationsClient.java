@@ -3,72 +3,45 @@
  */
 package com.polytomic.api.resources.notifications;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.notifications.requests.V4GlobalErrorSubscribersRequest;
-import com.polytomic.api.types.V4GlobalErrorSubscribersResponse;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import com.polytomic.api.resources.notifications.requests.GlobalErrorSubscribersRequest;
+import com.polytomic.api.types.GlobalErrorSubscribersResponse;
 
 public class NotificationsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawNotificationsClient rawClient;
+
     public NotificationsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawNotificationsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawNotificationsClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
      * Returns the list of email addresses subscribed to global sync error notifications for the caller's organization.
      * <p>To update the subscriber list, use
-     * <a href="./put"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
+     * <a href="../../../api-reference/notifications/set-global-error-subscribers"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
      */
-    public V4GlobalErrorSubscribersResponse getGlobalErrorSubscribers() {
-        return getGlobalErrorSubscribers(null);
+    public GlobalErrorSubscribersResponse getGlobalErrorSubscribers() {
+        return this.rawClient.getGlobalErrorSubscribers().body();
     }
 
     /**
      * Returns the list of email addresses subscribed to global sync error notifications for the caller's organization.
      * <p>To update the subscriber list, use
-     * <a href="./put"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
+     * <a href="../../../api-reference/notifications/set-global-error-subscribers"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
      */
-    public V4GlobalErrorSubscribersResponse getGlobalErrorSubscribers(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/notifications/global-error-subscribers")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V4GlobalErrorSubscribersResponse.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public GlobalErrorSubscribersResponse getGlobalErrorSubscribers(RequestOptions requestOptions) {
+        return this.rawClient.getGlobalErrorSubscribers(requestOptions).body();
     }
 
     /**
@@ -76,12 +49,11 @@ public class NotificationsClient {
      * <p>This is a <strong>full replacement</strong> — the request body becomes the complete
      * subscriber list. To add or remove a single address without affecting others,
      * fetch the current list with
-     * <a href="./get"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
+     * <a href="../../../api-reference/notifications/get-global-error-subscribers"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
      * and send the modified list back.</p>
      */
-    public V4GlobalErrorSubscribersResponse setGlobalErrorSubscribers() {
-        return setGlobalErrorSubscribers(
-                V4GlobalErrorSubscribersRequest.builder().build());
+    public GlobalErrorSubscribersResponse setGlobalErrorSubscribers() {
+        return this.rawClient.setGlobalErrorSubscribers().body();
     }
 
     /**
@@ -89,11 +61,11 @@ public class NotificationsClient {
      * <p>This is a <strong>full replacement</strong> — the request body becomes the complete
      * subscriber list. To add or remove a single address without affecting others,
      * fetch the current list with
-     * <a href="./get"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
+     * <a href="../../../api-reference/notifications/get-global-error-subscribers"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
      * and send the modified list back.</p>
      */
-    public V4GlobalErrorSubscribersResponse setGlobalErrorSubscribers(V4GlobalErrorSubscribersRequest request) {
-        return setGlobalErrorSubscribers(request, null);
+    public GlobalErrorSubscribersResponse setGlobalErrorSubscribers(IdempotentRequestOptions requestOptions) {
+        return this.rawClient.setGlobalErrorSubscribers(requestOptions).body();
     }
 
     /**
@@ -101,45 +73,23 @@ public class NotificationsClient {
      * <p>This is a <strong>full replacement</strong> — the request body becomes the complete
      * subscriber list. To add or remove a single address without affecting others,
      * fetch the current list with
-     * <a href="./get"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
+     * <a href="../../../api-reference/notifications/get-global-error-subscribers"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
      * and send the modified list back.</p>
      */
-    public V4GlobalErrorSubscribersResponse setGlobalErrorSubscribers(
-            V4GlobalErrorSubscribersRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/notifications/global-error-subscribers")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V4GlobalErrorSubscribersResponse.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public GlobalErrorSubscribersResponse setGlobalErrorSubscribers(GlobalErrorSubscribersRequest request) {
+        return this.rawClient.setGlobalErrorSubscribers(request).body();
+    }
+
+    /**
+     * Replaces the list of email addresses subscribed to global sync error notifications for the caller's organization.
+     * <p>This is a <strong>full replacement</strong> — the request body becomes the complete
+     * subscriber list. To add or remove a single address without affecting others,
+     * fetch the current list with
+     * <a href="../../../api-reference/notifications/get-global-error-subscribers"><code>GET /api/notifications/global-error-subscribers</code></a>, apply your change,
+     * and send the modified list back.</p>
+     */
+    public GlobalErrorSubscribersResponse setGlobalErrorSubscribers(
+            GlobalErrorSubscribersRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.setGlobalErrorSubscribers(request, requestOptions).body();
     }
 }

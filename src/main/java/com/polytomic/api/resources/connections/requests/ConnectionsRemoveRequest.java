@@ -5,9 +5,9 @@ package com.polytomic.api.resources.connections.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionsRemoveRequest.Builder.class)
 public final class ConnectionsRemoveRequest {
     private final Optional<Boolean> force;
@@ -29,7 +29,7 @@ public final class ConnectionsRemoveRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("force")
+    @JsonIgnore
     public Optional<Boolean> getForce() {
         return force;
     }
@@ -84,12 +84,22 @@ public final class ConnectionsRemoveRequest {
         }
 
         public Builder force(Boolean force) {
-            this.force = Optional.of(force);
+            this.force = Optional.ofNullable(force);
             return this;
         }
 
         public ConnectionsRemoveRequest build() {
             return new ConnectionsRemoveRequest(force, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

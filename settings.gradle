@@ -1,1 +1,3 @@
+rootProject.name = 'polytomic-java'
+
 include 'sample-app'

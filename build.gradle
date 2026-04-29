@@ -2,27 +2,35 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '6.11.0'
+    id 'signing'
+    id 'cl.franciscosolis.sonatype-central-upload' version '1.0.3'
 }
 
 repositories {
     mavenCentral()
     maven {
-        url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+        url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
     }
 }
 
 dependencies {
-    api 'com.squareup.okhttp3:okhttp:4.12.0'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
-    api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.3'
-    api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
+    api 'com.squareup.okhttp3:okhttp:5.2.1'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.18.6'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.18.6'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.6'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
 }
 
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+tasks.withType(Javadoc) {
+    failOnError false
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
 
 spotless {
     java {
@@ -30,9 +38,32 @@ spotless {
     }
 }
 
+
 java {
     withSourcesJar()
     withJavadocJar()
+}
+
+
+group = 'com.polytomic'
+
+version = '25.9.0'
+
+jar {
+    dependsOn(":generatePomFileForMavenPublication")
+    archiveBaseName = "polytomic-java"
+}
+
+sourcesJar {
+    archiveBaseName = "polytomic-java"
+}
+
+javadocJar {
+    archiveBaseName = "polytomic-java"
+}
+
+signing {
+    sign(publishing.publications)
 }
 
 test {
@@ -41,17 +72,27 @@ test {
         showStandardStreams = true
     }
 }
+
 publishing {
     publications {
         maven(MavenPublication) {
             groupId = 'com.polytomic'
             artifactId = 'polytomic-java'
-            version = '1.17.1'
+            version = '25.9.0'
             from components.java
             pom {
+                name = 'polytomic'
+                description = 'The official SDK of polytomic'
+                url = 'https://buildwithfern.com'
                 licenses {
                     license {
                         name = 'MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'polytomic'
+                        email = 'developers@polytomic.com'
                     }
                 }
                 scm {
@@ -62,14 +103,29 @@ publishing {
             }
         }
     }
-    repositories {
-        maven {
-            url "$System.env.MAVEN_PUBLISH_REGISTRY_URL"
-            credentials {
-                username "$System.env.MAVEN_USERNAME"
-                password "$System.env.MAVEN_PASSWORD"
-            }
-        }
-    }
 }
 
+sonatypeCentralUpload {
+    username = "$System.env.MAVEN_USERNAME"
+    password = "$System.env.MAVEN_PASSWORD"
+
+    archives = files(
+        "$buildDir/libs/polytomic-java-" + version + ".jar",
+        "$buildDir/libs/polytomic-java-" + version + "-sources.jar",
+        "$buildDir/libs/polytomic-java-" + version + "-javadoc.jar"
+    )
+
+    pom = file("$buildDir/publications/maven/pom-default.xml")
+    signingKey = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
+    signingKeyPassphrase = "$System.env.MAVEN_SIGNATURE_PASSWORD"
+}
+
+signing {
+    def signingKeyId = "$System.env.MAVEN_SIGNATURE_KID"
+    def signingKey = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
+    def signingPassword = "$System.env.MAVEN_SIGNATURE_PASSWORD"
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    sign publishing.publications.maven
+}
+
+sonatypeCentralUpload.dependsOn build

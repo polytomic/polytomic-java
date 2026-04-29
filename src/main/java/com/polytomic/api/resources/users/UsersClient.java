@@ -3,31 +3,143 @@
  */
 package com.polytomic.api.resources.users;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.users.requests.CreateUserRequestSchema;
+import com.polytomic.api.resources.users.requests.CurrentOrgCreateUserRequestSchema;
+import com.polytomic.api.resources.users.requests.CurrentOrgUpdateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UpdateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UsersCreateApiKeyRequest;
 import com.polytomic.api.types.ApiKeyResponseEnvelope;
 import com.polytomic.api.types.ListUsersEnvelope;
 import com.polytomic.api.types.UserEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class UsersClient {
     protected final ClientOptions clientOptions;
 
+    private final RawUsersClient rawClient;
+
     public UsersClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawUsersClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawUsersClient withRawResponse() {
+        return this.rawClient;
+    }
+
+    /**
+     * Lists every user in the caller's current organization.
+     * <p>Returns user records including each user's ID, email, and assigned roles.</p>
+     */
+    public ListUsersEnvelope listCurrentOrgUsers() {
+        return this.rawClient.listCurrentOrgUsers().body();
+    }
+
+    /**
+     * Lists every user in the caller's current organization.
+     * <p>Returns user records including each user's ID, email, and assigned roles.</p>
+     */
+    public ListUsersEnvelope listCurrentOrgUsers(RequestOptions requestOptions) {
+        return this.rawClient.listCurrentOrgUsers(requestOptions).body();
+    }
+
+    /**
+     * Creates a new user in the caller's current organization and assigns the requested permissions roles.
+     * <p>The new user receives an invitation email prompting them to set up their
+     * account. Role assignments take effect as soon as the invitation is accepted.</p>
+     */
+    public UserEnvelope createCurrentOrgUser(CurrentOrgCreateUserRequestSchema request) {
+        return this.rawClient.createCurrentOrgUser(request).body();
+    }
+
+    /**
+     * Creates a new user in the caller's current organization and assigns the requested permissions roles.
+     * <p>The new user receives an invitation email prompting them to set up their
+     * account. Role assignments take effect as soon as the invitation is accepted.</p>
+     */
+    public UserEnvelope createCurrentOrgUser(
+            CurrentOrgCreateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.createCurrentOrgUser(request, requestOptions).body();
+    }
+
+    /**
+     * Returns a single user from the caller's current organization.
+     */
+    public UserEnvelope getCurrentOrgUser(String id) {
+        return this.rawClient.getCurrentOrgUser(id).body();
+    }
+
+    /**
+     * Returns a single user from the caller's current organization.
+     */
+    public UserEnvelope getCurrentOrgUser(String id, RequestOptions requestOptions) {
+        return this.rawClient.getCurrentOrgUser(id, requestOptions).body();
+    }
+
+    /**
+     * Updates the permissions roles assigned to a user in the caller's current organization.
+     * <p>Only the user's role assignments are modified. Profile information such as name
+     * and email address is not affected by this endpoint.</p>
+     */
+    public UserEnvelope updateCurrentOrgUser(String id) {
+        return this.rawClient.updateCurrentOrgUser(id).body();
+    }
+
+    /**
+     * Updates the permissions roles assigned to a user in the caller's current organization.
+     * <p>Only the user's role assignments are modified. Profile information such as name
+     * and email address is not affected by this endpoint.</p>
+     */
+    public UserEnvelope updateCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.updateCurrentOrgUser(id, requestOptions).body();
+    }
+
+    /**
+     * Updates the permissions roles assigned to a user in the caller's current organization.
+     * <p>Only the user's role assignments are modified. Profile information such as name
+     * and email address is not affected by this endpoint.</p>
+     */
+    public UserEnvelope updateCurrentOrgUser(String id, CurrentOrgUpdateUserRequestSchema request) {
+        return this.rawClient.updateCurrentOrgUser(id, request).body();
+    }
+
+    /**
+     * Updates the permissions roles assigned to a user in the caller's current organization.
+     * <p>Only the user's role assignments are modified. Profile information such as name
+     * and email address is not affected by this endpoint.</p>
+     */
+    public UserEnvelope updateCurrentOrgUser(
+            String id, CurrentOrgUpdateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.updateCurrentOrgUser(id, request, requestOptions).body();
+    }
+
+    /**
+     * Deletes a user from the caller's current organization.
+     * <blockquote>
+     * <p>🚧 This action is permanent. The user is immediately removed from the
+     * organization and loses access to all resources within it. This cannot be
+     * undone.</p>
+     * </blockquote>
+     */
+    public UserEnvelope removeCurrentOrgUser(String id) {
+        return this.rawClient.removeCurrentOrgUser(id).body();
+    }
+
+    /**
+     * Deletes a user from the caller's current organization.
+     * <blockquote>
+     * <p>🚧 This action is permanent. The user is immediately removed from the
+     * organization and loses access to all resources within it. This cannot be
+     * undone.</p>
+     * </blockquote>
+     */
+    public UserEnvelope removeCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.removeCurrentOrgUser(id, requestOptions).body();
     }
 
     /**
@@ -36,9 +148,10 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public ListUsersEnvelope list(String orgId) {
-        return list(orgId, null);
+        return this.rawClient.list(orgId).body();
     }
 
     /**
@@ -47,37 +160,10 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public ListUsersEnvelope list(String orgId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("users")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListUsersEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(orgId, requestOptions).body();
     }
 
     /**
@@ -86,9 +172,11 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>The new user receives an invitation email prompting them to set up their
+     * account. Role assignments take effect as soon as the invitation is accepted.</p>
      */
     public UserEnvelope create(String orgId, CreateUserRequestSchema request) {
-        return create(orgId, request, null);
+        return this.rawClient.create(orgId, request).body();
     }
 
     /**
@@ -97,44 +185,11 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>The new user receives an invitation email prompting them to set up their
+     * account. Role assignments take effect as soon as the invitation is accepted.</p>
      */
-    public UserEnvelope create(String orgId, CreateUserRequestSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("users")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), UserEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public UserEnvelope create(String orgId, CreateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.create(orgId, request, requestOptions).body();
     }
 
     /**
@@ -144,8 +199,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public UserEnvelope get(String id, String orgId) {
-        return get(id, orgId, null);
+    public UserEnvelope get(String orgId, String id) {
+        return this.rawClient.get(orgId, id).body();
     }
 
     /**
@@ -155,37 +210,8 @@ public class UsersClient {
      * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
      */
-    public UserEnvelope get(String id, String orgId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("users")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), UserEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public UserEnvelope get(String orgId, String id, RequestOptions requestOptions) {
+        return this.rawClient.get(orgId, id, requestOptions).body();
     }
 
     /**
@@ -194,9 +220,11 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>Only the user's role assignments are modified. Profile information such as name
+     * and email address is not affected by this endpoint.</p>
      */
-    public UserEnvelope update(String id, String orgId, UpdateUserRequestSchema request) {
-        return update(id, orgId, request, null);
+    public UserEnvelope update(String orgId, String id, UpdateUserRequestSchema request) {
+        return this.rawClient.update(orgId, id, request).body();
     }
 
     /**
@@ -205,46 +233,12 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <p>Only the user's role assignments are modified. Profile information such as name
+     * and email address is not affected by this endpoint.</p>
      */
     public UserEnvelope update(
-            String id, String orgId, UpdateUserRequestSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("users")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), UserEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String orgId, String id, UpdateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.update(orgId, id, request, requestOptions).body();
     }
 
     /**
@@ -253,9 +247,14 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <blockquote>
+     * <p>🚧 This action is permanent. The user is immediately removed from the
+     * organization and loses access to all resources within it. This cannot be
+     * undone.</p>
+     * </blockquote>
      */
-    public UserEnvelope remove(String id, String orgId) {
-        return remove(id, orgId, null);
+    public UserEnvelope remove(String orgId, String id) {
+        return this.rawClient.remove(orgId, id).body();
     }
 
     /**
@@ -264,103 +263,58 @@ public class UsersClient {
      * <p>🚧 Requires partner key</p>
      * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
      * </blockquote>
+     * <blockquote>
+     * <p>🚧 This action is permanent. The user is immediately removed from the
+     * organization and loses access to all resources within it. This cannot be
+     * undone.</p>
+     * </blockquote>
      */
-    public UserEnvelope remove(String id, String orgId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("users")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), UserEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public UserEnvelope remove(String orgId, String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.remove(orgId, id, requestOptions).body();
     }
 
     /**
      * Issues a new API key for the specified user.
      * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 The API key value is only included in the response at creation time and
+     * cannot be retrieved again. Store it securely immediately after creation.</p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(String orgId, String id) {
-        return createApiKey(orgId, id, UsersCreateApiKeyRequest.builder().build());
+        return this.rawClient.createApiKey(orgId, id).body();
     }
 
     /**
      * Issues a new API key for the specified user.
      * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 The API key value is only included in the response at creation time and
+     * cannot be retrieved again. Store it securely immediately after creation.</p>
+     * </blockquote>
+     */
+    public ApiKeyResponseEnvelope createApiKey(String orgId, String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.createApiKey(orgId, id, requestOptions).body();
+    }
+
+    /**
+     * Issues a new API key for the specified user.
+     * <blockquote>
+     * <p>🚧 The API key value is only included in the response at creation time and
+     * cannot be retrieved again. Store it securely immediately after creation.</p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(String orgId, String id, UsersCreateApiKeyRequest request) {
-        return createApiKey(orgId, id, request, null);
+        return this.rawClient.createApiKey(orgId, id, request).body();
     }
 
     /**
      * Issues a new API key for the specified user.
      * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
+     * <p>🚧 The API key value is only included in the response at creation time and
+     * cannot be retrieved again. Store it securely immediately after creation.</p>
      * </blockquote>
      */
     public ApiKeyResponseEnvelope createApiKey(
-            String orgId, String id, UsersCreateApiKeyRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("users")
-                .addPathSegment(id)
-                .addPathSegments("keys");
-        if (request.getForce().isPresent()) {
-            httpUrl.addQueryParameter("force", request.getForce().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ApiKeyResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String orgId, String id, UsersCreateApiKeyRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.createApiKey(orgId, id, request, requestOptions).body();
     }
 }

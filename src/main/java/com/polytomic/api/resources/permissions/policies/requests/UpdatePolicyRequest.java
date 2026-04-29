@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdatePolicyRequest.Builder.class)
 public final class UpdatePolicyRequest {
     private final String name;
@@ -88,13 +89,17 @@ public final class UpdatePolicyRequest {
     }
 
     public interface NameStage {
-        _FinalStage name(String name);
+        _FinalStage name(@NotNull String name);
 
         Builder from(UpdatePolicyRequest other);
     }
 
     public interface _FinalStage {
         UpdatePolicyRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage organizationId(Optional<String> organizationId);
 
@@ -128,14 +133,14 @@ public final class UpdatePolicyRequest {
 
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage policyActions(List<PolicyAction> policyActions) {
-            this.policyActions = Optional.of(policyActions);
+            this.policyActions = Optional.ofNullable(policyActions);
             return this;
         }
 
@@ -148,7 +153,7 @@ public final class UpdatePolicyRequest {
 
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -162,6 +167,18 @@ public final class UpdatePolicyRequest {
         @java.lang.Override
         public UpdatePolicyRequest build() {
             return new UpdatePolicyRequest(name, organizationId, policyActions, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

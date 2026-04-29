@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ScheduleScheduleOption.Builder.class)
 public final class ScheduleScheduleOption {
     private final Optional<Map<String, Object>> configuration;
@@ -125,7 +125,7 @@ public final class ScheduleScheduleOption {
         }
 
         public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -136,7 +136,7 @@ public final class ScheduleScheduleOption {
         }
 
         public Builder description(String description) {
-            this.description = Optional.of(description);
+            this.description = Optional.ofNullable(description);
             return this;
         }
 
@@ -147,7 +147,7 @@ public final class ScheduleScheduleOption {
         }
 
         public Builder frequency(ScheduleFrequency frequency) {
-            this.frequency = Optional.of(frequency);
+            this.frequency = Optional.ofNullable(frequency);
             return this;
         }
 
@@ -158,12 +158,22 @@ public final class ScheduleScheduleOption {
         }
 
         public Builder label(String label) {
-            this.label = Optional.of(label);
+            this.label = Optional.ofNullable(label);
             return this;
         }
 
         public ScheduleScheduleOption build() {
             return new ScheduleScheduleOption(configuration, description, frequency, label, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

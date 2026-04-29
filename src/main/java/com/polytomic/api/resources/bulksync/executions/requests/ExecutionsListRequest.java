@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionsListRequest.Builder.class)
 public final class ExecutionsListRequest {
     private final Optional<String> pageToken;
@@ -46,7 +46,7 @@ public final class ExecutionsListRequest {
     /**
      * @return Pagination cursor returned in the previous response. Omit on the first request.
      */
-    @JsonProperty("page_token")
+    @JsonIgnore
     public Optional<String> getPageToken() {
         return pageToken;
     }
@@ -54,7 +54,7 @@ public final class ExecutionsListRequest {
     /**
      * @return When true, only return executions that have finished. Terminal executions are ordered by updated_at.
      */
-    @JsonProperty("only_terminal")
+    @JsonIgnore
     public Optional<Boolean> getOnlyTerminal() {
         return onlyTerminal;
     }
@@ -62,7 +62,7 @@ public final class ExecutionsListRequest {
     /**
      * @return When true, return executions from oldest to newest. Default is newest first.
      */
-    @JsonProperty("ascending")
+    @JsonIgnore
     public Optional<Boolean> getAscending() {
         return ascending;
     }
@@ -70,7 +70,7 @@ public final class ExecutionsListRequest {
     /**
      * @return Maximum number of executions to return. Capped at 100.
      */
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -130,6 +130,9 @@ public final class ExecutionsListRequest {
             return this;
         }
 
+        /**
+         * <p>Pagination cursor returned in the previous response. Omit on the first request.</p>
+         */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
             this.pageToken = pageToken;
@@ -137,10 +140,13 @@ public final class ExecutionsListRequest {
         }
 
         public Builder pageToken(String pageToken) {
-            this.pageToken = Optional.of(pageToken);
+            this.pageToken = Optional.ofNullable(pageToken);
             return this;
         }
 
+        /**
+         * <p>When true, only return executions that have finished. Terminal executions are ordered by updated_at.</p>
+         */
         @JsonSetter(value = "only_terminal", nulls = Nulls.SKIP)
         public Builder onlyTerminal(Optional<Boolean> onlyTerminal) {
             this.onlyTerminal = onlyTerminal;
@@ -148,10 +154,13 @@ public final class ExecutionsListRequest {
         }
 
         public Builder onlyTerminal(Boolean onlyTerminal) {
-            this.onlyTerminal = Optional.of(onlyTerminal);
+            this.onlyTerminal = Optional.ofNullable(onlyTerminal);
             return this;
         }
 
+        /**
+         * <p>When true, return executions from oldest to newest. Default is newest first.</p>
+         */
         @JsonSetter(value = "ascending", nulls = Nulls.SKIP)
         public Builder ascending(Optional<Boolean> ascending) {
             this.ascending = ascending;
@@ -159,10 +168,13 @@ public final class ExecutionsListRequest {
         }
 
         public Builder ascending(Boolean ascending) {
-            this.ascending = Optional.of(ascending);
+            this.ascending = Optional.ofNullable(ascending);
             return this;
         }
 
+        /**
+         * <p>Maximum number of executions to return. Capped at 100.</p>
+         */
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public Builder limit(Optional<Integer> limit) {
             this.limit = limit;
@@ -170,12 +182,22 @@ public final class ExecutionsListRequest {
         }
 
         public Builder limit(Integer limit) {
-            this.limit = Optional.of(limit);
+            this.limit = Optional.ofNullable(limit);
             return this;
         }
 
         public ExecutionsListRequest build() {
             return new ExecutionsListRequest(pageToken, onlyTerminal, ascending, limit, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

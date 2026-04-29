@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = JobResponse.Builder.class)
 public final class JobResponse {
     private final Optional<String> error;
@@ -63,6 +63,9 @@ public final class JobResponse {
         return jobId;
     }
 
+    /**
+     * @return Job result. Shape depends on the job type; only populated once status is done.
+     */
     @JsonProperty("result")
     public Optional<Object> getResult() {
         return result;
@@ -140,6 +143,9 @@ public final class JobResponse {
             return this;
         }
 
+        /**
+         * <p>Error message if the job failed.</p>
+         */
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public Builder error(Optional<String> error) {
             this.error = error;
@@ -147,10 +153,13 @@ public final class JobResponse {
         }
 
         public Builder error(String error) {
-            this.error = Optional.of(error);
+            this.error = Optional.ofNullable(error);
             return this;
         }
 
+        /**
+         * <p>Identifier of the job.</p>
+         */
         @JsonSetter(value = "job_id", nulls = Nulls.SKIP)
         public Builder jobId(Optional<String> jobId) {
             this.jobId = jobId;
@@ -158,10 +167,13 @@ public final class JobResponse {
         }
 
         public Builder jobId(String jobId) {
-            this.jobId = Optional.of(jobId);
+            this.jobId = Optional.ofNullable(jobId);
             return this;
         }
 
+        /**
+         * <p>Job result. Shape depends on the job type; only populated once status is done.</p>
+         */
         @JsonSetter(value = "result", nulls = Nulls.SKIP)
         public Builder result(Optional<Object> result) {
             this.result = result;
@@ -169,7 +181,7 @@ public final class JobResponse {
         }
 
         public Builder result(Object result) {
-            this.result = Optional.of(result);
+            this.result = Optional.ofNullable(result);
             return this;
         }
 
@@ -180,10 +192,13 @@ public final class JobResponse {
         }
 
         public Builder status(WorkTaskStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
+        /**
+         * <p>Job type. Matches the type used to fetch the job.</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -191,12 +206,22 @@ public final class JobResponse {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
         public JobResponse build() {
             return new JobResponse(error, jobId, result, status, type, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

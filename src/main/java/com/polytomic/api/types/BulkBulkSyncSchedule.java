@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkBulkSyncSchedule.Builder.class)
 public final class BulkBulkSyncSchedule {
     private final Optional<OffsetDateTime> createdAt;
@@ -37,6 +38,8 @@ public final class BulkBulkSyncSchedule {
     private final ScheduleFrequency frequency;
 
     private final Optional<String> hour;
+
+    private final Optional<Boolean> isDefault;
 
     private final Optional<String> minute;
 
@@ -65,6 +68,7 @@ public final class BulkBulkSyncSchedule {
             Optional<String> deletedBy,
             ScheduleFrequency frequency,
             Optional<String> hour,
+            Optional<Boolean> isDefault,
             Optional<String> minute,
             Optional<String> month,
             Optional<List<String>> schemas,
@@ -82,6 +86,7 @@ public final class BulkBulkSyncSchedule {
         this.deletedBy = deletedBy;
         this.frequency = frequency;
         this.hour = hour;
+        this.isDefault = isDefault;
         this.minute = minute;
         this.month = month;
         this.schemas = schemas;
@@ -131,6 +136,11 @@ public final class BulkBulkSyncSchedule {
     @JsonProperty("hour")
     public Optional<String> getHour() {
         return hour;
+    }
+
+    @JsonProperty("isDefault")
+    public Optional<Boolean> getIsDefault() {
+        return isDefault;
     }
 
     @JsonProperty("minute")
@@ -193,6 +203,7 @@ public final class BulkBulkSyncSchedule {
                 && deletedBy.equals(other.deletedBy)
                 && frequency.equals(other.frequency)
                 && hour.equals(other.hour)
+                && isDefault.equals(other.isDefault)
                 && minute.equals(other.minute)
                 && month.equals(other.month)
                 && schemas.equals(other.schemas)
@@ -214,6 +225,7 @@ public final class BulkBulkSyncSchedule {
                 this.deletedBy,
                 this.frequency,
                 this.hour,
+                this.isDefault,
                 this.minute,
                 this.month,
                 this.schemas,
@@ -234,13 +246,17 @@ public final class BulkBulkSyncSchedule {
     }
 
     public interface FrequencyStage {
-        _FinalStage frequency(ScheduleFrequency frequency);
+        _FinalStage frequency(@NotNull ScheduleFrequency frequency);
 
         Builder from(BulkBulkSyncSchedule other);
     }
 
     public interface _FinalStage {
         BulkBulkSyncSchedule build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
 
@@ -269,6 +285,10 @@ public final class BulkBulkSyncSchedule {
         _FinalStage hour(Optional<String> hour);
 
         _FinalStage hour(String hour);
+
+        _FinalStage isDefault(Optional<Boolean> isDefault);
+
+        _FinalStage isDefault(Boolean isDefault);
 
         _FinalStage minute(Optional<String> minute);
 
@@ -323,6 +343,8 @@ public final class BulkBulkSyncSchedule {
 
         private Optional<String> minute = Optional.empty();
 
+        private Optional<Boolean> isDefault = Optional.empty();
+
         private Optional<String> hour = Optional.empty();
 
         private Optional<String> deletedBy = Optional.empty();
@@ -352,6 +374,7 @@ public final class BulkBulkSyncSchedule {
             deletedBy(other.getDeletedBy());
             frequency(other.getFrequency());
             hour(other.getHour());
+            isDefault(other.getIsDefault());
             minute(other.getMinute());
             month(other.getMonth());
             schemas(other.getSchemas());
@@ -365,14 +388,14 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         @JsonSetter("frequency")
-        public _FinalStage frequency(ScheduleFrequency frequency) {
+        public _FinalStage frequency(@NotNull ScheduleFrequency frequency) {
             this.frequency = frequency;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage updatedBy(String updatedBy) {
-            this.updatedBy = Optional.of(updatedBy);
+            this.updatedBy = Optional.ofNullable(updatedBy);
             return this;
         }
 
@@ -385,7 +408,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
@@ -398,7 +421,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage syncMode(BulkScheduleSyncMode syncMode) {
-            this.syncMode = Optional.of(syncMode);
+            this.syncMode = Optional.ofNullable(syncMode);
             return this;
         }
 
@@ -411,7 +434,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage syncId(String syncId) {
-            this.syncId = Optional.of(syncId);
+            this.syncId = Optional.ofNullable(syncId);
             return this;
         }
 
@@ -424,7 +447,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage selectiveMode(BulkSelectiveMode selectiveMode) {
-            this.selectiveMode = Optional.of(selectiveMode);
+            this.selectiveMode = Optional.ofNullable(selectiveMode);
             return this;
         }
 
@@ -437,7 +460,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage schemas(List<String> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
@@ -450,7 +473,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage month(String month) {
-            this.month = Optional.of(month);
+            this.month = Optional.ofNullable(month);
             return this;
         }
 
@@ -463,7 +486,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage minute(String minute) {
-            this.minute = Optional.of(minute);
+            this.minute = Optional.ofNullable(minute);
             return this;
         }
 
@@ -475,8 +498,21 @@ public final class BulkBulkSyncSchedule {
         }
 
         @java.lang.Override
+        public _FinalStage isDefault(Boolean isDefault) {
+            this.isDefault = Optional.ofNullable(isDefault);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "isDefault", nulls = Nulls.SKIP)
+        public _FinalStage isDefault(Optional<Boolean> isDefault) {
+            this.isDefault = isDefault;
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage hour(String hour) {
-            this.hour = Optional.of(hour);
+            this.hour = Optional.ofNullable(hour);
             return this;
         }
 
@@ -489,7 +525,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage deletedBy(String deletedBy) {
-            this.deletedBy = Optional.of(deletedBy);
+            this.deletedBy = Optional.ofNullable(deletedBy);
             return this;
         }
 
@@ -502,7 +538,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage deletedAt(OffsetDateTime deletedAt) {
-            this.deletedAt = Optional.of(deletedAt);
+            this.deletedAt = Optional.ofNullable(deletedAt);
             return this;
         }
 
@@ -515,7 +551,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage dayOfWeek(String dayOfWeek) {
-            this.dayOfWeek = Optional.of(dayOfWeek);
+            this.dayOfWeek = Optional.ofNullable(dayOfWeek);
             return this;
         }
 
@@ -528,7 +564,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage dayOfMonth(String dayOfMonth) {
-            this.dayOfMonth = Optional.of(dayOfMonth);
+            this.dayOfMonth = Optional.ofNullable(dayOfMonth);
             return this;
         }
 
@@ -541,7 +577,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage createdBy(String createdBy) {
-            this.createdBy = Optional.of(createdBy);
+            this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
@@ -554,7 +590,7 @@ public final class BulkBulkSyncSchedule {
 
         @java.lang.Override
         public _FinalStage createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
@@ -576,6 +612,7 @@ public final class BulkBulkSyncSchedule {
                     deletedBy,
                     frequency,
                     hour,
+                    isDefault,
                     minute,
                     month,
                     schemas,
@@ -585,6 +622,18 @@ public final class BulkBulkSyncSchedule {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

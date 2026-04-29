@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncSource.Builder.class)
 public final class BulkSyncSource {
-    private final Optional<V3BulkSyncSourceCapabilities> capabilities;
+    private final Optional<BulkSyncSourceCapabilities> capabilities;
 
     private final Optional<Object> configuration;
 
@@ -30,7 +30,7 @@ public final class BulkSyncSource {
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncSource(
-            Optional<V3BulkSyncSourceCapabilities> capabilities,
+            Optional<BulkSyncSourceCapabilities> capabilities,
             Optional<Object> configuration,
             Optional<List<Schema>> schemas,
             Map<String, Object> additionalProperties) {
@@ -41,7 +41,7 @@ public final class BulkSyncSource {
     }
 
     @JsonProperty("capabilities")
-    public Optional<V3BulkSyncSourceCapabilities> getCapabilities() {
+    public Optional<BulkSyncSourceCapabilities> getCapabilities() {
         return capabilities;
     }
 
@@ -88,7 +88,7 @@ public final class BulkSyncSource {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<V3BulkSyncSourceCapabilities> capabilities = Optional.empty();
+        private Optional<BulkSyncSourceCapabilities> capabilities = Optional.empty();
 
         private Optional<Object> configuration = Optional.empty();
 
@@ -107,13 +107,13 @@ public final class BulkSyncSource {
         }
 
         @JsonSetter(value = "capabilities", nulls = Nulls.SKIP)
-        public Builder capabilities(Optional<V3BulkSyncSourceCapabilities> capabilities) {
+        public Builder capabilities(Optional<BulkSyncSourceCapabilities> capabilities) {
             this.capabilities = capabilities;
             return this;
         }
 
-        public Builder capabilities(V3BulkSyncSourceCapabilities capabilities) {
-            this.capabilities = Optional.of(capabilities);
+        public Builder capabilities(BulkSyncSourceCapabilities capabilities) {
+            this.capabilities = Optional.ofNullable(capabilities);
             return this;
         }
 
@@ -124,7 +124,7 @@ public final class BulkSyncSource {
         }
 
         public Builder configuration(Object configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -135,12 +135,22 @@ public final class BulkSyncSource {
         }
 
         public Builder schemas(List<Schema> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
         public BulkSyncSource build() {
             return new BulkSyncSource(capabilities, configuration, schemas, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

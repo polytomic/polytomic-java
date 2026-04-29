@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Identity.Builder.class)
 public final class Identity {
     private final SchemaIdentityFunction function;
@@ -106,21 +107,25 @@ public final class Identity {
     }
 
     public interface FunctionStage {
-        SourceStage function(SchemaIdentityFunction function);
+        SourceStage function(@NotNull SchemaIdentityFunction function);
 
         Builder from(Identity other);
     }
 
     public interface SourceStage {
-        TargetStage source(Source source);
+        TargetStage source(@NotNull Source source);
     }
 
     public interface TargetStage {
-        _FinalStage target(String target);
+        _FinalStage target(@NotNull String target);
     }
 
     public interface _FinalStage {
         Identity build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage newField(Optional<Boolean> newField);
 
@@ -160,28 +165,28 @@ public final class Identity {
 
         @java.lang.Override
         @JsonSetter("function")
-        public SourceStage function(SchemaIdentityFunction function) {
+        public SourceStage function(@NotNull SchemaIdentityFunction function) {
             this.function = function;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("source")
-        public TargetStage source(Source source) {
+        public TargetStage source(@NotNull Source source) {
             this.source = source;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("target")
-        public _FinalStage target(String target) {
+        public _FinalStage target(@NotNull String target) {
             this.target = target;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage remoteFieldTypeId(String remoteFieldTypeId) {
-            this.remoteFieldTypeId = Optional.of(remoteFieldTypeId);
+            this.remoteFieldTypeId = Optional.ofNullable(remoteFieldTypeId);
             return this;
         }
 
@@ -194,7 +199,7 @@ public final class Identity {
 
         @java.lang.Override
         public _FinalStage newField(Boolean newField) {
-            this.newField = Optional.of(newField);
+            this.newField = Optional.ofNullable(newField);
             return this;
         }
 
@@ -208,6 +213,18 @@ public final class Identity {
         @java.lang.Override
         public Identity build() {
             return new Identity(function, newField, remoteFieldTypeId, source, target, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ScheduleOptionResponseEnvelope.Builder.class)
 public final class ScheduleOptionResponseEnvelope {
     private final Optional<ScheduleOptionResponse> data;
@@ -85,12 +85,22 @@ public final class ScheduleOptionResponseEnvelope {
         }
 
         public Builder data(ScheduleOptionResponse data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
         public ScheduleOptionResponseEnvelope build() {
             return new ScheduleOptionResponseEnvelope(data, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

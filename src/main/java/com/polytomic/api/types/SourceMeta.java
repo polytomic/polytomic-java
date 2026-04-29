@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SourceMeta.Builder.class)
 public final class SourceMeta {
     private final Optional<Boolean> hasItems;
@@ -115,6 +115,9 @@ public final class SourceMeta {
             return this;
         }
 
+        /**
+         * <p>True when items is non-empty. Callers should present the values as a picker.</p>
+         */
         @JsonSetter(value = "has_items", nulls = Nulls.SKIP)
         public Builder hasItems(Optional<Boolean> hasItems) {
             this.hasItems = hasItems;
@@ -122,10 +125,13 @@ public final class SourceMeta {
         }
 
         public Builder hasItems(Boolean hasItems) {
-            this.hasItems = Optional.of(hasItems);
+            this.hasItems = Optional.ofNullable(hasItems);
             return this;
         }
 
+        /**
+         * <p>Valid values the caller may choose for this configuration item.</p>
+         */
         @JsonSetter(value = "items", nulls = Nulls.SKIP)
         public Builder items(Optional<List<Object>> items) {
             this.items = items;
@@ -133,10 +139,13 @@ public final class SourceMeta {
         }
 
         public Builder items(List<Object> items) {
-            this.items = Optional.of(items);
+            this.items = Optional.ofNullable(items);
             return this;
         }
 
+        /**
+         * <p>Other configuration items this item depends on; exactly one of the listed items must also be selected.</p>
+         */
         @JsonSetter(value = "requires_one_of", nulls = Nulls.SKIP)
         public Builder requiresOneOf(Optional<List<String>> requiresOneOf) {
             this.requiresOneOf = requiresOneOf;
@@ -144,12 +153,22 @@ public final class SourceMeta {
         }
 
         public Builder requiresOneOf(List<String> requiresOneOf) {
-            this.requiresOneOf = Optional.of(requiresOneOf);
+            this.requiresOneOf = Optional.ofNullable(requiresOneOf);
             return this;
         }
 
         public SourceMeta build() {
             return new SourceMeta(hasItems, items, requiresOneOf, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

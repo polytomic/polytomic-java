@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateModelRequest.Builder.class)
 public final class CreateModelRequest {
     private final Optional<List<ModelModelFieldRequest>> additionalFields;
@@ -190,17 +191,21 @@ public final class CreateModelRequest {
     }
 
     public interface ConnectionIdStage {
-        NameStage connectionId(String connectionId);
+        NameStage connectionId(@NotNull String connectionId);
 
         Builder from(CreateModelRequest other);
     }
 
     public interface NameStage {
-        _FinalStage name(String name);
+        _FinalStage name(@NotNull String name);
     }
 
     public interface _FinalStage {
         CreateModelRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage additionalFields(Optional<List<ModelModelFieldRequest>> additionalFields);
 
@@ -295,21 +300,21 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         @JsonSetter("connection_id")
-        public NameStage connectionId(String connectionId) {
+        public NameStage connectionId(@NotNull String connectionId) {
             this.connectionId = connectionId;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage trackingColumns(List<String> trackingColumns) {
-            this.trackingColumns = Optional.of(trackingColumns);
+            this.trackingColumns = Optional.ofNullable(trackingColumns);
             return this;
         }
 
@@ -322,7 +327,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage relations(List<ModelRelation> relations) {
-            this.relations = Optional.of(relations);
+            this.relations = Optional.ofNullable(relations);
             return this;
         }
 
@@ -335,7 +340,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -348,7 +353,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -361,7 +366,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage labels(List<String> labels) {
-            this.labels = Optional.of(labels);
+            this.labels = Optional.ofNullable(labels);
             return this;
         }
 
@@ -374,7 +379,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage identifier(String identifier) {
-            this.identifier = Optional.of(identifier);
+            this.identifier = Optional.ofNullable(identifier);
             return this;
         }
 
@@ -387,7 +392,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage fields(List<String> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -400,7 +405,7 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage enricher(Enrichment enricher) {
-            this.enricher = Optional.of(enricher);
+            this.enricher = Optional.ofNullable(enricher);
             return this;
         }
 
@@ -419,7 +424,9 @@ public final class CreateModelRequest {
 
         @java.lang.Override
         public _FinalStage putAllConfiguration(Map<String, Object> configuration) {
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
             return this;
         }
 
@@ -427,13 +434,15 @@ public final class CreateModelRequest {
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration.clear();
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
             return this;
         }
 
         @java.lang.Override
         public _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields) {
-            this.additionalFields = Optional.of(additionalFields);
+            this.additionalFields = Optional.ofNullable(additionalFields);
             return this;
         }
 
@@ -460,6 +469,18 @@ public final class CreateModelRequest {
                     relations,
                     trackingColumns,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

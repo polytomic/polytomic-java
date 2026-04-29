@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncSourceStatus.Builder.class)
 public final class BulkSyncSourceStatus {
     private final Optional<String> cacheStatus;
@@ -113,7 +113,7 @@ public final class BulkSyncSourceStatus {
         }
 
         public Builder cacheStatus(String cacheStatus) {
-            this.cacheStatus = Optional.of(cacheStatus);
+            this.cacheStatus = Optional.ofNullable(cacheStatus);
             return this;
         }
 
@@ -124,7 +124,7 @@ public final class BulkSyncSourceStatus {
         }
 
         public Builder lastRefreshFinished(OffsetDateTime lastRefreshFinished) {
-            this.lastRefreshFinished = Optional.of(lastRefreshFinished);
+            this.lastRefreshFinished = Optional.ofNullable(lastRefreshFinished);
             return this;
         }
 
@@ -135,12 +135,22 @@ public final class BulkSyncSourceStatus {
         }
 
         public Builder lastRefreshStarted(OffsetDateTime lastRefreshStarted) {
-            this.lastRefreshStarted = Optional.of(lastRefreshStarted);
+            this.lastRefreshStarted = Optional.ofNullable(lastRefreshStarted);
             return this;
         }
 
         public BulkSyncSourceStatus build() {
             return new BulkSyncSourceStatus(cacheStatus, lastRefreshFinished, lastRefreshStarted, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

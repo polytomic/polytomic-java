@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = User.Builder.class)
 public final class User {
     private final Optional<String> email;
@@ -147,6 +147,9 @@ public final class User {
             return this;
         }
 
+        /**
+         * <p>Email address used to sign in and receive notifications.</p>
+         */
         @JsonSetter(value = "email", nulls = Nulls.SKIP)
         public Builder email(Optional<String> email) {
             this.email = email;
@@ -154,10 +157,13 @@ public final class User {
         }
 
         public Builder email(String email) {
-            this.email = Optional.of(email);
+            this.email = Optional.ofNullable(email);
             return this;
         }
 
+        /**
+         * <p>Unique identifier of the user.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -165,10 +171,13 @@ public final class User {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>Unique identifier of the organization the user belongs to.</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -176,10 +185,13 @@ public final class User {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Deprecated legacy role name. Use role_ids instead.</p>
+         */
         @JsonSetter(value = "role", nulls = Nulls.SKIP)
         public Builder role(Optional<String> role) {
             this.role = role;
@@ -187,10 +199,13 @@ public final class User {
         }
 
         public Builder role(String role) {
-            this.role = Optional.of(role);
+            this.role = Optional.ofNullable(role);
             return this;
         }
 
+        /**
+         * <p>Identifiers of the permissions roles assigned to the user.</p>
+         */
         @JsonSetter(value = "role_ids", nulls = Nulls.SKIP)
         public Builder roleIds(Optional<List<String>> roleIds) {
             this.roleIds = roleIds;
@@ -198,12 +213,22 @@ public final class User {
         }
 
         public Builder roleIds(List<String> roleIds) {
-            this.roleIds = Optional.of(roleIds);
+            this.roleIds = Optional.ofNullable(roleIds);
             return this;
         }
 
         public User build() {
             return new User(email, id, organizationId, role, roleIds, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

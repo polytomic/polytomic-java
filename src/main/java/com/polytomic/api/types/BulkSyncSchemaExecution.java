@@ -18,18 +18,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncSchemaExecution.Builder.class)
 public final class BulkSyncSchemaExecution {
     private final Optional<OffsetDateTime> completedAt;
 
     private final Optional<OffsetDateTime> createdAt;
 
-    private final Optional<Integer> errorCount;
+    private final Optional<Long> errorCount;
 
     private final Optional<String> outputName;
 
-    private final Optional<Integer> recordCount;
+    private final Optional<Long> recordCount;
 
     private final Optional<String> schema;
 
@@ -41,22 +41,22 @@ public final class BulkSyncSchemaExecution {
 
     private final Optional<OffsetDateTime> updatedAt;
 
-    private final Optional<Integer> warningCount;
+    private final Optional<Long> warningCount;
 
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncSchemaExecution(
             Optional<OffsetDateTime> completedAt,
             Optional<OffsetDateTime> createdAt,
-            Optional<Integer> errorCount,
+            Optional<Long> errorCount,
             Optional<String> outputName,
-            Optional<Integer> recordCount,
+            Optional<Long> recordCount,
             Optional<String> schema,
             Optional<OffsetDateTime> startedAt,
             Optional<BulkSchemaExecutionStatus> status,
             Optional<String> statusMessage,
             Optional<OffsetDateTime> updatedAt,
-            Optional<Integer> warningCount,
+            Optional<Long> warningCount,
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
         this.createdAt = createdAt;
@@ -83,7 +83,7 @@ public final class BulkSyncSchemaExecution {
     }
 
     @JsonProperty("error_count")
-    public Optional<Integer> getErrorCount() {
+    public Optional<Long> getErrorCount() {
         return errorCount;
     }
 
@@ -93,7 +93,7 @@ public final class BulkSyncSchemaExecution {
     }
 
     @JsonProperty("record_count")
-    public Optional<Integer> getRecordCount() {
+    public Optional<Long> getRecordCount() {
         return recordCount;
     }
 
@@ -123,7 +123,7 @@ public final class BulkSyncSchemaExecution {
     }
 
     @JsonProperty("warning_count")
-    public Optional<Integer> getWarningCount() {
+    public Optional<Long> getWarningCount() {
         return warningCount;
     }
 
@@ -183,11 +183,11 @@ public final class BulkSyncSchemaExecution {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        private Optional<Integer> errorCount = Optional.empty();
+        private Optional<Long> errorCount = Optional.empty();
 
         private Optional<String> outputName = Optional.empty();
 
-        private Optional<Integer> recordCount = Optional.empty();
+        private Optional<Long> recordCount = Optional.empty();
 
         private Optional<String> schema = Optional.empty();
 
@@ -199,7 +199,7 @@ public final class BulkSyncSchemaExecution {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        private Optional<Integer> warningCount = Optional.empty();
+        private Optional<Long> warningCount = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -228,7 +228,7 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder completedAt(OffsetDateTime completedAt) {
-            this.completedAt = Optional.of(completedAt);
+            this.completedAt = Optional.ofNullable(completedAt);
             return this;
         }
 
@@ -239,18 +239,18 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder createdAt(OffsetDateTime createdAt) {
-            this.createdAt = Optional.of(createdAt);
+            this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
         @JsonSetter(value = "error_count", nulls = Nulls.SKIP)
-        public Builder errorCount(Optional<Integer> errorCount) {
+        public Builder errorCount(Optional<Long> errorCount) {
             this.errorCount = errorCount;
             return this;
         }
 
-        public Builder errorCount(Integer errorCount) {
-            this.errorCount = Optional.of(errorCount);
+        public Builder errorCount(Long errorCount) {
+            this.errorCount = Optional.ofNullable(errorCount);
             return this;
         }
 
@@ -261,18 +261,18 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder outputName(String outputName) {
-            this.outputName = Optional.of(outputName);
+            this.outputName = Optional.ofNullable(outputName);
             return this;
         }
 
         @JsonSetter(value = "record_count", nulls = Nulls.SKIP)
-        public Builder recordCount(Optional<Integer> recordCount) {
+        public Builder recordCount(Optional<Long> recordCount) {
             this.recordCount = recordCount;
             return this;
         }
 
-        public Builder recordCount(Integer recordCount) {
-            this.recordCount = Optional.of(recordCount);
+        public Builder recordCount(Long recordCount) {
+            this.recordCount = Optional.ofNullable(recordCount);
             return this;
         }
 
@@ -283,7 +283,7 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder schema(String schema) {
-            this.schema = Optional.of(schema);
+            this.schema = Optional.ofNullable(schema);
             return this;
         }
 
@@ -294,7 +294,7 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder startedAt(OffsetDateTime startedAt) {
-            this.startedAt = Optional.of(startedAt);
+            this.startedAt = Optional.ofNullable(startedAt);
             return this;
         }
 
@@ -305,7 +305,7 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder status(BulkSchemaExecutionStatus status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -316,7 +316,7 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder statusMessage(String statusMessage) {
-            this.statusMessage = Optional.of(statusMessage);
+            this.statusMessage = Optional.ofNullable(statusMessage);
             return this;
         }
 
@@ -327,18 +327,18 @@ public final class BulkSyncSchemaExecution {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
         @JsonSetter(value = "warning_count", nulls = Nulls.SKIP)
-        public Builder warningCount(Optional<Integer> warningCount) {
+        public Builder warningCount(Optional<Long> warningCount) {
             this.warningCount = warningCount;
             return this;
         }
 
-        public Builder warningCount(Integer warningCount) {
-            this.warningCount = Optional.of(warningCount);
+        public Builder warningCount(Long warningCount) {
+            this.warningCount = Optional.ofNullable(warningCount);
             return this;
         }
 
@@ -356,6 +356,16 @@ public final class BulkSyncSchemaExecution {
                     updatedAt,
                     warningCount,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

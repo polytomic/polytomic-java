@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ListBulkSyncExecutionsEnvelope.Builder.class)
 public final class ListBulkSyncExecutionsEnvelope {
     private final Optional<List<BulkSyncExecution>> data;
@@ -99,7 +99,7 @@ public final class ListBulkSyncExecutionsEnvelope {
         }
 
         public Builder data(List<BulkSyncExecution> data) {
-            this.data = Optional.of(data);
+            this.data = Optional.ofNullable(data);
             return this;
         }
 
@@ -110,12 +110,22 @@ public final class ListBulkSyncExecutionsEnvelope {
         }
 
         public Builder pagination(PaginationDetails pagination) {
-            this.pagination = Optional.of(pagination);
+            this.pagination = Optional.ofNullable(pagination);
             return this;
         }
 
         public ListBulkSyncExecutionsEnvelope build() {
             return new ListBulkSyncExecutionsEnvelope(data, pagination, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

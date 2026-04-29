@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionLogResponse.Builder.class)
 public final class ExecutionLogResponse {
     private final Optional<OffsetDateTime> expires;
@@ -98,7 +98,7 @@ public final class ExecutionLogResponse {
         }
 
         public Builder expires(OffsetDateTime expires) {
-            this.expires = Optional.of(expires);
+            this.expires = Optional.ofNullable(expires);
             return this;
         }
 
@@ -109,12 +109,22 @@ public final class ExecutionLogResponse {
         }
 
         public Builder urls(List<String> urls) {
-            this.urls = Optional.of(urls);
+            this.urls = Optional.ofNullable(urls);
             return this;
         }
 
         public ExecutionLogResponse build() {
             return new ExecutionLogResponse(expires, urls, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

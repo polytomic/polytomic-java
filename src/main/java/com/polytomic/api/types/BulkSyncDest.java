@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncDest.Builder.class)
 public final class BulkSyncDest {
     private final Optional<Map<String, Object>> configuration;
@@ -116,7 +116,7 @@ public final class BulkSyncDest {
         }
 
         public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -127,10 +127,13 @@ public final class BulkSyncDest {
         }
 
         public Builder modes(List<SupportedBulkMode> modes) {
-            this.modes = Optional.of(modes);
+            this.modes = Optional.ofNullable(modes);
             return this;
         }
 
+        /**
+         * <p>Resync modes supported by this destination (refetch, resync, rebuild).</p>
+         */
         @JsonSetter(value = "supported_resync_modes", nulls = Nulls.SKIP)
         public Builder supportedResyncModes(Optional<List<BulkResyncMode>> supportedResyncModes) {
             this.supportedResyncModes = supportedResyncModes;
@@ -138,12 +141,22 @@ public final class BulkSyncDest {
         }
 
         public Builder supportedResyncModes(List<BulkResyncMode> supportedResyncModes) {
-            this.supportedResyncModes = Optional.of(supportedResyncModes);
+            this.supportedResyncModes = Optional.ofNullable(supportedResyncModes);
             return this;
         }
 
         public BulkSyncDest build() {
             return new BulkSyncDest(configuration, modes, supportedResyncModes, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

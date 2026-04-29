@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SupportedMode.Builder.class)
 public final class SupportedMode {
-    private final Optional<ModelSyncMode> id;
+    private final Optional<ModelsyncSyncTargetMode> id;
 
     private final Optional<Boolean> requiresIdentity;
 
@@ -31,7 +31,7 @@ public final class SupportedMode {
     private final Map<String, Object> additionalProperties;
 
     private SupportedMode(
-            Optional<ModelSyncMode> id,
+            Optional<ModelsyncSyncTargetMode> id,
             Optional<Boolean> requiresIdentity,
             Optional<Boolean> supportsPerFieldMode,
             Optional<Boolean> supportsTargetFilters,
@@ -44,7 +44,7 @@ public final class SupportedMode {
     }
 
     @JsonProperty("id")
-    public Optional<ModelSyncMode> getId() {
+    public Optional<ModelsyncSyncTargetMode> getId() {
         return id;
     }
 
@@ -106,7 +106,7 @@ public final class SupportedMode {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<ModelSyncMode> id = Optional.empty();
+        private Optional<ModelsyncSyncTargetMode> id = Optional.empty();
 
         private Optional<Boolean> requiresIdentity = Optional.empty();
 
@@ -128,16 +128,19 @@ public final class SupportedMode {
         }
 
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
-        public Builder id(Optional<ModelSyncMode> id) {
+        public Builder id(Optional<ModelsyncSyncTargetMode> id) {
             this.id = id;
             return this;
         }
 
-        public Builder id(ModelSyncMode id) {
-            this.id = Optional.of(id);
+        public Builder id(ModelsyncSyncTargetMode id) {
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>True if the sync mode requires an identity field mapping.</p>
+         */
         @JsonSetter(value = "requires_identity", nulls = Nulls.SKIP)
         public Builder requiresIdentity(Optional<Boolean> requiresIdentity) {
             this.requiresIdentity = requiresIdentity;
@@ -145,10 +148,13 @@ public final class SupportedMode {
         }
 
         public Builder requiresIdentity(Boolean requiresIdentity) {
-            this.requiresIdentity = Optional.of(requiresIdentity);
+            this.requiresIdentity = Optional.ofNullable(requiresIdentity);
             return this;
         }
 
+        /**
+         * <p>True if the target supports per-field sync modes.</p>
+         */
         @JsonSetter(value = "supports_per_field_mode", nulls = Nulls.SKIP)
         public Builder supportsPerFieldMode(Optional<Boolean> supportsPerFieldMode) {
             this.supportsPerFieldMode = supportsPerFieldMode;
@@ -156,10 +162,13 @@ public final class SupportedMode {
         }
 
         public Builder supportsPerFieldMode(Boolean supportsPerFieldMode) {
-            this.supportsPerFieldMode = Optional.of(supportsPerFieldMode);
+            this.supportsPerFieldMode = Optional.ofNullable(supportsPerFieldMode);
             return this;
         }
 
+        /**
+         * <p>True if the sync mode supports target filters.</p>
+         */
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
         public Builder supportsTargetFilters(Optional<Boolean> supportsTargetFilters) {
             this.supportsTargetFilters = supportsTargetFilters;
@@ -167,13 +176,23 @@ public final class SupportedMode {
         }
 
         public Builder supportsTargetFilters(Boolean supportsTargetFilters) {
-            this.supportsTargetFilters = Optional.of(supportsTargetFilters);
+            this.supportsTargetFilters = Optional.ofNullable(supportsTargetFilters);
             return this;
         }
 
         public SupportedMode build() {
             return new SupportedMode(
                     id, requiresIdentity, supportsPerFieldMode, supportsTargetFilters, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -5,54 +5,87 @@ package com.polytomic.api.resources.modelsync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.types.ModelSyncMode;
+import com.polytomic.api.types.ModelsyncSyncTargetMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSyncListRequest.Builder.class)
 public final class ModelSyncListRequest {
     private final Optional<Boolean> active;
 
-    private final Optional<ModelSyncMode> mode;
+    private final Optional<ModelsyncSyncTargetMode> mode;
 
     private final Optional<String> targetConnectionId;
+
+    private final Optional<String> pageToken;
+
+    private final Optional<Integer> limit;
 
     private final Map<String, Object> additionalProperties;
 
     private ModelSyncListRequest(
             Optional<Boolean> active,
-            Optional<ModelSyncMode> mode,
+            Optional<ModelsyncSyncTargetMode> mode,
             Optional<String> targetConnectionId,
+            Optional<String> pageToken,
+            Optional<Integer> limit,
             Map<String, Object> additionalProperties) {
         this.active = active;
         this.mode = mode;
         this.targetConnectionId = targetConnectionId;
+        this.pageToken = pageToken;
+        this.limit = limit;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("active")
+    /**
+     * @return Filter to only active or only paused syncs.
+     */
+    @JsonIgnore
     public Optional<Boolean> getActive() {
         return active;
     }
 
-    @JsonProperty("mode")
-    public Optional<ModelSyncMode> getMode() {
+    /**
+     * @return Filter by sync target mode (e.g. create, updateOrCreate, enrich).
+     */
+    @JsonIgnore
+    public Optional<ModelsyncSyncTargetMode> getMode() {
         return mode;
     }
 
-    @JsonProperty("target_connection_id")
+    /**
+     * @return Filter to syncs that write to the specified target connection.
+     */
+    @JsonIgnore
     public Optional<String> getTargetConnectionId() {
         return targetConnectionId;
+    }
+
+    /**
+     * @return Pagination cursor returned in the previous response. Omit on the first request.
+     */
+    @JsonIgnore
+    public Optional<String> getPageToken() {
+        return pageToken;
+    }
+
+    /**
+     * @return Maximum number of syncs to return. Default and maximum is 50.
+     */
+    @JsonIgnore
+    public Optional<Integer> getLimit() {
+        return limit;
     }
 
     @java.lang.Override
@@ -69,12 +102,14 @@ public final class ModelSyncListRequest {
     private boolean equalTo(ModelSyncListRequest other) {
         return active.equals(other.active)
                 && mode.equals(other.mode)
-                && targetConnectionId.equals(other.targetConnectionId);
+                && targetConnectionId.equals(other.targetConnectionId)
+                && pageToken.equals(other.pageToken)
+                && limit.equals(other.limit);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.active, this.mode, this.targetConnectionId);
+        return Objects.hash(this.active, this.mode, this.targetConnectionId, this.pageToken, this.limit);
     }
 
     @java.lang.Override
@@ -90,9 +125,13 @@ public final class ModelSyncListRequest {
     public static final class Builder {
         private Optional<Boolean> active = Optional.empty();
 
-        private Optional<ModelSyncMode> mode = Optional.empty();
+        private Optional<ModelsyncSyncTargetMode> mode = Optional.empty();
 
         private Optional<String> targetConnectionId = Optional.empty();
+
+        private Optional<String> pageToken = Optional.empty();
+
+        private Optional<Integer> limit = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -103,9 +142,14 @@ public final class ModelSyncListRequest {
             active(other.getActive());
             mode(other.getMode());
             targetConnectionId(other.getTargetConnectionId());
+            pageToken(other.getPageToken());
+            limit(other.getLimit());
             return this;
         }
 
+        /**
+         * <p>Filter to only active or only paused syncs.</p>
+         */
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public Builder active(Optional<Boolean> active) {
             this.active = active;
@@ -113,21 +157,27 @@ public final class ModelSyncListRequest {
         }
 
         public Builder active(Boolean active) {
-            this.active = Optional.of(active);
+            this.active = Optional.ofNullable(active);
             return this;
         }
 
+        /**
+         * <p>Filter by sync target mode (e.g. create, updateOrCreate, enrich).</p>
+         */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public Builder mode(Optional<ModelSyncMode> mode) {
+        public Builder mode(Optional<ModelsyncSyncTargetMode> mode) {
             this.mode = mode;
             return this;
         }
 
-        public Builder mode(ModelSyncMode mode) {
-            this.mode = Optional.of(mode);
+        public Builder mode(ModelsyncSyncTargetMode mode) {
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
+        /**
+         * <p>Filter to syncs that write to the specified target connection.</p>
+         */
         @JsonSetter(value = "target_connection_id", nulls = Nulls.SKIP)
         public Builder targetConnectionId(Optional<String> targetConnectionId) {
             this.targetConnectionId = targetConnectionId;
@@ -135,12 +185,50 @@ public final class ModelSyncListRequest {
         }
 
         public Builder targetConnectionId(String targetConnectionId) {
-            this.targetConnectionId = Optional.of(targetConnectionId);
+            this.targetConnectionId = Optional.ofNullable(targetConnectionId);
+            return this;
+        }
+
+        /**
+         * <p>Pagination cursor returned in the previous response. Omit on the first request.</p>
+         */
+        @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
+        public Builder pageToken(Optional<String> pageToken) {
+            this.pageToken = pageToken;
+            return this;
+        }
+
+        public Builder pageToken(String pageToken) {
+            this.pageToken = Optional.ofNullable(pageToken);
+            return this;
+        }
+
+        /**
+         * <p>Maximum number of syncs to return. Default and maximum is 50.</p>
+         */
+        @JsonSetter(value = "limit", nulls = Nulls.SKIP)
+        public Builder limit(Optional<Integer> limit) {
+            this.limit = limit;
+            return this;
+        }
+
+        public Builder limit(Integer limit) {
+            this.limit = Optional.ofNullable(limit);
             return this;
         }
 
         public ModelSyncListRequest build() {
-            return new ModelSyncListRequest(active, mode, targetConnectionId, additionalProperties);
+            return new ModelSyncListRequest(active, mode, targetConnectionId, pageToken, limit, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

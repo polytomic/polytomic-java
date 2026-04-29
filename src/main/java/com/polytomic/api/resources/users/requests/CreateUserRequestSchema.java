@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateUserRequestSchema.Builder.class)
 public final class CreateUserRequestSchema {
     private final String email;
@@ -94,7 +95,10 @@ public final class CreateUserRequestSchema {
     }
 
     public interface EmailStage {
-        _FinalStage email(String email);
+        /**
+         * <p>Email address used to sign the user in and receive notifications.</p>
+         */
+        _FinalStage email(@NotNull String email);
 
         Builder from(CreateUserRequestSchema other);
     }
@@ -102,10 +106,20 @@ public final class CreateUserRequestSchema {
     public interface _FinalStage {
         CreateUserRequestSchema build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Deprecated legacy role name. Use role_ids instead; setting both role and role_ids in the same request is rejected.</p>
+         */
         _FinalStage role(Optional<String> role);
 
         _FinalStage role(String role);
 
+        /**
+         * <p>Identifiers of the permissions roles to assign to the user. Must contain at least one entry when provided.</p>
+         */
         _FinalStage roleIds(Optional<List<String>> roleIds);
 
         _FinalStage roleIds(List<String> roleIds);
@@ -134,11 +148,12 @@ public final class CreateUserRequestSchema {
 
         /**
          * <p>Email address used to sign the user in and receive notifications.</p>
+         * <p>Email address used to sign the user in and receive notifications.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("email")
-        public _FinalStage email(String email) {
+        public _FinalStage email(@NotNull String email) {
             this.email = email;
             return this;
         }
@@ -149,10 +164,13 @@ public final class CreateUserRequestSchema {
          */
         @java.lang.Override
         public _FinalStage roleIds(List<String> roleIds) {
-            this.roleIds = Optional.of(roleIds);
+            this.roleIds = Optional.ofNullable(roleIds);
             return this;
         }
 
+        /**
+         * <p>Identifiers of the permissions roles to assign to the user. Must contain at least one entry when provided.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "role_ids", nulls = Nulls.SKIP)
         public _FinalStage roleIds(Optional<List<String>> roleIds) {
@@ -166,10 +184,13 @@ public final class CreateUserRequestSchema {
          */
         @java.lang.Override
         public _FinalStage role(String role) {
-            this.role = Optional.of(role);
+            this.role = Optional.ofNullable(role);
             return this;
         }
 
+        /**
+         * <p>Deprecated legacy role name. Use role_ids instead; setting both role and role_ids in the same request is rejected.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "role", nulls = Nulls.SKIP)
         public _FinalStage role(Optional<String> role) {
@@ -180,6 +201,18 @@ public final class CreateUserRequestSchema {
         @java.lang.Override
         public CreateUserRequestSchema build() {
             return new CreateUserRequestSchema(email, role, roleIds, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Target.Builder.class)
 public final class Target {
     private final Optional<Map<String, Object>> configuration;
@@ -30,7 +31,7 @@ public final class Target {
 
     private final Optional<String> newName;
 
-    private final Optional<String> _object;
+    private final Optional<String> object;
 
     private final Optional<Map<String, Object>> searchValues;
 
@@ -42,7 +43,7 @@ public final class Target {
             Optional<Map<String, String>> create,
             Optional<String> filterLogic,
             Optional<String> newName,
-            Optional<String> _object,
+            Optional<String> object,
             Optional<Map<String, Object>> searchValues,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
@@ -50,7 +51,7 @@ public final class Target {
         this.create = create;
         this.filterLogic = filterLogic;
         this.newName = newName;
-        this._object = _object;
+        this.object = object;
         this.searchValues = searchValues;
         this.additionalProperties = additionalProperties;
     }
@@ -88,7 +89,7 @@ public final class Target {
 
     @JsonProperty("object")
     public Optional<String> getObject() {
-        return _object;
+        return object;
     }
 
     @JsonProperty("search_values")
@@ -113,7 +114,7 @@ public final class Target {
                 && create.equals(other.create)
                 && filterLogic.equals(other.filterLogic)
                 && newName.equals(other.newName)
-                && _object.equals(other._object)
+                && object.equals(other.object)
                 && searchValues.equals(other.searchValues);
     }
 
@@ -125,7 +126,7 @@ public final class Target {
                 this.create,
                 this.filterLogic,
                 this.newName,
-                this._object,
+                this.object,
                 this.searchValues);
     }
 
@@ -139,7 +140,7 @@ public final class Target {
     }
 
     public interface ConnectionIdStage {
-        _FinalStage connectionId(String connectionId);
+        _FinalStage connectionId(@NotNull String connectionId);
 
         Builder from(Target other);
     }
@@ -147,10 +148,17 @@ public final class Target {
     public interface _FinalStage {
         Target build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
         _FinalStage configuration(Optional<Map<String, Object>> configuration);
 
         _FinalStage configuration(Map<String, Object> configuration);
 
+        /**
+         * <p>Create a new target object with these properties.</p>
+         */
         _FinalStage create(Optional<Map<String, String>> create);
 
         _FinalStage create(Map<String, String> create);
@@ -159,13 +167,16 @@ public final class Target {
 
         _FinalStage filterLogic(String filterLogic);
 
+        /**
+         * <p>Name for a new target object.</p>
+         */
         _FinalStage newName(Optional<String> newName);
 
         _FinalStage newName(String newName);
 
-        _FinalStage _object(Optional<String> _object);
+        _FinalStage object(Optional<String> object);
 
-        _FinalStage _object(String _object);
+        _FinalStage object(String object);
 
         _FinalStage searchValues(Optional<Map<String, Object>> searchValues);
 
@@ -178,7 +189,7 @@ public final class Target {
 
         private Optional<Map<String, Object>> searchValues = Optional.empty();
 
-        private Optional<String> _object = Optional.empty();
+        private Optional<String> object = Optional.empty();
 
         private Optional<String> newName = Optional.empty();
 
@@ -200,21 +211,21 @@ public final class Target {
             create(other.getCreate());
             filterLogic(other.getFilterLogic());
             newName(other.getNewName());
-            _object(other.getObject());
+            object(other.getObject());
             searchValues(other.getSearchValues());
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("connection_id")
-        public _FinalStage connectionId(String connectionId) {
+        public _FinalStage connectionId(@NotNull String connectionId) {
             this.connectionId = connectionId;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage searchValues(Map<String, Object> searchValues) {
-            this.searchValues = Optional.of(searchValues);
+            this.searchValues = Optional.ofNullable(searchValues);
             return this;
         }
 
@@ -226,15 +237,15 @@ public final class Target {
         }
 
         @java.lang.Override
-        public _FinalStage _object(String _object) {
-            this._object = Optional.of(_object);
+        public _FinalStage object(String object) {
+            this.object = Optional.ofNullable(object);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "object", nulls = Nulls.SKIP)
-        public _FinalStage _object(Optional<String> _object) {
-            this._object = _object;
+        public _FinalStage object(Optional<String> object) {
+            this.object = object;
             return this;
         }
 
@@ -244,10 +255,13 @@ public final class Target {
          */
         @java.lang.Override
         public _FinalStage newName(String newName) {
-            this.newName = Optional.of(newName);
+            this.newName = Optional.ofNullable(newName);
             return this;
         }
 
+        /**
+         * <p>Name for a new target object.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "new_name", nulls = Nulls.SKIP)
         public _FinalStage newName(Optional<String> newName) {
@@ -257,7 +271,7 @@ public final class Target {
 
         @java.lang.Override
         public _FinalStage filterLogic(String filterLogic) {
-            this.filterLogic = Optional.of(filterLogic);
+            this.filterLogic = Optional.ofNullable(filterLogic);
             return this;
         }
 
@@ -274,10 +288,13 @@ public final class Target {
          */
         @java.lang.Override
         public _FinalStage create(Map<String, String> create) {
-            this.create = Optional.of(create);
+            this.create = Optional.ofNullable(create);
             return this;
         }
 
+        /**
+         * <p>Create a new target object with these properties.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "create", nulls = Nulls.SKIP)
         public _FinalStage create(Optional<Map<String, String>> create) {
@@ -287,7 +304,7 @@ public final class Target {
 
         @java.lang.Override
         public _FinalStage configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -306,9 +323,21 @@ public final class Target {
                     create,
                     filterLogic,
                     newName,
-                    _object,
+                    object,
                     searchValues,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

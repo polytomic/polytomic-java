@@ -3,30 +3,30 @@
  */
 package com.polytomic.api.resources.schemas;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.schemas.requests.SetPrimaryKeysRequest;
 import com.polytomic.api.resources.schemas.requests.UpsertSchemaFieldRequest;
 import com.polytomic.api.types.BulkSyncSourceSchemaEnvelope;
 import com.polytomic.api.types.BulkSyncSourceStatusEnvelope;
 import com.polytomic.api.types.SchemaRecordsResponseEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class SchemasClient {
     protected final ClientOptions clientOptions;
 
+    private final RawSchemasClient rawClient;
+
     public SchemasClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawSchemasClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawSchemasClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
@@ -40,7 +40,21 @@ public class SchemasClient {
      * the whole batch was applied uniformly.</p>
      */
     public void upsertField(String connectionId, String schemaId) {
-        upsertField(connectionId, schemaId, UpsertSchemaFieldRequest.builder().build());
+        this.rawClient.upsertField(connectionId, schemaId).body();
+    }
+
+    /**
+     * Creates or updates user-defined fields on a schema, matched by field_id.
+     * <p>Fields are matched by <code>field_id</code>. Reusing an existing <code>field_id</code> updates that
+     * field; using a new <code>field_id</code> creates a new user-defined field.</p>
+     * <p>This makes the endpoint safe to retry when you are intentionally upserting the
+     * same field definitions. It is not a patch-by-position operation.</p>
+     * <p>If some fields succeed and others fail, the endpoint can return a partial
+     * success response. Validate the response status and message rather than assuming
+     * the whole batch was applied uniformly.</p>
+     */
+    public void upsertField(String connectionId, String schemaId, IdempotentRequestOptions requestOptions) {
+        this.rawClient.upsertField(connectionId, schemaId, requestOptions).body();
     }
 
     /**
@@ -54,7 +68,7 @@ public class SchemasClient {
      * the whole batch was applied uniformly.</p>
      */
     public void upsertField(String connectionId, String schemaId, UpsertSchemaFieldRequest request) {
-        upsertField(connectionId, schemaId, request, null);
+        this.rawClient.upsertField(connectionId, schemaId, request).body();
     }
 
     /**
@@ -68,45 +82,13 @@ public class SchemasClient {
      * the whole batch was applied uniformly.</p>
      */
     public void upsertField(
-            String connectionId, String schemaId, UpsertSchemaFieldRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(connectionId)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .addPathSegments("fields")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String connectionId,
+            String schemaId,
+            UpsertSchemaFieldRequest request,
+            IdempotentRequestOptions requestOptions) {
+        this.rawClient
+                .upsertField(connectionId, schemaId, request, requestOptions)
+                .body();
     }
 
     /**
@@ -122,7 +104,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public void deleteField(String connectionId, String schemaId, String fieldId) {
-        deleteField(connectionId, schemaId, fieldId, null);
+        this.rawClient.deleteField(connectionId, schemaId, fieldId).body();
     }
 
     /**
@@ -137,38 +119,11 @@ public class SchemasClient {
      * mappings before deleting the field.</p>
      * </blockquote>
      */
-    public void deleteField(String connectionId, String schemaId, String fieldId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(connectionId)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .addPathSegments("fields")
-                .addPathSegment(fieldId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void deleteField(
+            String connectionId, String schemaId, String fieldId, IdempotentRequestOptions requestOptions) {
+        this.rawClient
+                .deleteField(connectionId, schemaId, fieldId, requestOptions)
+                .body();
     }
 
     /**
@@ -181,11 +136,11 @@ public class SchemasClient {
      * identifier for your use case.</p>
      * <blockquote>
      * <p>📘 To revert to the source-detected primary keys and remove all overrides,
-     * use <a href="./delete"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
+     * use <a href="../../../../../../api-reference/schemas/reset-primary-keys"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
      * </blockquote>
      */
     public void setPrimaryKeys(String connectionId, String schemaId) {
-        setPrimaryKeys(connectionId, schemaId, SetPrimaryKeysRequest.builder().build());
+        this.rawClient.setPrimaryKeys(connectionId, schemaId).body();
     }
 
     /**
@@ -198,11 +153,28 @@ public class SchemasClient {
      * identifier for your use case.</p>
      * <blockquote>
      * <p>📘 To revert to the source-detected primary keys and remove all overrides,
-     * use <a href="./delete"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
+     * use <a href="../../../../../../api-reference/schemas/reset-primary-keys"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
+     * </blockquote>
+     */
+    public void setPrimaryKeys(String connectionId, String schemaId, IdempotentRequestOptions requestOptions) {
+        this.rawClient.setPrimaryKeys(connectionId, schemaId, requestOptions).body();
+    }
+
+    /**
+     * Overrides the primary key detected on a schema.
+     * <p>This is a full replacement: the keys you supply become the complete override
+     * set, replacing any previously configured overrides. Omitting a key that was
+     * previously set removes it.</p>
+     * <p>Primary key overrides are useful when the source does not expose a primary
+     * key or when the source-detected key is not the correct deduplication
+     * identifier for your use case.</p>
+     * <blockquote>
+     * <p>📘 To revert to the source-detected primary keys and remove all overrides,
+     * use <a href="../../../../../../api-reference/schemas/reset-primary-keys"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
      * </blockquote>
      */
     public void setPrimaryKeys(String connectionId, String schemaId, SetPrimaryKeysRequest request) {
-        setPrimaryKeys(connectionId, schemaId, request, null);
+        this.rawClient.setPrimaryKeys(connectionId, schemaId, request).body();
     }
 
     /**
@@ -215,98 +187,37 @@ public class SchemasClient {
      * identifier for your use case.</p>
      * <blockquote>
      * <p>📘 To revert to the source-detected primary keys and remove all overrides,
-     * use <a href="./delete"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
+     * use <a href="../../../../../../api-reference/schemas/reset-primary-keys"><code>DELETE /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>.</p>
      * </blockquote>
      */
     public void setPrimaryKeys(
-            String connectionId, String schemaId, SetPrimaryKeysRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(connectionId)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .addPathSegments("primary_keys")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String connectionId,
+            String schemaId,
+            SetPrimaryKeysRequest request,
+            IdempotentRequestOptions requestOptions) {
+        this.rawClient
+                .setPrimaryKeys(connectionId, schemaId, request, requestOptions)
+                .body();
     }
 
     /**
      * Deletes all primary key overrides for a schema, reverting to the primary keys detected from the source.
      * <p>To replace the overrides with a new set rather than clearing them entirely,
-     * use <a href="./put"><code>PUT /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>
+     * use <a href="../../../../../../api-reference/schemas/set-primary-keys"><code>PUT /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>
      * instead.</p>
      */
     public void resetPrimaryKeys(String connectionId, String schemaId) {
-        resetPrimaryKeys(connectionId, schemaId, null);
+        this.rawClient.resetPrimaryKeys(connectionId, schemaId).body();
     }
 
     /**
      * Deletes all primary key overrides for a schema, reverting to the primary keys detected from the source.
      * <p>To replace the overrides with a new set rather than clearing them entirely,
-     * use <a href="./put"><code>PUT /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>
+     * use <a href="../../../../../../api-reference/schemas/set-primary-keys"><code>PUT /api/connections/{connection_id}/schemas/{schema_id}/primary_keys</code></a>
      * instead.</p>
      */
-    public void resetPrimaryKeys(String connectionId, String schemaId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(connectionId)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .addPathSegments("primary_keys")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void resetPrimaryKeys(String connectionId, String schemaId, IdempotentRequestOptions requestOptions) {
+        this.rawClient.resetPrimaryKeys(connectionId, schemaId, requestOptions).body();
     }
 
     /**
@@ -315,7 +226,7 @@ public class SchemasClient {
      * objects, or fields and you need Polytomic to re-inspect the connection before
      * creating or updating sync configuration.</p>
      * <p>This endpoint does not return the refreshed schemas directly. Follow the
-     * <code>Location</code> header or poll <a href="./get-status"><code>GET /api/connections/{id}/schemas/status</code></a>
+     * <code>Location</code> header or poll <a href="../../../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>
      * until the refresh completes, then fetch the schemas you need.</p>
      * <blockquote>
      * <p>📘 Schema refresh is asynchronous</p>
@@ -329,7 +240,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public void refresh(String id) {
-        refresh(id, null);
+        this.rawClient.refresh(id).body();
     }
 
     /**
@@ -338,7 +249,7 @@ public class SchemasClient {
      * objects, or fields and you need Polytomic to re-inspect the connection before
      * creating or updating sync configuration.</p>
      * <p>This endpoint does not return the refreshed schemas directly. Follow the
-     * <code>Location</code> header or poll <a href="./get-status"><code>GET /api/connections/{id}/schemas/status</code></a>
+     * <code>Location</code> header or poll <a href="../../../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>
      * until the refresh completes, then fetch the schemas you need.</p>
      * <blockquote>
      * <p>📘 Schema refresh is asynchronous</p>
@@ -351,35 +262,8 @@ public class SchemasClient {
      * <p>Only connections whose current health status is healthy may be refreshed.</p>
      * </blockquote>
      */
-    public void refresh(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("schemas/refresh")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void refresh(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.refresh(id, requestOptions).body();
     }
 
     /**
@@ -400,7 +284,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public BulkSyncSourceStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
+        return this.rawClient.getStatus(id).body();
     }
 
     /**
@@ -421,35 +305,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public BulkSyncSourceStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("schemas/status")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncSourceStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getStatus(id, requestOptions).body();
     }
 
     /**
@@ -464,7 +320,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public BulkSyncSourceSchemaEnvelope get(String id, String schemaId) {
-        return get(id, schemaId, null);
+        return this.rawClient.get(id, schemaId).body();
     }
 
     /**
@@ -479,36 +335,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public BulkSyncSourceSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncSourceSchemaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, schemaId, requestOptions).body();
     }
 
     /**
@@ -527,7 +354,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId) {
-        return getRecords(id, schemaId, null);
+        return this.rawClient.getRecords(id, schemaId).body();
     }
 
     /**
@@ -546,36 +373,6 @@ public class SchemasClient {
      * </blockquote>
      */
     public SchemaRecordsResponseEnvelope getRecords(String id, String schemaId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .addPathSegments("records")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), SchemaRecordsResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getRecords(id, schemaId, requestOptions).body();
     }
 }

@@ -3,26 +3,27 @@
  */
 package com.polytomic.api.resources.events;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.events.requests.EventsListRequest;
 import com.polytomic.api.types.EventTypesEnvelope;
 import com.polytomic.api.types.EventsEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class EventsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawEventsClient rawClient;
+
     public EventsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawEventsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawEventsClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
@@ -39,7 +40,24 @@ public class EventsClient {
      * </blockquote>
      */
     public EventsEnvelope list() {
-        return list(EventsListRequest.builder().build());
+        return this.rawClient.list().body();
+    }
+
+    /**
+     * Lists audit events for the caller's organization.
+     * <p>Results are paginated. If more events are available, the response includes
+     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
+     * the last item you received.</p>
+     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
+     * narrow results to a specific category of activity.</p>
+     * <blockquote>
+     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * The log captures both user-initiated and API-initiated actions.</p>
+     * </blockquote>
+     */
+    public EventsEnvelope list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
     }
 
     /**
@@ -56,7 +74,7 @@ public class EventsClient {
      * </blockquote>
      */
     public EventsEnvelope list(EventsListRequest request) {
-        return list(request, null);
+        return this.rawClient.list(request).body();
     }
 
     /**
@@ -73,50 +91,7 @@ public class EventsClient {
      * </blockquote>
      */
     public EventsEnvelope list(EventsListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/events");
-        if (request.getOrganizationId().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "organization_id", request.getOrganizationId().get());
-        }
-        if (request.getType().isPresent()) {
-            httpUrl.addQueryParameter("type", request.getType().get());
-        }
-        if (request.getStartingAfter().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "starting_after", request.getStartingAfter().get().toString());
-        }
-        if (request.getEndingBefore().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "ending_before", request.getEndingBefore().get().toString());
-        }
-        if (request.getLimit().isPresent()) {
-            httpUrl.addQueryParameter("limit", request.getLimit().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), EventsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(request, requestOptions).body();
     }
 
     /**
@@ -125,7 +100,7 @@ public class EventsClient {
      * <a href="../../api-reference/events/list"><code>GET /api/events</code></a>.</p>
      */
     public EventTypesEnvelope getTypes() {
-        return getTypes(null);
+        return this.rawClient.getTypes().body();
     }
 
     /**
@@ -134,32 +109,6 @@ public class EventsClient {
      * <a href="../../api-reference/events/list"><code>GET /api/events</code></a>.</p>
      */
     public EventTypesEnvelope getTypes(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/events_types")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), EventTypesEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getTypes(requestOptions).body();
     }
 }

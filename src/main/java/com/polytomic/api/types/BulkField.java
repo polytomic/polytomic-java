@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkField.Builder.class)
 public final class BulkField {
     private final Optional<Boolean> enabled;
@@ -138,7 +138,7 @@ public final class BulkField {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
@@ -149,7 +149,7 @@ public final class BulkField {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -160,7 +160,7 @@ public final class BulkField {
         }
 
         public Builder obfuscated(Boolean obfuscated) {
-            this.obfuscated = Optional.of(obfuscated);
+            this.obfuscated = Optional.ofNullable(obfuscated);
             return this;
         }
 
@@ -171,7 +171,7 @@ public final class BulkField {
         }
 
         public Builder outputName(String outputName) {
-            this.outputName = Optional.of(outputName);
+            this.outputName = Optional.ofNullable(outputName);
             return this;
         }
 
@@ -182,12 +182,22 @@ public final class BulkField {
         }
 
         public Builder userOutputName(String userOutputName) {
-            this.userOutputName = Optional.of(userOutputName);
+            this.userOutputName = Optional.ofNullable(userOutputName);
             return this;
         }
 
         public BulkField build() {
             return new BulkField(enabled, id, obfuscated, outputName, userOutputName, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

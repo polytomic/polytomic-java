@@ -5,9 +5,9 @@ package com.polytomic.api.resources.events.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = EventsListRequest.Builder.class)
 public final class EventsListRequest {
     private final Optional<String> organizationId;
@@ -51,7 +51,7 @@ public final class EventsListRequest {
     /**
      * @return Organization to list events for. Only used by system callers; normal and partner callers are always scoped to their own organization.
      */
-    @JsonProperty("organization_id")
+    @JsonIgnore
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
@@ -59,7 +59,7 @@ public final class EventsListRequest {
     /**
      * @return Filter to a single event type. Use GET /api/events_types to list valid values.
      */
-    @JsonProperty("type")
+    @JsonIgnore
     public Optional<String> getType() {
         return type;
     }
@@ -67,7 +67,7 @@ public final class EventsListRequest {
     /**
      * @return Return events created strictly after this timestamp.
      */
-    @JsonProperty("starting_after")
+    @JsonIgnore
     public Optional<OffsetDateTime> getStartingAfter() {
         return startingAfter;
     }
@@ -75,7 +75,7 @@ public final class EventsListRequest {
     /**
      * @return Return events created strictly before this timestamp.
      */
-    @JsonProperty("ending_before")
+    @JsonIgnore
     public Optional<OffsetDateTime> getEndingBefore() {
         return endingBefore;
     }
@@ -83,7 +83,7 @@ public final class EventsListRequest {
     /**
      * @return Maximum number of events to return. Default 10, maximum 100.
      */
-    @JsonProperty("limit")
+    @JsonIgnore
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -147,6 +147,9 @@ public final class EventsListRequest {
             return this;
         }
 
+        /**
+         * <p>Organization to list events for. Only used by system callers; normal and partner callers are always scoped to their own organization.</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -154,10 +157,13 @@ public final class EventsListRequest {
         }
 
         public Builder organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Filter to a single event type. Use GET /api/events_types to list valid values.</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -165,10 +171,13 @@ public final class EventsListRequest {
         }
 
         public Builder type(String type) {
-            this.type = Optional.of(type);
+            this.type = Optional.ofNullable(type);
             return this;
         }
 
+        /**
+         * <p>Return events created strictly after this timestamp.</p>
+         */
         @JsonSetter(value = "starting_after", nulls = Nulls.SKIP)
         public Builder startingAfter(Optional<OffsetDateTime> startingAfter) {
             this.startingAfter = startingAfter;
@@ -176,10 +185,13 @@ public final class EventsListRequest {
         }
 
         public Builder startingAfter(OffsetDateTime startingAfter) {
-            this.startingAfter = Optional.of(startingAfter);
+            this.startingAfter = Optional.ofNullable(startingAfter);
             return this;
         }
 
+        /**
+         * <p>Return events created strictly before this timestamp.</p>
+         */
         @JsonSetter(value = "ending_before", nulls = Nulls.SKIP)
         public Builder endingBefore(Optional<OffsetDateTime> endingBefore) {
             this.endingBefore = endingBefore;
@@ -187,10 +199,13 @@ public final class EventsListRequest {
         }
 
         public Builder endingBefore(OffsetDateTime endingBefore) {
-            this.endingBefore = Optional.of(endingBefore);
+            this.endingBefore = Optional.ofNullable(endingBefore);
             return this;
         }
 
+        /**
+         * <p>Maximum number of events to return. Default 10, maximum 100.</p>
+         */
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public Builder limit(Optional<Integer> limit) {
             this.limit = limit;
@@ -198,13 +213,23 @@ public final class EventsListRequest {
         }
 
         public Builder limit(Integer limit) {
-            this.limit = Optional.of(limit);
+            this.limit = Optional.ofNullable(limit);
             return this;
         }
 
         public EventsListRequest build() {
             return new EventsListRequest(
                     organizationId, type, startingAfter, endingBefore, limit, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

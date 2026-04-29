@@ -3,29 +3,29 @@
  */
 package com.polytomic.api.resources.bulksync.schedules;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.schedules.requests.CreateScheduleRequest;
 import com.polytomic.api.resources.bulksync.schedules.requests.UpdateScheduleRequest;
 import com.polytomic.api.types.ScheduleEnvelope;
 import com.polytomic.api.types.SchedulesEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class SchedulesClient {
     protected final ClientOptions clientOptions;
 
+    private final RawSchedulesClient rawClient;
+
     public SchedulesClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawSchedulesClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawSchedulesClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
@@ -34,7 +34,7 @@ public class SchedulesClient {
      * of them. Schedule times are returned in UTC.</p>
      */
     public SchedulesEnvelope list(String syncId) {
-        return list(syncId, null);
+        return this.rawClient.list(syncId).body();
     }
 
     /**
@@ -43,35 +43,7 @@ public class SchedulesClient {
      * of them. Schedule times are returned in UTC.</p>
      */
     public SchedulesEnvelope list(String syncId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("schedules")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), SchedulesEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(syncId, requestOptions).body();
     }
 
     /**
@@ -83,7 +55,7 @@ public class SchedulesClient {
      * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>.</p>
      */
     public ScheduleEnvelope create(String syncId, CreateScheduleRequest request) {
-        return create(syncId, request, null);
+        return this.rawClient.create(syncId, request).body();
     }
 
     /**
@@ -94,43 +66,9 @@ public class SchedulesClient {
      * sync immediately, call
      * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>.</p>
      */
-    public ScheduleEnvelope create(String syncId, CreateScheduleRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("schedules")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ScheduleEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public ScheduleEnvelope create(
+            String syncId, CreateScheduleRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.create(syncId, request, requestOptions).body();
     }
 
     /**
@@ -142,7 +80,7 @@ public class SchedulesClient {
      * <a href="../../../../../../api-reference/bulk-sync/schedules/update"><code>PUT /api/bulk/syncs/{sync_id}/schedules/{schedule_id}</code></a>.</p>
      */
     public ScheduleEnvelope get(String syncId, String scheduleId) {
-        return get(syncId, scheduleId, null);
+        return this.rawClient.get(syncId, scheduleId).body();
     }
 
     /**
@@ -154,36 +92,7 @@ public class SchedulesClient {
      * <a href="../../../../../../api-reference/bulk-sync/schedules/update"><code>PUT /api/bulk/syncs/{sync_id}/schedules/{schedule_id}</code></a>.</p>
      */
     public ScheduleEnvelope get(String syncId, String scheduleId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("schedules")
-                .addPathSegment(scheduleId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ScheduleEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(syncId, scheduleId, requestOptions).body();
     }
 
     /**
@@ -193,7 +102,7 @@ public class SchedulesClient {
      * interpreted in UTC.</p>
      */
     public ScheduleEnvelope update(String syncId, String scheduleId, UpdateScheduleRequest request) {
-        return update(syncId, scheduleId, request, null);
+        return this.rawClient.update(syncId, scheduleId, request).body();
     }
 
     /**
@@ -203,44 +112,10 @@ public class SchedulesClient {
      * interpreted in UTC.</p>
      */
     public ScheduleEnvelope update(
-            String syncId, String scheduleId, UpdateScheduleRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("schedules")
-                .addPathSegment(scheduleId)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ScheduleEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String syncId, String scheduleId, UpdateScheduleRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .update(syncId, scheduleId, request, requestOptions)
+                .body();
     }
 
     /**
@@ -249,7 +124,7 @@ public class SchedulesClient {
      * cancel an execution that is already running.</p>
      */
     public void delete(String syncId, String scheduleId) {
-        delete(syncId, scheduleId, null);
+        this.rawClient.delete(syncId, scheduleId).body();
     }
 
     /**
@@ -257,35 +132,7 @@ public class SchedulesClient {
      * <p>Deleting a schedule only stops future automatic executions. It does not
      * cancel an execution that is already running.</p>
      */
-    public void delete(String syncId, String scheduleId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("schedules")
-                .addPathSegment(scheduleId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void delete(String syncId, String scheduleId, IdempotentRequestOptions requestOptions) {
+        this.rawClient.delete(syncId, scheduleId, requestOptions).body();
     }
 }

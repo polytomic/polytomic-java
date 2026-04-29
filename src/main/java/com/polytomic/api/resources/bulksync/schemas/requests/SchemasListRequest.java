@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.schemas.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SchemasListRequest.Builder.class)
 public final class SchemasListRequest {
     private final Optional<Map<String, Optional<String>>> filters;
@@ -33,7 +33,7 @@ public final class SchemasListRequest {
     /**
      * @return Optional filters applied to the returned schemas. Supports enabled=true to return only enabled schemas and enabled=false to return only disabled schemas.
      */
-    @JsonProperty("filters")
+    @JsonIgnore
     public Optional<Map<String, Optional<String>>> getFilters() {
         return filters;
     }
@@ -81,6 +81,9 @@ public final class SchemasListRequest {
             return this;
         }
 
+        /**
+         * <p>Optional filters applied to the returned schemas. Supports enabled=true to return only enabled schemas and enabled=false to return only disabled schemas.</p>
+         */
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
         public Builder filters(Optional<Map<String, Optional<String>>> filters) {
             this.filters = filters;
@@ -88,12 +91,22 @@ public final class SchemasListRequest {
         }
 
         public Builder filters(Map<String, Optional<String>> filters) {
-            this.filters = Optional.of(filters);
+            this.filters = Optional.ofNullable(filters);
             return this;
         }
 
         public SchemasListRequest build() {
             return new SchemasListRequest(filters, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

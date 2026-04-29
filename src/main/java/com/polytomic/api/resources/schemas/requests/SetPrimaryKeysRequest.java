@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SetPrimaryKeysRequest.Builder.class)
 public final class SetPrimaryKeysRequest {
     private final Optional<List<SchemaPrimaryKeyOverrideInput>> fields;
@@ -83,6 +83,9 @@ public final class SetPrimaryKeysRequest {
             return this;
         }
 
+        /**
+         * <p>Ordered list of source fields that together form the primary key. Replaces any existing override; supply an empty list to clear.</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<SchemaPrimaryKeyOverrideInput>> fields) {
             this.fields = fields;
@@ -90,12 +93,22 @@ public final class SetPrimaryKeysRequest {
         }
 
         public Builder fields(List<SchemaPrimaryKeyOverrideInput> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
         public SetPrimaryKeysRequest build() {
             return new SetPrimaryKeysRequest(fields, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

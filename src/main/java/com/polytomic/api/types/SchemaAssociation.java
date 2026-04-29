@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SchemaAssociation.Builder.class)
 public final class SchemaAssociation {
     private final Optional<String> id;
@@ -126,7 +126,7 @@ public final class SchemaAssociation {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -137,7 +137,7 @@ public final class SchemaAssociation {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -148,7 +148,7 @@ public final class SchemaAssociation {
         }
 
         public Builder referenceTo(List<String> referenceTo) {
-            this.referenceTo = Optional.of(referenceTo);
+            this.referenceTo = Optional.ofNullable(referenceTo);
             return this;
         }
 
@@ -159,12 +159,22 @@ public final class SchemaAssociation {
         }
 
         public Builder referencedField(String referencedField) {
-            this.referencedField = Optional.of(referencedField);
+            this.referencedField = Optional.ofNullable(referencedField);
             return this;
         }
 
         public SchemaAssociation build() {
             return new SchemaAssociation(id, name, referenceTo, referencedField, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

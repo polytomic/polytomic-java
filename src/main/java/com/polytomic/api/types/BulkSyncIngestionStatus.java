@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncIngestionStatus.Builder.class)
 public final class BulkSyncIngestionStatus {
     private final Optional<Boolean> enabled;
@@ -186,7 +186,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder enabled(Boolean enabled) {
-            this.enabled = Optional.of(enabled);
+            this.enabled = Optional.ofNullable(enabled);
             return this;
         }
 
@@ -197,7 +197,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder highwaterMark(String highwaterMark) {
-            this.highwaterMark = Optional.of(highwaterMark);
+            this.highwaterMark = Optional.ofNullable(highwaterMark);
             return this;
         }
 
@@ -208,7 +208,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder isRunning(Boolean isRunning) {
-            this.isRunning = Optional.of(isRunning);
+            this.isRunning = Optional.ofNullable(isRunning);
             return this;
         }
 
@@ -219,7 +219,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder position(String position) {
-            this.position = Optional.of(position);
+            this.position = Optional.ofNullable(position);
             return this;
         }
 
@@ -230,7 +230,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder positionTime(OffsetDateTime positionTime) {
-            this.positionTime = Optional.of(positionTime);
+            this.positionTime = Optional.ofNullable(positionTime);
             return this;
         }
 
@@ -241,7 +241,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder status(IngestionStatusLevel status) {
-            this.status = Optional.of(status);
+            this.status = Optional.ofNullable(status);
             return this;
         }
 
@@ -252,7 +252,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder statusMessage(String statusMessage) {
-            this.statusMessage = Optional.of(statusMessage);
+            this.statusMessage = Optional.ofNullable(statusMessage);
             return this;
         }
 
@@ -263,7 +263,7 @@ public final class BulkSyncIngestionStatus {
         }
 
         public Builder updatedAt(OffsetDateTime updatedAt) {
-            this.updatedAt = Optional.of(updatedAt);
+            this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
@@ -278,6 +278,16 @@ public final class BulkSyncIngestionStatus {
                     statusMessage,
                     updatedAt,
                     additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

@@ -3,35 +3,36 @@
  */
 package com.polytomic.api.resources.bulksync.schemas;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.bulksync.schemas.requests.BulkSyncSchemasRequest;
 import com.polytomic.api.resources.bulksync.schemas.requests.SchemasListRequest;
 import com.polytomic.api.resources.bulksync.schemas.requests.UpdateBulkSchema;
+import com.polytomic.api.resources.bulksync.schemas.requests.UpdateBulkSyncSchemasRequest;
 import com.polytomic.api.types.BulkSchemaEnvelope;
 import com.polytomic.api.types.CancelBulkSyncResponseEnvelope;
-import com.polytomic.api.types.ListBulkSchema;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import com.polytomic.api.types.ListBulkSchemaEnvelope;
+import com.polytomic.api.types.UpdateBulkSyncSchemasEnvelope;
 
 public class SchemasClient {
     protected final ClientOptions clientOptions;
 
+    private final RawSchemasClient rawClient;
+
     public SchemasClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawSchemasClient(clientOptions);
     }
 
     /**
-     * Lists the schemas configured on a bulk sync.
+     * Get responses with HTTP metadata like headers
+     */
+    public RawSchemasClient withRawResponse() {
+        return this.rawClient;
+    }
+
+    /**
+     * Lists the schemas (tables, objects) configured for a bulk sync.
      * <p>This endpoint returns the schemas that have been added to and configured on this
      * specific bulk sync — not the full set of schemas available from the source
      * connection. To discover what the source connection exposes, use the source
@@ -42,12 +43,12 @@ public class SchemasClient {
      * or
      * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
      */
-    public ListBulkSchema list(String id) {
-        return list(id, SchemasListRequest.builder().build());
+    public ListBulkSchemaEnvelope list(String id) {
+        return this.rawClient.list(id).body();
     }
 
     /**
-     * Lists the schemas configured on a bulk sync.
+     * Lists the schemas (tables, objects) configured for a bulk sync.
      * <p>This endpoint returns the schemas that have been added to and configured on this
      * specific bulk sync — not the full set of schemas available from the source
      * connection. To discover what the source connection exposes, use the source
@@ -58,12 +59,12 @@ public class SchemasClient {
      * or
      * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
      */
-    public ListBulkSchema list(String id, SchemasListRequest request) {
-        return list(id, request, null);
+    public ListBulkSchemaEnvelope list(String id, RequestOptions requestOptions) {
+        return this.rawClient.list(id, requestOptions).body();
     }
 
     /**
-     * Lists the schemas configured on a bulk sync.
+     * Lists the schemas (tables, objects) configured for a bulk sync.
      * <p>This endpoint returns the schemas that have been added to and configured on this
      * specific bulk sync — not the full set of schemas available from the source
      * connection. To discover what the source connection exposes, use the source
@@ -74,38 +75,24 @@ public class SchemasClient {
      * or
      * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
      */
-    public ListBulkSchema list(String id, SchemasListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("schemas");
-        if (request.getFilters().isPresent()) {
-            httpUrl.addQueryParameter("filters", request.getFilters().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListBulkSchema.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public ListBulkSchemaEnvelope list(String id, SchemasListRequest request) {
+        return this.rawClient.list(id, request).body();
+    }
+
+    /**
+     * Lists the schemas (tables, objects) configured for a bulk sync.
+     * <p>This endpoint returns the schemas that have been added to and configured on this
+     * specific bulk sync — not the full set of schemas available from the source
+     * connection. To discover what the source connection exposes, use the source
+     * schemas endpoint for the relevant connection type.</p>
+     * <p>Each schema in the response includes its sync mode, field selections, and any
+     * custom configuration applied via
+     * <a href="../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * or
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
+     */
+    public ListBulkSchemaEnvelope list(String id, SchemasListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(id, request, requestOptions).body();
     }
 
     /**
@@ -124,8 +111,8 @@ public class SchemasClient {
      * instead.</p>
      * </blockquote>
      */
-    public ListBulkSchema patch(String id) {
-        return patch(id, BulkSyncSchemasRequest.builder().build());
+    public UpdateBulkSyncSchemasEnvelope patch(String id) {
+        return this.rawClient.patch(id).body();
     }
 
     /**
@@ -144,8 +131,8 @@ public class SchemasClient {
      * instead.</p>
      * </blockquote>
      */
-    public ListBulkSchema patch(String id, BulkSyncSchemasRequest request) {
-        return patch(id, request, null);
+    public UpdateBulkSyncSchemasEnvelope patch(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.patch(id, requestOptions).body();
     }
 
     /**
@@ -164,43 +151,29 @@ public class SchemasClient {
      * instead.</p>
      * </blockquote>
      */
-    public ListBulkSchema patch(String id, BulkSyncSchemasRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("schemas")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PATCH", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListBulkSchema.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public UpdateBulkSyncSchemasEnvelope patch(String id, UpdateBulkSyncSchemasRequest request) {
+        return this.rawClient.patch(id, request).body();
+    }
+
+    /**
+     * Patches one or more schemas on a bulk sync at once.
+     * <p>Only schemas explicitly included in the request body are modified; schemas
+     * omitted from the request are left unchanged. This makes PATCH the right choice
+     * when you want to update a subset of tables without affecting the rest of the
+     * sync's schema configuration.</p>
+     * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
+     * that schema. To control which fields are enabled, include the <code>fields</code> array
+     * with explicit <code>enabled</code> values for each field.</p>
+     * <blockquote>
+     * <p>📘 To replace a single schema's configuration in full (clearing any fields you
+     * omit), use
+     * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
+    public UpdateBulkSyncSchemasEnvelope patch(
+            String id, UpdateBulkSyncSchemasRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.patch(id, request, requestOptions).body();
     }
 
     /**
@@ -214,7 +187,7 @@ public class SchemasClient {
      * to fully replace this schema's configuration.</p>
      */
     public BulkSchemaEnvelope get(String id, String schemaId) {
-        return get(id, schemaId, null);
+        return this.rawClient.get(id, schemaId).body();
     }
 
     /**
@@ -228,36 +201,7 @@ public class SchemasClient {
      * to fully replace this schema's configuration.</p>
      */
     public BulkSchemaEnvelope get(String id, String schemaId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSchemaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, schemaId, requestOptions).body();
     }
 
     /**
@@ -277,7 +221,27 @@ public class SchemasClient {
      * </blockquote>
      */
     public BulkSchemaEnvelope update(String id, String schemaId) {
-        return update(id, schemaId, UpdateBulkSchema.builder().build());
+        return this.rawClient.update(id, schemaId).body();
+    }
+
+    /**
+     * Replaces the configuration of a single schema on a bulk sync.
+     * <p>This is a full replacement: every field in the request body is written to the
+     * schema, and any field you omit is cleared or reset to its default. Fetch the
+     * current configuration with
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
+     * first if you want to preserve existing settings while changing only a subset.</p>
+     * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * <blockquote>
+     * <p>📘 To update multiple schemas in a single request without affecting others,
+     * use the partial-update endpoint
+     * <a href="../../../../../../api-reference/bulk-sync/schemas/patch"><code>PATCH /api/bulk/syncs/{id}/schemas</code></a>
+     * instead.</p>
+     * </blockquote>
+     */
+    public BulkSchemaEnvelope update(String id, String schemaId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.update(id, schemaId, requestOptions).body();
     }
 
     /**
@@ -297,7 +261,7 @@ public class SchemasClient {
      * </blockquote>
      */
     public BulkSchemaEnvelope update(String id, String schemaId, UpdateBulkSchema request) {
-        return update(id, schemaId, request, null);
+        return this.rawClient.update(id, schemaId, request).body();
     }
 
     /**
@@ -317,44 +281,8 @@ public class SchemasClient {
      * </blockquote>
      */
     public BulkSchemaEnvelope update(
-            String id, String schemaId, UpdateBulkSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSchemaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String id, String schemaId, UpdateBulkSchema request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.update(id, schemaId, request, requestOptions).body();
     }
 
     /**
@@ -367,7 +295,7 @@ public class SchemasClient {
      * state.</p>
      */
     public CancelBulkSyncResponseEnvelope cancel(String id, String schemaId) {
-        return cancel(id, schemaId, null);
+        return this.rawClient.cancel(id, schemaId).body();
     }
 
     /**
@@ -379,37 +307,7 @@ public class SchemasClient {
      * <code>GET /api/bulk/syncs/{id}/status</code> to confirm the schema has reached a terminal
      * state.</p>
      */
-    public CancelBulkSyncResponseEnvelope cancel(String id, String schemaId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("schemas")
-                .addPathSegment(schemaId)
-                .addPathSegments("cancel")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CancelBulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public CancelBulkSyncResponseEnvelope cancel(String id, String schemaId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.cancel(id, schemaId, requestOptions).body();
     }
 }

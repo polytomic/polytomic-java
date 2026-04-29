@@ -3,16 +3,15 @@
  */
 package com.polytomic.api.resources.connections;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.resources.connections.requests.ApiRequest;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
 import com.polytomic.api.resources.connections.requests.ConnectionsRemoveRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
+import com.polytomic.api.resources.connections.requests.ExecuteConnectionProxyRequest;
 import com.polytomic.api.resources.connections.requests.GetConnectionTypeParameterValuesRequestSchema;
+import com.polytomic.api.resources.connections.requests.PartnerCreateSharedConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.TestConnectionRequest;
 import com.polytomic.api.resources.connections.requests.UpdateConnectionRequestSchema;
 import com.polytomic.api.types.ConnectCardResponseEnvelope;
@@ -21,22 +20,26 @@ import com.polytomic.api.types.ConnectionParameterValuesResponseEnvelope;
 import com.polytomic.api.types.ConnectionResponseEnvelope;
 import com.polytomic.api.types.ConnectionTypeResponseEnvelope;
 import com.polytomic.api.types.CreateConnectionResponseEnvelope;
+import com.polytomic.api.types.CreateSharedConnectionResponseEnvelope;
+import com.polytomic.api.types.ExecuteConnectionProxyEnvelope;
+import com.polytomic.api.types.GetConnectionProxyInfoEnvelope;
 import com.polytomic.api.types.JsonschemaSchema;
-import com.polytomic.api.types.V2CreateSharedConnectionResponseEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ConnectionsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawConnectionsClient rawClient;
+
     public ConnectionsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawConnectionsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawConnectionsClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
@@ -50,7 +53,7 @@ public class ConnectionsClient {
      * </ul>
      */
     public ConnectionTypeResponseEnvelope getTypes() {
-        return getTypes(null);
+        return this.rawClient.getTypes().body();
     }
 
     /**
@@ -64,33 +67,7 @@ public class ConnectionsClient {
      * </ul>
      */
     public ConnectionTypeResponseEnvelope getTypes(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connection_types")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectionTypeResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getTypes(requestOptions).body();
     }
 
     /**
@@ -102,7 +79,7 @@ public class ConnectionsClient {
      * connection instance and not a set of current credential values.</p>
      */
     public JsonschemaSchema getConnectionTypeSchema(String id) {
-        return getConnectionTypeSchema(id, null);
+        return this.rawClient.getConnectionTypeSchema(id).body();
     }
 
     /**
@@ -114,34 +91,7 @@ public class ConnectionsClient {
      * connection instance and not a set of current credential values.</p>
      */
     public JsonschemaSchema getConnectionTypeSchema(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connection_types")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), JsonschemaSchema.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getConnectionTypeSchema(id, requestOptions).body();
     }
 
     /**
@@ -155,7 +105,7 @@ public class ConnectionsClient {
      */
     public ConnectionParameterValuesResponseEnvelope getTypeParameterValues(
             String type, GetConnectionTypeParameterValuesRequestSchema request) {
-        return getTypeParameterValues(type, request, null);
+        return this.rawClient.getTypeParameterValues(type, request).body();
     }
 
     /**
@@ -168,44 +118,12 @@ public class ConnectionsClient {
      * authorization flow first and call the endpoint again.</p>
      */
     public ConnectionParameterValuesResponseEnvelope getTypeParameterValues(
-            String type, GetConnectionTypeParameterValuesRequestSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connection_types")
-                .addPathSegment(type)
-                .addPathSegments("parameter_values")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), ConnectionParameterValuesResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String type,
+            GetConnectionTypeParameterValuesRequestSchema request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .getTypeParameterValues(type, request, requestOptions)
+                .body();
     }
 
     /**
@@ -219,7 +137,7 @@ public class ConnectionsClient {
      * followed by <a href="../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
      */
     public ConnectionListResponseEnvelope list() {
-        return list(null);
+        return this.rawClient.list().body();
     }
 
     /**
@@ -233,33 +151,7 @@ public class ConnectionsClient {
      * followed by <a href="../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
      */
     public ConnectionListResponseEnvelope list(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectionListResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(requestOptions).body();
     }
 
     /**
@@ -276,7 +168,7 @@ public class ConnectionsClient {
      * </blockquote>
      */
     public CreateConnectionResponseEnvelope create(CreateConnectionRequestSchema request) {
-        return create(request, null);
+        return this.rawClient.create(request).body();
     }
 
     /**
@@ -293,42 +185,8 @@ public class ConnectionsClient {
      * </blockquote>
      */
     public CreateConnectionResponseEnvelope create(
-            CreateConnectionRequestSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), CreateConnectionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            CreateConnectionRequestSchema request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.create(request, requestOptions).body();
     }
 
     /**
@@ -339,7 +197,7 @@ public class ConnectionsClient {
      * </ul>
      */
     public ConnectCardResponseEnvelope connect(ConnectCardRequest request) {
-        return connect(request, null);
+        return this.rawClient.connect(request).body();
     }
 
     /**
@@ -349,41 +207,8 @@ public class ConnectionsClient {
      * <li><a href="../../../guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
      * </ul>
      */
-    public ConnectCardResponseEnvelope connect(ConnectCardRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections/connect")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectCardResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public ConnectCardResponseEnvelope connect(ConnectCardRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.connect(request, requestOptions).body();
     }
 
     /**
@@ -398,7 +223,7 @@ public class ConnectionsClient {
      * succeeds.</p>
      */
     public void testConnection(TestConnectionRequest request) {
-        testConnection(request, null);
+        this.rawClient.testConnection(request).body();
     }
 
     /**
@@ -412,90 +237,30 @@ public class ConnectionsClient {
      * <p>The request does not persist any configuration changes even when validation
      * succeeds.</p>
      */
-    public void testConnection(TestConnectionRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections/test")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void testConnection(TestConnectionRequest request, IdempotentRequestOptions requestOptions) {
+        this.rawClient.testConnection(request, requestOptions).body();
     }
 
     /**
      * Returns a single connection by ID, with sensitive fields redacted.
      * <p>To inspect the schemas available on this connection, trigger a refresh with
-     * <a href="./schemas/refresh/post"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
+     * <a href="../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
      * track progress via
-     * <a href="./schemas/status/get"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     * <a href="../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
      */
     public ConnectionResponseEnvelope get(String id) {
-        return get(id, null);
+        return this.rawClient.get(id).body();
     }
 
     /**
      * Returns a single connection by ID, with sensitive fields redacted.
      * <p>To inspect the schemas available on this connection, trigger a refresh with
-     * <a href="./schemas/refresh/post"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
+     * <a href="../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
      * track progress via
-     * <a href="./schemas/status/get"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     * <a href="../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
      */
     public ConnectionResponseEnvelope get(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, requestOptions).body();
     }
 
     /**
@@ -503,7 +268,7 @@ public class ConnectionsClient {
      * <p>Updating a connection is a <strong>full replacement</strong> of its configuration. Any
      * <code>configuration</code> field you omit is cleared. To make a partial change, fetch
      * the current connection with
-     * <a href="./get"><code>GET /api/connections/{id}</code></a>, apply your edits, and send the
+     * <a href="../../../api-reference/connections/get"><code>GET /api/connections/{id}</code></a>, apply your edits, and send the
      * complete object back.</p>
      * <blockquote>
      * <p>📘 The connection is re-validated against the upstream service after every
@@ -514,7 +279,7 @@ public class ConnectionsClient {
      * interrupted; the updated configuration takes effect on their next execution.</p>
      */
     public CreateConnectionResponseEnvelope update(String id, UpdateConnectionRequestSchema request) {
-        return update(id, request, null);
+        return this.rawClient.update(id, request).body();
     }
 
     /**
@@ -522,7 +287,7 @@ public class ConnectionsClient {
      * <p>Updating a connection is a <strong>full replacement</strong> of its configuration. Any
      * <code>configuration</code> field you omit is cleared. To make a partial change, fetch
      * the current connection with
-     * <a href="./get"><code>GET /api/connections/{id}</code></a>, apply your edits, and send the
+     * <a href="../../../api-reference/connections/get"><code>GET /api/connections/{id}</code></a>, apply your edits, and send the
      * complete object back.</p>
      * <blockquote>
      * <p>📘 The connection is re-validated against the upstream service after every
@@ -533,43 +298,8 @@ public class ConnectionsClient {
      * interrupted; the updated configuration takes effect on their next execution.</p>
      */
     public CreateConnectionResponseEnvelope update(
-            String id, UpdateConnectionRequestSchema request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), CreateConnectionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String id, UpdateConnectionRequestSchema request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.update(id, request, requestOptions).body();
     }
 
     /**
@@ -582,7 +312,20 @@ public class ConnectionsClient {
      * </blockquote>
      */
     public void remove(String id) {
-        remove(id, ConnectionsRemoveRequest.builder().build());
+        this.rawClient.remove(id).body();
+    }
+
+    /**
+     * Deletes a connection.
+     * <blockquote>
+     * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
+     * syncs, or schedules returns <code>422 connection in use</code> unless you pass
+     * <code>force=true</code>. With <code>force=true</code>, the API deletes those dependent
+     * resources before removing the connection.</p>
+     * </blockquote>
+     */
+    public void remove(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.remove(id, requestOptions).body();
     }
 
     /**
@@ -595,7 +338,7 @@ public class ConnectionsClient {
      * </blockquote>
      */
     public void remove(String id, ConnectionsRemoveRequest request) {
-        remove(id, request, null);
+        this.rawClient.remove(id, request).body();
     }
 
     /**
@@ -607,36 +350,8 @@ public class ConnectionsClient {
      * resources before removing the connection.</p>
      * </blockquote>
      */
-    public void remove(String id, ConnectionsRemoveRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id);
-        if (request.getForce().isPresent()) {
-            httpUrl.addQueryParameter("force", request.getForce().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)));
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void remove(String id, ConnectionsRemoveRequest request, IdempotentRequestOptions requestOptions) {
+        this.rawClient.remove(id, request, requestOptions).body();
     }
 
     /**
@@ -646,11 +361,11 @@ public class ConnectionsClient {
      * after a connection is authorized, the upstream service may be able to return
      * lists of databases, schemas, or similar selectable values.</p>
      * <p>For new setup flows, prefer
-     * <a href="./get-type-parameter-values"><code>POST /api/connection_types/{type}/parameter_values</code></a>,
+     * <a href="../../../../api-reference/connections/get-type-parameter-values"><code>POST /api/connection_types/{type}/parameter_values</code></a>,
      * which lets you resolve completions before the connection has been created.</p>
      */
     public ConnectionParameterValuesResponseEnvelope getParameterValues(String id) {
-        return getParameterValues(id, null);
+        return this.rawClient.getParameterValues(id).body();
     }
 
     /**
@@ -660,142 +375,185 @@ public class ConnectionsClient {
      * after a connection is authorized, the upstream service may be able to return
      * lists of databases, schemas, or similar selectable values.</p>
      * <p>For new setup flows, prefer
-     * <a href="./get-type-parameter-values"><code>POST /api/connection_types/{type}/parameter_values</code></a>,
+     * <a href="../../../../api-reference/connections/get-type-parameter-values"><code>POST /api/connection_types/{type}/parameter_values</code></a>,
      * which lets you resolve completions before the connection has been created.</p>
      */
     public ConnectionParameterValuesResponseEnvelope getParameterValues(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("parameter_values")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), ConnectionParameterValuesResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getParameterValues(id, requestOptions).body();
+    }
+
+    /**
+     * Proxies an HTTP request to a connection's underlying API using the connection's stored credentials, subject to per-connection rate limits and size caps.
+     * <p>This endpoint is intended for controlled passthrough use, not as a general
+     * replacement for Polytomic's modeled endpoints. The request is executed with the
+     * connection's stored credentials and inherited base URL, headers, and query
+     * parameters.</p>
+     * <p>Before building requests dynamically, call
+     * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
+     * to inspect the inherited base URL, blocked headers, accepted body types, and
+     * size and rate limits.</p>
+     * <h2>Important behavior</h2>
+     * <ul>
+     * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
+     * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
+     * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
+     * headers cannot be overridden.</li>
+     * <li>The proxy strips a fixed set of request and response headers for safety.</li>
+     * <li>Response bodies larger than the configured maximum are truncated, and
+     * <code>truncated</code> is set to <code>true</code>.</li>
+     * </ul>
+     * <p>The response includes <code>proxyCallId</code>, which you can use to correlate the call
+     * with audit logs.</p>
+     */
+    public ExecuteConnectionProxyEnvelope executeProxy(String id, ExecuteConnectionProxyRequest request) {
+        return this.rawClient.executeProxy(id, request).body();
+    }
+
+    /**
+     * Proxies an HTTP request to a connection's underlying API using the connection's stored credentials, subject to per-connection rate limits and size caps.
+     * <p>This endpoint is intended for controlled passthrough use, not as a general
+     * replacement for Polytomic's modeled endpoints. The request is executed with the
+     * connection's stored credentials and inherited base URL, headers, and query
+     * parameters.</p>
+     * <p>Before building requests dynamically, call
+     * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
+     * to inspect the inherited base URL, blocked headers, accepted body types, and
+     * size and rate limits.</p>
+     * <h2>Important behavior</h2>
+     * <ul>
+     * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
+     * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
+     * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
+     * headers cannot be overridden.</li>
+     * <li>The proxy strips a fixed set of request and response headers for safety.</li>
+     * <li>Response bodies larger than the configured maximum are truncated, and
+     * <code>truncated</code> is set to <code>true</code>.</li>
+     * </ul>
+     * <p>The response includes <code>proxyCallId</code>, which you can use to correlate the call
+     * with audit logs.</p>
+     */
+    public ExecuteConnectionProxyEnvelope executeProxy(
+            String id, ExecuteConnectionProxyRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.executeProxy(id, request, requestOptions).body();
+    }
+
+    /**
+     * Returns the proxy contract for a connection.
+     * <p>Use this endpoint before calling
+     * <a href="../../../../../api-reference/connections/execute-proxy"><code>POST /api/connections/{id}/proxy</code></a>
+     * when you need to build requests programmatically. The response shows:</p>
+     * <ul>
+     * <li>the inherited base URL that all proxied requests are sent to</li>
+     * <li>locked headers and query parameters that are attached automatically</li>
+     * <li>blocked request and response headers</li>
+     * <li>allowed HTTP methods and body shapes</li>
+     * <li>timeout, rate-limit, and payload-size limits</li>
+     * </ul>
+     * <p>Sensitive inherited header and query values are redacted in the response. The
+     * contract is still useful for discovering which keys are fixed by the
+     * connection, even though their raw values are not exposed.</p>
+     */
+    public GetConnectionProxyInfoEnvelope getProxyInfo(String id) {
+        return this.rawClient.getProxyInfo(id).body();
+    }
+
+    /**
+     * Returns the proxy contract for a connection.
+     * <p>Use this endpoint before calling
+     * <a href="../../../../../api-reference/connections/execute-proxy"><code>POST /api/connections/{id}/proxy</code></a>
+     * when you need to build requests programmatically. The response shows:</p>
+     * <ul>
+     * <li>the inherited base URL that all proxied requests are sent to</li>
+     * <li>locked headers and query parameters that are attached automatically</li>
+     * <li>blocked request and response headers</li>
+     * <li>allowed HTTP methods and body shapes</li>
+     * <li>timeout, rate-limit, and payload-size limits</li>
+     * </ul>
+     * <p>Sensitive inherited header and query values are redacted in the response. The
+     * contract is still useful for discovering which keys are fixed by the
+     * connection, even though their raw values are not exposed.</p>
+     */
+    public GetConnectionProxyInfoEnvelope getProxyInfo(String id, RequestOptions requestOptions) {
+        return this.rawClient.getProxyInfo(id, requestOptions).body();
+    }
+
+    /**
+     * Lists shared copies of a connection that the caller's organization owns.
+     * <p>The returned connections are the child copies, not the parent connection
+     * itself. This is useful when a partner workflow needs to confirm which
+     * downstream organizations have already received a shared copy.</p>
+     * <p>Creating a new shared copy is a separate operation. Use
+     * <a href="../../../../api-reference/connections/create-shared-connection"><code>POST /api/organizations/{org_id}/connections/{connection_id}/share</code></a>
+     * for the v5 partner-scoped flow.</p>
+     */
+    public ConnectionListResponseEnvelope listSharedConnections(String id) {
+        return this.rawClient.listSharedConnections(id).body();
+    }
+
+    /**
+     * Lists shared copies of a connection that the caller's organization owns.
+     * <p>The returned connections are the child copies, not the parent connection
+     * itself. This is useful when a partner workflow needs to confirm which
+     * downstream organizations have already received a shared copy.</p>
+     * <p>Creating a new shared copy is a separate operation. Use
+     * <a href="../../../../api-reference/connections/create-shared-connection"><code>POST /api/organizations/{org_id}/connections/{connection_id}/share</code></a>
+     * for the v5 partner-scoped flow.</p>
+     */
+    public ConnectionListResponseEnvelope listSharedConnections(String id, RequestOptions requestOptions) {
+        return this.rawClient.listSharedConnections(id, requestOptions).body();
+    }
+
+    /**
+     * Lists shared copies of a connection owned by a specific organization in the partner account.
+     * <p>The <code>org_id</code> must match the organization that owns the parent connection. If it
+     * does not, the endpoint returns <code>404</code> rather than exposing information about the
+     * parent connection.</p>
+     * <p>This endpoint is useful in partner workflows where the parent connection is in
+     * the partner owner organization and the caller needs to audit which child
+     * organizations already have a shared copy.</p>
+     */
+    public ConnectionListResponseEnvelope listSharedConnectionsForPartner(String orgId, String connectionId) {
+        return this.rawClient
+                .listSharedConnectionsForPartner(orgId, connectionId)
+                .body();
+    }
+
+    /**
+     * Lists shared copies of a connection owned by a specific organization in the partner account.
+     * <p>The <code>org_id</code> must match the organization that owns the parent connection. If it
+     * does not, the endpoint returns <code>404</code> rather than exposing information about the
+     * parent connection.</p>
+     * <p>This endpoint is useful in partner workflows where the parent connection is in
+     * the partner owner organization and the caller needs to audit which child
+     * organizations already have a shared copy.</p>
+     */
+    public ConnectionListResponseEnvelope listSharedConnectionsForPartner(
+            String orgId, String connectionId, RequestOptions requestOptions) {
+        return this.rawClient
+                .listSharedConnectionsForPartner(orgId, connectionId, requestOptions)
+                .body();
     }
 
     /**
      * Shares a connection with another organization in the caller's partner account.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>Shared connections can only be created by using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
      */
-    public V2CreateSharedConnectionResponseEnvelope createSharedConnection(
-            String parentConnectionId, ApiRequest request) {
-        return createSharedConnection(parentConnectionId, request, null);
+    public CreateSharedConnectionResponseEnvelope createSharedConnection(
+            String orgId, String connectionId, PartnerCreateSharedConnectionRequestSchema request) {
+        return this.rawClient
+                .createSharedConnection(orgId, connectionId, request)
+                .body();
     }
 
     /**
      * Shares a connection with another organization in the caller's partner account.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>Shared connections can only be created by using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
      */
-    public V2CreateSharedConnectionResponseEnvelope createSharedConnection(
-            String parentConnectionId, ApiRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(parentConnectionId)
-                .addPathSegments("share")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V2CreateSharedConnectionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Lists shared copies of a connection.
-     */
-    public ConnectionListResponseEnvelope listSharedConnections(String parentConnectionId) {
-        return listSharedConnections(parentConnectionId, null);
-    }
-
-    /**
-     * Lists shared copies of a connection.
-     */
-    public ConnectionListResponseEnvelope listSharedConnections(
-            String parentConnectionId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(parentConnectionId)
-                .addPathSegments("shared")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ConnectionListResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public CreateSharedConnectionResponseEnvelope createSharedConnection(
+            String orgId,
+            String connectionId,
+            PartnerCreateSharedConnectionRequestSchema request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .createSharedConnection(orgId, connectionId, request, requestOptions)
+                .body();
     }
 }

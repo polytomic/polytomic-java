@@ -3,33 +3,37 @@
  */
 package com.polytomic.api.resources.bulksync.executions;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsExportLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetConsoleLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetSchemaConsoleLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListStatusRequest;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
+import com.polytomic.api.types.BulkSyncExecutionLogsEnvelope;
 import com.polytomic.api.types.CancelBulkSyncResponseEnvelope;
-import com.polytomic.api.types.ListBulkSyncExecutionStatusEnvelope;
+import com.polytomic.api.types.ExecutionConsoleLogsResponseEnvelope;
+import com.polytomic.api.types.ExportSyncLogsEnvelope;
 import com.polytomic.api.types.ListBulkSyncExecutionsEnvelope;
-import com.polytomic.api.types.V4BulkSyncExecutionLogsEnvelope;
-import com.polytomic.api.types.V4ExportSyncLogsEnvelope;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import com.polytomic.api.types.ListBulkSyncExecutionsStatusEnvelope;
 
 public class ExecutionsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawExecutionsClient rawClient;
+
     public ExecutionsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawExecutionsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawExecutionsClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
@@ -39,13 +43,13 @@ public class ExecutionsClient {
      * executions are preferred over older terminal ones.</p>
      * <p>Use this endpoint when you want a dashboard-style answer to &quot;what is each sync
      * doing now?&quot; If you need the full execution history or a single execution's
-     * details, use <a href="./list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
-     * <a href="./get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
+     * details, use <a href="../../../../api-reference/bulk-sync/executions/list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
+     * <a href="../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
      * <p>Setting <code>all=true</code> or <code>active=true</code> ignores any explicit <code>sync_id</code> filters and
      * expands the request to the caller's organization scope.</p>
      */
-    public ListBulkSyncExecutionStatusEnvelope listStatus() {
-        return listStatus(ExecutionsListStatusRequest.builder().build());
+    public ListBulkSyncExecutionsStatusEnvelope listStatus() {
+        return this.rawClient.listStatus().body();
     }
 
     /**
@@ -55,13 +59,13 @@ public class ExecutionsClient {
      * executions are preferred over older terminal ones.</p>
      * <p>Use this endpoint when you want a dashboard-style answer to &quot;what is each sync
      * doing now?&quot; If you need the full execution history or a single execution's
-     * details, use <a href="./list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
-     * <a href="./get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
+     * details, use <a href="../../../../api-reference/bulk-sync/executions/list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
+     * <a href="../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
      * <p>Setting <code>all=true</code> or <code>active=true</code> ignores any explicit <code>sync_id</code> filters and
      * expands the request to the caller's organization scope.</p>
      */
-    public ListBulkSyncExecutionStatusEnvelope listStatus(ExecutionsListStatusRequest request) {
-        return listStatus(request, null);
+    public ListBulkSyncExecutionsStatusEnvelope listStatus(RequestOptions requestOptions) {
+        return this.rawClient.listStatus(requestOptions).body();
     }
 
     /**
@@ -71,49 +75,30 @@ public class ExecutionsClient {
      * executions are preferred over older terminal ones.</p>
      * <p>Use this endpoint when you want a dashboard-style answer to &quot;what is each sync
      * doing now?&quot; If you need the full execution history or a single execution's
-     * details, use <a href="./list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
-     * <a href="./get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
+     * details, use <a href="../../../../api-reference/bulk-sync/executions/list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
+     * <a href="../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
      * <p>Setting <code>all=true</code> or <code>active=true</code> ignores any explicit <code>sync_id</code> filters and
      * expands the request to the caller's organization scope.</p>
      */
-    public ListBulkSyncExecutionStatusEnvelope listStatus(
+    public ListBulkSyncExecutionsStatusEnvelope listStatus(ExecutionsListStatusRequest request) {
+        return this.rawClient.listStatus(request).body();
+    }
+
+    /**
+     * Returns a concise per-schema status for one or more bulk syncs.
+     * <p>This endpoint is a summary view, not an execution-history view. Each schema is
+     * represented at most once with its most recent execution status, and running
+     * executions are preferred over older terminal ones.</p>
+     * <p>Use this endpoint when you want a dashboard-style answer to &quot;what is each sync
+     * doing now?&quot; If you need the full execution history or a single execution's
+     * details, use <a href="../../../../api-reference/bulk-sync/executions/list"><code>GET /api/bulk/syncs/{id}/executions</code></a> or
+     * <a href="../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a> instead.</p>
+     * <p>Setting <code>all=true</code> or <code>active=true</code> ignores any explicit <code>sync_id</code> filters and
+     * expands the request to the caller's organization scope.</p>
+     */
+    public ListBulkSyncExecutionsStatusEnvelope listStatus(
             ExecutionsListStatusRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs/status");
-        if (request.getAll().isPresent()) {
-            httpUrl.addQueryParameter("all", request.getAll().get().toString());
-        }
-        if (request.getActive().isPresent()) {
-            httpUrl.addQueryParameter("active", request.getActive().get().toString());
-        }
-        if (request.getSyncId().isPresent()) {
-            httpUrl.addQueryParameter("sync_id", request.getSyncId().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), ListBulkSyncExecutionStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.listStatus(request, requestOptions).body();
     }
 
     /**
@@ -130,7 +115,24 @@ public class ExecutionsClient {
      * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public ListBulkSyncExecutionsEnvelope list(String id) {
-        return list(id, ExecutionsListRequest.builder().build());
+        return this.rawClient.list(id).body();
+    }
+
+    /**
+     * Lists executions for a bulk sync.
+     * <p>Results are ordered by start time descending by default. When more results are
+     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
+     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
+     * parameter is optional, and the maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
+     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
+     * starting with the newest execution.</p>
+     * <p>For the full details of a single run — including per-schema execution status —
+     * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
+     */
+    public ListBulkSyncExecutionsEnvelope list(String id, RequestOptions requestOptions) {
+        return this.rawClient.list(id, requestOptions).body();
     }
 
     /**
@@ -147,7 +149,7 @@ public class ExecutionsClient {
      * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public ListBulkSyncExecutionsEnvelope list(String id, ExecutionsListRequest request) {
-        return list(id, request, null);
+        return this.rawClient.list(id, request).body();
     }
 
     /**
@@ -165,47 +167,7 @@ public class ExecutionsClient {
      */
     public ListBulkSyncExecutionsEnvelope list(
             String id, ExecutionsListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions");
-        if (request.getPageToken().isPresent()) {
-            httpUrl.addQueryParameter("page_token", request.getPageToken().get());
-        }
-        if (request.getOnlyTerminal().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "only_terminal", request.getOnlyTerminal().get().toString());
-        }
-        if (request.getAscending().isPresent()) {
-            httpUrl.addQueryParameter("ascending", request.getAscending().get().toString());
-        }
-        if (request.getLimit().isPresent()) {
-            httpUrl.addQueryParameter("limit", request.getLimit().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListBulkSyncExecutionsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(id, request, requestOptions).body();
     }
 
     /**
@@ -216,7 +178,7 @@ public class ExecutionsClient {
      * some schemas succeeded while others did not.</p>
      */
     public BulkSyncExecutionEnvelope get(String id, String execId) {
-        return get(id, execId, null);
+        return this.rawClient.get(id, execId).body();
     }
 
     /**
@@ -227,36 +189,7 @@ public class ExecutionsClient {
      * some schemas succeeded while others did not.</p>
      */
     public BulkSyncExecutionEnvelope get(String id, String execId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions")
-                .addPathSegment(execId)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), BulkSyncExecutionEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(id, execId, requestOptions).body();
     }
 
     /**
@@ -268,7 +201,7 @@ public class ExecutionsClient {
      * confirm cancellation has taken effect.</p>
      */
     public CancelBulkSyncResponseEnvelope cancel(String id, String execId) {
-        return cancel(id, execId, null);
+        return this.rawClient.cancel(id, execId).body();
     }
 
     /**
@@ -279,38 +212,43 @@ public class ExecutionsClient {
      * execution reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to
      * confirm cancellation has taken effect.</p>
      */
-    public CancelBulkSyncResponseEnvelope cancel(String id, String execId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions")
-                .addPathSegment(execId)
-                .addPathSegments("cancel")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), CancelBulkSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public CancelBulkSyncResponseEnvelope cancel(String id, String execId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.cancel(id, execId, requestOptions).body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(String syncId, String executionId) {
+        return this.rawClient.getConsoleLogs(syncId, executionId).body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(
+            String syncId, String executionId, RequestOptions requestOptions) {
+        return this.rawClient
+                .getConsoleLogs(syncId, executionId, requestOptions)
+                .body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(
+            String syncId, String executionId, ExecutionsGetConsoleLogsRequest request) {
+        return this.rawClient.getConsoleLogs(syncId, executionId, request).body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(
+            String syncId, String executionId, ExecutionsGetConsoleLogsRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .getConsoleLogs(syncId, executionId, request, requestOptions)
+                .body();
     }
 
     /**
@@ -325,8 +263,8 @@ public class ExecutionsClient {
      * instead.</p>
      * </blockquote>
      */
-    public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId) {
-        return getLogs(syncId, executionId, null);
+    public BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId) {
+        return this.rawClient.getLogs(syncId, executionId).body();
     }
 
     /**
@@ -341,39 +279,8 @@ public class ExecutionsClient {
      * instead.</p>
      * </blockquote>
      */
-    public V4BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(executionId)
-                .addPathSegments("logs")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), V4BulkSyncExecutionLogsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public BulkSyncExecutionLogsEnvelope getLogs(String syncId, String executionId, RequestOptions requestOptions) {
+        return this.rawClient.getLogs(syncId, executionId, requestOptions).body();
     }
 
     /**
@@ -390,9 +297,8 @@ public class ExecutionsClient {
      * ready.</p>
      * </blockquote>
      */
-    public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId) {
-        return exportLogs(
-                syncId, executionId, ExecutionsExportLogsRequest.builder().build());
+    public ExportSyncLogsEnvelope exportLogs(String syncId, String executionId) {
+        return this.rawClient.exportLogs(syncId, executionId).body();
     }
 
     /**
@@ -409,8 +315,9 @@ public class ExecutionsClient {
      * ready.</p>
      * </blockquote>
      */
-    public V4ExportSyncLogsEnvelope exportLogs(String syncId, String executionId, ExecutionsExportLogsRequest request) {
-        return exportLogs(syncId, executionId, request, null);
+    public ExportSyncLogsEnvelope exportLogs(
+            String syncId, String executionId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.exportLogs(syncId, executionId, requestOptions).body();
     }
 
     /**
@@ -427,40 +334,75 @@ public class ExecutionsClient {
      * ready.</p>
      * </blockquote>
      */
-    public V4ExportSyncLogsEnvelope exportLogs(
-            String syncId, String executionId, ExecutionsExportLogsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(executionId)
-                .addPathSegments("logs/export");
-        if (request.getNotify().isPresent()) {
-            httpUrl.addQueryParameter("notify", request.getNotify().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), V4ExportSyncLogsEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public ExportSyncLogsEnvelope exportLogs(String syncId, String executionId, ExecutionsExportLogsRequest request) {
+        return this.rawClient.exportLogs(syncId, executionId, request).body();
+    }
+
+    /**
+     * Starts an asynchronous job that packages the log files for a single bulk sync execution into a downloadable archive.
+     * <blockquote>
+     * <p>📘 Log export is asynchronous</p>
+     * <p>This endpoint starts a background job that packages an execution's log
+     * files into a downloadable archive. The first call typically returns a
+     * <code>job</code> descriptor instead of a completed result. Poll
+     * <a href="../../../../../../../../api-reference/jobs/get"><code>GET /api/jobs/exportlogs/{id}</code></a>
+     * with the returned <code>job_id</code> until <code>status</code> is <code>done</code>; the final response
+     * contains a signed <code>url</code> that can be used to download the archive.</p>
+     * <p>Set <code>notify=true</code> to also email the requesting user when the archive is
+     * ready.</p>
+     * </blockquote>
+     */
+    public ExportSyncLogsEnvelope exportLogs(
+            String syncId,
+            String executionId,
+            ExecutionsExportLogsRequest request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .exportLogs(syncId, executionId, request, requestOptions)
+                .body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getSchemaConsoleLogs(
+            String syncId, String executionId, String schemaId) {
+        return this.rawClient
+                .getSchemaConsoleLogs(syncId, executionId, schemaId)
+                .body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getSchemaConsoleLogs(
+            String syncId, String executionId, String schemaId, RequestOptions requestOptions) {
+        return this.rawClient
+                .getSchemaConsoleLogs(syncId, executionId, schemaId, requestOptions)
+                .body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getSchemaConsoleLogs(
+            String syncId, String executionId, String schemaId, ExecutionsGetSchemaConsoleLogsRequest request) {
+        return this.rawClient
+                .getSchemaConsoleLogs(syncId, executionId, schemaId, request)
+                .body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getSchemaConsoleLogs(
+            String syncId,
+            String executionId,
+            String schemaId,
+            ExecutionsGetSchemaConsoleLogsRequest request,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .getSchemaConsoleLogs(syncId, executionId, schemaId, request, requestOptions)
+                .body();
     }
 }

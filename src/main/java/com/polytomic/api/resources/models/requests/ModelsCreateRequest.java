@@ -5,6 +5,7 @@ package com.polytomic.api.resources.models.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,8 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelsCreateRequest.Builder.class)
 public final class ModelsCreateRequest {
     private final Optional<Boolean> async;
@@ -34,7 +36,7 @@ public final class ModelsCreateRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("async")
+    @JsonIgnore
     public Optional<Boolean> getAsync() {
         return async;
     }
@@ -74,13 +76,17 @@ public final class ModelsCreateRequest {
     }
 
     public interface BodyStage {
-        _FinalStage body(CreateModelRequest body);
+        _FinalStage body(@NotNull CreateModelRequest body);
 
         Builder from(ModelsCreateRequest other);
     }
 
     public interface _FinalStage {
         ModelsCreateRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage async(Optional<Boolean> async);
 
@@ -107,14 +113,14 @@ public final class ModelsCreateRequest {
 
         @java.lang.Override
         @JsonSetter("body")
-        public _FinalStage body(CreateModelRequest body) {
+        public _FinalStage body(@NotNull CreateModelRequest body) {
             this.body = body;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage async(Boolean async) {
-            this.async = Optional.of(async);
+            this.async = Optional.ofNullable(async);
             return this;
         }
 
@@ -128,6 +134,18 @@ public final class ModelsCreateRequest {
         @java.lang.Override
         public ModelsCreateRequest build() {
             return new ModelsCreateRequest(async, body, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

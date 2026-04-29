@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelRelation.Builder.class)
 public final class ModelRelation {
     private final Optional<String> from;
@@ -96,7 +96,7 @@ public final class ModelRelation {
         }
 
         public Builder from(String from) {
-            this.from = Optional.of(from);
+            this.from = Optional.ofNullable(from);
             return this;
         }
 
@@ -107,12 +107,22 @@ public final class ModelRelation {
         }
 
         public Builder to(ModelRelationTo to) {
-            this.to = Optional.of(to);
+            this.to = Optional.ofNullable(to);
             return this;
         }
 
         public ModelRelation build() {
             return new ModelRelation(from, to, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

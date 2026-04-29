@@ -12,11 +12,12 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
-import com.polytomic.api.resources.bulksync.types.V2CreateBulkSyncRequestSchemasItem;
+import com.polytomic.api.resources.bulksync.types.CreateBulkSyncRequestSchemasItem;
 import com.polytomic.api.types.BulkDiscover;
 import com.polytomic.api.types.BulkNormalizeNames;
-import com.polytomic.api.types.BulkSchedule;
-import com.polytomic.api.types.BulkSyncMode;
+import com.polytomic.api.types.BulkSyncAdditionalScheduleRequest;
+import com.polytomic.api.types.BulkSyncDefaultScheduleRequest;
+import com.polytomic.api.types.BulkSyncTargetMode;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,11 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateBulkSyncRequest.Builder.class)
 public final class CreateBulkSyncRequest {
     private final Optional<Boolean> active;
+
+    private final Optional<List<BulkSyncAdditionalScheduleRequest>> additionalSchedules;
 
     private final Optional<BulkDiscover> automaticallyAddNewFields;
 
@@ -38,15 +42,15 @@ public final class CreateBulkSyncRequest {
 
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
 
+    private final BulkSyncDefaultScheduleRequest defaultSchedule;
+
     private final Map<String, Object> destinationConfiguration;
 
     private final String destinationConnectionId;
 
     private final Optional<Boolean> disableRecordTimestamps;
 
-    private final Optional<Boolean> discover;
-
-    private final Optional<BulkSyncMode> mode;
+    private final Optional<BulkSyncTargetMode> mode;
 
     private final String name;
 
@@ -58,9 +62,7 @@ public final class CreateBulkSyncRequest {
 
     private final Optional<Integer> resyncConcurrencyLimit;
 
-    private final BulkSchedule schedule;
-
-    private final Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas;
+    private final Optional<List<CreateBulkSyncRequestSchemasItem>> schemas;
 
     private final Optional<Map<String, Object>> sourceConfiguration;
 
@@ -70,50 +72,61 @@ public final class CreateBulkSyncRequest {
 
     private CreateBulkSyncRequest(
             Optional<Boolean> active,
+            Optional<List<BulkSyncAdditionalScheduleRequest>> additionalSchedules,
             Optional<BulkDiscover> automaticallyAddNewFields,
             Optional<BulkDiscover> automaticallyAddNewObjects,
             Optional<Integer> concurrencyLimit,
             Optional<OffsetDateTime> dataCutoffTimestamp,
+            BulkSyncDefaultScheduleRequest defaultSchedule,
             Map<String, Object> destinationConfiguration,
             String destinationConnectionId,
             Optional<Boolean> disableRecordTimestamps,
-            Optional<Boolean> discover,
-            Optional<BulkSyncMode> mode,
+            Optional<BulkSyncTargetMode> mode,
             String name,
             Optional<BulkNormalizeNames> normalizeNames,
             Optional<String> organizationId,
             Optional<List<String>> policies,
             Optional<Integer> resyncConcurrencyLimit,
-            BulkSchedule schedule,
-            Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas,
+            Optional<List<CreateBulkSyncRequestSchemasItem>> schemas,
             Optional<Map<String, Object>> sourceConfiguration,
             String sourceConnectionId,
             Map<String, Object> additionalProperties) {
         this.active = active;
+        this.additionalSchedules = additionalSchedules;
         this.automaticallyAddNewFields = automaticallyAddNewFields;
         this.automaticallyAddNewObjects = automaticallyAddNewObjects;
         this.concurrencyLimit = concurrencyLimit;
         this.dataCutoffTimestamp = dataCutoffTimestamp;
+        this.defaultSchedule = defaultSchedule;
         this.destinationConfiguration = destinationConfiguration;
         this.destinationConnectionId = destinationConnectionId;
         this.disableRecordTimestamps = disableRecordTimestamps;
-        this.discover = discover;
         this.mode = mode;
         this.name = name;
         this.normalizeNames = normalizeNames;
         this.organizationId = organizationId;
         this.policies = policies;
         this.resyncConcurrencyLimit = resyncConcurrencyLimit;
-        this.schedule = schedule;
         this.schemas = schemas;
         this.sourceConfiguration = sourceConfiguration;
         this.sourceConnectionId = sourceConnectionId;
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether the sync is active. Inactive syncs do not run on their schedule but can still be triggered manually.
+     */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
+    }
+
+    /**
+     * @return Additional bulk sync schedules. Schedule times are interpreted in UTC.
+     */
+    @JsonProperty("additional_schedules")
+    public Optional<List<BulkSyncAdditionalScheduleRequest>> getAdditionalSchedules() {
+        return additionalSchedules;
     }
 
     @JsonProperty("automatically_add_new_fields")
@@ -134,39 +147,51 @@ public final class CreateBulkSyncRequest {
         return concurrencyLimit;
     }
 
+    /**
+     * @return Global cutoff applied across schemas. Source records older than this timestamp are excluded from sync runs.
+     */
     @JsonProperty("data_cutoff_timestamp")
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
         return dataCutoffTimestamp;
     }
 
+    @JsonProperty("default_schedule")
+    public BulkSyncDefaultScheduleRequest getDefaultSchedule() {
+        return defaultSchedule;
+    }
+
+    /**
+     * @return Destination-specific bulk sync configuration (e.g. output schema name, file format). The accepted keys depend on the destination connection type.
+     */
     @JsonProperty("destination_configuration")
     public Map<String, Object> getDestinationConfiguration() {
         return destinationConfiguration;
     }
 
+    /**
+     * @return Unique identifier of the connection rows are written to.
+     */
     @JsonProperty("destination_connection_id")
     public String getDestinationConnectionId() {
         return destinationConnectionId;
     }
 
+    /**
+     * @return When true, Polytomic will not add its own timestamp columns to destination rows.
+     */
     @JsonProperty("disable_record_timestamps")
     public Optional<Boolean> getDisableRecordTimestamps() {
         return disableRecordTimestamps;
     }
 
-    /**
-     * @return DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead
-     */
-    @JsonProperty("discover")
-    public Optional<Boolean> getDiscover() {
-        return discover;
-    }
-
     @JsonProperty("mode")
-    public Optional<BulkSyncMode> getMode() {
+    public Optional<BulkSyncTargetMode> getMode() {
         return mode;
     }
 
+    /**
+     * @return Human-readable name for the bulk sync.
+     */
     @JsonProperty("name")
     public String getName() {
         return name;
@@ -177,11 +202,17 @@ public final class CreateBulkSyncRequest {
         return normalizeNames;
     }
 
+    /**
+     * @return Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Identifiers of permissions policies applied to the bulk sync.
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
@@ -195,24 +226,25 @@ public final class CreateBulkSyncRequest {
         return resyncConcurrencyLimit;
     }
 
-    @JsonProperty("schedule")
-    public BulkSchedule getSchedule() {
-        return schedule;
-    }
-
     /**
      * @return List of schemas to sync; if omitted, all schemas will be selected for syncing.
      */
     @JsonProperty("schemas")
-    public Optional<List<V2CreateBulkSyncRequestSchemasItem>> getSchemas() {
+    public Optional<List<CreateBulkSyncRequestSchemasItem>> getSchemas() {
         return schemas;
     }
 
+    /**
+     * @return Source-specific bulk sync configuration (e.g. replication slot name, sync lookback). The accepted keys depend on the source connection type.
+     */
     @JsonProperty("source_configuration")
     public Optional<Map<String, Object>> getSourceConfiguration() {
         return sourceConfiguration;
     }
 
+    /**
+     * @return Unique identifier of the connection rows are read from.
+     */
     @JsonProperty("source_connection_id")
     public String getSourceConnectionId() {
         return sourceConnectionId;
@@ -231,21 +263,21 @@ public final class CreateBulkSyncRequest {
 
     private boolean equalTo(CreateBulkSyncRequest other) {
         return active.equals(other.active)
+                && additionalSchedules.equals(other.additionalSchedules)
                 && automaticallyAddNewFields.equals(other.automaticallyAddNewFields)
                 && automaticallyAddNewObjects.equals(other.automaticallyAddNewObjects)
                 && concurrencyLimit.equals(other.concurrencyLimit)
                 && dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
+                && defaultSchedule.equals(other.defaultSchedule)
                 && destinationConfiguration.equals(other.destinationConfiguration)
                 && destinationConnectionId.equals(other.destinationConnectionId)
                 && disableRecordTimestamps.equals(other.disableRecordTimestamps)
-                && discover.equals(other.discover)
                 && mode.equals(other.mode)
                 && name.equals(other.name)
                 && normalizeNames.equals(other.normalizeNames)
                 && organizationId.equals(other.organizationId)
                 && policies.equals(other.policies)
                 && resyncConcurrencyLimit.equals(other.resyncConcurrencyLimit)
-                && schedule.equals(other.schedule)
                 && schemas.equals(other.schemas)
                 && sourceConfiguration.equals(other.sourceConfiguration)
                 && sourceConnectionId.equals(other.sourceConnectionId);
@@ -255,21 +287,21 @@ public final class CreateBulkSyncRequest {
     public int hashCode() {
         return Objects.hash(
                 this.active,
+                this.additionalSchedules,
                 this.automaticallyAddNewFields,
                 this.automaticallyAddNewObjects,
                 this.concurrencyLimit,
                 this.dataCutoffTimestamp,
+                this.defaultSchedule,
                 this.destinationConfiguration,
                 this.destinationConnectionId,
                 this.disableRecordTimestamps,
-                this.discover,
                 this.mode,
                 this.name,
                 this.normalizeNames,
                 this.organizationId,
                 this.policies,
                 this.resyncConcurrencyLimit,
-                this.schedule,
                 this.schemas,
                 this.sourceConfiguration,
                 this.sourceConnectionId);
@@ -280,34 +312,57 @@ public final class CreateBulkSyncRequest {
         return ObjectMappers.stringify(this);
     }
 
-    public static DestinationConnectionIdStage builder() {
+    public static DefaultScheduleStage builder() {
         return new Builder();
     }
 
-    public interface DestinationConnectionIdStage {
-        NameStage destinationConnectionId(String destinationConnectionId);
+    public interface DefaultScheduleStage {
+        DestinationConnectionIdStage defaultSchedule(@NotNull BulkSyncDefaultScheduleRequest defaultSchedule);
 
         Builder from(CreateBulkSyncRequest other);
     }
 
-    public interface NameStage {
-        ScheduleStage name(String name);
+    public interface DestinationConnectionIdStage {
+        /**
+         * <p>Unique identifier of the connection rows are written to.</p>
+         */
+        NameStage destinationConnectionId(@NotNull String destinationConnectionId);
     }
 
-    public interface ScheduleStage {
-        SourceConnectionIdStage schedule(BulkSchedule schedule);
+    public interface NameStage {
+        /**
+         * <p>Human-readable name for the bulk sync.</p>
+         */
+        SourceConnectionIdStage name(@NotNull String name);
     }
 
     public interface SourceConnectionIdStage {
-        _FinalStage sourceConnectionId(String sourceConnectionId);
+        /**
+         * <p>Unique identifier of the connection rows are read from.</p>
+         */
+        _FinalStage sourceConnectionId(@NotNull String sourceConnectionId);
     }
 
     public interface _FinalStage {
         CreateBulkSyncRequest build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Whether the sync is active. Inactive syncs do not run on their schedule but can still be triggered manually.</p>
+         */
         _FinalStage active(Optional<Boolean> active);
 
         _FinalStage active(Boolean active);
+
+        /**
+         * <p>Additional bulk sync schedules. Schedule times are interpreted in UTC.</p>
+         */
+        _FinalStage additionalSchedules(Optional<List<BulkSyncAdditionalScheduleRequest>> additionalSchedules);
+
+        _FinalStage additionalSchedules(List<BulkSyncAdditionalScheduleRequest> additionalSchedules);
 
         _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields);
 
@@ -317,52 +372,75 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
 
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         */
         _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit);
 
         _FinalStage concurrencyLimit(Integer concurrencyLimit);
 
+        /**
+         * <p>Global cutoff applied across schemas. Source records older than this timestamp are excluded from sync runs.</p>
+         */
         _FinalStage dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp);
 
         _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp);
 
+        /**
+         * <p>Destination-specific bulk sync configuration (e.g. output schema name, file format). The accepted keys depend on the destination connection type.</p>
+         */
         _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration);
 
         _FinalStage putAllDestinationConfiguration(Map<String, Object> destinationConfiguration);
 
         _FinalStage destinationConfiguration(String key, Object value);
 
+        /**
+         * <p>When true, Polytomic will not add its own timestamp columns to destination rows.</p>
+         */
         _FinalStage disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps);
 
         _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps);
 
-        _FinalStage discover(Optional<Boolean> discover);
+        _FinalStage mode(Optional<BulkSyncTargetMode> mode);
 
-        _FinalStage discover(Boolean discover);
-
-        _FinalStage mode(Optional<BulkSyncMode> mode);
-
-        _FinalStage mode(BulkSyncMode mode);
+        _FinalStage mode(BulkSyncTargetMode mode);
 
         _FinalStage normalizeNames(Optional<BulkNormalizeNames> normalizeNames);
 
         _FinalStage normalizeNames(BulkNormalizeNames normalizeNames);
 
+        /**
+         * <p>Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
+        /**
+         * <p>Identifiers of permissions policies applied to the bulk sync.</p>
+         */
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
 
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         */
         _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit);
 
         _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit);
 
-        _FinalStage schemas(Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas);
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         */
+        _FinalStage schemas(Optional<List<CreateBulkSyncRequestSchemasItem>> schemas);
 
-        _FinalStage schemas(List<V2CreateBulkSyncRequestSchemasItem> schemas);
+        _FinalStage schemas(List<CreateBulkSyncRequestSchemasItem> schemas);
 
+        /**
+         * <p>Source-specific bulk sync configuration (e.g. replication slot name, sync lookback). The accepted keys depend on the source connection type.</p>
+         */
         _FinalStage sourceConfiguration(Optional<Map<String, Object>> sourceConfiguration);
 
         _FinalStage sourceConfiguration(Map<String, Object> sourceConfiguration);
@@ -370,18 +448,22 @@ public final class CreateBulkSyncRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements DestinationConnectionIdStage, NameStage, ScheduleStage, SourceConnectionIdStage, _FinalStage {
+            implements DefaultScheduleStage,
+                    DestinationConnectionIdStage,
+                    NameStage,
+                    SourceConnectionIdStage,
+                    _FinalStage {
+        private BulkSyncDefaultScheduleRequest defaultSchedule;
+
         private String destinationConnectionId;
 
         private String name;
-
-        private BulkSchedule schedule;
 
         private String sourceConnectionId;
 
         private Optional<Map<String, Object>> sourceConfiguration = Optional.empty();
 
-        private Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas = Optional.empty();
+        private Optional<List<CreateBulkSyncRequestSchemasItem>> schemas = Optional.empty();
 
         private Optional<Integer> resyncConcurrencyLimit = Optional.empty();
 
@@ -391,9 +473,7 @@ public final class CreateBulkSyncRequest {
 
         private Optional<BulkNormalizeNames> normalizeNames = Optional.empty();
 
-        private Optional<BulkSyncMode> mode = Optional.empty();
-
-        private Optional<Boolean> discover = Optional.empty();
+        private Optional<BulkSyncTargetMode> mode = Optional.empty();
 
         private Optional<Boolean> disableRecordTimestamps = Optional.empty();
 
@@ -407,6 +487,8 @@ public final class CreateBulkSyncRequest {
 
         private Optional<BulkDiscover> automaticallyAddNewFields = Optional.empty();
 
+        private Optional<List<BulkSyncAdditionalScheduleRequest>> additionalSchedules = Optional.empty();
+
         private Optional<Boolean> active = Optional.empty();
 
         @JsonAnySetter
@@ -417,21 +499,21 @@ public final class CreateBulkSyncRequest {
         @java.lang.Override
         public Builder from(CreateBulkSyncRequest other) {
             active(other.getActive());
+            additionalSchedules(other.getAdditionalSchedules());
             automaticallyAddNewFields(other.getAutomaticallyAddNewFields());
             automaticallyAddNewObjects(other.getAutomaticallyAddNewObjects());
             concurrencyLimit(other.getConcurrencyLimit());
             dataCutoffTimestamp(other.getDataCutoffTimestamp());
+            defaultSchedule(other.getDefaultSchedule());
             destinationConfiguration(other.getDestinationConfiguration());
             destinationConnectionId(other.getDestinationConnectionId());
             disableRecordTimestamps(other.getDisableRecordTimestamps());
-            discover(other.getDiscover());
             mode(other.getMode());
             name(other.getName());
             normalizeNames(other.getNormalizeNames());
             organizationId(other.getOrganizationId());
             policies(other.getPolicies());
             resyncConcurrencyLimit(other.getResyncConcurrencyLimit());
-            schedule(other.getSchedule());
             schemas(other.getSchemas());
             sourceConfiguration(other.getSourceConfiguration());
             sourceConnectionId(other.getSourceConnectionId());
@@ -439,39 +521,61 @@ public final class CreateBulkSyncRequest {
         }
 
         @java.lang.Override
+        @JsonSetter("default_schedule")
+        public DestinationConnectionIdStage defaultSchedule(@NotNull BulkSyncDefaultScheduleRequest defaultSchedule) {
+            this.defaultSchedule = defaultSchedule;
+            return this;
+        }
+
+        /**
+         * <p>Unique identifier of the connection rows are written to.</p>
+         * <p>Unique identifier of the connection rows are written to.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
         @JsonSetter("destination_connection_id")
-        public NameStage destinationConnectionId(String destinationConnectionId) {
+        public NameStage destinationConnectionId(@NotNull String destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
             return this;
         }
 
+        /**
+         * <p>Human-readable name for the bulk sync.</p>
+         * <p>Human-readable name for the bulk sync.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("name")
-        public ScheduleStage name(String name) {
+        public SourceConnectionIdStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
-        @java.lang.Override
-        @JsonSetter("schedule")
-        public SourceConnectionIdStage schedule(BulkSchedule schedule) {
-            this.schedule = schedule;
-            return this;
-        }
-
+        /**
+         * <p>Unique identifier of the connection rows are read from.</p>
+         * <p>Unique identifier of the connection rows are read from.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("source_connection_id")
-        public _FinalStage sourceConnectionId(String sourceConnectionId) {
+        public _FinalStage sourceConnectionId(@NotNull String sourceConnectionId) {
             this.sourceConnectionId = sourceConnectionId;
             return this;
         }
 
+        /**
+         * <p>Source-specific bulk sync configuration (e.g. replication slot name, sync lookback). The accepted keys depend on the source connection type.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage sourceConfiguration(Map<String, Object> sourceConfiguration) {
-            this.sourceConfiguration = Optional.of(sourceConfiguration);
+            this.sourceConfiguration = Optional.ofNullable(sourceConfiguration);
             return this;
         }
 
+        /**
+         * <p>Source-specific bulk sync configuration (e.g. replication slot name, sync lookback). The accepted keys depend on the source connection type.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source_configuration", nulls = Nulls.SKIP)
         public _FinalStage sourceConfiguration(Optional<Map<String, Object>> sourceConfiguration) {
@@ -484,14 +588,17 @@ public final class CreateBulkSyncRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage schemas(List<V2CreateBulkSyncRequestSchemasItem> schemas) {
-            this.schemas = Optional.of(schemas);
+        public _FinalStage schemas(List<CreateBulkSyncRequestSchemasItem> schemas) {
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
+        /**
+         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
-        public _FinalStage schemas(Optional<List<V2CreateBulkSyncRequestSchemasItem>> schemas) {
+        public _FinalStage schemas(Optional<List<CreateBulkSyncRequestSchemasItem>> schemas) {
             this.schemas = schemas;
             return this;
         }
@@ -502,10 +609,13 @@ public final class CreateBulkSyncRequest {
          */
         @java.lang.Override
         public _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit) {
-            this.resyncConcurrencyLimit = Optional.of(resyncConcurrencyLimit);
+            this.resyncConcurrencyLimit = Optional.ofNullable(resyncConcurrencyLimit);
             return this;
         }
 
+        /**
+         * <p>Override the default resync concurrency limit for this sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "resync_concurrency_limit", nulls = Nulls.SKIP)
         public _FinalStage resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit) {
@@ -513,12 +623,19 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Identifiers of permissions policies applied to the bulk sync.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
+        /**
+         * <p>Identifiers of permissions policies applied to the bulk sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
@@ -526,12 +643,19 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -541,7 +665,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage normalizeNames(BulkNormalizeNames normalizeNames) {
-            this.normalizeNames = Optional.of(normalizeNames);
+            this.normalizeNames = Optional.ofNullable(normalizeNames);
             return this;
         }
 
@@ -553,41 +677,31 @@ public final class CreateBulkSyncRequest {
         }
 
         @java.lang.Override
-        public _FinalStage mode(BulkSyncMode mode) {
-            this.mode = Optional.of(mode);
+        public _FinalStage mode(BulkSyncTargetMode mode) {
+            this.mode = Optional.ofNullable(mode);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
-        public _FinalStage mode(Optional<BulkSyncMode> mode) {
+        public _FinalStage mode(Optional<BulkSyncTargetMode> mode) {
             this.mode = mode;
             return this;
         }
 
         /**
-         * <p>DEPRECATED: Use automatically_add_new_objects/automatically_add_new_fields instead</p>
+         * <p>When true, Polytomic will not add its own timestamp columns to destination rows.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage discover(Boolean discover) {
-            this.discover = Optional.of(discover);
-            return this;
-        }
-
-        @java.lang.Override
-        @JsonSetter(value = "discover", nulls = Nulls.SKIP)
-        public _FinalStage discover(Optional<Boolean> discover) {
-            this.discover = discover;
-            return this;
-        }
-
-        @java.lang.Override
         public _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps) {
-            this.disableRecordTimestamps = Optional.of(disableRecordTimestamps);
+            this.disableRecordTimestamps = Optional.ofNullable(disableRecordTimestamps);
             return this;
         }
 
+        /**
+         * <p>When true, Polytomic will not add its own timestamp columns to destination rows.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "disable_record_timestamps", nulls = Nulls.SKIP)
         public _FinalStage disableRecordTimestamps(Optional<Boolean> disableRecordTimestamps) {
@@ -595,32 +709,54 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Destination-specific bulk sync configuration (e.g. output schema name, file format). The accepted keys depend on the destination connection type.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage destinationConfiguration(String key, Object value) {
             this.destinationConfiguration.put(key, value);
             return this;
         }
 
+        /**
+         * <p>Destination-specific bulk sync configuration (e.g. output schema name, file format). The accepted keys depend on the destination connection type.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage putAllDestinationConfiguration(Map<String, Object> destinationConfiguration) {
-            this.destinationConfiguration.putAll(destinationConfiguration);
+            if (destinationConfiguration != null) {
+                this.destinationConfiguration.putAll(destinationConfiguration);
+            }
             return this;
         }
 
+        /**
+         * <p>Destination-specific bulk sync configuration (e.g. output schema name, file format). The accepted keys depend on the destination connection type.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "destination_configuration", nulls = Nulls.SKIP)
         public _FinalStage destinationConfiguration(Map<String, Object> destinationConfiguration) {
             this.destinationConfiguration.clear();
-            this.destinationConfiguration.putAll(destinationConfiguration);
+            if (destinationConfiguration != null) {
+                this.destinationConfiguration.putAll(destinationConfiguration);
+            }
             return this;
         }
 
+        /**
+         * <p>Global cutoff applied across schemas. Source records older than this timestamp are excluded from sync runs.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
-            this.dataCutoffTimestamp = Optional.of(dataCutoffTimestamp);
+            this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
             return this;
         }
 
+        /**
+         * <p>Global cutoff applied across schemas. Source records older than this timestamp are excluded from sync runs.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
         public _FinalStage dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
@@ -634,10 +770,13 @@ public final class CreateBulkSyncRequest {
          */
         @java.lang.Override
         public _FinalStage concurrencyLimit(Integer concurrencyLimit) {
-            this.concurrencyLimit = Optional.of(concurrencyLimit);
+            this.concurrencyLimit = Optional.ofNullable(concurrencyLimit);
             return this;
         }
 
+        /**
+         * <p>Override the default concurrency limit for this sync.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "concurrency_limit", nulls = Nulls.SKIP)
         public _FinalStage concurrencyLimit(Optional<Integer> concurrencyLimit) {
@@ -647,7 +786,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
-            this.automaticallyAddNewObjects = Optional.of(automaticallyAddNewObjects);
+            this.automaticallyAddNewObjects = Optional.ofNullable(automaticallyAddNewObjects);
             return this;
         }
 
@@ -660,7 +799,7 @@ public final class CreateBulkSyncRequest {
 
         @java.lang.Override
         public _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
-            this.automaticallyAddNewFields = Optional.of(automaticallyAddNewFields);
+            this.automaticallyAddNewFields = Optional.ofNullable(automaticallyAddNewFields);
             return this;
         }
 
@@ -671,12 +810,39 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Additional bulk sync schedules. Schedule times are interpreted in UTC.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
-        public _FinalStage active(Boolean active) {
-            this.active = Optional.of(active);
+        public _FinalStage additionalSchedules(List<BulkSyncAdditionalScheduleRequest> additionalSchedules) {
+            this.additionalSchedules = Optional.ofNullable(additionalSchedules);
             return this;
         }
 
+        /**
+         * <p>Additional bulk sync schedules. Schedule times are interpreted in UTC.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "additional_schedules", nulls = Nulls.SKIP)
+        public _FinalStage additionalSchedules(Optional<List<BulkSyncAdditionalScheduleRequest>> additionalSchedules) {
+            this.additionalSchedules = additionalSchedules;
+            return this;
+        }
+
+        /**
+         * <p>Whether the sync is active. Inactive syncs do not run on their schedule but can still be triggered manually.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage active(Boolean active) {
+            this.active = Optional.ofNullable(active);
+            return this;
+        }
+
+        /**
+         * <p>Whether the sync is active. Inactive syncs do not run on their schedule but can still be triggered manually.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public _FinalStage active(Optional<Boolean> active) {
@@ -688,25 +854,37 @@ public final class CreateBulkSyncRequest {
         public CreateBulkSyncRequest build() {
             return new CreateBulkSyncRequest(
                     active,
+                    additionalSchedules,
                     automaticallyAddNewFields,
                     automaticallyAddNewObjects,
                     concurrencyLimit,
                     dataCutoffTimestamp,
+                    defaultSchedule,
                     destinationConfiguration,
                     destinationConnectionId,
                     disableRecordTimestamps,
-                    discover,
                     mode,
                     name,
                     normalizeNames,
                     organizationId,
                     policies,
                     resyncConcurrencyLimit,
-                    schedule,
                     schemas,
                     sourceConfiguration,
                     sourceConnectionId,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

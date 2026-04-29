@@ -7,6 +7,7 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.BulkSyncClient;
 import com.polytomic.api.resources.connections.ConnectionsClient;
+import com.polytomic.api.resources.entities.EntitiesClient;
 import com.polytomic.api.resources.events.EventsClient;
 import com.polytomic.api.resources.identity.IdentityClient;
 import com.polytomic.api.resources.jobs.JobsClient;
@@ -36,6 +37,8 @@ public class Polytomic {
 
     protected final Supplier<ModelSyncClient> modelSyncClient;
 
+    protected final Supplier<EntitiesClient> entitiesClient;
+
     protected final Supplier<EventsClient> eventsClient;
 
     protected final Supplier<JobsClient> jobsClient;
@@ -60,6 +63,7 @@ public class Polytomic {
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
         this.modelsClient = Suppliers.memoize(() -> new ModelsClient(clientOptions));
         this.modelSyncClient = Suppliers.memoize(() -> new ModelSyncClient(clientOptions));
+        this.entitiesClient = Suppliers.memoize(() -> new EntitiesClient(clientOptions));
         this.eventsClient = Suppliers.memoize(() -> new EventsClient(clientOptions));
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
         this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
@@ -92,6 +96,10 @@ public class Polytomic {
 
     public ModelSyncClient modelSync() {
         return this.modelSyncClient.get();
+    }
+
+    public EntitiesClient entities() {
+        return this.entitiesClient.get();
     }
 
     public EventsClient events() {

@@ -5,44 +5,54 @@ package com.polytomic.api.resources.bulksync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionsListStatusRequest.Builder.class)
 public final class ExecutionsListStatusRequest {
+    private final Optional<List<String>> syncId;
+
     private final Optional<Boolean> all;
 
     private final Optional<Boolean> active;
 
-    private final Optional<String> syncId;
-
     private final Map<String, Object> additionalProperties;
 
     private ExecutionsListStatusRequest(
+            Optional<List<String>> syncId,
             Optional<Boolean> all,
             Optional<Boolean> active,
-            Optional<String> syncId,
             Map<String, Object> additionalProperties) {
+        this.syncId = syncId;
         this.all = all;
         this.active = active;
-        this.syncId = syncId;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Return status for the specified bulk sync. Repeat the parameter to target multiple syncs. Ignored if all or active is true.
+     */
+    @JsonIgnore
+    public Optional<List<String>> getSyncId() {
+        return syncId;
     }
 
     /**
      * @return When true, return status for every sync in the caller's organization. Overrides any sync_id values.
      */
-    @JsonProperty("all")
+    @JsonIgnore
     public Optional<Boolean> getAll() {
         return all;
     }
@@ -50,17 +60,9 @@ public final class ExecutionsListStatusRequest {
     /**
      * @return When true, return status only for active syncs in the caller's organization. Overrides any sync_id values.
      */
-    @JsonProperty("active")
+    @JsonIgnore
     public Optional<Boolean> getActive() {
         return active;
-    }
-
-    /**
-     * @return Return status for the specified bulk sync. Repeat the parameter to target multiple syncs. Ignored if all or active is true.
-     */
-    @JsonProperty("sync_id")
-    public Optional<String> getSyncId() {
-        return syncId;
     }
 
     @java.lang.Override
@@ -75,12 +77,12 @@ public final class ExecutionsListStatusRequest {
     }
 
     private boolean equalTo(ExecutionsListStatusRequest other) {
-        return all.equals(other.all) && active.equals(other.active) && syncId.equals(other.syncId);
+        return syncId.equals(other.syncId) && all.equals(other.all) && active.equals(other.active);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.all, this.active, this.syncId);
+        return Objects.hash(this.syncId, this.all, this.active);
     }
 
     @java.lang.Override
@@ -94,11 +96,11 @@ public final class ExecutionsListStatusRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<List<String>> syncId = Optional.empty();
+
         private Optional<Boolean> all = Optional.empty();
 
         private Optional<Boolean> active = Optional.empty();
-
-        private Optional<String> syncId = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -106,12 +108,34 @@ public final class ExecutionsListStatusRequest {
         private Builder() {}
 
         public Builder from(ExecutionsListStatusRequest other) {
+            syncId(other.getSyncId());
             all(other.getAll());
             active(other.getActive());
-            syncId(other.getSyncId());
             return this;
         }
 
+        /**
+         * <p>Return status for the specified bulk sync. Repeat the parameter to target multiple syncs. Ignored if all or active is true.</p>
+         */
+        @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
+        public Builder syncId(Optional<List<String>> syncId) {
+            this.syncId = syncId;
+            return this;
+        }
+
+        public Builder syncId(List<String> syncId) {
+            this.syncId = Optional.ofNullable(syncId);
+            return this;
+        }
+
+        public Builder syncId(String syncId) {
+            this.syncId = Optional.of(Collections.singletonList(syncId));
+            return this;
+        }
+
+        /**
+         * <p>When true, return status for every sync in the caller's organization. Overrides any sync_id values.</p>
+         */
         @JsonSetter(value = "all", nulls = Nulls.SKIP)
         public Builder all(Optional<Boolean> all) {
             this.all = all;
@@ -119,10 +143,13 @@ public final class ExecutionsListStatusRequest {
         }
 
         public Builder all(Boolean all) {
-            this.all = Optional.of(all);
+            this.all = Optional.ofNullable(all);
             return this;
         }
 
+        /**
+         * <p>When true, return status only for active syncs in the caller's organization. Overrides any sync_id values.</p>
+         */
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public Builder active(Optional<Boolean> active) {
             this.active = active;
@@ -130,23 +157,22 @@ public final class ExecutionsListStatusRequest {
         }
 
         public Builder active(Boolean active) {
-            this.active = Optional.of(active);
-            return this;
-        }
-
-        @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
-        public Builder syncId(Optional<String> syncId) {
-            this.syncId = syncId;
-            return this;
-        }
-
-        public Builder syncId(String syncId) {
-            this.syncId = Optional.of(syncId);
+            this.active = Optional.ofNullable(active);
             return this;
         }
 
         public ExecutionsListStatusRequest build() {
-            return new ExecutionsListStatusRequest(all, active, syncId, additionalProperties);
+            return new ExecutionsListStatusRequest(syncId, all, active, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

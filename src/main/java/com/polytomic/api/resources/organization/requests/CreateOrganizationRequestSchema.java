@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateOrganizationRequestSchema.Builder.class)
 public final class CreateOrganizationRequestSchema {
     private final Optional<String> clientId;
@@ -134,7 +135,10 @@ public final class CreateOrganizationRequestSchema {
     }
 
     public interface NameStage {
-        _FinalStage name(String name);
+        /**
+         * <p>Human-readable name of the organization. Must be unique across the partner account.</p>
+         */
+        _FinalStage name(@NotNull String name);
 
         Builder from(CreateOrganizationRequestSchema other);
     }
@@ -142,22 +146,41 @@ public final class CreateOrganizationRequestSchema {
     public interface _FinalStage {
         CreateOrganizationRequestSchema build();
 
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>OIDC client ID issued by the identity provider.</p>
+         */
         _FinalStage clientId(Optional<String> clientId);
 
         _FinalStage clientId(String clientId);
 
+        /**
+         * <p>OIDC client secret issued by the identity provider. Write-only; never returned in responses.</p>
+         */
         _FinalStage clientSecret(Optional<String> clientSecret);
 
         _FinalStage clientSecret(String clientSecret);
 
+        /**
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         */
         _FinalStage issuer(Optional<String> issuer);
 
         _FinalStage issuer(String issuer);
 
+        /**
+         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         */
         _FinalStage ssoDomain(Optional<String> ssoDomain);
 
         _FinalStage ssoDomain(String ssoDomain);
 
+        /**
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         */
         _FinalStage ssoOrgId(Optional<String> ssoOrgId);
 
         _FinalStage ssoOrgId(String ssoOrgId);
@@ -195,11 +218,12 @@ public final class CreateOrganizationRequestSchema {
 
         /**
          * <p>Human-readable name of the organization. Must be unique across the partner account.</p>
+         * <p>Human-readable name of the organization. Must be unique across the partner account.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("name")
-        public _FinalStage name(String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
@@ -210,10 +234,13 @@ public final class CreateOrganizationRequestSchema {
          */
         @java.lang.Override
         public _FinalStage ssoOrgId(String ssoOrgId) {
-            this.ssoOrgId = Optional.of(ssoOrgId);
+            this.ssoOrgId = Optional.ofNullable(ssoOrgId);
             return this;
         }
 
+        /**
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "sso_org_id", nulls = Nulls.SKIP)
         public _FinalStage ssoOrgId(Optional<String> ssoOrgId) {
@@ -227,10 +254,13 @@ public final class CreateOrganizationRequestSchema {
          */
         @java.lang.Override
         public _FinalStage ssoDomain(String ssoDomain) {
-            this.ssoDomain = Optional.of(ssoDomain);
+            this.ssoDomain = Optional.ofNullable(ssoDomain);
             return this;
         }
 
+        /**
+         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "sso_domain", nulls = Nulls.SKIP)
         public _FinalStage ssoDomain(Optional<String> ssoDomain) {
@@ -244,10 +274,13 @@ public final class CreateOrganizationRequestSchema {
          */
         @java.lang.Override
         public _FinalStage issuer(String issuer) {
-            this.issuer = Optional.of(issuer);
+            this.issuer = Optional.ofNullable(issuer);
             return this;
         }
 
+        /**
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "issuer", nulls = Nulls.SKIP)
         public _FinalStage issuer(Optional<String> issuer) {
@@ -261,10 +294,13 @@ public final class CreateOrganizationRequestSchema {
          */
         @java.lang.Override
         public _FinalStage clientSecret(String clientSecret) {
-            this.clientSecret = Optional.of(clientSecret);
+            this.clientSecret = Optional.ofNullable(clientSecret);
             return this;
         }
 
+        /**
+         * <p>OIDC client secret issued by the identity provider. Write-only; never returned in responses.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "client_secret", nulls = Nulls.SKIP)
         public _FinalStage clientSecret(Optional<String> clientSecret) {
@@ -278,10 +314,13 @@ public final class CreateOrganizationRequestSchema {
          */
         @java.lang.Override
         public _FinalStage clientId(String clientId) {
-            this.clientId = Optional.of(clientId);
+            this.clientId = Optional.ofNullable(clientId);
             return this;
         }
 
+        /**
+         * <p>OIDC client ID issued by the identity provider.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "client_id", nulls = Nulls.SKIP)
         public _FinalStage clientId(Optional<String> clientId) {
@@ -293,6 +332,18 @@ public final class CreateOrganizationRequestSchema {
         public CreateOrganizationRequestSchema build() {
             return new CreateOrganizationRequestSchema(
                     clientId, clientSecret, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

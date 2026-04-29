@@ -20,12 +20,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = StartBulkSyncRequest.Builder.class)
 public final class StartBulkSyncRequest {
     private final Optional<BulkFetchMode> fetchMode;
-
-    private final Optional<Boolean> resync;
 
     private final Optional<BulkResyncMode> resyncMode;
 
@@ -37,13 +35,11 @@ public final class StartBulkSyncRequest {
 
     private StartBulkSyncRequest(
             Optional<BulkFetchMode> fetchMode,
-            Optional<Boolean> resync,
             Optional<BulkResyncMode> resyncMode,
             Optional<List<String>> schemas,
             Optional<Boolean> test,
             Map<String, Object> additionalProperties) {
         this.fetchMode = fetchMode;
-        this.resync = resync;
         this.resyncMode = resyncMode;
         this.schemas = schemas;
         this.test = test;
@@ -53,14 +49,6 @@ public final class StartBulkSyncRequest {
     @JsonProperty("fetch_mode")
     public Optional<BulkFetchMode> getFetchMode() {
         return fetchMode;
-    }
-
-    /**
-     * @return Deprecated: use resync_mode instead. Equivalent to resync_mode=rebuild.
-     */
-    @JsonProperty("resync")
-    public Optional<Boolean> getResync() {
-        return resync;
     }
 
     @JsonProperty("resync_mode")
@@ -77,7 +65,7 @@ public final class StartBulkSyncRequest {
     }
 
     /**
-     * @return When true, runs a test execution that validates the configuration without writing to the destination. Mutually exclusive with resync and resync_mode.
+     * @return When true, runs a test execution that validates the configuration without writing to the destination. Mutually exclusive with resync_mode.
      */
     @JsonProperty("test")
     public Optional<Boolean> getTest() {
@@ -97,7 +85,6 @@ public final class StartBulkSyncRequest {
 
     private boolean equalTo(StartBulkSyncRequest other) {
         return fetchMode.equals(other.fetchMode)
-                && resync.equals(other.resync)
                 && resyncMode.equals(other.resyncMode)
                 && schemas.equals(other.schemas)
                 && test.equals(other.test);
@@ -105,7 +92,7 @@ public final class StartBulkSyncRequest {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.fetchMode, this.resync, this.resyncMode, this.schemas, this.test);
+        return Objects.hash(this.fetchMode, this.resyncMode, this.schemas, this.test);
     }
 
     @java.lang.Override
@@ -121,8 +108,6 @@ public final class StartBulkSyncRequest {
     public static final class Builder {
         private Optional<BulkFetchMode> fetchMode = Optional.empty();
 
-        private Optional<Boolean> resync = Optional.empty();
-
         private Optional<BulkResyncMode> resyncMode = Optional.empty();
 
         private Optional<List<String>> schemas = Optional.empty();
@@ -136,7 +121,6 @@ public final class StartBulkSyncRequest {
 
         public Builder from(StartBulkSyncRequest other) {
             fetchMode(other.getFetchMode());
-            resync(other.getResync());
             resyncMode(other.getResyncMode());
             schemas(other.getSchemas());
             test(other.getTest());
@@ -150,18 +134,7 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder fetchMode(BulkFetchMode fetchMode) {
-            this.fetchMode = Optional.of(fetchMode);
-            return this;
-        }
-
-        @JsonSetter(value = "resync", nulls = Nulls.SKIP)
-        public Builder resync(Optional<Boolean> resync) {
-            this.resync = resync;
-            return this;
-        }
-
-        public Builder resync(Boolean resync) {
-            this.resync = Optional.of(resync);
+            this.fetchMode = Optional.ofNullable(fetchMode);
             return this;
         }
 
@@ -172,10 +145,13 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder resyncMode(BulkResyncMode resyncMode) {
-            this.resyncMode = Optional.of(resyncMode);
+            this.resyncMode = Optional.ofNullable(resyncMode);
             return this;
         }
 
+        /**
+         * <p>Optional list of schema IDs to include in this execution. If empty, all enabled schemas are included.</p>
+         */
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public Builder schemas(Optional<List<String>> schemas) {
             this.schemas = schemas;
@@ -183,10 +159,13 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder schemas(List<String> schemas) {
-            this.schemas = Optional.of(schemas);
+            this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
+        /**
+         * <p>When true, runs a test execution that validates the configuration without writing to the destination. Mutually exclusive with resync_mode.</p>
+         */
         @JsonSetter(value = "test", nulls = Nulls.SKIP)
         public Builder test(Optional<Boolean> test) {
             this.test = test;
@@ -194,12 +173,22 @@ public final class StartBulkSyncRequest {
         }
 
         public Builder test(Boolean test) {
-            this.test = Optional.of(test);
+            this.test = Optional.ofNullable(test);
             return this;
         }
 
         public StartBulkSyncRequest build() {
-            return new StartBulkSyncRequest(fetchMode, resync, resyncMode, schemas, test, additionalProperties);
+            return new StartBulkSyncRequest(fetchMode, resyncMode, schemas, test, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

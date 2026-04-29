@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetCreateInput.Builder.class)
 public final class TargetCreateInput {
     private final Optional<Boolean> enum_;
@@ -112,6 +112,9 @@ public final class TargetCreateInput {
             return this;
         }
 
+        /**
+         * <p>True if the property is an enum.</p>
+         */
         @JsonSetter(value = "enum", nulls = Nulls.SKIP)
         public Builder enum_(Optional<Boolean> enum_) {
             this.enum_ = enum_;
@@ -119,10 +122,13 @@ public final class TargetCreateInput {
         }
 
         public Builder enum_(Boolean enum_) {
-            this.enum_ = Optional.of(enum_);
+            this.enum_ = Optional.ofNullable(enum_);
             return this;
         }
 
+        /**
+         * <p>The identifier of the target property.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -130,10 +136,13 @@ public final class TargetCreateInput {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>A human readable title for the target property.</p>
+         */
         @JsonSetter(value = "title", nulls = Nulls.SKIP)
         public Builder title(Optional<String> title) {
             this.title = title;
@@ -141,12 +150,22 @@ public final class TargetCreateInput {
         }
 
         public Builder title(String title) {
-            this.title = Optional.of(title);
+            this.title = Optional.ofNullable(title);
             return this;
         }
 
         public TargetCreateInput build() {
             return new TargetCreateInput(enum_, id, title, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

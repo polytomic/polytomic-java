@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Enrichment.Builder.class)
 public final class Enrichment {
     private final Optional<Map<String, Object>> configuration;
@@ -145,7 +145,7 @@ public final class Enrichment {
         }
 
         public Builder configuration(Map<String, Object> configuration) {
-            this.configuration = Optional.of(configuration);
+            this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
@@ -156,10 +156,13 @@ public final class Enrichment {
         }
 
         public Builder connectionId(String connectionId) {
-            this.connectionId = Optional.of(connectionId);
+            this.connectionId = Optional.ofNullable(connectionId);
             return this;
         }
 
+        /**
+         * <p>Must be provided to update an existing enrichment</p>
+         */
         @JsonSetter(value = "enricher_id", nulls = Nulls.SKIP)
         public Builder enricherId(Optional<String> enricherId) {
             this.enricherId = enricherId;
@@ -167,10 +170,13 @@ public final class Enrichment {
         }
 
         public Builder enricherId(String enricherId) {
-            this.enricherId = Optional.of(enricherId);
+            this.enricherId = Optional.ofNullable(enricherId);
             return this;
         }
 
+        /**
+         * <p>If not provided, all fields will be enabled.</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<ModelField>> fields) {
             this.fields = fields;
@@ -178,7 +184,7 @@ public final class Enrichment {
         }
 
         public Builder fields(List<ModelField> fields) {
-            this.fields = Optional.of(fields);
+            this.fields = Optional.ofNullable(fields);
             return this;
         }
 
@@ -189,12 +195,22 @@ public final class Enrichment {
         }
 
         public Builder mappings(Map<String, String> mappings) {
-            this.mappings = Optional.of(mappings);
+            this.mappings = Optional.ofNullable(mappings);
             return this;
         }
 
         public Enrichment build() {
             return new Enrichment(configuration, connectionId, enricherId, fields, mappings, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

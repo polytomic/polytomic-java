@@ -3,42 +3,34 @@
  */
 package com.polytomic.api.resources.modelsync;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
-import com.polytomic.api.resources.modelsync.requests.CreateModelSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.CreateSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
-import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
-import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.StartSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.UpdateSyncRequest;
 import com.polytomic.api.resources.modelsync.targets.TargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
-import com.polytomic.api.types.CancelModelSyncResponseEnvelope;
-import com.polytomic.api.types.GetModelSyncSourceMetaEnvelope;
-import com.polytomic.api.types.ListModelSyncResponseEnvelope;
+import com.polytomic.api.types.CancelSyncResponseEnvelope;
+import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
+import com.polytomic.api.types.ListSyncResponseEnvelope;
 import com.polytomic.api.types.ModelFieldResponse;
-import com.polytomic.api.types.ModelSyncResponseEnvelope;
 import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
-import com.polytomic.api.types.StartModelSyncResponseEnvelope;
+import com.polytomic.api.types.StartSyncResponseEnvelope;
+import com.polytomic.api.types.SyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
-import java.io.IOException;
 import java.util.function.Supplier;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ModelSyncClient {
     protected final ClientOptions clientOptions;
+
+    private final RawModelSyncClient rawClient;
 
     protected final Supplier<TargetsClient> targetsClient;
 
@@ -46,19 +38,16 @@ public class ModelSyncClient {
 
     public ModelSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawModelSyncClient(clientOptions);
         this.targetsClient = Suppliers.memoize(() -> new TargetsClient(clientOptions));
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
     }
 
     /**
-     * Describes the source configuration available on a connection for use as a model sync source.
-     * <p>Use this endpoint before creating a model to understand what configuration is
-     * available. Once you have a configuration, resolve the fields available for
-     * sync mapping with
-     * <a href="./fields/get"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     * Get responses with HTTP metadata like headers
      */
-    public GetModelSyncSourceMetaEnvelope getSource(String id) {
-        return getSource(id, ModelSyncGetSourceRequest.builder().build());
+    public RawModelSyncClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
@@ -66,10 +55,10 @@ public class ModelSyncClient {
      * <p>Use this endpoint before creating a model to understand what configuration is
      * available. Once you have a configuration, resolve the fields available for
      * sync mapping with
-     * <a href="./fields/get"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     * <a href="../../../../../api-reference/model-sync/get-source-fields"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
      */
-    public GetModelSyncSourceMetaEnvelope getSource(String id, ModelSyncGetSourceRequest request) {
-        return getSource(id, request, null);
+    public GetSyncSourceMetaEnvelope getSource(String id) {
+        return this.rawClient.getSource(id).body();
     }
 
     /**
@@ -77,41 +66,33 @@ public class ModelSyncClient {
      * <p>Use this endpoint before creating a model to understand what configuration is
      * available. Once you have a configuration, resolve the fields available for
      * sync mapping with
-     * <a href="./fields/get"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     * <a href="../../../../../api-reference/model-sync/get-source-fields"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
      */
-    public GetModelSyncSourceMetaEnvelope getSource(
+    public GetSyncSourceMetaEnvelope getSource(String id, RequestOptions requestOptions) {
+        return this.rawClient.getSource(id, requestOptions).body();
+    }
+
+    /**
+     * Describes the source configuration available on a connection for use as a model sync source.
+     * <p>Use this endpoint before creating a model to understand what configuration is
+     * available. Once you have a configuration, resolve the fields available for
+     * sync mapping with
+     * <a href="../../../../../api-reference/model-sync/get-source-fields"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     */
+    public GetSyncSourceMetaEnvelope getSource(String id, ModelSyncGetSourceRequest request) {
+        return this.rawClient.getSource(id, request).body();
+    }
+
+    /**
+     * Describes the source configuration available on a connection for use as a model sync source.
+     * <p>Use this endpoint before creating a model to understand what configuration is
+     * available. Once you have a configuration, resolve the fields available for
+     * sync mapping with
+     * <a href="../../../../../api-reference/model-sync/get-source-fields"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
+     */
+    public GetSyncSourceMetaEnvelope getSource(
             String id, ModelSyncGetSourceRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/source");
-        if (request.getParams().isPresent()) {
-            httpUrl.addQueryParameter("params", request.getParams().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetModelSyncSourceMetaEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getSource(id, request, requestOptions).body();
     }
 
     /**
@@ -128,7 +109,24 @@ public class ModelSyncClient {
      * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
      */
     public ModelFieldResponse getSourceFields(String id) {
-        return getSourceFields(id, ModelSyncGetSourceFieldsRequest.builder().build());
+        return this.rawClient.getSourceFields(id).body();
+    }
+
+    /**
+     * Returns the source fields available on a connection for a given source configuration.
+     * <p>Pass the model's source configuration as query parameters to resolve the
+     * fields that the connection will expose for that specific configuration. The
+     * returned fields are what can be referenced in sync field mappings.</p>
+     * <blockquote>
+     * <p>📘 Results depend on the source configuration you supply. A different
+     * table or query in the configuration may return a completely different field
+     * list.</p>
+     * </blockquote>
+     * <p>The available source configuration parameters are described by
+     * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     */
+    public ModelFieldResponse getSourceFields(String id, RequestOptions requestOptions) {
+        return this.rawClient.getSourceFields(id, requestOptions).body();
     }
 
     /**
@@ -145,7 +143,7 @@ public class ModelSyncClient {
      * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
      */
     public ModelFieldResponse getSourceFields(String id, ModelSyncGetSourceFieldsRequest request) {
-        return getSourceFields(id, request, null);
+        return this.rawClient.getSourceFields(id, request).body();
     }
 
     /**
@@ -163,41 +161,11 @@ public class ModelSyncClient {
      */
     public ModelFieldResponse getSourceFields(
             String id, ModelSyncGetSourceFieldsRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("modelsync/source/fields");
-        if (request.getParams().isPresent()) {
-            httpUrl.addQueryParameter("params", request.getParams().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelFieldResponse.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getSourceFields(id, request, requestOptions).body();
     }
 
     /**
-     * Lists all model syncs in the caller's organization.
+     * Lists model syncs in the caller's organization.
      * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
      * If more results are available, the response includes <code>pagination.next_page_token</code>.
      * Pass that token back unchanged to continue from the last item you received.</p>
@@ -206,14 +174,14 @@ public class ModelSyncClient {
      * non-positive values fall back to the same default.</p>
      * <p>This endpoint returns syncs visible to the current caller's organization scope.
      * To inspect a specific sync in more detail, follow up with
-     * <a href="./get"><code>GET /api/syncs/{id}</code></a>.</p>
+     * <a href="../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>.</p>
      */
-    public ListModelSyncResponseEnvelope list() {
-        return list(ModelSyncListRequest.builder().build());
+    public ListSyncResponseEnvelope list() {
+        return this.rawClient.list().body();
     }
 
     /**
-     * Lists all model syncs in the caller's organization.
+     * Lists model syncs in the caller's organization.
      * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
      * If more results are available, the response includes <code>pagination.next_page_token</code>.
      * Pass that token back unchanged to continue from the last item you received.</p>
@@ -222,14 +190,14 @@ public class ModelSyncClient {
      * non-positive values fall back to the same default.</p>
      * <p>This endpoint returns syncs visible to the current caller's organization scope.
      * To inspect a specific sync in more detail, follow up with
-     * <a href="./get"><code>GET /api/syncs/{id}</code></a>.</p>
+     * <a href="../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>.</p>
      */
-    public ListModelSyncResponseEnvelope list(ModelSyncListRequest request) {
-        return list(request, null);
+    public ListSyncResponseEnvelope list(RequestOptions requestOptions) {
+        return this.rawClient.list(requestOptions).body();
     }
 
     /**
-     * Lists all model syncs in the caller's organization.
+     * Lists model syncs in the caller's organization.
      * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
      * If more results are available, the response includes <code>pagination.next_page_token</code>.
      * Pass that token back unchanged to continue from the last item you received.</p>
@@ -238,45 +206,26 @@ public class ModelSyncClient {
      * non-positive values fall back to the same default.</p>
      * <p>This endpoint returns syncs visible to the current caller's organization scope.
      * To inspect a specific sync in more detail, follow up with
-     * <a href="./get"><code>GET /api/syncs/{id}</code></a>.</p>
+     * <a href="../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>.</p>
      */
-    public ListModelSyncResponseEnvelope list(ModelSyncListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs");
-        if (request.getActive().isPresent()) {
-            httpUrl.addQueryParameter("active", request.getActive().get().toString());
-        }
-        if (request.getMode().isPresent()) {
-            httpUrl.addQueryParameter("mode", request.getMode().get().toString());
-        }
-        if (request.getTargetConnectionId().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "target_connection_id", request.getTargetConnectionId().get());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public ListSyncResponseEnvelope list(ModelSyncListRequest request) {
+        return this.rawClient.list(request).body();
+    }
+
+    /**
+     * Lists model syncs in the caller's organization.
+     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
+     * If more results are available, the response includes <code>pagination.next_page_token</code>.
+     * Pass that token back unchanged to continue from the last item you received.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
+     * non-positive values fall back to the same default.</p>
+     * <p>This endpoint returns syncs visible to the current caller's organization scope.
+     * To inspect a specific sync in more detail, follow up with
+     * <a href="../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>.</p>
+     */
+    public ListSyncResponseEnvelope list(ModelSyncListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(request, requestOptions).body();
     }
 
     /**
@@ -293,7 +242,7 @@ public class ModelSyncClient {
      * <h2>Targets (Destinations)</h2>
      * <p>Polytomic refers to a model sync's destination as the &quot;target object&quot;, or
      * target. Target objects are identified by a connection ID and an object ID. You
-     * can retrieve a list of all target objects for a connection using the <a href="./targets/list">Get Target
+     * can retrieve a list of all target objects for a connection using the <a href="../../api-reference/model-sync/targets/list">Get Target
      * Objects</a> endpoint.</p>
      * <p>The <code>target</code> object in the request specifies information about the sync destination.</p>
      * <pre><code class="language-json">&quot;target&quot;: {
@@ -322,11 +271,11 @@ public class ModelSyncClient {
      *     }
      * },
      * </code></pre>
-     * <p>The <a href="./targets/list">Get Target List</a> endpoint returns information about whether
+     * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public ModelSyncResponseEnvelope create(CreateModelSyncRequest request) {
-        return create(request, null);
+    public SyncResponseEnvelope create(CreateSyncRequest request) {
+        return this.rawClient.create(request).body();
     }
 
     /**
@@ -343,7 +292,7 @@ public class ModelSyncClient {
      * <h2>Targets (Destinations)</h2>
      * <p>Polytomic refers to a model sync's destination as the &quot;target object&quot;, or
      * target. Target objects are identified by a connection ID and an object ID. You
-     * can retrieve a list of all target objects for a connection using the <a href="./targets/list">Get Target
+     * can retrieve a list of all target objects for a connection using the <a href="../../api-reference/model-sync/targets/list">Get Target
      * Objects</a> endpoint.</p>
      * <p>The <code>target</code> object in the request specifies information about the sync destination.</p>
      * <pre><code class="language-json">&quot;target&quot;: {
@@ -372,44 +321,11 @@ public class ModelSyncClient {
      *     }
      * },
      * </code></pre>
-     * <p>The <a href="./targets/list">Get Target List</a> endpoint returns information about whether
+     * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public ModelSyncResponseEnvelope create(CreateModelSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public SyncResponseEnvelope create(CreateSyncRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.create(request, requestOptions).body();
     }
 
     /**
@@ -419,7 +335,7 @@ public class ModelSyncClient {
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> or <a href="../../../api-reference/model-sync/update"><code>PUT /api/syncs/{id}</code></a>.</p>
      */
     public ScheduleOptionResponseEnvelope getScheduleOptions() {
-        return getScheduleOptions(null);
+        return this.rawClient.getScheduleOptions().body();
     }
 
     /**
@@ -429,80 +345,27 @@ public class ModelSyncClient {
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> or <a href="../../../api-reference/model-sync/update"><code>PUT /api/syncs/{id}</code></a>.</p>
      */
     public ScheduleOptionResponseEnvelope getScheduleOptions(RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs/schedules")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ScheduleOptionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getScheduleOptions(requestOptions).body();
     }
 
     /**
      * Returns a single model sync by ID.
      * <p>To check whether a sync is currently running or has recently completed, use
-     * <a href="./status/get"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
-     * executions, use <a href="./executions/get"><code>GET /api/syncs/{id}/executions</code></a>.</p>
+     * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
+     * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public ModelSyncResponseEnvelope get(String id) {
-        return get(id, null);
+    public SyncResponseEnvelope get(String id) {
+        return this.rawClient.get(id).body();
     }
 
     /**
      * Returns a single model sync by ID.
      * <p>To check whether a sync is currently running or has recently completed, use
-     * <a href="./status/get"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
-     * executions, use <a href="./executions/get"><code>GET /api/syncs/{id}/executions</code></a>.</p>
+     * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
+     * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public ModelSyncResponseEnvelope get(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public SyncResponseEnvelope get(String id, RequestOptions requestOptions) {
+        return this.rawClient.get(id, requestOptions).body();
     }
 
     /**
@@ -519,8 +382,8 @@ public class ModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request) {
-        return update(id, request, null);
+    public SyncResponseEnvelope update(String id, UpdateSyncRequest request) {
+        return this.rawClient.update(id, request).body();
     }
 
     /**
@@ -537,42 +400,8 @@ public class ModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public ModelSyncResponseEnvelope update(String id, UpdateModelSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public SyncResponseEnvelope update(String id, UpdateSyncRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.update(id, request, requestOptions).body();
     }
 
     /**
@@ -582,7 +411,7 @@ public class ModelSyncClient {
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
     public void remove(String id) {
-        remove(id, null);
+        this.rawClient.remove(id).body();
     }
 
     /**
@@ -591,34 +420,8 @@ public class ModelSyncClient {
      * record is removed. Deleted syncs cannot be recovered; recreate them using
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
-    public void remove(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("DELETE", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void remove(String id, IdempotentRequestOptions requestOptions) {
+        this.rawClient.remove(id, requestOptions).body();
     }
 
     /**
@@ -632,7 +435,7 @@ public class ModelSyncClient {
      * </blockquote>
      */
     public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
-        return activate(id, request, null);
+        return this.rawClient.activate(id, request).body();
     }
 
     /**
@@ -645,43 +448,9 @@ public class ModelSyncClient {
      * running execution.</p>
      * </blockquote>
      */
-    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("activate")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ActivateSyncEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public ActivateSyncEnvelope activate(
+            String id, ActivateSyncInput request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.activate(id, request, requestOptions).body();
     }
 
     /**
@@ -692,8 +461,8 @@ public class ModelSyncClient {
      * reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to confirm
      * cancellation has taken effect.</p>
      */
-    public CancelModelSyncResponseEnvelope cancel(String id) {
-        return cancel(id, null);
+    public CancelSyncResponseEnvelope cancel(String id) {
+        return this.rawClient.cancel(id).body();
     }
 
     /**
@@ -704,37 +473,8 @@ public class ModelSyncClient {
      * reaches a terminal state (<code>completed</code>, <code>canceled</code>, or <code>failed</code>) to confirm
      * cancellation has taken effect.</p>
      */
-    public CancelModelSyncResponseEnvelope cancel(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("cancel")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", RequestBody.create("", null))
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(
-                        responseBody.string(), CancelModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public CancelSyncResponseEnvelope cancel(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.cancel(id, requestOptions).body();
     }
 
     /**
@@ -744,8 +484,8 @@ public class ModelSyncClient {
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
-    public StartModelSyncResponseEnvelope start(String id) {
-        return start(id, StartModelSyncRequest.builder().build());
+    public StartSyncResponseEnvelope start(String id) {
+        return this.rawClient.start(id).body();
     }
 
     /**
@@ -755,8 +495,8 @@ public class ModelSyncClient {
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
-    public StartModelSyncResponseEnvelope start(String id, StartModelSyncRequest request) {
-        return start(id, request, null);
+    public StartSyncResponseEnvelope start(String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.start(id, requestOptions).body();
     }
 
     /**
@@ -766,44 +506,20 @@ public class ModelSyncClient {
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
-    public StartModelSyncResponseEnvelope start(
-            String id, StartModelSyncRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("executions")
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), StartModelSyncResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public StartSyncResponseEnvelope start(String id, StartSyncRequest request) {
+        return this.rawClient.start(id, request).body();
+    }
+
+    /**
+     * Starts a new execution of a model sync.
+     * <blockquote>
+     * <p>🚧 Force full resync</p>
+     * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
+     * </blockquote>
+     */
+    public StartSyncResponseEnvelope start(
+            String id, StartSyncRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.start(id, request, requestOptions).body();
     }
 
     /**
@@ -813,7 +529,7 @@ public class ModelSyncClient {
      * history, use <a href="../../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
     public SyncStatusEnvelope getStatus(String id) {
-        return getStatus(id, null);
+        return this.rawClient.getStatus(id).body();
     }
 
     /**
@@ -823,35 +539,7 @@ public class ModelSyncClient {
      * history, use <a href="../../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
     public SyncStatusEnvelope getStatus(String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(id)
-                .addPathSegments("status")
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), SyncStatusEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.getStatus(id, requestOptions).body();
     }
 
     public TargetsClient targets() {

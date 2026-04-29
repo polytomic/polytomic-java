@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = Organization.Builder.class)
 public final class Organization {
     private final Optional<String> id;
@@ -146,6 +146,9 @@ public final class Organization {
             return this;
         }
 
+        /**
+         * <p>Unique identifier of the organization.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -153,10 +156,13 @@ public final class Organization {
         }
 
         public Builder id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
+        /**
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         */
         @JsonSetter(value = "issuer", nulls = Nulls.SKIP)
         public Builder issuer(Optional<String> issuer) {
             this.issuer = issuer;
@@ -164,10 +170,13 @@ public final class Organization {
         }
 
         public Builder issuer(String issuer) {
-            this.issuer = Optional.of(issuer);
+            this.issuer = Optional.ofNullable(issuer);
             return this;
         }
 
+        /**
+         * <p>Human-readable name of the organization.</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -175,10 +184,13 @@ public final class Organization {
         }
 
         public Builder name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
+        /**
+         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         */
         @JsonSetter(value = "sso_domain", nulls = Nulls.SKIP)
         public Builder ssoDomain(Optional<String> ssoDomain) {
             this.ssoDomain = ssoDomain;
@@ -186,10 +198,13 @@ public final class Organization {
         }
 
         public Builder ssoDomain(String ssoDomain) {
-            this.ssoDomain = Optional.of(ssoDomain);
+            this.ssoDomain = Optional.ofNullable(ssoDomain);
             return this;
         }
 
+        /**
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         */
         @JsonSetter(value = "sso_org_id", nulls = Nulls.SKIP)
         public Builder ssoOrgId(Optional<String> ssoOrgId) {
             this.ssoOrgId = ssoOrgId;
@@ -197,12 +212,22 @@ public final class Organization {
         }
 
         public Builder ssoOrgId(String ssoOrgId) {
-            this.ssoOrgId = Optional.of(ssoOrgId);
+            this.ssoOrgId = Optional.ofNullable(ssoOrgId);
             return this;
         }
 
         public Organization build() {
             return new Organization(id, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

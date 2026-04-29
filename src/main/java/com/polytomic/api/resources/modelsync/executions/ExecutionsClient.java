@@ -3,31 +3,33 @@
  */
 package com.polytomic.api.resources.modelsync.executions;
 
-import com.polytomic.api.core.ApiError;
 import com.polytomic.api.core.ClientOptions;
-import com.polytomic.api.core.MediaTypes;
-import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsGetConsoleLogsRequest;
 import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsListRequest;
-import com.polytomic.api.resources.modelsync.executions.requests.UpdateExecutionRequest;
+import com.polytomic.api.types.CancelSyncExecutionResponseEnvelope;
+import com.polytomic.api.types.ExecutionConsoleLogsResponseEnvelope;
+import com.polytomic.api.types.ExecutionLogType;
 import com.polytomic.api.types.ExecutionLogsResponseEnvelope;
 import com.polytomic.api.types.GetExecutionResponseEnvelope;
 import com.polytomic.api.types.ListExecutionResponseEnvelope;
-import com.polytomic.api.types.V2ExecutionLogType;
-import java.io.IOException;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ExecutionsClient {
     protected final ClientOptions clientOptions;
 
+    private final RawExecutionsClient rawClient;
+
     public ExecutionsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+        this.rawClient = new RawExecutionsClient(clientOptions);
+    }
+
+    /**
+     * Get responses with HTTP metadata like headers
+     */
+    public RawExecutionsClient withRawResponse() {
+        return this.rawClient;
     }
 
     /**
@@ -38,10 +40,10 @@ public class ExecutionsClient {
      * <p>The token is opaque. Do not construct or edit it yourself.</p>
      * <p>For full details about a specific execution — including record counts and error
      * summaries — use
-     * <a href="./{id}/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
+     * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public ListExecutionResponseEnvelope list(String syncId) {
-        return list(syncId, ExecutionsListRequest.builder().build());
+        return this.rawClient.list(syncId).body();
     }
 
     /**
@@ -52,10 +54,24 @@ public class ExecutionsClient {
      * <p>The token is opaque. Do not construct or edit it yourself.</p>
      * <p>For full details about a specific execution — including record counts and error
      * summaries — use
-     * <a href="./{id}/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
+     * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
+     */
+    public ListExecutionResponseEnvelope list(String syncId, RequestOptions requestOptions) {
+        return this.rawClient.list(syncId, requestOptions).body();
+    }
+
+    /**
+     * Lists executions for a model sync.
+     * <p>Results are ordered by start time descending. If more results are available, the
+     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
+     * to continue paging.</p>
+     * <p>The token is opaque. Do not construct or edit it yourself.</p>
+     * <p>For full details about a specific execution — including record counts and error
+     * summaries — use
+     * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public ListExecutionResponseEnvelope list(String syncId, ExecutionsListRequest request) {
-        return list(syncId, request, null);
+        return this.rawClient.list(syncId, request).body();
     }
 
     /**
@@ -66,48 +82,11 @@ public class ExecutionsClient {
      * <p>The token is opaque. Do not construct or edit it yourself.</p>
      * <p>For full details about a specific execution — including record counts and error
      * summaries — use
-     * <a href="./{id}/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
+     * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public ListExecutionResponseEnvelope list(
             String syncId, ExecutionsListRequest request, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions");
-        if (request.getPageToken().isPresent()) {
-            httpUrl.addQueryParameter("page_token", request.getPageToken().get());
-        }
-        if (request.getOnlyCompleted().isPresent()) {
-            httpUrl.addQueryParameter(
-                    "only_completed", request.getOnlyCompleted().get().toString());
-        }
-        if (request.getAscending().isPresent()) {
-            httpUrl.addQueryParameter("ascending", request.getAscending().get().toString());
-        }
-        Request.Builder _requestBuilder = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json");
-        Request okhttpRequest = _requestBuilder.build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ListExecutionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.list(syncId, request, requestOptions).body();
     }
 
     /**
@@ -117,7 +96,7 @@ public class ExecutionsClient {
      * signed URLs grouped by log category.</p>
      */
     public GetExecutionResponseEnvelope get(String syncId, String id) {
-        return get(syncId, id, null);
+        return this.rawClient.get(syncId, id).body();
     }
 
     /**
@@ -127,87 +106,55 @@ public class ExecutionsClient {
      * signed URLs grouped by log category.</p>
      */
     public GetExecutionResponseEnvelope get(String syncId, String id, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetExecutionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return this.rawClient.get(syncId, id, requestOptions).body();
     }
 
     /**
-     * Updates a model sync execution's state, used to retry or resolve stalled executions.
+     * Requests cancellation of a model sync execution.
      */
-    public GetExecutionResponseEnvelope update(String syncId, String id, UpdateExecutionRequest request) {
-        return update(syncId, id, request, null);
+    public CancelSyncExecutionResponseEnvelope cancel(String syncId, String id) {
+        return this.rawClient.cancel(syncId, id).body();
     }
 
     /**
-     * Updates a model sync execution's state, used to retry or resolve stalled executions.
+     * Requests cancellation of a model sync execution.
      */
-    public GetExecutionResponseEnvelope update(
-            String syncId, String id, UpdateExecutionRequest request, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .build();
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("PUT", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), GetExecutionResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public CancelSyncExecutionResponseEnvelope cancel(
+            String syncId, String id, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.cancel(syncId, id, requestOptions).body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(String syncId, String id) {
+        return this.rawClient.getConsoleLogs(syncId, id).body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(
+            String syncId, String id, RequestOptions requestOptions) {
+        return this.rawClient.getConsoleLogs(syncId, id, requestOptions).body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(
+            String syncId, String id, ExecutionsGetConsoleLogsRequest request) {
+        return this.rawClient.getConsoleLogs(syncId, id, request).body();
+    }
+
+    /**
+     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     */
+    public ExecutionConsoleLogsResponseEnvelope getConsoleLogs(
+            String syncId, String id, ExecutionsGetConsoleLogsRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .getConsoleLogs(syncId, id, request, requestOptions)
+                .body();
     }
 
     /**
@@ -220,8 +167,8 @@ public class ExecutionsClient {
      * <a href="../../../../../../api-reference/model-sync/executions/get-logs"><code>GET /api/syncs/{sync_id}/executions/{id}/{type}/{filename}</code></a>.</p>
      * </blockquote>
      */
-    public ExecutionLogsResponseEnvelope getLogUrls(String syncId, String id, V2ExecutionLogType type) {
-        return getLogUrls(syncId, id, type, null);
+    public ExecutionLogsResponseEnvelope getLogUrls(String syncId, String id, ExecutionLogType type) {
+        return this.rawClient.getLogUrls(syncId, id, type).body();
     }
 
     /**
@@ -235,38 +182,8 @@ public class ExecutionsClient {
      * </blockquote>
      */
     public ExecutionLogsResponseEnvelope getLogUrls(
-            String syncId, String id, V2ExecutionLogType type, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegment(type.toString())
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return ObjectMappers.JSON_MAPPER.readValue(responseBody.string(), ExecutionLogsResponseEnvelope.class);
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String syncId, String id, ExecutionLogType type, RequestOptions requestOptions) {
+        return this.rawClient.getLogUrls(syncId, id, type, requestOptions).body();
     }
 
     /**
@@ -274,8 +191,8 @@ public class ExecutionsClient {
      * <p>The URL is signed and expires after a short period. If it has expired before
      * you download the file, call this endpoint again to obtain a fresh URL.</p>
      */
-    public void getLogs(String syncId, String id, V2ExecutionLogType type, String filename) {
-        getLogs(syncId, id, type, filename, null);
+    public void getLogs(String syncId, String id, ExecutionLogType type, String filename) {
+        this.rawClient.getLogs(syncId, id, type, filename).body();
     }
 
     /**
@@ -284,37 +201,7 @@ public class ExecutionsClient {
      * you download the file, call this endpoint again to obtain a fresh URL.</p>
      */
     public void getLogs(
-            String syncId, String id, V2ExecutionLogType type, String filename, RequestOptions requestOptions) {
-        HttpUrl httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
-                .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegment(type.toString())
-                .addPathSegment(filename)
-                .build();
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl)
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .build();
-        try {
-            OkHttpClient client = clientOptions.httpClient();
-            if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-                client = clientOptions.httpClientWithTimeout(requestOptions);
-            }
-            Response response = client.newCall(okhttpRequest).execute();
-            ResponseBody responseBody = response.body();
-            if (response.isSuccessful()) {
-                return;
-            }
-            throw new ApiError(
-                    response.code(),
-                    ObjectMappers.JSON_MAPPER.readValue(
-                            responseBody != null ? responseBody.string() : "{}", Object.class));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            String syncId, String id, ExecutionLogType type, String filename, RequestOptions requestOptions) {
+        this.rawClient.getLogs(syncId, id, type, filename, requestOptions).body();
     }
 }

@@ -17,33 +17,33 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ExecutionCounts.Builder.class)
 public final class ExecutionCounts {
-    private final Optional<Integer> delete;
+    private final Optional<Long> delete;
 
-    private final Optional<Integer> error;
+    private final Optional<Long> error;
 
-    private final Optional<Integer> insert;
+    private final Optional<Long> insert;
 
-    private final Optional<Integer> total;
+    private final Optional<Long> total;
 
-    private final Optional<Integer> update;
+    private final Optional<Long> update;
 
-    private final Optional<Integer> upserts;
+    private final Optional<Long> upserts;
 
-    private final Optional<Integer> warnings;
+    private final Optional<Long> warnings;
 
     private final Map<String, Object> additionalProperties;
 
     private ExecutionCounts(
-            Optional<Integer> delete,
-            Optional<Integer> error,
-            Optional<Integer> insert,
-            Optional<Integer> total,
-            Optional<Integer> update,
-            Optional<Integer> upserts,
-            Optional<Integer> warnings,
+            Optional<Long> delete,
+            Optional<Long> error,
+            Optional<Long> insert,
+            Optional<Long> total,
+            Optional<Long> update,
+            Optional<Long> upserts,
+            Optional<Long> warnings,
             Map<String, Object> additionalProperties) {
         this.delete = delete;
         this.error = error;
@@ -56,37 +56,37 @@ public final class ExecutionCounts {
     }
 
     @JsonProperty("delete")
-    public Optional<Integer> getDelete() {
+    public Optional<Long> getDelete() {
         return delete;
     }
 
     @JsonProperty("error")
-    public Optional<Integer> getError() {
+    public Optional<Long> getError() {
         return error;
     }
 
     @JsonProperty("insert")
-    public Optional<Integer> getInsert() {
+    public Optional<Long> getInsert() {
         return insert;
     }
 
     @JsonProperty("total")
-    public Optional<Integer> getTotal() {
+    public Optional<Long> getTotal() {
         return total;
     }
 
     @JsonProperty("update")
-    public Optional<Integer> getUpdate() {
+    public Optional<Long> getUpdate() {
         return update;
     }
 
     @JsonProperty("upserts")
-    public Optional<Integer> getUpserts() {
+    public Optional<Long> getUpserts() {
         return upserts;
     }
 
     @JsonProperty("warnings")
-    public Optional<Integer> getWarnings() {
+    public Optional<Long> getWarnings() {
         return warnings;
     }
 
@@ -127,19 +127,19 @@ public final class ExecutionCounts {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Integer> delete = Optional.empty();
+        private Optional<Long> delete = Optional.empty();
 
-        private Optional<Integer> error = Optional.empty();
+        private Optional<Long> error = Optional.empty();
 
-        private Optional<Integer> insert = Optional.empty();
+        private Optional<Long> insert = Optional.empty();
 
-        private Optional<Integer> total = Optional.empty();
+        private Optional<Long> total = Optional.empty();
 
-        private Optional<Integer> update = Optional.empty();
+        private Optional<Long> update = Optional.empty();
 
-        private Optional<Integer> upserts = Optional.empty();
+        private Optional<Long> upserts = Optional.empty();
 
-        private Optional<Integer> warnings = Optional.empty();
+        private Optional<Long> warnings = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -158,84 +158,94 @@ public final class ExecutionCounts {
         }
 
         @JsonSetter(value = "delete", nulls = Nulls.SKIP)
-        public Builder delete(Optional<Integer> delete) {
+        public Builder delete(Optional<Long> delete) {
             this.delete = delete;
             return this;
         }
 
-        public Builder delete(Integer delete) {
-            this.delete = Optional.of(delete);
+        public Builder delete(Long delete) {
+            this.delete = Optional.ofNullable(delete);
             return this;
         }
 
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
-        public Builder error(Optional<Integer> error) {
+        public Builder error(Optional<Long> error) {
             this.error = error;
             return this;
         }
 
-        public Builder error(Integer error) {
-            this.error = Optional.of(error);
+        public Builder error(Long error) {
+            this.error = Optional.ofNullable(error);
             return this;
         }
 
         @JsonSetter(value = "insert", nulls = Nulls.SKIP)
-        public Builder insert(Optional<Integer> insert) {
+        public Builder insert(Optional<Long> insert) {
             this.insert = insert;
             return this;
         }
 
-        public Builder insert(Integer insert) {
-            this.insert = Optional.of(insert);
+        public Builder insert(Long insert) {
+            this.insert = Optional.ofNullable(insert);
             return this;
         }
 
         @JsonSetter(value = "total", nulls = Nulls.SKIP)
-        public Builder total(Optional<Integer> total) {
+        public Builder total(Optional<Long> total) {
             this.total = total;
             return this;
         }
 
-        public Builder total(Integer total) {
-            this.total = Optional.of(total);
+        public Builder total(Long total) {
+            this.total = Optional.ofNullable(total);
             return this;
         }
 
         @JsonSetter(value = "update", nulls = Nulls.SKIP)
-        public Builder update(Optional<Integer> update) {
+        public Builder update(Optional<Long> update) {
             this.update = update;
             return this;
         }
 
-        public Builder update(Integer update) {
-            this.update = Optional.of(update);
+        public Builder update(Long update) {
+            this.update = Optional.ofNullable(update);
             return this;
         }
 
         @JsonSetter(value = "upserts", nulls = Nulls.SKIP)
-        public Builder upserts(Optional<Integer> upserts) {
+        public Builder upserts(Optional<Long> upserts) {
             this.upserts = upserts;
             return this;
         }
 
-        public Builder upserts(Integer upserts) {
-            this.upserts = Optional.of(upserts);
+        public Builder upserts(Long upserts) {
+            this.upserts = Optional.ofNullable(upserts);
             return this;
         }
 
         @JsonSetter(value = "warnings", nulls = Nulls.SKIP)
-        public Builder warnings(Optional<Integer> warnings) {
+        public Builder warnings(Optional<Long> warnings) {
             this.warnings = warnings;
             return this;
         }
 
-        public Builder warnings(Integer warnings) {
-            this.warnings = Optional.of(warnings);
+        public Builder warnings(Long warnings) {
+            this.warnings = Optional.ofNullable(warnings);
             return this;
         }
 
         public ExecutionCounts build() {
             return new ExecutionCounts(delete, error, insert, total, update, upserts, warnings, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

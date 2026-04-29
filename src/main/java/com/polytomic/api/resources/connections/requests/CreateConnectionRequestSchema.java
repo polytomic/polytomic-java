@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateConnectionRequestSchema.Builder.class)
 public final class CreateConnectionRequestSchema {
     private final Map<String, Object> configuration;
@@ -155,17 +156,21 @@ public final class CreateConnectionRequestSchema {
     }
 
     public interface NameStage {
-        TypeStage name(String name);
+        TypeStage name(@NotNull String name);
 
         Builder from(CreateConnectionRequestSchema other);
     }
 
     public interface TypeStage {
-        _FinalStage type(String type);
+        _FinalStage type(@NotNull String type);
     }
 
     public interface _FinalStage {
         CreateConnectionRequestSchema build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage configuration(Map<String, Object> configuration);
 
@@ -173,6 +178,9 @@ public final class CreateConnectionRequestSchema {
 
         _FinalStage configuration(String key, Object value);
 
+        /**
+         * <p>Override interval for connection health checking.</p>
+         */
         _FinalStage healthcheckInterval(Optional<String> healthcheckInterval);
 
         _FinalStage healthcheckInterval(String healthcheckInterval);
@@ -185,10 +193,16 @@ public final class CreateConnectionRequestSchema {
 
         _FinalStage policies(List<String> policies);
 
+        /**
+         * <p>URL to redirect to after completing OAuth flow.</p>
+         */
         _FinalStage redirectUrl(Optional<String> redirectUrl);
 
         _FinalStage redirectUrl(String redirectUrl);
 
+        /**
+         * <p>Validate connection configuration.</p>
+         */
         _FinalStage validate(Optional<Boolean> validate);
 
         _FinalStage validate(Boolean validate);
@@ -232,14 +246,14 @@ public final class CreateConnectionRequestSchema {
 
         @java.lang.Override
         @JsonSetter("name")
-        public TypeStage name(String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("type")
-        public _FinalStage type(String type) {
+        public _FinalStage type(@NotNull String type) {
             this.type = type;
             return this;
         }
@@ -250,10 +264,13 @@ public final class CreateConnectionRequestSchema {
          */
         @java.lang.Override
         public _FinalStage validate(Boolean validate) {
-            this.validate = Optional.of(validate);
+            this.validate = Optional.ofNullable(validate);
             return this;
         }
 
+        /**
+         * <p>Validate connection configuration.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "validate", nulls = Nulls.SKIP)
         public _FinalStage validate(Optional<Boolean> validate) {
@@ -267,10 +284,13 @@ public final class CreateConnectionRequestSchema {
          */
         @java.lang.Override
         public _FinalStage redirectUrl(String redirectUrl) {
-            this.redirectUrl = Optional.of(redirectUrl);
+            this.redirectUrl = Optional.ofNullable(redirectUrl);
             return this;
         }
 
+        /**
+         * <p>URL to redirect to after completing OAuth flow.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "redirect_url", nulls = Nulls.SKIP)
         public _FinalStage redirectUrl(Optional<String> redirectUrl) {
@@ -280,7 +300,7 @@ public final class CreateConnectionRequestSchema {
 
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
-            this.policies = Optional.of(policies);
+            this.policies = Optional.ofNullable(policies);
             return this;
         }
 
@@ -293,7 +313,7 @@ public final class CreateConnectionRequestSchema {
 
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
-            this.organizationId = Optional.of(organizationId);
+            this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
@@ -310,10 +330,13 @@ public final class CreateConnectionRequestSchema {
          */
         @java.lang.Override
         public _FinalStage healthcheckInterval(String healthcheckInterval) {
-            this.healthcheckInterval = Optional.of(healthcheckInterval);
+            this.healthcheckInterval = Optional.ofNullable(healthcheckInterval);
             return this;
         }
 
+        /**
+         * <p>Override interval for connection health checking.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "healthcheck_interval", nulls = Nulls.SKIP)
         public _FinalStage healthcheckInterval(Optional<String> healthcheckInterval) {
@@ -329,7 +352,9 @@ public final class CreateConnectionRequestSchema {
 
         @java.lang.Override
         public _FinalStage putAllConfiguration(Map<String, Object> configuration) {
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
             return this;
         }
 
@@ -337,7 +362,9 @@ public final class CreateConnectionRequestSchema {
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration.clear();
-            this.configuration.putAll(configuration);
+            if (configuration != null) {
+                this.configuration.putAll(configuration);
+            }
             return this;
         }
 
@@ -353,6 +380,18 @@ public final class CreateConnectionRequestSchema {
                     type,
                     validate,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

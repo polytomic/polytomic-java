@@ -16,13 +16,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionType.Builder.class)
 public final class ConnectionType {
     private final BackendConnectionCapabilities capabilities;
 
-    private final Optional<V2ConnectionForm> configurationForm;
+    private final Optional<ConnectionForm> configurationForm;
 
     private final Optional<Map<String, Object>> envConfig;
 
@@ -42,7 +43,7 @@ public final class ConnectionType {
 
     private ConnectionType(
             BackendConnectionCapabilities capabilities,
-            Optional<V2ConnectionForm> configurationForm,
+            Optional<ConnectionForm> configurationForm,
             Optional<Map<String, Object>> envConfig,
             Optional<String> id,
             Optional<Map<String, Object>> initialConfiguration,
@@ -69,7 +70,7 @@ public final class ConnectionType {
     }
 
     @JsonProperty("configurationForm")
-    public Optional<V2ConnectionForm> getConfigurationForm() {
+    public Optional<ConnectionForm> getConfigurationForm() {
         return configurationForm;
     }
 
@@ -155,7 +156,7 @@ public final class ConnectionType {
     }
 
     public interface CapabilitiesStage {
-        _FinalStage capabilities(BackendConnectionCapabilities capabilities);
+        _FinalStage capabilities(@NotNull BackendConnectionCapabilities capabilities);
 
         Builder from(ConnectionType other);
     }
@@ -163,9 +164,13 @@ public final class ConnectionType {
     public interface _FinalStage {
         ConnectionType build();
 
-        _FinalStage configurationForm(Optional<V2ConnectionForm> configurationForm);
+        _FinalStage additionalProperty(String key, Object value);
 
-        _FinalStage configurationForm(V2ConnectionForm configurationForm);
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        _FinalStage configurationForm(Optional<ConnectionForm> configurationForm);
+
+        _FinalStage configurationForm(ConnectionForm configurationForm);
 
         _FinalStage envConfig(Optional<Map<String, Object>> envConfig);
 
@@ -214,7 +219,7 @@ public final class ConnectionType {
 
         private Optional<Map<String, Object>> envConfig = Optional.empty();
 
-        private Optional<V2ConnectionForm> configurationForm = Optional.empty();
+        private Optional<ConnectionForm> configurationForm = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -237,14 +242,14 @@ public final class ConnectionType {
 
         @java.lang.Override
         @JsonSetter("capabilities")
-        public _FinalStage capabilities(BackendConnectionCapabilities capabilities) {
+        public _FinalStage capabilities(@NotNull BackendConnectionCapabilities capabilities) {
             this.capabilities = capabilities;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage useOauth(Boolean useOauth) {
-            this.useOauth = Optional.of(useOauth);
+            this.useOauth = Optional.ofNullable(useOauth);
             return this;
         }
 
@@ -257,7 +262,7 @@ public final class ConnectionType {
 
         @java.lang.Override
         public _FinalStage oauthPrompt(BackendOAuthPrompt oauthPrompt) {
-            this.oauthPrompt = Optional.of(oauthPrompt);
+            this.oauthPrompt = Optional.ofNullable(oauthPrompt);
             return this;
         }
 
@@ -270,7 +275,7 @@ public final class ConnectionType {
 
         @java.lang.Override
         public _FinalStage name(String name) {
-            this.name = Optional.of(name);
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
@@ -283,7 +288,7 @@ public final class ConnectionType {
 
         @java.lang.Override
         public _FinalStage logoUrl(String logoUrl) {
-            this.logoUrl = Optional.of(logoUrl);
+            this.logoUrl = Optional.ofNullable(logoUrl);
             return this;
         }
 
@@ -296,7 +301,7 @@ public final class ConnectionType {
 
         @java.lang.Override
         public _FinalStage initialConfiguration(Map<String, Object> initialConfiguration) {
-            this.initialConfiguration = Optional.of(initialConfiguration);
+            this.initialConfiguration = Optional.ofNullable(initialConfiguration);
             return this;
         }
 
@@ -309,7 +314,7 @@ public final class ConnectionType {
 
         @java.lang.Override
         public _FinalStage id(String id) {
-            this.id = Optional.of(id);
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
@@ -322,7 +327,7 @@ public final class ConnectionType {
 
         @java.lang.Override
         public _FinalStage envConfig(Map<String, Object> envConfig) {
-            this.envConfig = Optional.of(envConfig);
+            this.envConfig = Optional.ofNullable(envConfig);
             return this;
         }
 
@@ -334,14 +339,14 @@ public final class ConnectionType {
         }
 
         @java.lang.Override
-        public _FinalStage configurationForm(V2ConnectionForm configurationForm) {
-            this.configurationForm = Optional.of(configurationForm);
+        public _FinalStage configurationForm(ConnectionForm configurationForm) {
+            this.configurationForm = Optional.ofNullable(configurationForm);
             return this;
         }
 
         @java.lang.Override
         @JsonSetter(value = "configurationForm", nulls = Nulls.SKIP)
-        public _FinalStage configurationForm(Optional<V2ConnectionForm> configurationForm) {
+        public _FinalStage configurationForm(Optional<ConnectionForm> configurationForm) {
             this.configurationForm = configurationForm;
             return this;
         }
@@ -359,6 +364,18 @@ public final class ConnectionType {
                     oauthPrompt,
                     useOauth,
                     additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

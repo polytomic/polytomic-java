@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = SyncStatusResponse.Builder.class)
 public final class SyncStatusResponse {
     private final Optional<GetExecutionResponseSchema> currentExecution;
@@ -113,7 +113,7 @@ public final class SyncStatusResponse {
         }
 
         public Builder currentExecution(GetExecutionResponseSchema currentExecution) {
-            this.currentExecution = Optional.of(currentExecution);
+            this.currentExecution = Optional.ofNullable(currentExecution);
             return this;
         }
 
@@ -124,7 +124,7 @@ public final class SyncStatusResponse {
         }
 
         public Builder lastExecution(GetExecutionResponseSchema lastExecution) {
-            this.lastExecution = Optional.of(lastExecution);
+            this.lastExecution = Optional.ofNullable(lastExecution);
             return this;
         }
 
@@ -135,12 +135,22 @@ public final class SyncStatusResponse {
         }
 
         public Builder nextExecutionTime(OffsetDateTime nextExecutionTime) {
-            this.nextExecutionTime = Optional.of(nextExecutionTime);
+            this.nextExecutionTime = Optional.ofNullable(nextExecutionTime);
             return this;
         }
 
         public SyncStatusResponse build() {
             return new SyncStatusResponse(currentExecution, lastExecution, nextExecutionTime, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }

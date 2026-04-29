@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelModelFieldRequest.Builder.class)
 public final class ModelModelFieldRequest {
     private final Optional<String> example;
@@ -96,21 +97,25 @@ public final class ModelModelFieldRequest {
     }
 
     public interface LabelStage {
-        NameStage label(String label);
+        NameStage label(@NotNull String label);
 
         Builder from(ModelModelFieldRequest other);
     }
 
     public interface NameStage {
-        TypeStage name(String name);
+        TypeStage name(@NotNull String name);
     }
 
     public interface TypeStage {
-        _FinalStage type(String type);
+        _FinalStage type(@NotNull String type);
     }
 
     public interface _FinalStage {
         ModelModelFieldRequest build();
+
+        _FinalStage additionalProperty(String key, Object value);
+
+        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         _FinalStage example(Optional<String> example);
 
@@ -143,28 +148,28 @@ public final class ModelModelFieldRequest {
 
         @java.lang.Override
         @JsonSetter("label")
-        public NameStage label(String label) {
+        public NameStage label(@NotNull String label) {
             this.label = label;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("name")
-        public TypeStage name(String name) {
+        public TypeStage name(@NotNull String name) {
             this.name = name;
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("type")
-        public _FinalStage type(String type) {
+        public _FinalStage type(@NotNull String type) {
             this.type = type;
             return this;
         }
 
         @java.lang.Override
         public _FinalStage example(String example) {
-            this.example = Optional.of(example);
+            this.example = Optional.ofNullable(example);
             return this;
         }
 
@@ -178,6 +183,18 @@ public final class ModelModelFieldRequest {
         @java.lang.Override
         public ModelModelFieldRequest build() {
             return new ModelModelFieldRequest(example, label, name, type, additionalProperties);
+        }
+
+        @java.lang.Override
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        @java.lang.Override
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
