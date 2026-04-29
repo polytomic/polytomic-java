@@ -10,7 +10,7 @@
   "originGitCommit": "58ebf737d832c3cafc1526739c419fad524cfa1f",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
-  "requestedVersion": "25.9.0",
+  "requestedVersion": "25.9.1",
   "ciProvider": "github",
-  "sdkVersion": "25.9.0"
+  "sdkVersion": "25.9.1"
 }
