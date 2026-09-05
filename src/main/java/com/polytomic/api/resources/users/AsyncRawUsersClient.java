@@ -24,6 +24,8 @@ import com.polytomic.api.resources.users.requests.UpdateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UsersCreateApiKeyRequest;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.ApiKeyResponseEnvelope;
+import com.polytomic.api.types.CurrentOrgListUsersEnvelope;
+import com.polytomic.api.types.CurrentOrgUserEnvelope;
 import com.polytomic.api.types.ListUsersEnvelope;
 import com.polytomic.api.types.UserEnvelope;
 import java.io.IOException;
@@ -50,7 +52,7 @@ public class AsyncRawUsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<ListUsersEnvelope>> listCurrentOrgUsers() {
+    public CompletableFuture<PolytomicHttpResponse<CurrentOrgListUsersEnvelope>> listCurrentOrgUsers() {
         return listCurrentOrgUsers(null);
     }
 
@@ -58,7 +60,7 @@ public class AsyncRawUsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<ListUsersEnvelope>> listCurrentOrgUsers(
+    public CompletableFuture<PolytomicHttpResponse<CurrentOrgListUsersEnvelope>> listCurrentOrgUsers(
             RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -78,7 +80,7 @@ public class AsyncRawUsersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PolytomicHttpResponse<ListUsersEnvelope>> future = new CompletableFuture<>();
+        CompletableFuture<PolytomicHttpResponse<CurrentOrgListUsersEnvelope>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -86,7 +88,8 @@ public class AsyncRawUsersClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListUsersEnvelope.class),
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, CurrentOrgListUsersEnvelope.class),
                                 response));
                         return;
                     }
@@ -218,14 +221,14 @@ public class AsyncRawUsersClient {
     /**
      * Returns a single user from the caller's current organization.
      */
-    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> getCurrentOrgUser(String id) {
+    public CompletableFuture<PolytomicHttpResponse<CurrentOrgUserEnvelope>> getCurrentOrgUser(String id) {
         return getCurrentOrgUser(id, null);
     }
 
     /**
      * Returns a single user from the caller's current organization.
      */
-    public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> getCurrentOrgUser(
+    public CompletableFuture<PolytomicHttpResponse<CurrentOrgUserEnvelope>> getCurrentOrgUser(
             String id, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -246,7 +249,7 @@ public class AsyncRawUsersClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> future = new CompletableFuture<>();
+        CompletableFuture<PolytomicHttpResponse<CurrentOrgUserEnvelope>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -254,7 +257,8 @@ public class AsyncRawUsersClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UserEnvelope.class), response));
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, CurrentOrgUserEnvelope.class),
+                                response));
                         return;
                     }
                     try {

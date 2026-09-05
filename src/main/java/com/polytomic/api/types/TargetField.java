@@ -35,6 +35,8 @@ public final class TargetField {
 
     private final Optional<List<IdentityFunction>> identityFunctions;
 
+    private final Optional<Boolean> multipleAssociations;
+
     private final Optional<String> name;
 
     private final Optional<Boolean> required;
@@ -57,6 +59,7 @@ public final class TargetField {
             Optional<Boolean> filterable,
             Optional<String> id,
             Optional<List<IdentityFunction>> identityFunctions,
+            Optional<Boolean> multipleAssociations,
             Optional<String> name,
             Optional<Boolean> required,
             Optional<String> sourceType,
@@ -71,6 +74,7 @@ public final class TargetField {
         this.filterable = filterable;
         this.id = id;
         this.identityFunctions = identityFunctions;
+        this.multipleAssociations = multipleAssociations;
         this.name = name;
         this.required = required;
         this.sourceType = sourceType;
@@ -80,66 +84,113 @@ public final class TargetField {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return True if this field is an association (foreign key) to another object rather than a value column.
+     */
     @JsonProperty("association")
     public Optional<Boolean> getAssociation() {
         return association;
     }
 
+    /**
+     * @return True if this field can be written when creating a new record.
+     */
     @JsonProperty("createable")
     public Optional<Boolean> getCreateable() {
         return createable;
     }
 
+    /**
+     * @return Description of the field, when the backend provides one.
+     */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return True if this field supports field-level encryption.
+     */
     @JsonProperty("encryptable")
     public Optional<Boolean> getEncryptable() {
         return encryptable;
     }
 
+    /**
+     * @return True if this field can be used in a target filter.
+     */
     @JsonProperty("filterable")
     public Optional<Boolean> getFilterable() {
         return filterable;
     }
 
+    /**
+     * @return Backend-specific identifier of the field; use this value when configuring field mappings.
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Identity match functions supported when this field is used as the sync identity (e.g. exact match, hashed match).
+     */
     @JsonProperty("identity_functions")
     public Optional<List<IdentityFunction>> getIdentityFunctions() {
         return identityFunctions;
     }
 
+    /**
+     * @return True if this association field holds a set of references rather than one; every value mapped to it is a member of the set. False for a field that is not an association, and for one whose destination has not declared how many references the relationship holds.
+     */
+    @JsonProperty("multiple_associations")
+    public Optional<Boolean> getMultipleAssociations() {
+        return multipleAssociations;
+    }
+
+    /**
+     * @return Human-readable name of the field.
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return True if a model sync must map a value to this field for records to be accepted.
+     */
     @JsonProperty("required")
     public Optional<Boolean> getRequired() {
         return required;
     }
 
+    /**
+     * @return Native type reported by the destination system.
+     */
     @JsonProperty("source_type")
     public Optional<String> getSourceType() {
         return sourceType;
     }
 
+    /**
+     * @return True if this field may be used as the identity (match key) for syncs that require one.
+     */
     @JsonProperty("supports_identity")
     public Optional<Boolean> getSupportsIdentity() {
         return supportsIdentity;
     }
 
+    /**
+     * @return Polytomic-normalized type used when mapping values to this field.
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return True if this field can be written when updating an existing record.
+     */
     @JsonProperty("updateable")
     public Optional<Boolean> getUpdateable() {
         return updateable;
@@ -164,6 +215,7 @@ public final class TargetField {
                 && filterable.equals(other.filterable)
                 && id.equals(other.id)
                 && identityFunctions.equals(other.identityFunctions)
+                && multipleAssociations.equals(other.multipleAssociations)
                 && name.equals(other.name)
                 && required.equals(other.required)
                 && sourceType.equals(other.sourceType)
@@ -182,6 +234,7 @@ public final class TargetField {
                 this.filterable,
                 this.id,
                 this.identityFunctions,
+                this.multipleAssociations,
                 this.name,
                 this.required,
                 this.sourceType,
@@ -215,6 +268,8 @@ public final class TargetField {
 
         private Optional<List<IdentityFunction>> identityFunctions = Optional.empty();
 
+        private Optional<Boolean> multipleAssociations = Optional.empty();
+
         private Optional<String> name = Optional.empty();
 
         private Optional<Boolean> required = Optional.empty();
@@ -240,6 +295,7 @@ public final class TargetField {
             filterable(other.getFilterable());
             id(other.getId());
             identityFunctions(other.getIdentityFunctions());
+            multipleAssociations(other.getMultipleAssociations());
             name(other.getName());
             required(other.getRequired());
             sourceType(other.getSourceType());
@@ -249,6 +305,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if this field is an association (foreign key) to another object rather than a value column.</p>
+         */
         @JsonSetter(value = "association", nulls = Nulls.SKIP)
         public Builder association(Optional<Boolean> association) {
             this.association = association;
@@ -260,6 +319,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if this field can be written when creating a new record.</p>
+         */
         @JsonSetter(value = "createable", nulls = Nulls.SKIP)
         public Builder createable(Optional<Boolean> createable) {
             this.createable = createable;
@@ -271,6 +333,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>Description of the field, when the backend provides one.</p>
+         */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
             this.description = description;
@@ -282,6 +347,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if this field supports field-level encryption.</p>
+         */
         @JsonSetter(value = "encryptable", nulls = Nulls.SKIP)
         public Builder encryptable(Optional<Boolean> encryptable) {
             this.encryptable = encryptable;
@@ -293,6 +361,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if this field can be used in a target filter.</p>
+         */
         @JsonSetter(value = "filterable", nulls = Nulls.SKIP)
         public Builder filterable(Optional<Boolean> filterable) {
             this.filterable = filterable;
@@ -304,6 +375,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>Backend-specific identifier of the field; use this value when configuring field mappings.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -315,6 +389,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>Identity match functions supported when this field is used as the sync identity (e.g. exact match, hashed match).</p>
+         */
         @JsonSetter(value = "identity_functions", nulls = Nulls.SKIP)
         public Builder identityFunctions(Optional<List<IdentityFunction>> identityFunctions) {
             this.identityFunctions = identityFunctions;
@@ -326,6 +403,23 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if this association field holds a set of references rather than one; every value mapped to it is a member of the set. False for a field that is not an association, and for one whose destination has not declared how many references the relationship holds.</p>
+         */
+        @JsonSetter(value = "multiple_associations", nulls = Nulls.SKIP)
+        public Builder multipleAssociations(Optional<Boolean> multipleAssociations) {
+            this.multipleAssociations = multipleAssociations;
+            return this;
+        }
+
+        public Builder multipleAssociations(Boolean multipleAssociations) {
+            this.multipleAssociations = Optional.ofNullable(multipleAssociations);
+            return this;
+        }
+
+        /**
+         * <p>Human-readable name of the field.</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -337,6 +431,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if a model sync must map a value to this field for records to be accepted.</p>
+         */
         @JsonSetter(value = "required", nulls = Nulls.SKIP)
         public Builder required(Optional<Boolean> required) {
             this.required = required;
@@ -348,6 +445,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>Native type reported by the destination system.</p>
+         */
         @JsonSetter(value = "source_type", nulls = Nulls.SKIP)
         public Builder sourceType(Optional<String> sourceType) {
             this.sourceType = sourceType;
@@ -359,6 +459,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if this field may be used as the identity (match key) for syncs that require one.</p>
+         */
         @JsonSetter(value = "supports_identity", nulls = Nulls.SKIP)
         public Builder supportsIdentity(Optional<Boolean> supportsIdentity) {
             this.supportsIdentity = supportsIdentity;
@@ -370,6 +473,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>Polytomic-normalized type used when mapping values to this field.</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -381,6 +487,9 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>True if this field can be written when updating an existing record.</p>
+         */
         @JsonSetter(value = "updateable", nulls = Nulls.SKIP)
         public Builder updateable(Optional<Boolean> updateable) {
             this.updateable = updateable;
@@ -401,6 +510,7 @@ public final class TargetField {
                     filterable,
                     id,
                     identityFunctions,
+                    multipleAssociations,
                     name,
                     required,
                     sourceType,

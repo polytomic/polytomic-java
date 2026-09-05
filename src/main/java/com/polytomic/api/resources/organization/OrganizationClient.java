@@ -8,8 +8,10 @@ import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.organization.requests.CreateOrganizationRequestSchema;
 import com.polytomic.api.resources.organization.requests.UpdateOrganizationRequestSchema;
+import com.polytomic.api.resources.organization.requests.UpdateRecordLoggingSettingsRequest;
 import com.polytomic.api.types.OrganizationEnvelope;
 import com.polytomic.api.types.OrganizationsEnvelope;
+import com.polytomic.api.types.RecordLoggingSettingsEnvelope;
 
 public class OrganizationClient {
     protected final ClientOptions clientOptions;
@@ -54,6 +56,35 @@ public class OrganizationClient {
      */
     public OrganizationEnvelope getCurrent(RequestOptions requestOptions) {
         return this.rawClient.getCurrent(requestOptions).body();
+    }
+
+    /**
+     * Returns the organization's record logging settings, including the connection record logs are delivered to.
+     */
+    public RecordLoggingSettingsEnvelope getRecordLogging() {
+        return this.rawClient.getRecordLogging().body();
+    }
+
+    /**
+     * Returns the organization's record logging settings, including the connection record logs are delivered to.
+     */
+    public RecordLoggingSettingsEnvelope getRecordLogging(RequestOptions requestOptions) {
+        return this.rawClient.getRecordLogging(requestOptions).body();
+    }
+
+    /**
+     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> is replaced, not merged: omitting it, or sending null, removes any destination previously configured.
+     */
+    public RecordLoggingSettingsEnvelope updateRecordLogging(UpdateRecordLoggingSettingsRequest request) {
+        return this.rawClient.updateRecordLogging(request).body();
+    }
+
+    /**
+     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> is replaced, not merged: omitting it, or sending null, removes any destination previously configured.
+     */
+    public RecordLoggingSettingsEnvelope updateRecordLogging(
+            UpdateRecordLoggingSettingsRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.updateRecordLogging(request, requestOptions).body();
     }
 
     /**

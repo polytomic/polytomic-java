@@ -32,11 +32,17 @@ public final class IdentityFunction {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Identifier of the identity function; use this value when configuring the sync identity.
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Human-readable label for the identity function.
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
@@ -88,6 +94,9 @@ public final class IdentityFunction {
             return this;
         }
 
+        /**
+         * <p>Identifier of the identity function; use this value when configuring the sync identity.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -99,6 +108,9 @@ public final class IdentityFunction {
             return this;
         }
 
+        /**
+         * <p>Human-readable label for the identity function.</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;

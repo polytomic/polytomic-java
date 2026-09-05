@@ -22,13 +22,19 @@ import java.util.Optional;
 public final class ConnectionParameterValue {
     private final Optional<String> label;
 
+    private final Optional<String> path;
+
     private final Optional<Object> value;
 
     private final Map<String, Object> additionalProperties;
 
     private ConnectionParameterValue(
-            Optional<String> label, Optional<Object> value, Map<String, Object> additionalProperties) {
+            Optional<String> label,
+            Optional<String> path,
+            Optional<Object> value,
+            Map<String, Object> additionalProperties) {
         this.label = label;
+        this.path = path;
         this.value = value;
         this.additionalProperties = additionalProperties;
     }
@@ -36,6 +42,11 @@ public final class ConnectionParameterValue {
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
+    }
+
+    @JsonProperty("path")
+    public Optional<String> getPath() {
+        return path;
     }
 
     @JsonProperty("value")
@@ -55,12 +66,12 @@ public final class ConnectionParameterValue {
     }
 
     private boolean equalTo(ConnectionParameterValue other) {
-        return label.equals(other.label) && value.equals(other.value);
+        return label.equals(other.label) && path.equals(other.path) && value.equals(other.value);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.label, this.value);
+        return Objects.hash(this.label, this.path, this.value);
     }
 
     @java.lang.Override
@@ -76,6 +87,8 @@ public final class ConnectionParameterValue {
     public static final class Builder {
         private Optional<String> label = Optional.empty();
 
+        private Optional<String> path = Optional.empty();
+
         private Optional<Object> value = Optional.empty();
 
         @JsonAnySetter
@@ -85,6 +98,7 @@ public final class ConnectionParameterValue {
 
         public Builder from(ConnectionParameterValue other) {
             label(other.getLabel());
+            path(other.getPath());
             value(other.getValue());
             return this;
         }
@@ -100,6 +114,17 @@ public final class ConnectionParameterValue {
             return this;
         }
 
+        @JsonSetter(value = "path", nulls = Nulls.SKIP)
+        public Builder path(Optional<String> path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder path(String path) {
+            this.path = Optional.ofNullable(path);
+            return this;
+        }
+
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public Builder value(Optional<Object> value) {
             this.value = value;
@@ -112,7 +137,7 @@ public final class ConnectionParameterValue {
         }
 
         public ConnectionParameterValue build() {
-            return new ConnectionParameterValue(label, value, additionalProperties);
+            return new ConnectionParameterValue(label, path, value, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -20,9 +20,11 @@ import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.errors.UnprocessableEntityError;
 import com.polytomic.api.resources.organization.requests.CreateOrganizationRequestSchema;
 import com.polytomic.api.resources.organization.requests.UpdateOrganizationRequestSchema;
+import com.polytomic.api.resources.organization.requests.UpdateRecordLoggingSettingsRequest;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.OrganizationEnvelope;
 import com.polytomic.api.types.OrganizationsEnvelope;
+import com.polytomic.api.types.RecordLoggingSettingsEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -99,6 +101,142 @@ public class RawOrganizationClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 404:
                         throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Returns the organization's record logging settings, including the connection record logs are delivered to.
+     */
+    public PolytomicHttpResponse<RecordLoggingSettingsEnvelope> getRecordLogging() {
+        return getRecordLogging(null);
+    }
+
+    /**
+     * Returns the organization's record logging settings, including the connection record logs are delivered to.
+     */
+    public PolytomicHttpResponse<RecordLoggingSettingsEnvelope> getRecordLogging(RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/organization/record-logging");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, RecordLoggingSettingsEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> is replaced, not merged: omitting it, or sending null, removes any destination previously configured.
+     */
+    public PolytomicHttpResponse<RecordLoggingSettingsEnvelope> updateRecordLogging(
+            UpdateRecordLoggingSettingsRequest request) {
+        return updateRecordLogging(request, null);
+    }
+
+    /**
+     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> is replaced, not merged: omitting it, or sending null, removes any destination previously configured.
+     */
+    public PolytomicHttpResponse<RecordLoggingSettingsEnvelope> updateRecordLogging(
+            UpdateRecordLoggingSettingsRequest request, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/organization/record-logging");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, RecordLoggingSettingsEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                 }
             } catch (JsonProcessingException ignored) {

@@ -22,6 +22,8 @@ public final class BackendConnectionCapabilities {
 
     private final boolean enrichment;
 
+    private final boolean logging;
+
     private final boolean orchestration;
 
     private final boolean source;
@@ -31,11 +33,13 @@ public final class BackendConnectionCapabilities {
     private BackendConnectionCapabilities(
             boolean destination,
             boolean enrichment,
+            boolean logging,
             boolean orchestration,
             boolean source,
             Map<String, Object> additionalProperties) {
         this.destination = destination;
         this.enrichment = enrichment;
+        this.logging = logging;
         this.orchestration = orchestration;
         this.source = source;
         this.additionalProperties = additionalProperties;
@@ -49,6 +53,11 @@ public final class BackendConnectionCapabilities {
     @JsonProperty("enrichment")
     public boolean getEnrichment() {
         return enrichment;
+    }
+
+    @JsonProperty("logging")
+    public boolean getLogging() {
+        return logging;
     }
 
     @JsonProperty("orchestration")
@@ -75,13 +84,14 @@ public final class BackendConnectionCapabilities {
     private boolean equalTo(BackendConnectionCapabilities other) {
         return destination == other.destination
                 && enrichment == other.enrichment
+                && logging == other.logging
                 && orchestration == other.orchestration
                 && source == other.source;
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.destination, this.enrichment, this.orchestration, this.source);
+        return Objects.hash(this.destination, this.enrichment, this.logging, this.orchestration, this.source);
     }
 
     @java.lang.Override
@@ -100,7 +110,11 @@ public final class BackendConnectionCapabilities {
     }
 
     public interface EnrichmentStage {
-        OrchestrationStage enrichment(boolean enrichment);
+        LoggingStage enrichment(boolean enrichment);
+    }
+
+    public interface LoggingStage {
+        OrchestrationStage logging(boolean logging);
     }
 
     public interface OrchestrationStage {
@@ -121,10 +135,12 @@ public final class BackendConnectionCapabilities {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder
-            implements DestinationStage, EnrichmentStage, OrchestrationStage, SourceStage, _FinalStage {
+            implements DestinationStage, EnrichmentStage, LoggingStage, OrchestrationStage, SourceStage, _FinalStage {
         private boolean destination;
 
         private boolean enrichment;
+
+        private boolean logging;
 
         private boolean orchestration;
 
@@ -139,6 +155,7 @@ public final class BackendConnectionCapabilities {
         public Builder from(BackendConnectionCapabilities other) {
             destination(other.getDestination());
             enrichment(other.getEnrichment());
+            logging(other.getLogging());
             orchestration(other.getOrchestration());
             source(other.getSource());
             return this;
@@ -153,8 +170,15 @@ public final class BackendConnectionCapabilities {
 
         @java.lang.Override
         @JsonSetter("enrichment")
-        public OrchestrationStage enrichment(boolean enrichment) {
+        public LoggingStage enrichment(boolean enrichment) {
             this.enrichment = enrichment;
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter("logging")
+        public OrchestrationStage logging(boolean logging) {
+            this.logging = logging;
             return this;
         }
 
@@ -175,7 +199,7 @@ public final class BackendConnectionCapabilities {
         @java.lang.Override
         public BackendConnectionCapabilities build() {
             return new BackendConnectionCapabilities(
-                    destination, enrichment, orchestration, source, additionalProperties);
+                    destination, enrichment, logging, orchestration, source, additionalProperties);
         }
 
         @java.lang.Override

@@ -12,6 +12,8 @@ import com.polytomic.api.resources.users.requests.CurrentOrgUpdateUserRequestSch
 import com.polytomic.api.resources.users.requests.UpdateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UsersCreateApiKeyRequest;
 import com.polytomic.api.types.ApiKeyResponseEnvelope;
+import com.polytomic.api.types.CurrentOrgListUsersEnvelope;
+import com.polytomic.api.types.CurrentOrgUserEnvelope;
 import com.polytomic.api.types.ListUsersEnvelope;
 import com.polytomic.api.types.UserEnvelope;
 import java.util.concurrent.CompletableFuture;
@@ -37,7 +39,7 @@ public class AsyncUsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public CompletableFuture<ListUsersEnvelope> listCurrentOrgUsers() {
+    public CompletableFuture<CurrentOrgListUsersEnvelope> listCurrentOrgUsers() {
         return this.rawClient.listCurrentOrgUsers().thenApply(response -> response.body());
     }
 
@@ -45,7 +47,7 @@ public class AsyncUsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public CompletableFuture<ListUsersEnvelope> listCurrentOrgUsers(RequestOptions requestOptions) {
+    public CompletableFuture<CurrentOrgListUsersEnvelope> listCurrentOrgUsers(RequestOptions requestOptions) {
         return this.rawClient.listCurrentOrgUsers(requestOptions).thenApply(response -> response.body());
     }
 
@@ -71,14 +73,14 @@ public class AsyncUsersClient {
     /**
      * Returns a single user from the caller's current organization.
      */
-    public CompletableFuture<UserEnvelope> getCurrentOrgUser(String id) {
+    public CompletableFuture<CurrentOrgUserEnvelope> getCurrentOrgUser(String id) {
         return this.rawClient.getCurrentOrgUser(id).thenApply(response -> response.body());
     }
 
     /**
      * Returns a single user from the caller's current organization.
      */
-    public CompletableFuture<UserEnvelope> getCurrentOrgUser(String id, RequestOptions requestOptions) {
+    public CompletableFuture<CurrentOrgUserEnvelope> getCurrentOrgUser(String id, RequestOptions requestOptions) {
         return this.rawClient.getCurrentOrgUser(id, requestOptions).thenApply(response -> response.body());
     }
 

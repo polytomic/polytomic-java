@@ -6,10 +6,12 @@ package com.polytomic.api.resources.schemas;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.resources.schemas.requests.PatchSchemaFieldRequest;
 import com.polytomic.api.resources.schemas.requests.SetPrimaryKeysRequest;
 import com.polytomic.api.resources.schemas.requests.UpsertSchemaFieldRequest;
 import com.polytomic.api.types.BulkSyncSourceSchemaEnvelope;
 import com.polytomic.api.types.BulkSyncSourceStatusEnvelope;
+import com.polytomic.api.types.SchemaFieldResponseEnvelope;
 import com.polytomic.api.types.SchemaRecordsResponseEnvelope;
 
 public class SchemasClient {
@@ -123,6 +125,47 @@ public class SchemasClient {
             String connectionId, String schemaId, String fieldId, IdempotentRequestOptions requestOptions) {
         this.rawClient
                 .deleteField(connectionId, schemaId, fieldId, requestOptions)
+                .body();
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public SchemaFieldResponseEnvelope patchField(String connectionId, String schemaId, String fieldId) {
+        return this.rawClient.patchField(connectionId, schemaId, fieldId).body();
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public SchemaFieldResponseEnvelope patchField(
+            String connectionId, String schemaId, String fieldId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .patchField(connectionId, schemaId, fieldId, requestOptions)
+                .body();
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public SchemaFieldResponseEnvelope patchField(
+            String connectionId, String schemaId, String fieldId, PatchSchemaFieldRequest request) {
+        return this.rawClient
+                .patchField(connectionId, schemaId, fieldId, request)
+                .body();
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public SchemaFieldResponseEnvelope patchField(
+            String connectionId,
+            String schemaId,
+            String fieldId,
+            PatchSchemaFieldRequest request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .patchField(connectionId, schemaId, fieldId, request, requestOptions)
                 .body();
     }
 

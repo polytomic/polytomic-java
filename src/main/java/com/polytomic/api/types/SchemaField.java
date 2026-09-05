@@ -29,11 +29,15 @@ public final class SchemaField {
 
     private final Optional<String> name;
 
+    private final Optional<String> path;
+
     private final Optional<String> remoteType;
 
     private final Optional<UtilFieldType> type;
 
     private final Optional<TypesType> typeSpec;
+
+    private final Optional<Boolean> userManaged;
 
     private final Optional<List<PickValue>> values;
 
@@ -44,18 +48,22 @@ public final class SchemaField {
             Optional<String> id,
             Optional<Boolean> isPrimaryKey,
             Optional<String> name,
+            Optional<String> path,
             Optional<String> remoteType,
             Optional<UtilFieldType> type,
             Optional<TypesType> typeSpec,
+            Optional<Boolean> userManaged,
             Optional<List<PickValue>> values,
             Map<String, Object> additionalProperties) {
         this.association = association;
         this.id = id;
         this.isPrimaryKey = isPrimaryKey;
         this.name = name;
+        this.path = path;
         this.remoteType = remoteType;
         this.type = type;
         this.typeSpec = typeSpec;
+        this.userManaged = userManaged;
         this.values = values;
         this.additionalProperties = additionalProperties;
     }
@@ -71,7 +79,7 @@ public final class SchemaField {
     }
 
     /**
-     * @return Whether this field is part of the schema's primary key.
+     * @return Whether this field is part of the schema's primary key, including any user override.
      */
     @JsonProperty("is_primary_key")
     public Optional<Boolean> getIsPrimaryKey() {
@@ -81,6 +89,14 @@ public final class SchemaField {
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
+    }
+
+    /**
+     * @return JSONPath used to extract the field from each source record; only meaningful for document-style backends.
+     */
+    @JsonProperty("path")
+    public Optional<String> getPath() {
+        return path;
     }
 
     /**
@@ -99,6 +115,14 @@ public final class SchemaField {
     @JsonProperty("type_spec")
     public Optional<TypesType> getTypeSpec() {
         return typeSpec;
+    }
+
+    /**
+     * @return True when the field's effective definition came from a user override.
+     */
+    @JsonProperty("user_managed")
+    public Optional<Boolean> getUserManaged() {
+        return userManaged;
     }
 
     @JsonProperty("values")
@@ -122,9 +146,11 @@ public final class SchemaField {
                 && id.equals(other.id)
                 && isPrimaryKey.equals(other.isPrimaryKey)
                 && name.equals(other.name)
+                && path.equals(other.path)
                 && remoteType.equals(other.remoteType)
                 && type.equals(other.type)
                 && typeSpec.equals(other.typeSpec)
+                && userManaged.equals(other.userManaged)
                 && values.equals(other.values);
     }
 
@@ -135,9 +161,11 @@ public final class SchemaField {
                 this.id,
                 this.isPrimaryKey,
                 this.name,
+                this.path,
                 this.remoteType,
                 this.type,
                 this.typeSpec,
+                this.userManaged,
                 this.values);
     }
 
@@ -160,11 +188,15 @@ public final class SchemaField {
 
         private Optional<String> name = Optional.empty();
 
+        private Optional<String> path = Optional.empty();
+
         private Optional<String> remoteType = Optional.empty();
 
         private Optional<UtilFieldType> type = Optional.empty();
 
         private Optional<TypesType> typeSpec = Optional.empty();
+
+        private Optional<Boolean> userManaged = Optional.empty();
 
         private Optional<List<PickValue>> values = Optional.empty();
 
@@ -178,9 +210,11 @@ public final class SchemaField {
             id(other.getId());
             isPrimaryKey(other.getIsPrimaryKey());
             name(other.getName());
+            path(other.getPath());
             remoteType(other.getRemoteType());
             type(other.getType());
             typeSpec(other.getTypeSpec());
+            userManaged(other.getUserManaged());
             values(other.getValues());
             return this;
         }
@@ -208,7 +242,7 @@ public final class SchemaField {
         }
 
         /**
-         * <p>Whether this field is part of the schema's primary key.</p>
+         * <p>Whether this field is part of the schema's primary key, including any user override.</p>
          */
         @JsonSetter(value = "is_primary_key", nulls = Nulls.SKIP)
         public Builder isPrimaryKey(Optional<Boolean> isPrimaryKey) {
@@ -229,6 +263,20 @@ public final class SchemaField {
 
         public Builder name(String name) {
             this.name = Optional.ofNullable(name);
+            return this;
+        }
+
+        /**
+         * <p>JSONPath used to extract the field from each source record; only meaningful for document-style backends.</p>
+         */
+        @JsonSetter(value = "path", nulls = Nulls.SKIP)
+        public Builder path(Optional<String> path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder path(String path) {
+            this.path = Optional.ofNullable(path);
             return this;
         }
 
@@ -268,6 +316,20 @@ public final class SchemaField {
             return this;
         }
 
+        /**
+         * <p>True when the field's effective definition came from a user override.</p>
+         */
+        @JsonSetter(value = "user_managed", nulls = Nulls.SKIP)
+        public Builder userManaged(Optional<Boolean> userManaged) {
+            this.userManaged = userManaged;
+            return this;
+        }
+
+        public Builder userManaged(Boolean userManaged) {
+            this.userManaged = Optional.ofNullable(userManaged);
+            return this;
+        }
+
         @JsonSetter(value = "values", nulls = Nulls.SKIP)
         public Builder values(Optional<List<PickValue>> values) {
             this.values = values;
@@ -281,7 +343,17 @@ public final class SchemaField {
 
         public SchemaField build() {
             return new SchemaField(
-                    association, id, isPrimaryKey, name, remoteType, type, typeSpec, values, additionalProperties);
+                    association,
+                    id,
+                    isPrimaryKey,
+                    name,
+                    path,
+                    remoteType,
+                    type,
+                    typeSpec,
+                    userManaged,
+                    values,
+                    additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

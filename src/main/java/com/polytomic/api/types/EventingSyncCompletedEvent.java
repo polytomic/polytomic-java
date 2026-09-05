@@ -33,9 +33,13 @@ public final class EventingSyncCompletedEvent {
 
     private final Optional<List<String>> insertedRecords;
 
+    private final Optional<String> logsUrl;
+
     private final Optional<String> organizationId;
 
     private final Optional<Long> recordCount;
+
+    private final Optional<EventingSyncSchedule> schedule;
 
     private final Optional<UtilExecutionStatus> status;
 
@@ -68,8 +72,10 @@ public final class EventingSyncCompletedEvent {
             Optional<String> executionId,
             Optional<Long> insertedCount,
             Optional<List<String>> insertedRecords,
+            Optional<String> logsUrl,
             Optional<String> organizationId,
             Optional<Long> recordCount,
+            Optional<EventingSyncSchedule> schedule,
             Optional<UtilExecutionStatus> status,
             Optional<String> syncId,
             Optional<String> syncName,
@@ -88,8 +94,10 @@ public final class EventingSyncCompletedEvent {
         this.executionId = executionId;
         this.insertedCount = insertedCount;
         this.insertedRecords = insertedRecords;
+        this.logsUrl = logsUrl;
         this.organizationId = organizationId;
         this.recordCount = recordCount;
+        this.schedule = schedule;
         this.status = status;
         this.syncId = syncId;
         this.syncName = syncName;
@@ -134,6 +142,14 @@ public final class EventingSyncCompletedEvent {
         return insertedRecords;
     }
 
+    /**
+     * @return Endpoint returning the index of record logs produced by this execution.
+     */
+    @JsonProperty("logs_url")
+    public Optional<String> getLogsUrl() {
+        return logsUrl;
+    }
+
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
@@ -142,6 +158,11 @@ public final class EventingSyncCompletedEvent {
     @JsonProperty("record_count")
     public Optional<Long> getRecordCount() {
         return recordCount;
+    }
+
+    @JsonProperty("schedule")
+    public Optional<EventingSyncSchedule> getSchedule() {
+        return schedule;
     }
 
     @JsonProperty("status")
@@ -217,8 +238,10 @@ public final class EventingSyncCompletedEvent {
                 && executionId.equals(other.executionId)
                 && insertedCount.equals(other.insertedCount)
                 && insertedRecords.equals(other.insertedRecords)
+                && logsUrl.equals(other.logsUrl)
                 && organizationId.equals(other.organizationId)
                 && recordCount.equals(other.recordCount)
+                && schedule.equals(other.schedule)
                 && status.equals(other.status)
                 && syncId.equals(other.syncId)
                 && syncName.equals(other.syncName)
@@ -241,8 +264,10 @@ public final class EventingSyncCompletedEvent {
                 this.executionId,
                 this.insertedCount,
                 this.insertedRecords,
+                this.logsUrl,
                 this.organizationId,
                 this.recordCount,
+                this.schedule,
                 this.status,
                 this.syncId,
                 this.syncName,
@@ -279,9 +304,13 @@ public final class EventingSyncCompletedEvent {
 
         private Optional<List<String>> insertedRecords = Optional.empty();
 
+        private Optional<String> logsUrl = Optional.empty();
+
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<Long> recordCount = Optional.empty();
+
+        private Optional<EventingSyncSchedule> schedule = Optional.empty();
 
         private Optional<UtilExecutionStatus> status = Optional.empty();
 
@@ -317,8 +346,10 @@ public final class EventingSyncCompletedEvent {
             executionId(other.getExecutionId());
             insertedCount(other.getInsertedCount());
             insertedRecords(other.getInsertedRecords());
+            logsUrl(other.getLogsUrl());
             organizationId(other.getOrganizationId());
             recordCount(other.getRecordCount());
+            schedule(other.getSchedule());
             status(other.getStatus());
             syncId(other.getSyncId());
             syncName(other.getSyncName());
@@ -399,6 +430,20 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Endpoint returning the index of record logs produced by this execution.</p>
+         */
+        @JsonSetter(value = "logs_url", nulls = Nulls.SKIP)
+        public Builder logsUrl(Optional<String> logsUrl) {
+            this.logsUrl = logsUrl;
+            return this;
+        }
+
+        public Builder logsUrl(String logsUrl) {
+            this.logsUrl = Optional.ofNullable(logsUrl);
+            return this;
+        }
+
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -418,6 +463,17 @@ public final class EventingSyncCompletedEvent {
 
         public Builder recordCount(Long recordCount) {
             this.recordCount = Optional.ofNullable(recordCount);
+            return this;
+        }
+
+        @JsonSetter(value = "schedule", nulls = Nulls.SKIP)
+        public Builder schedule(Optional<EventingSyncSchedule> schedule) {
+            this.schedule = schedule;
+            return this;
+        }
+
+        public Builder schedule(EventingSyncSchedule schedule) {
+            this.schedule = Optional.ofNullable(schedule);
             return this;
         }
 
@@ -550,8 +606,10 @@ public final class EventingSyncCompletedEvent {
                     executionId,
                     insertedCount,
                     insertedRecords,
+                    logsUrl,
                     organizationId,
                     recordCount,
+                    schedule,
                     status,
                     syncId,
                     syncName,

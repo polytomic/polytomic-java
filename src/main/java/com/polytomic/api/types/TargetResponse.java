@@ -53,21 +53,33 @@ public final class TargetResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Fields available for mapping on this target. Empty for backends where the new target's columns are user-defined (e.g. SQL databases).
+     */
     @JsonProperty("fields")
     public Optional<List<TargetField>> getFields() {
         return fields;
     }
 
+    /**
+     * @return Backend-specific identifier of the target object. For not-yet-created targets, this is an internal placeholder identifier that callers should not rely on.
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Sync modes the target supports (e.g. create, update, upsert). The chosen mode determines which operations the sync may perform.
+     */
     @JsonProperty("modes")
     public Optional<List<Mode>> getModes() {
         return modes;
     }
 
+    /**
+     * @return Human-readable name of the target object.
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
@@ -78,6 +90,9 @@ public final class TargetResponse {
         return properties;
     }
 
+    /**
+     * @return Timestamp the target's cached schema was last refreshed. Zero for targets that do not have a cached schema (including not-yet-created targets).
+     */
     @JsonProperty("refreshed_at")
     public Optional<OffsetDateTime> getRefreshedAt() {
         return refreshedAt;
@@ -146,6 +161,9 @@ public final class TargetResponse {
             return this;
         }
 
+        /**
+         * <p>Fields available for mapping on this target. Empty for backends where the new target's columns are user-defined (e.g. SQL databases).</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<TargetField>> fields) {
             this.fields = fields;
@@ -157,6 +175,9 @@ public final class TargetResponse {
             return this;
         }
 
+        /**
+         * <p>Backend-specific identifier of the target object. For not-yet-created targets, this is an internal placeholder identifier that callers should not rely on.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -168,6 +189,9 @@ public final class TargetResponse {
             return this;
         }
 
+        /**
+         * <p>Sync modes the target supports (e.g. create, update, upsert). The chosen mode determines which operations the sync may perform.</p>
+         */
         @JsonSetter(value = "modes", nulls = Nulls.SKIP)
         public Builder modes(Optional<List<Mode>> modes) {
             this.modes = modes;
@@ -179,6 +203,9 @@ public final class TargetResponse {
             return this;
         }
 
+        /**
+         * <p>Human-readable name of the target object.</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -201,6 +228,9 @@ public final class TargetResponse {
             return this;
         }
 
+        /**
+         * <p>Timestamp the target's cached schema was last refreshed. Zero for targets that do not have a cached schema (including not-yet-created targets).</p>
+         */
         @JsonSetter(value = "refreshed_at", nulls = Nulls.SKIP)
         public Builder refreshedAt(Optional<OffsetDateTime> refreshedAt) {
             this.refreshedAt = refreshedAt;

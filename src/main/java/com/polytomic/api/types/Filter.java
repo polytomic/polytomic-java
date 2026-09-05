@@ -33,6 +33,8 @@ public final class Filter {
 
     private final Optional<Object> value;
 
+    private final Optional<Source> valueField;
+
     private final Map<String, Object> additionalProperties;
 
     private Filter(
@@ -42,6 +44,7 @@ public final class Filter {
             FilterFunction function,
             Optional<String> label,
             Optional<Object> value,
+            Optional<Source> valueField,
             Map<String, Object> additionalProperties) {
         this.field = field;
         this.fieldId = fieldId;
@@ -49,6 +52,7 @@ public final class Filter {
         this.function = function;
         this.label = label;
         this.value = value;
+        this.valueField = valueField;
         this.additionalProperties = additionalProperties;
     }
 
@@ -58,7 +62,7 @@ public final class Filter {
     }
 
     /**
-     * @return Model or Target field name to filter on.
+     * @return Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.
      */
     @JsonProperty("field_id")
     public Optional<String> getFieldId() {
@@ -85,6 +89,11 @@ public final class Filter {
         return value;
     }
 
+    @JsonProperty("value_field")
+    public Optional<Source> getValueField() {
+        return valueField;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -102,12 +111,14 @@ public final class Filter {
                 && fieldType.equals(other.fieldType)
                 && function.equals(other.function)
                 && label.equals(other.label)
-                && value.equals(other.value);
+                && value.equals(other.value)
+                && valueField.equals(other.valueField);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.field, this.fieldId, this.fieldType, this.function, this.label, this.value);
+        return Objects.hash(
+                this.field, this.fieldId, this.fieldType, this.function, this.label, this.value, this.valueField);
     }
 
     @java.lang.Override
@@ -137,7 +148,7 @@ public final class Filter {
         _FinalStage field(Source field);
 
         /**
-         * <p>Model or Target field name to filter on.</p>
+         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.</p>
          */
         _FinalStage fieldId(Optional<String> fieldId);
 
@@ -154,11 +165,17 @@ public final class Filter {
         _FinalStage value(Optional<Object> value);
 
         _FinalStage value(Object value);
+
+        _FinalStage valueField(Optional<Source> valueField);
+
+        _FinalStage valueField(Source valueField);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements FunctionStage, _FinalStage {
         private FilterFunction function;
+
+        private Optional<Source> valueField = Optional.empty();
 
         private Optional<Object> value = Optional.empty();
 
@@ -183,6 +200,7 @@ public final class Filter {
             function(other.getFunction());
             label(other.getLabel());
             value(other.getValue());
+            valueField(other.getValueField());
             return this;
         }
 
@@ -190,6 +208,19 @@ public final class Filter {
         @JsonSetter("function")
         public _FinalStage function(@NotNull FilterFunction function) {
             this.function = function;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage valueField(Source valueField) {
+            this.valueField = Optional.ofNullable(valueField);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "value_field", nulls = Nulls.SKIP)
+        public _FinalStage valueField(Optional<Source> valueField) {
+            this.valueField = valueField;
             return this;
         }
 
@@ -233,7 +264,7 @@ public final class Filter {
         }
 
         /**
-         * <p>Model or Target field name to filter on.</p>
+         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -243,7 +274,7 @@ public final class Filter {
         }
 
         /**
-         * <p>Model or Target field name to filter on.</p>
+         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
@@ -267,7 +298,7 @@ public final class Filter {
 
         @java.lang.Override
         public Filter build() {
-            return new Filter(field, fieldId, fieldType, function, label, value, additionalProperties);
+            return new Filter(field, fieldId, fieldType, function, label, value, valueField, additionalProperties);
         }
 
         @java.lang.Override

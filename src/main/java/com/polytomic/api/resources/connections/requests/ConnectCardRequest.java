@@ -32,7 +32,11 @@ public final class ConnectCardRequest {
 
     private final String redirectUrl;
 
+    private final Optional<Integer> ttl;
+
     private final Optional<String> type;
+
+    private final Optional<Boolean> useOrganizationName;
 
     private final Optional<List<String>> whitelist;
 
@@ -44,7 +48,9 @@ public final class ConnectCardRequest {
             String name,
             Optional<String> organizationId,
             String redirectUrl,
+            Optional<Integer> ttl,
             Optional<String> type,
+            Optional<Boolean> useOrganizationName,
             Optional<List<String>> whitelist,
             Map<String, Object> additionalProperties) {
         this.connection = connection;
@@ -52,7 +58,9 @@ public final class ConnectCardRequest {
         this.name = name;
         this.organizationId = organizationId;
         this.redirectUrl = redirectUrl;
+        this.ttl = ttl;
         this.type = type;
+        this.useOrganizationName = useOrganizationName;
         this.whitelist = whitelist;
         this.additionalProperties = additionalProperties;
     }
@@ -95,11 +103,27 @@ public final class ConnectCardRequest {
     }
 
     /**
+     * @return Connect session lifetime in seconds. Defaults to 300 and cannot exceed 604800.
+     */
+    @JsonProperty("ttl")
+    public Optional<Integer> getTtl() {
+        return ttl;
+    }
+
+    /**
      * @return Connection type to create.
      */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
+    }
+
+    /**
+     * @return Whether to display the target organization name instead of the partner name in the Connect modal. Defaults to false; organizations without a partner always display their organization name.
+     */
+    @JsonProperty("use_organization_name")
+    public Optional<Boolean> getUseOrganizationName() {
+        return useOrganizationName;
     }
 
     /**
@@ -127,7 +151,9 @@ public final class ConnectCardRequest {
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
                 && redirectUrl.equals(other.redirectUrl)
+                && ttl.equals(other.ttl)
                 && type.equals(other.type)
+                && useOrganizationName.equals(other.useOrganizationName)
                 && whitelist.equals(other.whitelist);
     }
 
@@ -139,7 +165,9 @@ public final class ConnectCardRequest {
                 this.name,
                 this.organizationId,
                 this.redirectUrl,
+                this.ttl,
                 this.type,
+                this.useOrganizationName,
                 this.whitelist);
     }
 
@@ -194,11 +222,25 @@ public final class ConnectCardRequest {
         _FinalStage organizationId(String organizationId);
 
         /**
+         * <p>Connect session lifetime in seconds. Defaults to 300 and cannot exceed 604800.</p>
+         */
+        _FinalStage ttl(Optional<Integer> ttl);
+
+        _FinalStage ttl(Integer ttl);
+
+        /**
          * <p>Connection type to create.</p>
          */
         _FinalStage type(Optional<String> type);
 
         _FinalStage type(String type);
+
+        /**
+         * <p>Whether to display the target organization name instead of the partner name in the Connect modal. Defaults to false; organizations without a partner always display their organization name.</p>
+         */
+        _FinalStage useOrganizationName(Optional<Boolean> useOrganizationName);
+
+        _FinalStage useOrganizationName(Boolean useOrganizationName);
 
         /**
          * <p>List of connection types which are allowed to be created. Ignored if type is set.</p>
@@ -216,7 +258,11 @@ public final class ConnectCardRequest {
 
         private Optional<List<String>> whitelist = Optional.empty();
 
+        private Optional<Boolean> useOrganizationName = Optional.empty();
+
         private Optional<String> type = Optional.empty();
+
+        private Optional<Integer> ttl = Optional.empty();
 
         private Optional<String> organizationId = Optional.empty();
 
@@ -236,7 +282,9 @@ public final class ConnectCardRequest {
             name(other.getName());
             organizationId(other.getOrganizationId());
             redirectUrl(other.getRedirectUrl());
+            ttl(other.getTtl());
             type(other.getType());
+            useOrganizationName(other.getUseOrganizationName());
             whitelist(other.getWhitelist());
             return this;
         }
@@ -286,6 +334,26 @@ public final class ConnectCardRequest {
         }
 
         /**
+         * <p>Whether to display the target organization name instead of the partner name in the Connect modal. Defaults to false; organizations without a partner always display their organization name.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage useOrganizationName(Boolean useOrganizationName) {
+            this.useOrganizationName = Optional.ofNullable(useOrganizationName);
+            return this;
+        }
+
+        /**
+         * <p>Whether to display the target organization name instead of the partner name in the Connect modal. Defaults to false; organizations without a partner always display their organization name.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "use_organization_name", nulls = Nulls.SKIP)
+        public _FinalStage useOrganizationName(Optional<Boolean> useOrganizationName) {
+            this.useOrganizationName = useOrganizationName;
+            return this;
+        }
+
+        /**
          * <p>Connection type to create.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -302,6 +370,26 @@ public final class ConnectCardRequest {
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public _FinalStage type(Optional<String> type) {
             this.type = type;
+            return this;
+        }
+
+        /**
+         * <p>Connect session lifetime in seconds. Defaults to 300 and cannot exceed 604800.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage ttl(Integer ttl) {
+            this.ttl = Optional.ofNullable(ttl);
+            return this;
+        }
+
+        /**
+         * <p>Connect session lifetime in seconds. Defaults to 300 and cannot exceed 604800.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "ttl", nulls = Nulls.SKIP)
+        public _FinalStage ttl(Optional<Integer> ttl) {
+            this.ttl = ttl;
             return this;
         }
 
@@ -361,7 +449,16 @@ public final class ConnectCardRequest {
         @java.lang.Override
         public ConnectCardRequest build() {
             return new ConnectCardRequest(
-                    connection, dark, name, organizationId, redirectUrl, type, whitelist, additionalProperties);
+                    connection,
+                    dark,
+                    name,
+                    organizationId,
+                    redirectUrl,
+                    ttl,
+                    type,
+                    useOrganizationName,
+                    whitelist,
+                    additionalProperties);
         }
 
         @java.lang.Override

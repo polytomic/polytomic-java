@@ -20,6 +20,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = GetIdentityResponseSchema.Builder.class)
 public final class GetIdentityResponseSchema {
+    private final Optional<IdentityCredentialSchema> credential;
+
     private final Optional<String> email;
 
     private final Optional<String> id;
@@ -41,6 +43,7 @@ public final class GetIdentityResponseSchema {
     private final Map<String, Object> additionalProperties;
 
     private GetIdentityResponseSchema(
+            Optional<IdentityCredentialSchema> credential,
             Optional<String> email,
             Optional<String> id,
             Optional<Boolean> isOrganization,
@@ -51,6 +54,7 @@ public final class GetIdentityResponseSchema {
             Optional<String> organizationName,
             Optional<String> role,
             Map<String, Object> additionalProperties) {
+        this.credential = credential;
         this.email = email;
         this.id = id;
         this.isOrganization = isOrganization;
@@ -61,6 +65,11 @@ public final class GetIdentityResponseSchema {
         this.organizationName = organizationName;
         this.role = role;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("credential")
+    public Optional<IdentityCredentialSchema> getCredential() {
+        return credential;
     }
 
     /**
@@ -147,7 +156,8 @@ public final class GetIdentityResponseSchema {
     }
 
     private boolean equalTo(GetIdentityResponseSchema other) {
-        return email.equals(other.email)
+        return credential.equals(other.credential)
+                && email.equals(other.email)
                 && id.equals(other.id)
                 && isOrganization.equals(other.isOrganization)
                 && isPartner.equals(other.isPartner)
@@ -161,6 +171,7 @@ public final class GetIdentityResponseSchema {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.credential,
                 this.email,
                 this.id,
                 this.isOrganization,
@@ -183,6 +194,8 @@ public final class GetIdentityResponseSchema {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<IdentityCredentialSchema> credential = Optional.empty();
+
         private Optional<String> email = Optional.empty();
 
         private Optional<String> id = Optional.empty();
@@ -207,6 +220,7 @@ public final class GetIdentityResponseSchema {
         private Builder() {}
 
         public Builder from(GetIdentityResponseSchema other) {
+            credential(other.getCredential());
             email(other.getEmail());
             id(other.getId());
             isOrganization(other.getIsOrganization());
@@ -216,6 +230,17 @@ public final class GetIdentityResponseSchema {
             organizationId(other.getOrganizationId());
             organizationName(other.getOrganizationName());
             role(other.getRole());
+            return this;
+        }
+
+        @JsonSetter(value = "credential", nulls = Nulls.SKIP)
+        public Builder credential(Optional<IdentityCredentialSchema> credential) {
+            this.credential = credential;
+            return this;
+        }
+
+        public Builder credential(IdentityCredentialSchema credential) {
+            this.credential = Optional.ofNullable(credential);
             return this;
         }
 
@@ -347,6 +372,7 @@ public final class GetIdentityResponseSchema {
 
         public GetIdentityResponseSchema build() {
             return new GetIdentityResponseSchema(
+                    credential,
                     email,
                     id,
                     isOrganization,

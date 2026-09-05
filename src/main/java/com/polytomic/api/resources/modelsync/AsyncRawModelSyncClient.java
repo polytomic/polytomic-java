@@ -20,12 +20,12 @@ import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.errors.UnprocessableEntityError;
-import com.polytomic.api.resources.modelsync.requests.CreateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
 import com.polytomic.api.resources.modelsync.requests.StartSyncRequest;
-import com.polytomic.api.resources.modelsync.requests.UpdateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.ApiError;
@@ -33,9 +33,9 @@ import com.polytomic.api.types.CancelSyncResponseEnvelope;
 import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListSyncResponseEnvelope;
 import com.polytomic.api.types.ModelFieldResponse;
+import com.polytomic.api.types.ModelSyncV5ResponseEnvelope;
 import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
 import com.polytomic.api.types.StartSyncResponseEnvelope;
-import com.polytomic.api.types.SyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -529,7 +529,8 @@ public class AsyncRawModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> create(CreateSyncRequest request) {
+    public CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> create(
+            CreateModelSyncV5Request request) {
         return create(request, null);
     }
 
@@ -579,8 +580,8 @@ public class AsyncRawModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> create(
-            CreateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> create(
+            CreateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs");
@@ -607,7 +608,7 @@ public class AsyncRawModelSyncClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> future = new CompletableFuture<>();
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -615,7 +616,8 @@ public class AsyncRawModelSyncClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SyncResponseEnvelope.class),
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, ModelSyncV5ResponseEnvelope.class),
                                 response));
                         return;
                     }
@@ -628,6 +630,11 @@ public class AsyncRawModelSyncClient {
                                 return;
                             case 403:
                                 future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
@@ -743,7 +750,7 @@ public class AsyncRawModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> get(String id) {
+    public CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> get(String id) {
         return get(id, null);
     }
 
@@ -753,7 +760,7 @@ public class AsyncRawModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> get(
+    public CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> get(
             String id, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
@@ -774,7 +781,7 @@ public class AsyncRawModelSyncClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> future = new CompletableFuture<>();
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -782,7 +789,8 @@ public class AsyncRawModelSyncClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SyncResponseEnvelope.class),
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, ModelSyncV5ResponseEnvelope.class),
                                 response));
                         return;
                     }
@@ -833,7 +841,8 @@ public class AsyncRawModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> update(String id, UpdateSyncRequest request) {
+    public CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> update(
+            String id, UpdateModelSyncV5Request request) {
         return update(id, request, null);
     }
 
@@ -851,8 +860,8 @@ public class AsyncRawModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> update(
-            String id, UpdateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> update(
+            String id, UpdateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -880,7 +889,7 @@ public class AsyncRawModelSyncClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PolytomicHttpResponse<SyncResponseEnvelope>> future = new CompletableFuture<>();
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -888,7 +897,8 @@ public class AsyncRawModelSyncClient {
                     String responseBodyString = responseBody != null ? responseBody.string() : "{}";
                     if (response.isSuccessful()) {
                         future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SyncResponseEnvelope.class),
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, ModelSyncV5ResponseEnvelope.class),
                                 response));
                         return;
                     }
@@ -1115,6 +1125,11 @@ public class AsyncRawModelSyncClient {
                                 return;
                             case 404:
                                 future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;

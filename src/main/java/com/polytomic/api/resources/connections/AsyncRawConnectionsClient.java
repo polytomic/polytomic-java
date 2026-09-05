@@ -13,33 +13,28 @@ import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
-import com.polytomic.api.errors.BadGatewayError;
 import com.polytomic.api.errors.BadRequestError;
+import com.polytomic.api.errors.ConflictError;
 import com.polytomic.api.errors.ForbiddenError;
-import com.polytomic.api.errors.GatewayTimeoutError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
-import com.polytomic.api.errors.TooManyRequestsError;
 import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.errors.UnprocessableEntityError;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
 import com.polytomic.api.resources.connections.requests.ConnectionsDeleteRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
-import com.polytomic.api.resources.connections.requests.ExecuteConnectionProxyRequest;
 import com.polytomic.api.resources.connections.requests.GetConnectionTypeParameterValuesRequestSchema;
-import com.polytomic.api.resources.connections.requests.PartnerCreateSharedConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.TestConnectionRequest;
 import com.polytomic.api.resources.connections.requests.UpdateConnectionRequestSchema;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.ConnectCardResponseEnvelope;
+import com.polytomic.api.types.ConnectSessionResponseEnvelope;
 import com.polytomic.api.types.ConnectionListResponseEnvelope;
 import com.polytomic.api.types.ConnectionParameterValuesResponseEnvelope;
 import com.polytomic.api.types.ConnectionResponseEnvelope;
 import com.polytomic.api.types.ConnectionTypeResponseEnvelope;
 import com.polytomic.api.types.CreateConnectionResponseEnvelope;
-import com.polytomic.api.types.CreateSharedConnectionResponseEnvelope;
-import com.polytomic.api.types.ExecuteConnectionProxyEnvelope;
-import com.polytomic.api.types.GetConnectionProxyInfoEnvelope;
+import com.polytomic.api.types.GetConnectionUsageEnvelope;
 import com.polytomic.api.types.JsonschemaSchema;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -541,7 +536,11 @@ public class AsyncRawConnectionsClient {
     }
 
     /**
-     * Creates a Polytomic Connect session and returns a redirect URL that embeds the Connect modal.
+     * Creates a Polytomic Connect session and returns a URL for creating or reconnecting a Connection.
+     * <p>Open the returned URL, or send it to the person who will set up the Connection.
+     * Polytomic Connect guides them through authentication and configuration, then
+     * redirects them to <code>redirect_url</code>.</p>
+     * <p>Each session can create or reconnect one Connection.</p>
      * <p>See also:</p>
      * <ul>
      * <li><a href="../../../guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
@@ -552,7 +551,11 @@ public class AsyncRawConnectionsClient {
     }
 
     /**
-     * Creates a Polytomic Connect session and returns a redirect URL that embeds the Connect modal.
+     * Creates a Polytomic Connect session and returns a URL for creating or reconnecting a Connection.
+     * <p>Open the returned URL, or send it to the person who will set up the Connection.
+     * Polytomic Connect guides them through authentication and configuration, then
+     * redirects them to <code>redirect_url</code>.</p>
+     * <p>Each session can create or reconnect one Connection.</p>
      * <p>See also:</p>
      * <ul>
      * <li><a href="../../../guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
@@ -611,6 +614,16 @@ public class AsyncRawConnectionsClient {
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
                             case 422:
                                 future.completeExceptionally(new UnprocessableEntityError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
@@ -621,6 +634,79 @@ public class AsyncRawConnectionsClient {
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Returns trusted metadata for the authenticated Polytomic Connect session.
+     * <p>Returns the trusted metadata stored for a Polytomic Connect session. Authenticate with the opaque Connect token in the <code>token</code> query parameter.</p>
+     * <p>The response includes the server-enforced connection name, fixed type or whitelist, bound connection ID, completion redirect, branding, and absolute expiration time.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<ConnectSessionResponseEnvelope>> getConnectSession() {
+        return getConnectSession(null);
+    }
+
+    /**
+     * Returns trusted metadata for the authenticated Polytomic Connect session.
+     * <p>Returns the trusted metadata stored for a Polytomic Connect session. Authenticate with the opaque Connect token in the <code>token</code> query parameter.</p>
+     * <p>The response includes the server-enforced connection name, fixed type or whitelist, bound connection ID, completion redirect, branding, and absolute expiration time.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<ConnectSessionResponseEnvelope>> getConnectSession(
+            RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections/connect/session");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<PolytomicHttpResponse<ConnectSessionResponseEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, ConnectSessionResponseEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        if (response.code() == 401) {
+                            future.completeExceptionally(new UnauthorizedError(
+                                    ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response));
+                            return;
                         }
                     } catch (JsonProcessingException ignored) {
                         // unable to map error response, throwing generic error
@@ -1185,206 +1271,48 @@ public class AsyncRawConnectionsClient {
     }
 
     /**
-     * Proxies an HTTP request to a connection's underlying API using the connection's stored credentials, subject to per-connection rate limits and size caps.
-     * <p>This endpoint is intended for controlled passthrough use, not as a general
-     * replacement for Polytomic's modeled endpoints. The request is executed with the
-     * connection's stored credentials and inherited base URL, headers, and query
-     * parameters.</p>
-     * <p>Before building requests dynamically, call
-     * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
-     * to inspect the inherited base URL, blocked headers, accepted body types, and
-     * size and rate limits.</p>
-     * <h2>Important behavior</h2>
+     * Returns the connection's API consumption over the last 24 hours, broken down by sync when the backend supports it.
+     * <p>Not all integrations support usage reporting.</p>
      * <ul>
-     * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
-     * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
-     * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
-     * headers cannot be overridden.</li>
-     * <li>The proxy strips a fixed set of request and response headers for safety.</li>
-     * <li>Response bodies larger than the configured maximum are truncated, and
-     * <code>truncated</code> is set to <code>true</code>.</li>
+     * <li><code>callsLast24h</code> is null when the backend does not expose a usage count.</li>
+     * <li><code>reportsSyncStats</code> is <code>false</code>, and <code>bySync</code> is empty, when the backend
+     * reports a total but cannot attribute calls to individual syncs.</li>
      * </ul>
-     * <p>The response includes <code>proxyCallId</code>, which you can use to correlate the call
-     * with audit logs.</p>
+     * <p>When per-sync stats are available, each entry in <code>bySync</code> carries a
+     * <code>categories</code> breakdown. <strong>Category keys and labels are integration-specific.</strong>
+     * For example, Salesforce reports <code>rest</code> and <code>bulk</code> categories
+     * (collapsing Bulk API v1 and v2 into a single <code>bulk</code> bucket), while another
+     * integration may report an entirely different set or none at all. Treat <code>key</code>
+     * as an opaque, backend-defined identifier and use <code>label</code> for display; do not
+     * assume a fixed vocabulary across connection types.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<ExecuteConnectionProxyEnvelope>> executeProxy(
-            String id, ExecuteConnectionProxyRequest request) {
-        return executeProxy(id, request, null);
+    public CompletableFuture<PolytomicHttpResponse<GetConnectionUsageEnvelope>> getUsage(String id) {
+        return getUsage(id, null);
     }
 
     /**
-     * Proxies an HTTP request to a connection's underlying API using the connection's stored credentials, subject to per-connection rate limits and size caps.
-     * <p>This endpoint is intended for controlled passthrough use, not as a general
-     * replacement for Polytomic's modeled endpoints. The request is executed with the
-     * connection's stored credentials and inherited base URL, headers, and query
-     * parameters.</p>
-     * <p>Before building requests dynamically, call
-     * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
-     * to inspect the inherited base URL, blocked headers, accepted body types, and
-     * size and rate limits.</p>
-     * <h2>Important behavior</h2>
+     * Returns the connection's API consumption over the last 24 hours, broken down by sync when the backend supports it.
+     * <p>Not all integrations support usage reporting.</p>
      * <ul>
-     * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
-     * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
-     * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
-     * headers cannot be overridden.</li>
-     * <li>The proxy strips a fixed set of request and response headers for safety.</li>
-     * <li>Response bodies larger than the configured maximum are truncated, and
-     * <code>truncated</code> is set to <code>true</code>.</li>
+     * <li><code>callsLast24h</code> is null when the backend does not expose a usage count.</li>
+     * <li><code>reportsSyncStats</code> is <code>false</code>, and <code>bySync</code> is empty, when the backend
+     * reports a total but cannot attribute calls to individual syncs.</li>
      * </ul>
-     * <p>The response includes <code>proxyCallId</code>, which you can use to correlate the call
-     * with audit logs.</p>
+     * <p>When per-sync stats are available, each entry in <code>bySync</code> carries a
+     * <code>categories</code> breakdown. <strong>Category keys and labels are integration-specific.</strong>
+     * For example, Salesforce reports <code>rest</code> and <code>bulk</code> categories
+     * (collapsing Bulk API v1 and v2 into a single <code>bulk</code> bucket), while another
+     * integration may report an entirely different set or none at all. Treat <code>key</code>
+     * as an opaque, backend-defined identifier and use <code>label</code> for display; do not
+     * assume a fixed vocabulary across connection types.</p>
      */
-    public CompletableFuture<PolytomicHttpResponse<ExecuteConnectionProxyEnvelope>> executeProxy(
-            String id, ExecuteConnectionProxyRequest request, IdempotentRequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("proxy");
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new PolytomicException("Failed to serialize request", e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<PolytomicHttpResponse<ExecuteConnectionProxyEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBodyString, ExecuteConnectionProxyEnvelope.class),
-                                response));
-                        return;
-                    }
-                    try {
-                        switch (response.code()) {
-                            case 400:
-                                future.completeExceptionally(new BadRequestError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 401:
-                                future.completeExceptionally(new UnauthorizedError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 403:
-                                future.completeExceptionally(new ForbiddenError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 404:
-                                future.completeExceptionally(new NotFoundError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 429:
-                                future.completeExceptionally(new TooManyRequestsError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 500:
-                                future.completeExceptionally(new InternalServerError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 502:
-                                future.completeExceptionally(new BadGatewayError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 504:
-                                future.completeExceptionally(new GatewayTimeoutError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new PolytomicApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Returns the proxy contract for a connection.
-     * <p>Use this endpoint before calling
-     * <a href="../../../../../api-reference/connections/execute-proxy"><code>POST /api/connections/{id}/proxy</code></a>
-     * when you need to build requests programmatically. The response shows:</p>
-     * <ul>
-     * <li>the inherited base URL that all proxied requests are sent to</li>
-     * <li>locked headers and query parameters that are attached automatically</li>
-     * <li>blocked request and response headers</li>
-     * <li>allowed HTTP methods and body shapes</li>
-     * <li>timeout, rate-limit, and payload-size limits</li>
-     * </ul>
-     * <p>Sensitive inherited header and query values are redacted in the response. The
-     * contract is still useful for discovering which keys are fixed by the
-     * connection, even though their raw values are not exposed.</p>
-     */
-    public CompletableFuture<PolytomicHttpResponse<GetConnectionProxyInfoEnvelope>> getProxyInfo(String id) {
-        return getProxyInfo(id, null);
-    }
-
-    /**
-     * Returns the proxy contract for a connection.
-     * <p>Use this endpoint before calling
-     * <a href="../../../../../api-reference/connections/execute-proxy"><code>POST /api/connections/{id}/proxy</code></a>
-     * when you need to build requests programmatically. The response shows:</p>
-     * <ul>
-     * <li>the inherited base URL that all proxied requests are sent to</li>
-     * <li>locked headers and query parameters that are attached automatically</li>
-     * <li>blocked request and response headers</li>
-     * <li>allowed HTTP methods and body shapes</li>
-     * <li>timeout, rate-limit, and payload-size limits</li>
-     * </ul>
-     * <p>Sensitive inherited header and query values are redacted in the response. The
-     * contract is still useful for discovering which keys are fixed by the
-     * connection, even though their raw values are not exposed.</p>
-     */
-    public CompletableFuture<PolytomicHttpResponse<GetConnectionProxyInfoEnvelope>> getProxyInfo(
+    public CompletableFuture<PolytomicHttpResponse<GetConnectionUsageEnvelope>> getUsage(
             String id, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
                 .addPathSegment(id)
-                .addPathSegments("proxy")
-                .addPathSegments("info");
+                .addPathSegments("usage");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1400,7 +1328,7 @@ public class AsyncRawConnectionsClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
-        CompletableFuture<PolytomicHttpResponse<GetConnectionProxyInfoEnvelope>> future = new CompletableFuture<>();
+        CompletableFuture<PolytomicHttpResponse<GetConnectionUsageEnvelope>> future = new CompletableFuture<>();
         client.newCall(okhttpRequest).enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -1409,325 +1337,14 @@ public class AsyncRawConnectionsClient {
                     if (response.isSuccessful()) {
                         future.complete(new PolytomicHttpResponse<>(
                                 ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBodyString, GetConnectionProxyInfoEnvelope.class),
+                                        responseBodyString, GetConnectionUsageEnvelope.class),
                                 response));
                         return;
                     }
                     try {
                         switch (response.code()) {
-                            case 400:
-                                future.completeExceptionally(new BadRequestError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
                             case 401:
                                 future.completeExceptionally(new UnauthorizedError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 403:
-                                future.completeExceptionally(new ForbiddenError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 404:
-                                future.completeExceptionally(new NotFoundError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 500:
-                                future.completeExceptionally(new InternalServerError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new PolytomicApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Lists shared copies of a connection that the caller's organization owns.
-     * <p>The returned connections are the child copies, not the parent connection
-     * itself. This is useful when a partner workflow needs to confirm which
-     * downstream organizations have already received a shared copy.</p>
-     * <p>Creating a new shared copy is a separate operation. Use
-     * <a href="../../../../api-reference/connections/create-shared-connection"><code>POST /api/organizations/{org_id}/connections/{connection_id}/share</code></a>
-     * for the v5 partner-scoped flow.</p>
-     */
-    public CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> listSharedConnections(String id) {
-        return listSharedConnections(id, null);
-    }
-
-    /**
-     * Lists shared copies of a connection that the caller's organization owns.
-     * <p>The returned connections are the child copies, not the parent connection
-     * itself. This is useful when a partner workflow needs to confirm which
-     * downstream organizations have already received a shared copy.</p>
-     * <p>Creating a new shared copy is a separate operation. Use
-     * <a href="../../../../api-reference/connections/create-shared-connection"><code>POST /api/organizations/{org_id}/connections/{connection_id}/share</code></a>
-     * for the v5 partner-scoped flow.</p>
-     */
-    public CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> listSharedConnections(
-            String id, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/connections")
-                .addPathSegment(id)
-                .addPathSegments("shared");
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBodyString, ConnectionListResponseEnvelope.class),
-                                response));
-                        return;
-                    }
-                    try {
-                        switch (response.code()) {
-                            case 403:
-                                future.completeExceptionally(new ForbiddenError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 404:
-                                future.completeExceptionally(new NotFoundError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 422:
-                                future.completeExceptionally(new UnprocessableEntityError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 500:
-                                future.completeExceptionally(new InternalServerError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new PolytomicApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Lists shared copies of a connection owned by a specific organization in the partner account.
-     * <p>The <code>org_id</code> must match the organization that owns the parent connection. If it
-     * does not, the endpoint returns <code>404</code> rather than exposing information about the
-     * parent connection.</p>
-     * <p>This endpoint is useful in partner workflows where the parent connection is in
-     * the partner owner organization and the caller needs to audit which child
-     * organizations already have a shared copy.</p>
-     */
-    public CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> listSharedConnectionsForPartner(
-            String orgId, String connectionId) {
-        return listSharedConnectionsForPartner(orgId, connectionId, null);
-    }
-
-    /**
-     * Lists shared copies of a connection owned by a specific organization in the partner account.
-     * <p>The <code>org_id</code> must match the organization that owns the parent connection. If it
-     * does not, the endpoint returns <code>404</code> rather than exposing information about the
-     * parent connection.</p>
-     * <p>This endpoint is useful in partner workflows where the parent connection is in
-     * the partner owner organization and the caller needs to audit which child
-     * organizations already have a shared copy.</p>
-     */
-    public CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> listSharedConnectionsForPartner(
-            String orgId, String connectionId, RequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("connections")
-                .addPathSegment(connectionId)
-                .addPathSegments("shared");
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl.build())
-                .method("GET", null)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBodyString, ConnectionListResponseEnvelope.class),
-                                response));
-                        return;
-                    }
-                    try {
-                        switch (response.code()) {
-                            case 403:
-                                future.completeExceptionally(new ForbiddenError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 404:
-                                future.completeExceptionally(new NotFoundError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 422:
-                                future.completeExceptionally(new UnprocessableEntityError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                            case 500:
-                                future.completeExceptionally(new InternalServerError(
-                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
-                                        response));
-                                return;
-                        }
-                    } catch (JsonProcessingException ignored) {
-                        // unable to map error response, throwing generic error
-                    }
-                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
-                    future.completeExceptionally(new PolytomicApiException(
-                            "Error with status code " + response.code(), response.code(), errorBody, response));
-                    return;
-                } catch (IOException e) {
-                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
-            }
-        });
-        return future;
-    }
-
-    /**
-     * Shares a connection with another organization in the caller's partner account.
-     */
-    public CompletableFuture<PolytomicHttpResponse<CreateSharedConnectionResponseEnvelope>> createSharedConnection(
-            String orgId, String connectionId, PartnerCreateSharedConnectionRequestSchema request) {
-        return createSharedConnection(orgId, connectionId, request, null);
-    }
-
-    /**
-     * Shares a connection with another organization in the caller's partner account.
-     */
-    public CompletableFuture<PolytomicHttpResponse<CreateSharedConnectionResponseEnvelope>> createSharedConnection(
-            String orgId,
-            String connectionId,
-            PartnerCreateSharedConnectionRequestSchema request,
-            IdempotentRequestOptions requestOptions) {
-        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
-                .newBuilder()
-                .addPathSegments("api/organizations")
-                .addPathSegment(orgId)
-                .addPathSegments("connections")
-                .addPathSegment(connectionId)
-                .addPathSegments("shared");
-        if (requestOptions != null) {
-            requestOptions.getQueryParameters().forEach((_key, _value) -> {
-                httpUrl.addQueryParameter(_key, _value);
-            });
-        }
-        RequestBody body;
-        try {
-            body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new PolytomicException("Failed to serialize request", e);
-        }
-        Request okhttpRequest = new Request.Builder()
-                .url(httpUrl.build())
-                .method("POST", body)
-                .headers(Headers.of(clientOptions.headers(requestOptions)))
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
-        OkHttpClient client = clientOptions.httpClient();
-        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
-            client = clientOptions.httpClientWithTimeout(requestOptions);
-        }
-        CompletableFuture<PolytomicHttpResponse<CreateSharedConnectionResponseEnvelope>> future =
-                new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
-                    if (response.isSuccessful()) {
-                        future.complete(new PolytomicHttpResponse<>(
-                                ObjectMappers.JSON_MAPPER.readValue(
-                                        responseBodyString, CreateSharedConnectionResponseEnvelope.class),
-                                response));
-                        return;
-                    }
-                    try {
-                        switch (response.code()) {
-                            case 403:
-                                future.completeExceptionally(new ForbiddenError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;

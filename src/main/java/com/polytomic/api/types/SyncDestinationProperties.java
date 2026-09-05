@@ -38,6 +38,8 @@ public final class SyncDestinationProperties {
 
     private final Optional<Boolean> supportsFieldTypeSelection;
 
+    private final Optional<Boolean> supportsFilterValueFields;
+
     private final Optional<Boolean> supportsIdentityFieldCreation;
 
     private final Optional<Boolean> supportsTargetFilters;
@@ -58,6 +60,7 @@ public final class SyncDestinationProperties {
             Optional<Boolean> supportsFieldCreation,
             Optional<Boolean> supportsFieldEncryption,
             Optional<Boolean> supportsFieldTypeSelection,
+            Optional<Boolean> supportsFilterValueFields,
             Optional<Boolean> supportsIdentityFieldCreation,
             Optional<Boolean> supportsTargetFilters,
             Optional<Boolean> targetCreator,
@@ -72,6 +75,7 @@ public final class SyncDestinationProperties {
         this.supportsFieldCreation = supportsFieldCreation;
         this.supportsFieldEncryption = supportsFieldEncryption;
         this.supportsFieldTypeSelection = supportsFieldTypeSelection;
+        this.supportsFilterValueFields = supportsFilterValueFields;
         this.supportsIdentityFieldCreation = supportsIdentityFieldCreation;
         this.supportsTargetFilters = supportsTargetFilters;
         this.targetCreator = targetCreator;
@@ -79,66 +83,113 @@ public final class SyncDestinationProperties {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return True if execution reports for this destination will not break record counts out by operation (insert vs. update); typical for upsert-only destinations.
+     */
     @JsonProperty("does_not_report_operation_counts")
     public Optional<Boolean> getDoesNotReportOperationCounts() {
         return doesNotReportOperationCounts;
     }
 
+    /**
+     * @return True if a sync may be configured with only a target identity and no field mappings.
+     */
     @JsonProperty("mappings_not_required")
     public Optional<Boolean> getMappingsNotRequired() {
         return mappingsNotRequired;
     }
 
+    /**
+     * @return Label to display when prompting for the name of a newly-created target (e.g. &quot;Audience name&quot;, &quot;Table name&quot;).
+     */
     @JsonProperty("new_target_label")
     public Optional<String> getNewTargetLabel() {
         return newTargetLabel;
     }
 
+    /**
+     * @return True if a sync may pick source fields without mapping each one to a specific target field (used by webhooks and target creators).
+     */
     @JsonProperty("optional_target_mappings")
     public Optional<Boolean> getOptionalTargetMappings() {
         return optionalTargetMappings;
     }
 
+    /**
+     * @return For destinations with multiple metadata dictionaries, identifies which dictionary new custom properties should be added to.
+     */
     @JsonProperty("primary_metadata_object")
     public Optional<String> getPrimaryMetadataObject() {
         return primaryMetadataObject;
     }
 
+    /**
+     * @return True if the destination requires target-level configuration before a sync can run.
+     */
     @JsonProperty("requires_configuration")
     public Optional<Boolean> getRequiresConfiguration() {
         return requiresConfiguration;
     }
 
+    /**
+     * @return True if a sync may create new fields on this target as part of mapping.
+     */
     @JsonProperty("supports_field_creation")
     public Optional<Boolean> getSupportsFieldCreation() {
         return supportsFieldCreation;
     }
 
+    /**
+     * @return True if the destination supports field-level encryption.
+     */
     @JsonProperty("supports_field_encryption")
     public Optional<Boolean> getSupportsFieldEncryption() {
         return supportsFieldEncryption;
     }
 
+    /**
+     * @return True if the type of a newly-created field can be chosen at sync configuration time.
+     */
     @JsonProperty("supports_field_type_selection")
     public Optional<Boolean> getSupportsFieldTypeSelection() {
         return supportsFieldTypeSelection;
     }
 
+    /**
+     * @return True if a target filter on this destination may compare against a model field's value, resolved separately for each record, rather than against a literal value.
+     */
+    @JsonProperty("supports_filter_value_fields")
+    public Optional<Boolean> getSupportsFilterValueFields() {
+        return supportsFilterValueFields;
+    }
+
+    /**
+     * @return True if a sync may create a new field on this target to use as the sync identity.
+     */
     @JsonProperty("supports_identity_field_creation")
     public Optional<Boolean> getSupportsIdentityFieldCreation() {
         return supportsIdentityFieldCreation;
     }
 
+    /**
+     * @return True if target filters are supported on this destination; the chosen sync mode may further constrain availability.
+     */
     @JsonProperty("supports_target_filters")
     public Optional<Boolean> getSupportsTargetFilters() {
         return supportsTargetFilters;
     }
 
+    /**
+     * @return True if writing to this target will create a new object in the destination system rather than write to an existing one.
+     */
     @JsonProperty("target_creator")
     public Optional<Boolean> getTargetCreator() {
         return targetCreator;
     }
 
+    /**
+     * @return True if field IDs (rather than display names) should be used when labeling records in previews and logs.
+     */
     @JsonProperty("use_field_names_as_labels")
     public Optional<Boolean> getUseFieldNamesAsLabels() {
         return useFieldNamesAsLabels;
@@ -165,6 +216,7 @@ public final class SyncDestinationProperties {
                 && supportsFieldCreation.equals(other.supportsFieldCreation)
                 && supportsFieldEncryption.equals(other.supportsFieldEncryption)
                 && supportsFieldTypeSelection.equals(other.supportsFieldTypeSelection)
+                && supportsFilterValueFields.equals(other.supportsFilterValueFields)
                 && supportsIdentityFieldCreation.equals(other.supportsIdentityFieldCreation)
                 && supportsTargetFilters.equals(other.supportsTargetFilters)
                 && targetCreator.equals(other.targetCreator)
@@ -183,6 +235,7 @@ public final class SyncDestinationProperties {
                 this.supportsFieldCreation,
                 this.supportsFieldEncryption,
                 this.supportsFieldTypeSelection,
+                this.supportsFilterValueFields,
                 this.supportsIdentityFieldCreation,
                 this.supportsTargetFilters,
                 this.targetCreator,
@@ -218,6 +271,8 @@ public final class SyncDestinationProperties {
 
         private Optional<Boolean> supportsFieldTypeSelection = Optional.empty();
 
+        private Optional<Boolean> supportsFilterValueFields = Optional.empty();
+
         private Optional<Boolean> supportsIdentityFieldCreation = Optional.empty();
 
         private Optional<Boolean> supportsTargetFilters = Optional.empty();
@@ -241,6 +296,7 @@ public final class SyncDestinationProperties {
             supportsFieldCreation(other.getSupportsFieldCreation());
             supportsFieldEncryption(other.getSupportsFieldEncryption());
             supportsFieldTypeSelection(other.getSupportsFieldTypeSelection());
+            supportsFilterValueFields(other.getSupportsFilterValueFields());
             supportsIdentityFieldCreation(other.getSupportsIdentityFieldCreation());
             supportsTargetFilters(other.getSupportsTargetFilters());
             targetCreator(other.getTargetCreator());
@@ -248,6 +304,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if execution reports for this destination will not break record counts out by operation (insert vs. update); typical for upsert-only destinations.</p>
+         */
         @JsonSetter(value = "does_not_report_operation_counts", nulls = Nulls.SKIP)
         public Builder doesNotReportOperationCounts(Optional<Boolean> doesNotReportOperationCounts) {
             this.doesNotReportOperationCounts = doesNotReportOperationCounts;
@@ -259,6 +318,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if a sync may be configured with only a target identity and no field mappings.</p>
+         */
         @JsonSetter(value = "mappings_not_required", nulls = Nulls.SKIP)
         public Builder mappingsNotRequired(Optional<Boolean> mappingsNotRequired) {
             this.mappingsNotRequired = mappingsNotRequired;
@@ -270,6 +332,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>Label to display when prompting for the name of a newly-created target (e.g. &quot;Audience name&quot;, &quot;Table name&quot;).</p>
+         */
         @JsonSetter(value = "new_target_label", nulls = Nulls.SKIP)
         public Builder newTargetLabel(Optional<String> newTargetLabel) {
             this.newTargetLabel = newTargetLabel;
@@ -281,6 +346,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if a sync may pick source fields without mapping each one to a specific target field (used by webhooks and target creators).</p>
+         */
         @JsonSetter(value = "optional_target_mappings", nulls = Nulls.SKIP)
         public Builder optionalTargetMappings(Optional<Boolean> optionalTargetMappings) {
             this.optionalTargetMappings = optionalTargetMappings;
@@ -292,6 +360,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>For destinations with multiple metadata dictionaries, identifies which dictionary new custom properties should be added to.</p>
+         */
         @JsonSetter(value = "primary_metadata_object", nulls = Nulls.SKIP)
         public Builder primaryMetadataObject(Optional<String> primaryMetadataObject) {
             this.primaryMetadataObject = primaryMetadataObject;
@@ -303,6 +374,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if the destination requires target-level configuration before a sync can run.</p>
+         */
         @JsonSetter(value = "requires_configuration", nulls = Nulls.SKIP)
         public Builder requiresConfiguration(Optional<Boolean> requiresConfiguration) {
             this.requiresConfiguration = requiresConfiguration;
@@ -314,6 +388,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if a sync may create new fields on this target as part of mapping.</p>
+         */
         @JsonSetter(value = "supports_field_creation", nulls = Nulls.SKIP)
         public Builder supportsFieldCreation(Optional<Boolean> supportsFieldCreation) {
             this.supportsFieldCreation = supportsFieldCreation;
@@ -325,6 +402,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if the destination supports field-level encryption.</p>
+         */
         @JsonSetter(value = "supports_field_encryption", nulls = Nulls.SKIP)
         public Builder supportsFieldEncryption(Optional<Boolean> supportsFieldEncryption) {
             this.supportsFieldEncryption = supportsFieldEncryption;
@@ -336,6 +416,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if the type of a newly-created field can be chosen at sync configuration time.</p>
+         */
         @JsonSetter(value = "supports_field_type_selection", nulls = Nulls.SKIP)
         public Builder supportsFieldTypeSelection(Optional<Boolean> supportsFieldTypeSelection) {
             this.supportsFieldTypeSelection = supportsFieldTypeSelection;
@@ -347,6 +430,23 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if a target filter on this destination may compare against a model field's value, resolved separately for each record, rather than against a literal value.</p>
+         */
+        @JsonSetter(value = "supports_filter_value_fields", nulls = Nulls.SKIP)
+        public Builder supportsFilterValueFields(Optional<Boolean> supportsFilterValueFields) {
+            this.supportsFilterValueFields = supportsFilterValueFields;
+            return this;
+        }
+
+        public Builder supportsFilterValueFields(Boolean supportsFilterValueFields) {
+            this.supportsFilterValueFields = Optional.ofNullable(supportsFilterValueFields);
+            return this;
+        }
+
+        /**
+         * <p>True if a sync may create a new field on this target to use as the sync identity.</p>
+         */
         @JsonSetter(value = "supports_identity_field_creation", nulls = Nulls.SKIP)
         public Builder supportsIdentityFieldCreation(Optional<Boolean> supportsIdentityFieldCreation) {
             this.supportsIdentityFieldCreation = supportsIdentityFieldCreation;
@@ -358,6 +458,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if target filters are supported on this destination; the chosen sync mode may further constrain availability.</p>
+         */
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
         public Builder supportsTargetFilters(Optional<Boolean> supportsTargetFilters) {
             this.supportsTargetFilters = supportsTargetFilters;
@@ -369,6 +472,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if writing to this target will create a new object in the destination system rather than write to an existing one.</p>
+         */
         @JsonSetter(value = "target_creator", nulls = Nulls.SKIP)
         public Builder targetCreator(Optional<Boolean> targetCreator) {
             this.targetCreator = targetCreator;
@@ -380,6 +486,9 @@ public final class SyncDestinationProperties {
             return this;
         }
 
+        /**
+         * <p>True if field IDs (rather than display names) should be used when labeling records in previews and logs.</p>
+         */
         @JsonSetter(value = "use_field_names_as_labels", nulls = Nulls.SKIP)
         public Builder useFieldNamesAsLabels(Optional<Boolean> useFieldNamesAsLabels) {
             this.useFieldNamesAsLabels = useFieldNamesAsLabels;
@@ -402,6 +511,7 @@ public final class SyncDestinationProperties {
                     supportsFieldCreation,
                     supportsFieldEncryption,
                     supportsFieldTypeSelection,
+                    supportsFilterValueFields,
                     supportsIdentityFieldCreation,
                     supportsTargetFilters,
                     targetCreator,

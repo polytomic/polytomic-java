@@ -16,11 +16,13 @@ import com.polytomic.api.errors.BadRequestError;
 import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
+import com.polytomic.api.resources.schemas.requests.PatchSchemaFieldRequest;
 import com.polytomic.api.resources.schemas.requests.SetPrimaryKeysRequest;
 import com.polytomic.api.resources.schemas.requests.UpsertSchemaFieldRequest;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.BulkSyncSourceSchemaEnvelope;
 import com.polytomic.api.types.BulkSyncSourceStatusEnvelope;
+import com.polytomic.api.types.SchemaFieldResponseEnvelope;
 import com.polytomic.api.types.SchemaRecordsResponseEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -217,6 +219,110 @@ public class RawSchemasClient {
                 return new PolytomicHttpResponse<>(null, response);
             }
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public PolytomicHttpResponse<SchemaFieldResponseEnvelope> patchField(
+            String connectionId, String schemaId, String fieldId) {
+        return patchField(
+                connectionId,
+                schemaId,
+                fieldId,
+                PatchSchemaFieldRequest.builder().build());
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public PolytomicHttpResponse<SchemaFieldResponseEnvelope> patchField(
+            String connectionId, String schemaId, String fieldId, IdempotentRequestOptions requestOptions) {
+        return patchField(
+                connectionId,
+                schemaId,
+                fieldId,
+                PatchSchemaFieldRequest.builder().build(),
+                requestOptions);
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public PolytomicHttpResponse<SchemaFieldResponseEnvelope> patchField(
+            String connectionId, String schemaId, String fieldId, PatchSchemaFieldRequest request) {
+        return patchField(connectionId, schemaId, fieldId, request, null);
+    }
+
+    /**
+     * Edits a single field on a schema, creating an override for a detected field if needed.
+     */
+    public PolytomicHttpResponse<SchemaFieldResponseEnvelope> patchField(
+            String connectionId,
+            String schemaId,
+            String fieldId,
+            PatchSchemaFieldRequest request,
+            IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .addPathSegments("fields")
+                .addPathSegment(fieldId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("PATCH", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SchemaFieldResponseEnvelope.class),
+                        response);
+            }
             try {
                 switch (response.code()) {
                     case 400:

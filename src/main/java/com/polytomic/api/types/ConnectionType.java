@@ -31,6 +31,8 @@ public final class ConnectionType {
 
     private final Optional<Map<String, Object>> initialConfiguration;
 
+    private final Optional<String> logoDarkUrl;
+
     private final Optional<String> logoUrl;
 
     private final Optional<String> name;
@@ -47,6 +49,7 @@ public final class ConnectionType {
             Optional<Map<String, Object>> envConfig,
             Optional<String> id,
             Optional<Map<String, Object>> initialConfiguration,
+            Optional<String> logoDarkUrl,
             Optional<String> logoUrl,
             Optional<String> name,
             Optional<BackendOAuthPrompt> oauthPrompt,
@@ -57,6 +60,7 @@ public final class ConnectionType {
         this.envConfig = envConfig;
         this.id = id;
         this.initialConfiguration = initialConfiguration;
+        this.logoDarkUrl = logoDarkUrl;
         this.logoUrl = logoUrl;
         this.name = name;
         this.oauthPrompt = oauthPrompt;
@@ -87,6 +91,11 @@ public final class ConnectionType {
     @JsonProperty("initialConfiguration")
     public Optional<Map<String, Object>> getInitialConfiguration() {
         return initialConfiguration;
+    }
+
+    @JsonProperty("logo_dark_url")
+    public Optional<String> getLogoDarkUrl() {
+        return logoDarkUrl;
     }
 
     @JsonProperty("logo_url")
@@ -126,6 +135,7 @@ public final class ConnectionType {
                 && envConfig.equals(other.envConfig)
                 && id.equals(other.id)
                 && initialConfiguration.equals(other.initialConfiguration)
+                && logoDarkUrl.equals(other.logoDarkUrl)
                 && logoUrl.equals(other.logoUrl)
                 && name.equals(other.name)
                 && oauthPrompt.equals(other.oauthPrompt)
@@ -140,6 +150,7 @@ public final class ConnectionType {
                 this.envConfig,
                 this.id,
                 this.initialConfiguration,
+                this.logoDarkUrl,
                 this.logoUrl,
                 this.name,
                 this.oauthPrompt,
@@ -184,6 +195,10 @@ public final class ConnectionType {
 
         _FinalStage initialConfiguration(Map<String, Object> initialConfiguration);
 
+        _FinalStage logoDarkUrl(Optional<String> logoDarkUrl);
+
+        _FinalStage logoDarkUrl(String logoDarkUrl);
+
         _FinalStage logoUrl(Optional<String> logoUrl);
 
         _FinalStage logoUrl(String logoUrl);
@@ -213,6 +228,8 @@ public final class ConnectionType {
 
         private Optional<String> logoUrl = Optional.empty();
 
+        private Optional<String> logoDarkUrl = Optional.empty();
+
         private Optional<Map<String, Object>> initialConfiguration = Optional.empty();
 
         private Optional<String> id = Optional.empty();
@@ -233,6 +250,7 @@ public final class ConnectionType {
             envConfig(other.getEnvConfig());
             id(other.getId());
             initialConfiguration(other.getInitialConfiguration());
+            logoDarkUrl(other.getLogoDarkUrl());
             logoUrl(other.getLogoUrl());
             name(other.getName());
             oauthPrompt(other.getOauthPrompt());
@@ -300,6 +318,19 @@ public final class ConnectionType {
         }
 
         @java.lang.Override
+        public _FinalStage logoDarkUrl(String logoDarkUrl) {
+            this.logoDarkUrl = Optional.ofNullable(logoDarkUrl);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "logo_dark_url", nulls = Nulls.SKIP)
+        public _FinalStage logoDarkUrl(Optional<String> logoDarkUrl) {
+            this.logoDarkUrl = logoDarkUrl;
+            return this;
+        }
+
+        @java.lang.Override
         public _FinalStage initialConfiguration(Map<String, Object> initialConfiguration) {
             this.initialConfiguration = Optional.ofNullable(initialConfiguration);
             return this;
@@ -359,6 +390,7 @@ public final class ConnectionType {
                     envConfig,
                     id,
                     initialConfiguration,
+                    logoDarkUrl,
                     logoUrl,
                     name,
                     oauthPrompt,

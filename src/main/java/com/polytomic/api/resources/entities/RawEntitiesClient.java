@@ -35,8 +35,9 @@ public class RawEntitiesClient {
      * Returns a resolved entity by ID.
      * <p>Looks up a UUID within the caller's current organization and returns the
      * resource type plus enough context to fetch the canonical resource.</p>
-     * <p>This endpoint is useful when you have an execution, sync, model, connection,
-     * organization, or user UUID and need to determine what it refers to.</p>
+     * <p>This endpoint is useful when you have an execution, sync, model, Connection,
+     * Harbor, Harbor context, Organization, or user UUID and need to determine what
+     * it refers to.</p>
      * <p>The response always includes:</p>
      * <ul>
      * <li><code>id</code>: the UUID that was resolved.</li>
@@ -60,6 +61,8 @@ public class RawEntitiesClient {
      * <li><code>sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
+     * <li><code>harbor</code></li>
+     * <li><code>harbor_context</code></li>
      * </ul>
      * <p>Examples:</p>
      * <ul>
@@ -67,6 +70,8 @@ public class RawEntitiesClient {
      * relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
+     * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>
+     * relationship.</li>
      * </ul>
      * <p>If the UUID does not exist, or exists outside the caller's scoped
      * organization, the endpoint returns <code>404</code>.</p>
@@ -79,8 +84,9 @@ public class RawEntitiesClient {
      * Returns a resolved entity by ID.
      * <p>Looks up a UUID within the caller's current organization and returns the
      * resource type plus enough context to fetch the canonical resource.</p>
-     * <p>This endpoint is useful when you have an execution, sync, model, connection,
-     * organization, or user UUID and need to determine what it refers to.</p>
+     * <p>This endpoint is useful when you have an execution, sync, model, Connection,
+     * Harbor, Harbor context, Organization, or user UUID and need to determine what
+     * it refers to.</p>
      * <p>The response always includes:</p>
      * <ul>
      * <li><code>id</code>: the UUID that was resolved.</li>
@@ -104,6 +110,8 @@ public class RawEntitiesClient {
      * <li><code>sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
+     * <li><code>harbor</code></li>
+     * <li><code>harbor_context</code></li>
      * </ul>
      * <p>Examples:</p>
      * <ul>
@@ -111,6 +119,8 @@ public class RawEntitiesClient {
      * relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
+     * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>
+     * relationship.</li>
      * </ul>
      * <p>If the UUID does not exist, or exists outside the caller's scoped
      * organization, the endpoint returns <code>404</code>.</p>
@@ -198,6 +208,8 @@ public class RawEntitiesClient {
      * <li><code>sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
+     * <li><code>harbor</code></li>
+     * <li><code>harbor_context</code></li>
      * </ul>
      * <p>Examples:</p>
      * <ul>
@@ -205,6 +217,8 @@ public class RawEntitiesClient {
      * relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
+     * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>
+     * relationship.</li>
      * </ul>
      * <p>If the UUID does not exist, the endpoint returns <code>404</code>.</p>
      */
@@ -241,6 +255,8 @@ public class RawEntitiesClient {
      * <li><code>sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
+     * <li><code>harbor</code></li>
+     * <li><code>harbor_context</code></li>
      * </ul>
      * <p>Examples:</p>
      * <ul>
@@ -248,6 +264,8 @@ public class RawEntitiesClient {
      * relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
+     * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>
+     * relationship.</li>
      * </ul>
      * <p>If the UUID does not exist, the endpoint returns <code>404</code>.</p>
      */

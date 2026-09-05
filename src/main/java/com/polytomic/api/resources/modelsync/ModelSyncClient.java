@@ -7,13 +7,14 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
+import com.polytomic.api.resources.modelsync.errorhandling.ErrorHandlingClient;
 import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
-import com.polytomic.api.resources.modelsync.requests.CreateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
 import com.polytomic.api.resources.modelsync.requests.StartSyncRequest;
-import com.polytomic.api.resources.modelsync.requests.UpdateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.targets.TargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
@@ -21,9 +22,9 @@ import com.polytomic.api.types.CancelSyncResponseEnvelope;
 import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListSyncResponseEnvelope;
 import com.polytomic.api.types.ModelFieldResponse;
+import com.polytomic.api.types.ModelSyncV5ResponseEnvelope;
 import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
 import com.polytomic.api.types.StartSyncResponseEnvelope;
-import com.polytomic.api.types.SyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
 import java.util.function.Supplier;
 
@@ -34,12 +35,15 @@ public class ModelSyncClient {
 
     protected final Supplier<TargetsClient> targetsClient;
 
+    protected final Supplier<ErrorHandlingClient> errorHandlingClient;
+
     protected final Supplier<ExecutionsClient> executionsClient;
 
     public ModelSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.rawClient = new RawModelSyncClient(clientOptions);
         this.targetsClient = Suppliers.memoize(() -> new TargetsClient(clientOptions));
+        this.errorHandlingClient = Suppliers.memoize(() -> new ErrorHandlingClient(clientOptions));
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
     }
 
@@ -274,7 +278,7 @@ public class ModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public SyncResponseEnvelope create(CreateSyncRequest request) {
+    public ModelSyncV5ResponseEnvelope create(CreateModelSyncV5Request request) {
         return this.rawClient.create(request).body();
     }
 
@@ -324,7 +328,8 @@ public class ModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public SyncResponseEnvelope create(CreateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public ModelSyncV5ResponseEnvelope create(
+            CreateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
     }
 
@@ -354,7 +359,7 @@ public class ModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public SyncResponseEnvelope get(String id) {
+    public ModelSyncV5ResponseEnvelope get(String id) {
         return this.rawClient.get(id).body();
     }
 
@@ -364,7 +369,7 @@ public class ModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public SyncResponseEnvelope get(String id, RequestOptions requestOptions) {
+    public ModelSyncV5ResponseEnvelope get(String id, RequestOptions requestOptions) {
         return this.rawClient.get(id, requestOptions).body();
     }
 
@@ -382,7 +387,7 @@ public class ModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public SyncResponseEnvelope update(String id, UpdateSyncRequest request) {
+    public ModelSyncV5ResponseEnvelope update(String id, UpdateModelSyncV5Request request) {
         return this.rawClient.update(id, request).body();
     }
 
@@ -400,7 +405,8 @@ public class ModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public SyncResponseEnvelope update(String id, UpdateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public ModelSyncV5ResponseEnvelope update(
+            String id, UpdateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.update(id, request, requestOptions).body();
     }
 
@@ -544,6 +550,10 @@ public class ModelSyncClient {
 
     public TargetsClient targets() {
         return this.targetsClient.get();
+    }
+
+    public ErrorHandlingClient errorHandling() {
+        return this.errorHandlingClient.get();
     }
 
     public ExecutionsClient executions() {

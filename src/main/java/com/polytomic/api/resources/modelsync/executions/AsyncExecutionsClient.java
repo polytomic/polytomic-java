@@ -14,6 +14,7 @@ import com.polytomic.api.types.ExecutionLogType;
 import com.polytomic.api.types.ExecutionLogsResponseEnvelope;
 import com.polytomic.api.types.GetExecutionResponseEnvelope;
 import com.polytomic.api.types.ListExecutionResponseEnvelope;
+import com.polytomic.api.types.LogsIndexResponseEnvelope;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncExecutionsClient {
@@ -127,14 +128,14 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(String syncId, String id) {
         return this.rawClient.getConsoleLogs(syncId, id).thenApply(response -> response.body());
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String id, RequestOptions requestOptions) {
@@ -142,7 +143,7 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String id, ExecutionsGetConsoleLogsRequest request) {
@@ -150,13 +151,28 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String id, ExecutionsGetConsoleLogsRequest request, RequestOptions requestOptions) {
         return this.rawClient
                 .getConsoleLogs(syncId, id, request, requestOptions)
                 .thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns an index of the record-log types produced by this model sync execution, with the per-type endpoint to retrieve signed URLs for each type's segment files.
+     */
+    public CompletableFuture<LogsIndexResponseEnvelope> getLogsIndex(String syncId, String id) {
+        return this.rawClient.getLogsIndex(syncId, id).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns an index of the record-log types produced by this model sync execution, with the per-type endpoint to retrieve signed URLs for each type's segment files.
+     */
+    public CompletableFuture<LogsIndexResponseEnvelope> getLogsIndex(
+            String syncId, String id, RequestOptions requestOptions) {
+        return this.rawClient.getLogsIndex(syncId, id, requestOptions).thenApply(response -> response.body());
     }
 
     /**
@@ -190,18 +206,22 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Returns a signed URL for a specific log file produced by a model sync execution.
-     * <p>The URL is signed and expires after a short period. If it has expired before
-     * you download the file, call this endpoint again to obtain a fresh URL.</p>
+     * Redirects to a signed URL for a specific log file produced by a model sync execution.
+     * <p>This endpoint responds with a <code>302 Found</code> redirect; the signed URL is returned
+     * in the <code>Location</code> header, and the response body is empty. The URL expires
+     * after a short period, so call this endpoint again to obtain a fresh URL if it
+     * expires before you download the file.</p>
      */
     public CompletableFuture<Void> getLogs(String syncId, String id, ExecutionLogType type, String filename) {
         return this.rawClient.getLogs(syncId, id, type, filename).thenApply(response -> response.body());
     }
 
     /**
-     * Returns a signed URL for a specific log file produced by a model sync execution.
-     * <p>The URL is signed and expires after a short period. If it has expired before
-     * you download the file, call this endpoint again to obtain a fresh URL.</p>
+     * Redirects to a signed URL for a specific log file produced by a model sync execution.
+     * <p>This endpoint responds with a <code>302 Found</code> redirect; the signed URL is returned
+     * in the <code>Location</code> header, and the response body is empty. The URL expires
+     * after a short period, so call this endpoint again to obtain a fresh URL if it
+     * expires before you download the file.</p>
      */
     public CompletableFuture<Void> getLogs(
             String syncId, String id, ExecutionLogType type, String filename, RequestOptions requestOptions) {

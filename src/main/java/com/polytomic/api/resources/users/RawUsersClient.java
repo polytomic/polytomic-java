@@ -24,6 +24,8 @@ import com.polytomic.api.resources.users.requests.UpdateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UsersCreateApiKeyRequest;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.ApiKeyResponseEnvelope;
+import com.polytomic.api.types.CurrentOrgListUsersEnvelope;
+import com.polytomic.api.types.CurrentOrgUserEnvelope;
 import com.polytomic.api.types.ListUsersEnvelope;
 import com.polytomic.api.types.UserEnvelope;
 import java.io.IOException;
@@ -46,7 +48,7 @@ public class RawUsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public PolytomicHttpResponse<ListUsersEnvelope> listCurrentOrgUsers() {
+    public PolytomicHttpResponse<CurrentOrgListUsersEnvelope> listCurrentOrgUsers() {
         return listCurrentOrgUsers(null);
     }
 
@@ -54,7 +56,7 @@ public class RawUsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public PolytomicHttpResponse<ListUsersEnvelope> listCurrentOrgUsers(RequestOptions requestOptions) {
+    public PolytomicHttpResponse<CurrentOrgListUsersEnvelope> listCurrentOrgUsers(RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organization/users");
@@ -78,7 +80,8 @@ public class RawUsersClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new PolytomicHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ListUsersEnvelope.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, CurrentOrgListUsersEnvelope.class),
+                        response);
             }
             try {
                 switch (response.code()) {
@@ -175,14 +178,14 @@ public class RawUsersClient {
     /**
      * Returns a single user from the caller's current organization.
      */
-    public PolytomicHttpResponse<UserEnvelope> getCurrentOrgUser(String id) {
+    public PolytomicHttpResponse<CurrentOrgUserEnvelope> getCurrentOrgUser(String id) {
         return getCurrentOrgUser(id, null);
     }
 
     /**
      * Returns a single user from the caller's current organization.
      */
-    public PolytomicHttpResponse<UserEnvelope> getCurrentOrgUser(String id, RequestOptions requestOptions) {
+    public PolytomicHttpResponse<CurrentOrgUserEnvelope> getCurrentOrgUser(String id, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organization/users")
@@ -207,7 +210,8 @@ public class RawUsersClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new PolytomicHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, UserEnvelope.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, CurrentOrgUserEnvelope.class),
+                        response);
             }
             try {
                 switch (response.code()) {

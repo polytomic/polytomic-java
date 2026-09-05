@@ -7,13 +7,14 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
+import com.polytomic.api.resources.modelsync.errorhandling.AsyncErrorHandlingClient;
 import com.polytomic.api.resources.modelsync.executions.AsyncExecutionsClient;
-import com.polytomic.api.resources.modelsync.requests.CreateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
 import com.polytomic.api.resources.modelsync.requests.StartSyncRequest;
-import com.polytomic.api.resources.modelsync.requests.UpdateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.targets.AsyncTargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
@@ -21,9 +22,9 @@ import com.polytomic.api.types.CancelSyncResponseEnvelope;
 import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListSyncResponseEnvelope;
 import com.polytomic.api.types.ModelFieldResponse;
+import com.polytomic.api.types.ModelSyncV5ResponseEnvelope;
 import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
 import com.polytomic.api.types.StartSyncResponseEnvelope;
-import com.polytomic.api.types.SyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -35,12 +36,15 @@ public class AsyncModelSyncClient {
 
     protected final Supplier<AsyncTargetsClient> targetsClient;
 
+    protected final Supplier<AsyncErrorHandlingClient> errorHandlingClient;
+
     protected final Supplier<AsyncExecutionsClient> executionsClient;
 
     public AsyncModelSyncClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.rawClient = new AsyncRawModelSyncClient(clientOptions);
         this.targetsClient = Suppliers.memoize(() -> new AsyncTargetsClient(clientOptions));
+        this.errorHandlingClient = Suppliers.memoize(() -> new AsyncErrorHandlingClient(clientOptions));
         this.executionsClient = Suppliers.memoize(() -> new AsyncExecutionsClient(clientOptions));
     }
 
@@ -276,7 +280,7 @@ public class AsyncModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public CompletableFuture<SyncResponseEnvelope> create(CreateSyncRequest request) {
+    public CompletableFuture<ModelSyncV5ResponseEnvelope> create(CreateModelSyncV5Request request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
     }
 
@@ -326,8 +330,8 @@ public class AsyncModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public CompletableFuture<SyncResponseEnvelope> create(
-            CreateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<ModelSyncV5ResponseEnvelope> create(
+            CreateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -357,7 +361,7 @@ public class AsyncModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public CompletableFuture<SyncResponseEnvelope> get(String id) {
+    public CompletableFuture<ModelSyncV5ResponseEnvelope> get(String id) {
         return this.rawClient.get(id).thenApply(response -> response.body());
     }
 
@@ -367,7 +371,7 @@ public class AsyncModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public CompletableFuture<SyncResponseEnvelope> get(String id, RequestOptions requestOptions) {
+    public CompletableFuture<ModelSyncV5ResponseEnvelope> get(String id, RequestOptions requestOptions) {
         return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
     }
 
@@ -385,7 +389,7 @@ public class AsyncModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public CompletableFuture<SyncResponseEnvelope> update(String id, UpdateSyncRequest request) {
+    public CompletableFuture<ModelSyncV5ResponseEnvelope> update(String id, UpdateModelSyncV5Request request) {
         return this.rawClient.update(id, request).thenApply(response -> response.body());
     }
 
@@ -403,8 +407,8 @@ public class AsyncModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public CompletableFuture<SyncResponseEnvelope> update(
-            String id, UpdateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public CompletableFuture<ModelSyncV5ResponseEnvelope> update(
+            String id, UpdateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
     }
 
@@ -548,6 +552,10 @@ public class AsyncModelSyncClient {
 
     public AsyncTargetsClient targets() {
         return this.targetsClient.get();
+    }
+
+    public AsyncErrorHandlingClient errorHandling() {
+        return this.errorHandlingClient.get();
     }
 
     public AsyncExecutionsClient executions() {

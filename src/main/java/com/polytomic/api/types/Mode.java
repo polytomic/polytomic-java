@@ -51,31 +51,49 @@ public final class Mode {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Description of the operations performed in this mode.
+     */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return Human-readable label for the sync mode.
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Identifier of the sync mode; use this value when configuring a sync.
+     */
     @JsonProperty("mode")
     public Optional<String> getMode() {
         return mode;
     }
 
+    /**
+     * @return True if this mode requires a sync identity to match records on.
+     */
     @JsonProperty("requires_identity")
     public Optional<Boolean> getRequiresIdentity() {
         return requiresIdentity;
     }
 
+    /**
+     * @return True if per-field sync modes (e.g. write-once vs. always-update) may be configured under this mode.
+     */
     @JsonProperty("supports_field_sync_mode")
     public Optional<Boolean> getSupportsFieldSyncMode() {
         return supportsFieldSyncMode;
     }
 
+    /**
+     * @return True if this mode allows target filters to constrain which destination records are touched.
+     */
     @JsonProperty("supports_target_filters")
     public Optional<Boolean> getSupportsTargetFilters() {
         return supportsTargetFilters;
@@ -150,6 +168,9 @@ public final class Mode {
             return this;
         }
 
+        /**
+         * <p>Description of the operations performed in this mode.</p>
+         */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
             this.description = description;
@@ -161,6 +182,9 @@ public final class Mode {
             return this;
         }
 
+        /**
+         * <p>Human-readable label for the sync mode.</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -172,6 +196,9 @@ public final class Mode {
             return this;
         }
 
+        /**
+         * <p>Identifier of the sync mode; use this value when configuring a sync.</p>
+         */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public Builder mode(Optional<String> mode) {
             this.mode = mode;
@@ -183,6 +210,9 @@ public final class Mode {
             return this;
         }
 
+        /**
+         * <p>True if this mode requires a sync identity to match records on.</p>
+         */
         @JsonSetter(value = "requires_identity", nulls = Nulls.SKIP)
         public Builder requiresIdentity(Optional<Boolean> requiresIdentity) {
             this.requiresIdentity = requiresIdentity;
@@ -194,6 +224,9 @@ public final class Mode {
             return this;
         }
 
+        /**
+         * <p>True if per-field sync modes (e.g. write-once vs. always-update) may be configured under this mode.</p>
+         */
         @JsonSetter(value = "supports_field_sync_mode", nulls = Nulls.SKIP)
         public Builder supportsFieldSyncMode(Optional<Boolean> supportsFieldSyncMode) {
             this.supportsFieldSyncMode = supportsFieldSyncMode;
@@ -205,6 +238,9 @@ public final class Mode {
             return this;
         }
 
+        /**
+         * <p>True if this mode allows target filters to constrain which destination records are touched.</p>
+         */
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
         public Builder supportsTargetFilters(Optional<Boolean> supportsTargetFilters) {
             this.supportsTargetFilters = supportsTargetFilters;

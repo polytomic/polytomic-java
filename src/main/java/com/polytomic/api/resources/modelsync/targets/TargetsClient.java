@@ -6,6 +6,7 @@ package com.polytomic.api.resources.modelsync.targets;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetTargetFieldsRequest;
+import com.polytomic.api.resources.modelsync.targets.requests.TargetsListRequest;
 import com.polytomic.api.types.TargetObjectsResponseEnvelope;
 import com.polytomic.api.types.TargetPropertyValuesEnvelope;
 import com.polytomic.api.types.TargetResponseEnvelope;
@@ -28,7 +29,7 @@ public class TargetsClient {
     }
 
     /**
-     * Returns the fields of a specific target object on a connection.
+     * Returns the fields, modes, and properties of a target object on a connection.
      * <p>Pass the target object identifier to retrieve the fields available for
      * mapping on that object. These are the destination fields you can reference
      * when configuring field mappings in a model sync.</p>
@@ -40,13 +41,115 @@ public class TargetsClient {
      * upstream object schema has changed, trigger a schema refresh with
      * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
      * before calling this endpoint.</p>
+     * <h2>Fields for a target that hasn't been created yet</h2>
+     * <p>Some connections support creating a new destination object as part of a
+     * model sync — for example, a Facebook Ads custom audience or a LinkedIn Ads
+     * contact list. In that case there is no existing target identifier to pass;
+     * instead, describe the new target with the same properties returned in the
+     * <code>target_creation</code> block of
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>,
+     * and this endpoint will return the fields the new target will expose.</p>
+     * <p>Exactly one of <code>target</code> or <code>properties</code> must be supplied. Each input is
+     * sent as a separate <code>properties[key]=value</code> query parameter. For a Facebook
+     * Ads connection that requires an <code>account</code> and a <code>name</code>:</p>
+     * <pre><code>GET /api/connections/{id}/modelsync/target/fields
+     *   ?properties[account]=act_1234567
+     *   &amp;properties[name]=My%20new%20audience
+     * </code></pre>
+     * <p>The response shape is identical to the existing-target form. For backends
+     * where the new target's field set is fixed (most ads platforms), <code>fields</code>
+     * contains those fields; for backends where the columns are user-defined
+     * (e.g. a SQL database), <code>fields</code> will be empty and the caller defines the
+     * columns at mapping time.</p>
+     * <p>When <code>properties</code> is supplied, the <code>refresh</code> parameter is ignored — a
+     * not-yet-created target has no cached schema to refresh.</p>
+     */
+    public TargetResponseEnvelope getTargetFields(String id) {
+        return this.rawClient.getTargetFields(id).body();
+    }
+
+    /**
+     * Returns the fields, modes, and properties of a target object on a connection.
+     * <p>Pass the target object identifier to retrieve the fields available for
+     * mapping on that object. These are the destination fields you can reference
+     * when configuring field mappings in a model sync.</p>
+     * <blockquote>
+     * <p>📘 To list available target objects and their identifiers, use
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>.</p>
+     * </blockquote>
+     * <p>Fields returned here reflect the connection's current cached state. If the
+     * upstream object schema has changed, trigger a schema refresh with
+     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * before calling this endpoint.</p>
+     * <h2>Fields for a target that hasn't been created yet</h2>
+     * <p>Some connections support creating a new destination object as part of a
+     * model sync — for example, a Facebook Ads custom audience or a LinkedIn Ads
+     * contact list. In that case there is no existing target identifier to pass;
+     * instead, describe the new target with the same properties returned in the
+     * <code>target_creation</code> block of
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>,
+     * and this endpoint will return the fields the new target will expose.</p>
+     * <p>Exactly one of <code>target</code> or <code>properties</code> must be supplied. Each input is
+     * sent as a separate <code>properties[key]=value</code> query parameter. For a Facebook
+     * Ads connection that requires an <code>account</code> and a <code>name</code>:</p>
+     * <pre><code>GET /api/connections/{id}/modelsync/target/fields
+     *   ?properties[account]=act_1234567
+     *   &amp;properties[name]=My%20new%20audience
+     * </code></pre>
+     * <p>The response shape is identical to the existing-target form. For backends
+     * where the new target's field set is fixed (most ads platforms), <code>fields</code>
+     * contains those fields; for backends where the columns are user-defined
+     * (e.g. a SQL database), <code>fields</code> will be empty and the caller defines the
+     * columns at mapping time.</p>
+     * <p>When <code>properties</code> is supplied, the <code>refresh</code> parameter is ignored — a
+     * not-yet-created target has no cached schema to refresh.</p>
+     */
+    public TargetResponseEnvelope getTargetFields(String id, RequestOptions requestOptions) {
+        return this.rawClient.getTargetFields(id, requestOptions).body();
+    }
+
+    /**
+     * Returns the fields, modes, and properties of a target object on a connection.
+     * <p>Pass the target object identifier to retrieve the fields available for
+     * mapping on that object. These are the destination fields you can reference
+     * when configuring field mappings in a model sync.</p>
+     * <blockquote>
+     * <p>📘 To list available target objects and their identifiers, use
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>.</p>
+     * </blockquote>
+     * <p>Fields returned here reflect the connection's current cached state. If the
+     * upstream object schema has changed, trigger a schema refresh with
+     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
+     * before calling this endpoint.</p>
+     * <h2>Fields for a target that hasn't been created yet</h2>
+     * <p>Some connections support creating a new destination object as part of a
+     * model sync — for example, a Facebook Ads custom audience or a LinkedIn Ads
+     * contact list. In that case there is no existing target identifier to pass;
+     * instead, describe the new target with the same properties returned in the
+     * <code>target_creation</code> block of
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>,
+     * and this endpoint will return the fields the new target will expose.</p>
+     * <p>Exactly one of <code>target</code> or <code>properties</code> must be supplied. Each input is
+     * sent as a separate <code>properties[key]=value</code> query parameter. For a Facebook
+     * Ads connection that requires an <code>account</code> and a <code>name</code>:</p>
+     * <pre><code>GET /api/connections/{id}/modelsync/target/fields
+     *   ?properties[account]=act_1234567
+     *   &amp;properties[name]=My%20new%20audience
+     * </code></pre>
+     * <p>The response shape is identical to the existing-target form. For backends
+     * where the new target's field set is fixed (most ads platforms), <code>fields</code>
+     * contains those fields; for backends where the columns are user-defined
+     * (e.g. a SQL database), <code>fields</code> will be empty and the caller defines the
+     * columns at mapping time.</p>
+     * <p>When <code>properties</code> is supplied, the <code>refresh</code> parameter is ignored — a
+     * not-yet-created target has no cached schema to refresh.</p>
      */
     public TargetResponseEnvelope getTargetFields(String id, TargetsGetTargetFieldsRequest request) {
         return this.rawClient.getTargetFields(id, request).body();
     }
 
     /**
-     * Returns the fields of a specific target object on a connection.
+     * Returns the fields, modes, and properties of a target object on a connection.
      * <p>Pass the target object identifier to retrieve the fields available for
      * mapping on that object. These are the destination fields you can reference
      * when configuring field mappings in a model sync.</p>
@@ -58,6 +161,28 @@ public class TargetsClient {
      * upstream object schema has changed, trigger a schema refresh with
      * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
      * before calling this endpoint.</p>
+     * <h2>Fields for a target that hasn't been created yet</h2>
+     * <p>Some connections support creating a new destination object as part of a
+     * model sync — for example, a Facebook Ads custom audience or a LinkedIn Ads
+     * contact list. In that case there is no existing target identifier to pass;
+     * instead, describe the new target with the same properties returned in the
+     * <code>target_creation</code> block of
+     * <a href="../../../../../../api-reference/model-sync/targets/list"><code>GET /api/connections/{id}/modelsync/targetobjects</code></a>,
+     * and this endpoint will return the fields the new target will expose.</p>
+     * <p>Exactly one of <code>target</code> or <code>properties</code> must be supplied. Each input is
+     * sent as a separate <code>properties[key]=value</code> query parameter. For a Facebook
+     * Ads connection that requires an <code>account</code> and a <code>name</code>:</p>
+     * <pre><code>GET /api/connections/{id}/modelsync/target/fields
+     *   ?properties[account]=act_1234567
+     *   &amp;properties[name]=My%20new%20audience
+     * </code></pre>
+     * <p>The response shape is identical to the existing-target form. For backends
+     * where the new target's field set is fixed (most ads platforms), <code>fields</code>
+     * contains those fields; for backends where the columns are user-defined
+     * (e.g. a SQL database), <code>fields</code> will be empty and the caller defines the
+     * columns at mapping time.</p>
+     * <p>When <code>properties</code> is supplied, the <code>refresh</code> parameter is ignored — a
+     * not-yet-created target has no cached schema to refresh.</p>
      */
     public TargetResponseEnvelope getTargetFields(
             String id, TargetsGetTargetFieldsRequest request, RequestOptions requestOptions) {
@@ -73,7 +198,9 @@ public class TargetsClient {
      * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="../../../../../api-reference/model-sync/targets/get-create-property">Target
      * Creation Property
      * Values</a>
-     * endpoint can be used to retrieve the valid values.</p>
+     * endpoint can be used to retrieve the valid values. Alternatively, pass
+     * <code>include_target_creation_values=true</code> to inline the <code>values</code> array for each
+     * enum property directly in this response.</p>
      * <h2>Sync modes</h2>
      * <p>The sync mode determines which records are written to the destination for a
      * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
@@ -92,7 +219,9 @@ public class TargetsClient {
      * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="../../../../../api-reference/model-sync/targets/get-create-property">Target
      * Creation Property
      * Values</a>
-     * endpoint can be used to retrieve the valid values.</p>
+     * endpoint can be used to retrieve the valid values. Alternatively, pass
+     * <code>include_target_creation_values=true</code> to inline the <code>values</code> array for each
+     * enum property directly in this response.</p>
      * <h2>Sync modes</h2>
      * <p>The sync mode determines which records are written to the destination for a
      * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
@@ -100,6 +229,48 @@ public class TargetsClient {
      */
     public TargetObjectsResponseEnvelope list(String id, RequestOptions requestOptions) {
         return this.rawClient.list(id, requestOptions).body();
+    }
+
+    /**
+     * Lists the target objects available on a connection for use as a model sync destination.
+     * <p>If the connection supports creating new destinations, the <code>target_creation</code>
+     * object will contain information on what properties are required to create the
+     * target.</p>
+     * <p>Target creation properties are all string values; the <code>enum</code> flag indicates if
+     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="../../../../../api-reference/model-sync/targets/get-create-property">Target
+     * Creation Property
+     * Values</a>
+     * endpoint can be used to retrieve the valid values. Alternatively, pass
+     * <code>include_target_creation_values=true</code> to inline the <code>values</code> array for each
+     * enum property directly in this response.</p>
+     * <h2>Sync modes</h2>
+     * <p>The sync mode determines which records are written to the destination for a
+     * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
+     * what operations the mode supports.</p>
+     */
+    public TargetObjectsResponseEnvelope list(String id, TargetsListRequest request) {
+        return this.rawClient.list(id, request).body();
+    }
+
+    /**
+     * Lists the target objects available on a connection for use as a model sync destination.
+     * <p>If the connection supports creating new destinations, the <code>target_creation</code>
+     * object will contain information on what properties are required to create the
+     * target.</p>
+     * <p>Target creation properties are all string values; the <code>enum</code> flag indicates if
+     * the property has a fixed set of valid values. When <code>enum</code> is <code>true</code>, the <a href="../../../../../api-reference/model-sync/targets/get-create-property">Target
+     * Creation Property
+     * Values</a>
+     * endpoint can be used to retrieve the valid values. Alternatively, pass
+     * <code>include_target_creation_values=true</code> to inline the <code>values</code> array for each
+     * enum property directly in this response.</p>
+     * <h2>Sync modes</h2>
+     * <p>The sync mode determines which records are written to the destination for a
+     * model sync. The <code>modes</code> array for a target object defines the <code>id</code> along with
+     * what operations the mode supports.</p>
+     */
+    public TargetObjectsResponseEnvelope list(String id, TargetsListRequest request, RequestOptions requestOptions) {
+        return this.rawClient.list(id, request, requestOptions).body();
     }
 
     /**

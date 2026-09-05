@@ -12,6 +12,8 @@ import com.polytomic.api.resources.users.requests.CurrentOrgUpdateUserRequestSch
 import com.polytomic.api.resources.users.requests.UpdateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.UsersCreateApiKeyRequest;
 import com.polytomic.api.types.ApiKeyResponseEnvelope;
+import com.polytomic.api.types.CurrentOrgListUsersEnvelope;
+import com.polytomic.api.types.CurrentOrgUserEnvelope;
 import com.polytomic.api.types.ListUsersEnvelope;
 import com.polytomic.api.types.UserEnvelope;
 
@@ -36,7 +38,7 @@ public class UsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public ListUsersEnvelope listCurrentOrgUsers() {
+    public CurrentOrgListUsersEnvelope listCurrentOrgUsers() {
         return this.rawClient.listCurrentOrgUsers().body();
     }
 
@@ -44,7 +46,7 @@ public class UsersClient {
      * Lists every user in the caller's current organization.
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
-    public ListUsersEnvelope listCurrentOrgUsers(RequestOptions requestOptions) {
+    public CurrentOrgListUsersEnvelope listCurrentOrgUsers(RequestOptions requestOptions) {
         return this.rawClient.listCurrentOrgUsers(requestOptions).body();
     }
 
@@ -70,14 +72,14 @@ public class UsersClient {
     /**
      * Returns a single user from the caller's current organization.
      */
-    public UserEnvelope getCurrentOrgUser(String id) {
+    public CurrentOrgUserEnvelope getCurrentOrgUser(String id) {
         return this.rawClient.getCurrentOrgUser(id).body();
     }
 
     /**
      * Returns a single user from the caller's current organization.
      */
-    public UserEnvelope getCurrentOrgUser(String id, RequestOptions requestOptions) {
+    public CurrentOrgUserEnvelope getCurrentOrgUser(String id, RequestOptions requestOptions) {
         return this.rawClient.getCurrentOrgUser(id, requestOptions).body();
     }
 

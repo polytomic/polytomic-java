@@ -38,6 +38,8 @@ public final class GetExecutionResponseSchema {
 
     private final Optional<String> type;
 
+    private final Optional<String> version;
+
     private final Map<String, Object> additionalProperties;
 
     private GetExecutionResponseSchema(
@@ -49,6 +51,7 @@ public final class GetExecutionResponseSchema {
             Optional<OffsetDateTime> startedAt,
             Optional<UtilExecutionStatus> status,
             Optional<String> type,
+            Optional<String> version,
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
         this.counts = counts;
@@ -58,6 +61,7 @@ public final class GetExecutionResponseSchema {
         this.startedAt = startedAt;
         this.status = status;
         this.type = type;
+        this.version = version;
         this.additionalProperties = additionalProperties;
     }
 
@@ -101,6 +105,14 @@ public final class GetExecutionResponseSchema {
         return type;
     }
 
+    /**
+     * @return Polytomic version which last ran this execution.
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -120,7 +132,8 @@ public final class GetExecutionResponseSchema {
                 && id.equals(other.id)
                 && startedAt.equals(other.startedAt)
                 && status.equals(other.status)
-                && type.equals(other.type);
+                && type.equals(other.type)
+                && version.equals(other.version);
     }
 
     @java.lang.Override
@@ -133,7 +146,8 @@ public final class GetExecutionResponseSchema {
                 this.id,
                 this.startedAt,
                 this.status,
-                this.type);
+                this.type,
+                this.version);
     }
 
     @java.lang.Override
@@ -163,6 +177,8 @@ public final class GetExecutionResponseSchema {
 
         private Optional<String> type = Optional.empty();
 
+        private Optional<String> version = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -177,6 +193,7 @@ public final class GetExecutionResponseSchema {
             startedAt(other.getStartedAt());
             status(other.getStatus());
             type(other.getType());
+            version(other.getVersion());
             return this;
         }
 
@@ -268,9 +285,23 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Polytomic version which last ran this execution.</p>
+         */
+        @JsonSetter(value = "version", nulls = Nulls.SKIP)
+        public Builder version(Optional<String> version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder version(String version) {
+            this.version = Optional.ofNullable(version);
+            return this;
+        }
+
         public GetExecutionResponseSchema build() {
             return new GetExecutionResponseSchema(
-                    completedAt, counts, createdAt, errors, id, startedAt, status, type, additionalProperties);
+                    completedAt, counts, createdAt, errors, id, startedAt, status, type, version, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

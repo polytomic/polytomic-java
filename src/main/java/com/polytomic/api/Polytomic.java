@@ -9,6 +9,7 @@ import com.polytomic.api.resources.bulksync.BulkSyncClient;
 import com.polytomic.api.resources.connections.ConnectionsClient;
 import com.polytomic.api.resources.entities.EntitiesClient;
 import com.polytomic.api.resources.events.EventsClient;
+import com.polytomic.api.resources.harbors.HarborsClient;
 import com.polytomic.api.resources.identity.IdentityClient;
 import com.polytomic.api.resources.jobs.JobsClient;
 import com.polytomic.api.resources.models.ModelsClient;
@@ -17,7 +18,9 @@ import com.polytomic.api.resources.notifications.NotificationsClient;
 import com.polytomic.api.resources.organization.OrganizationClient;
 import com.polytomic.api.resources.permissions.PermissionsClient;
 import com.polytomic.api.resources.queryrunner.QueryRunnerClient;
+import com.polytomic.api.resources.recordviewlinks.RecordViewLinksClient;
 import com.polytomic.api.resources.schemas.SchemasClient;
+import com.polytomic.api.resources.temporarycredentials.TemporaryCredentialsClient;
 import com.polytomic.api.resources.users.UsersClient;
 import com.polytomic.api.resources.webhooks.WebhooksClient;
 import java.util.function.Supplier;
@@ -41,6 +44,8 @@ public class Polytomic {
 
     protected final Supplier<EventsClient> eventsClient;
 
+    protected final Supplier<HarborsClient> harborsClient;
+
     protected final Supplier<JobsClient> jobsClient;
 
     protected final Supplier<IdentityClient> identityClient;
@@ -50,6 +55,10 @@ public class Polytomic {
     protected final Supplier<OrganizationClient> organizationClient;
 
     protected final Supplier<UsersClient> usersClient;
+
+    protected final Supplier<RecordViewLinksClient> recordViewLinksClient;
+
+    protected final Supplier<TemporaryCredentialsClient> temporaryCredentialsClient;
 
     protected final Supplier<WebhooksClient> webhooksClient;
 
@@ -65,11 +74,14 @@ public class Polytomic {
         this.modelSyncClient = Suppliers.memoize(() -> new ModelSyncClient(clientOptions));
         this.entitiesClient = Suppliers.memoize(() -> new EntitiesClient(clientOptions));
         this.eventsClient = Suppliers.memoize(() -> new EventsClient(clientOptions));
+        this.harborsClient = Suppliers.memoize(() -> new HarborsClient(clientOptions));
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
         this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
         this.notificationsClient = Suppliers.memoize(() -> new NotificationsClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new OrganizationClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new UsersClient(clientOptions));
+        this.recordViewLinksClient = Suppliers.memoize(() -> new RecordViewLinksClient(clientOptions));
+        this.temporaryCredentialsClient = Suppliers.memoize(() -> new TemporaryCredentialsClient(clientOptions));
         this.webhooksClient = Suppliers.memoize(() -> new WebhooksClient(clientOptions));
         this.permissionsClient = Suppliers.memoize(() -> new PermissionsClient(clientOptions));
     }
@@ -106,6 +118,10 @@ public class Polytomic {
         return this.eventsClient.get();
     }
 
+    public HarborsClient harbors() {
+        return this.harborsClient.get();
+    }
+
     public JobsClient jobs() {
         return this.jobsClient.get();
     }
@@ -124,6 +140,14 @@ public class Polytomic {
 
     public UsersClient users() {
         return this.usersClient.get();
+    }
+
+    public RecordViewLinksClient recordViewLinks() {
+        return this.recordViewLinksClient.get();
+    }
+
+    public TemporaryCredentialsClient temporaryCredentials() {
+        return this.temporaryCredentialsClient.get();
     }
 
     public WebhooksClient webhooks() {

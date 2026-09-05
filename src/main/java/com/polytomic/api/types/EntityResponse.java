@@ -84,7 +84,7 @@ public final class EntityResponse {
     }
 
     /**
-     * @return Parent resources needed to address nested resources, keyed by relationship name (e.g. &quot;sync&quot;, &quot;bulk_sync&quot;).
+     * @return Parent resources needed to address nested resources, keyed by relationship name (e.g. &quot;sync&quot;, &quot;bulk_sync&quot;, &quot;harbor&quot;).
      */
     @JsonProperty("relationships")
     public Optional<Map<String, EntityRelationship>> getRelationships() {
@@ -92,7 +92,7 @@ public final class EntityResponse {
     }
 
     /**
-     * @return Resolved entity type. One of: organization, user, connection, model, sync, sync_execution, bulk_sync, bulk_sync_execution.
+     * @return Resolved entity type. One of: organization, user, connection, model, sync, sync_execution, bulk_sync, bulk_sync_execution, harbor, harbor_context.
      */
     @JsonProperty("type")
     public Optional<String> getType() {
@@ -220,7 +220,7 @@ public final class EntityResponse {
         }
 
         /**
-         * <p>Parent resources needed to address nested resources, keyed by relationship name (e.g. &quot;sync&quot;, &quot;bulk_sync&quot;).</p>
+         * <p>Parent resources needed to address nested resources, keyed by relationship name (e.g. &quot;sync&quot;, &quot;bulk_sync&quot;, &quot;harbor&quot;).</p>
          */
         @JsonSetter(value = "relationships", nulls = Nulls.SKIP)
         public Builder relationships(Optional<Map<String, EntityRelationship>> relationships) {
@@ -234,7 +234,7 @@ public final class EntityResponse {
         }
 
         /**
-         * <p>Resolved entity type. One of: organization, user, connection, model, sync, sync_execution, bulk_sync, bulk_sync_execution.</p>
+         * <p>Resolved entity type. One of: organization, user, connection, model, sync, sync_execution, bulk_sync, bulk_sync_execution, harbor, harbor_context.</p>
          */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {

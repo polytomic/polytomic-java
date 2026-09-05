@@ -6,33 +6,40 @@ package com.polytomic.api.resources.connections;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.core.Suppliers;
+import com.polytomic.api.resources.connections.proxy.ProxyClient;
 import com.polytomic.api.resources.connections.requests.ConnectCardRequest;
 import com.polytomic.api.resources.connections.requests.ConnectionsDeleteRequest;
 import com.polytomic.api.resources.connections.requests.CreateConnectionRequestSchema;
-import com.polytomic.api.resources.connections.requests.ExecuteConnectionProxyRequest;
 import com.polytomic.api.resources.connections.requests.GetConnectionTypeParameterValuesRequestSchema;
-import com.polytomic.api.resources.connections.requests.PartnerCreateSharedConnectionRequestSchema;
 import com.polytomic.api.resources.connections.requests.TestConnectionRequest;
 import com.polytomic.api.resources.connections.requests.UpdateConnectionRequestSchema;
+import com.polytomic.api.resources.connections.sharedconnections.SharedConnectionsClient;
 import com.polytomic.api.types.ConnectCardResponseEnvelope;
+import com.polytomic.api.types.ConnectSessionResponseEnvelope;
 import com.polytomic.api.types.ConnectionListResponseEnvelope;
 import com.polytomic.api.types.ConnectionParameterValuesResponseEnvelope;
 import com.polytomic.api.types.ConnectionResponseEnvelope;
 import com.polytomic.api.types.ConnectionTypeResponseEnvelope;
 import com.polytomic.api.types.CreateConnectionResponseEnvelope;
-import com.polytomic.api.types.CreateSharedConnectionResponseEnvelope;
-import com.polytomic.api.types.ExecuteConnectionProxyEnvelope;
-import com.polytomic.api.types.GetConnectionProxyInfoEnvelope;
+import com.polytomic.api.types.GetConnectionUsageEnvelope;
 import com.polytomic.api.types.JsonschemaSchema;
+import java.util.function.Supplier;
 
 public class ConnectionsClient {
     protected final ClientOptions clientOptions;
 
     private final RawConnectionsClient rawClient;
 
+    protected final Supplier<ProxyClient> proxyClient;
+
+    protected final Supplier<SharedConnectionsClient> sharedConnectionsClient;
+
     public ConnectionsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.rawClient = new RawConnectionsClient(clientOptions);
+        this.proxyClient = Suppliers.memoize(() -> new ProxyClient(clientOptions));
+        this.sharedConnectionsClient = Suppliers.memoize(() -> new SharedConnectionsClient(clientOptions));
     }
 
     /**
@@ -190,7 +197,11 @@ public class ConnectionsClient {
     }
 
     /**
-     * Creates a Polytomic Connect session and returns a redirect URL that embeds the Connect modal.
+     * Creates a Polytomic Connect session and returns a URL for creating or reconnecting a Connection.
+     * <p>Open the returned URL, or send it to the person who will set up the Connection.
+     * Polytomic Connect guides them through authentication and configuration, then
+     * redirects them to <code>redirect_url</code>.</p>
+     * <p>Each session can create or reconnect one Connection.</p>
      * <p>See also:</p>
      * <ul>
      * <li><a href="../../../guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
@@ -201,7 +212,11 @@ public class ConnectionsClient {
     }
 
     /**
-     * Creates a Polytomic Connect session and returns a redirect URL that embeds the Connect modal.
+     * Creates a Polytomic Connect session and returns a URL for creating or reconnecting a Connection.
+     * <p>Open the returned URL, or send it to the person who will set up the Connection.
+     * Polytomic Connect guides them through authentication and configuration, then
+     * redirects them to <code>redirect_url</code>.</p>
+     * <p>Each session can create or reconnect one Connection.</p>
      * <p>See also:</p>
      * <ul>
      * <li><a href="../../../guides/embedding-authentication">Embedding authentication</a>, a guide to using Polytomic Connect.</li>
@@ -209,6 +224,24 @@ public class ConnectionsClient {
      */
     public ConnectCardResponseEnvelope connect(ConnectCardRequest request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.connect(request, requestOptions).body();
+    }
+
+    /**
+     * Returns trusted metadata for the authenticated Polytomic Connect session.
+     * <p>Returns the trusted metadata stored for a Polytomic Connect session. Authenticate with the opaque Connect token in the <code>token</code> query parameter.</p>
+     * <p>The response includes the server-enforced connection name, fixed type or whitelist, bound connection ID, completion redirect, branding, and absolute expiration time.</p>
+     */
+    public ConnectSessionResponseEnvelope getConnectSession() {
+        return this.rawClient.getConnectSession().body();
+    }
+
+    /**
+     * Returns trusted metadata for the authenticated Polytomic Connect session.
+     * <p>Returns the trusted metadata stored for a Polytomic Connect session. Authenticate with the opaque Connect token in the <code>token</code> query parameter.</p>
+     * <p>The response includes the server-enforced connection name, fixed type or whitelist, bound connection ID, completion redirect, branding, and absolute expiration time.</p>
+     */
+    public ConnectSessionResponseEnvelope getConnectSession(RequestOptions requestOptions) {
+        return this.rawClient.getConnectSession(requestOptions).body();
     }
 
     /**
@@ -383,177 +416,50 @@ public class ConnectionsClient {
     }
 
     /**
-     * Proxies an HTTP request to a connection's underlying API using the connection's stored credentials, subject to per-connection rate limits and size caps.
-     * <p>This endpoint is intended for controlled passthrough use, not as a general
-     * replacement for Polytomic's modeled endpoints. The request is executed with the
-     * connection's stored credentials and inherited base URL, headers, and query
-     * parameters.</p>
-     * <p>Before building requests dynamically, call
-     * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
-     * to inspect the inherited base URL, blocked headers, accepted body types, and
-     * size and rate limits.</p>
-     * <h2>Important behavior</h2>
+     * Returns the connection's API consumption over the last 24 hours, broken down by sync when the backend supports it.
+     * <p>Not all integrations support usage reporting.</p>
      * <ul>
-     * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
-     * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
-     * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
-     * headers cannot be overridden.</li>
-     * <li>The proxy strips a fixed set of request and response headers for safety.</li>
-     * <li>Response bodies larger than the configured maximum are truncated, and
-     * <code>truncated</code> is set to <code>true</code>.</li>
+     * <li><code>callsLast24h</code> is null when the backend does not expose a usage count.</li>
+     * <li><code>reportsSyncStats</code> is <code>false</code>, and <code>bySync</code> is empty, when the backend
+     * reports a total but cannot attribute calls to individual syncs.</li>
      * </ul>
-     * <p>The response includes <code>proxyCallId</code>, which you can use to correlate the call
-     * with audit logs.</p>
+     * <p>When per-sync stats are available, each entry in <code>bySync</code> carries a
+     * <code>categories</code> breakdown. <strong>Category keys and labels are integration-specific.</strong>
+     * For example, Salesforce reports <code>rest</code> and <code>bulk</code> categories
+     * (collapsing Bulk API v1 and v2 into a single <code>bulk</code> bucket), while another
+     * integration may report an entirely different set or none at all. Treat <code>key</code>
+     * as an opaque, backend-defined identifier and use <code>label</code> for display; do not
+     * assume a fixed vocabulary across connection types.</p>
      */
-    public ExecuteConnectionProxyEnvelope executeProxy(String id, ExecuteConnectionProxyRequest request) {
-        return this.rawClient.executeProxy(id, request).body();
+    public GetConnectionUsageEnvelope getUsage(String id) {
+        return this.rawClient.getUsage(id).body();
     }
 
     /**
-     * Proxies an HTTP request to a connection's underlying API using the connection's stored credentials, subject to per-connection rate limits and size caps.
-     * <p>This endpoint is intended for controlled passthrough use, not as a general
-     * replacement for Polytomic's modeled endpoints. The request is executed with the
-     * connection's stored credentials and inherited base URL, headers, and query
-     * parameters.</p>
-     * <p>Before building requests dynamically, call
-     * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
-     * to inspect the inherited base URL, blocked headers, accepted body types, and
-     * size and rate limits.</p>
-     * <h2>Important behavior</h2>
+     * Returns the connection's API consumption over the last 24 hours, broken down by sync when the backend supports it.
+     * <p>Not all integrations support usage reporting.</p>
      * <ul>
-     * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
-     * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
-     * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
-     * headers cannot be overridden.</li>
-     * <li>The proxy strips a fixed set of request and response headers for safety.</li>
-     * <li>Response bodies larger than the configured maximum are truncated, and
-     * <code>truncated</code> is set to <code>true</code>.</li>
+     * <li><code>callsLast24h</code> is null when the backend does not expose a usage count.</li>
+     * <li><code>reportsSyncStats</code> is <code>false</code>, and <code>bySync</code> is empty, when the backend
+     * reports a total but cannot attribute calls to individual syncs.</li>
      * </ul>
-     * <p>The response includes <code>proxyCallId</code>, which you can use to correlate the call
-     * with audit logs.</p>
+     * <p>When per-sync stats are available, each entry in <code>bySync</code> carries a
+     * <code>categories</code> breakdown. <strong>Category keys and labels are integration-specific.</strong>
+     * For example, Salesforce reports <code>rest</code> and <code>bulk</code> categories
+     * (collapsing Bulk API v1 and v2 into a single <code>bulk</code> bucket), while another
+     * integration may report an entirely different set or none at all. Treat <code>key</code>
+     * as an opaque, backend-defined identifier and use <code>label</code> for display; do not
+     * assume a fixed vocabulary across connection types.</p>
      */
-    public ExecuteConnectionProxyEnvelope executeProxy(
-            String id, ExecuteConnectionProxyRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.executeProxy(id, request, requestOptions).body();
+    public GetConnectionUsageEnvelope getUsage(String id, RequestOptions requestOptions) {
+        return this.rawClient.getUsage(id, requestOptions).body();
     }
 
-    /**
-     * Returns the proxy contract for a connection.
-     * <p>Use this endpoint before calling
-     * <a href="../../../../../api-reference/connections/execute-proxy"><code>POST /api/connections/{id}/proxy</code></a>
-     * when you need to build requests programmatically. The response shows:</p>
-     * <ul>
-     * <li>the inherited base URL that all proxied requests are sent to</li>
-     * <li>locked headers and query parameters that are attached automatically</li>
-     * <li>blocked request and response headers</li>
-     * <li>allowed HTTP methods and body shapes</li>
-     * <li>timeout, rate-limit, and payload-size limits</li>
-     * </ul>
-     * <p>Sensitive inherited header and query values are redacted in the response. The
-     * contract is still useful for discovering which keys are fixed by the
-     * connection, even though their raw values are not exposed.</p>
-     */
-    public GetConnectionProxyInfoEnvelope getProxyInfo(String id) {
-        return this.rawClient.getProxyInfo(id).body();
+    public ProxyClient proxy() {
+        return this.proxyClient.get();
     }
 
-    /**
-     * Returns the proxy contract for a connection.
-     * <p>Use this endpoint before calling
-     * <a href="../../../../../api-reference/connections/execute-proxy"><code>POST /api/connections/{id}/proxy</code></a>
-     * when you need to build requests programmatically. The response shows:</p>
-     * <ul>
-     * <li>the inherited base URL that all proxied requests are sent to</li>
-     * <li>locked headers and query parameters that are attached automatically</li>
-     * <li>blocked request and response headers</li>
-     * <li>allowed HTTP methods and body shapes</li>
-     * <li>timeout, rate-limit, and payload-size limits</li>
-     * </ul>
-     * <p>Sensitive inherited header and query values are redacted in the response. The
-     * contract is still useful for discovering which keys are fixed by the
-     * connection, even though their raw values are not exposed.</p>
-     */
-    public GetConnectionProxyInfoEnvelope getProxyInfo(String id, RequestOptions requestOptions) {
-        return this.rawClient.getProxyInfo(id, requestOptions).body();
-    }
-
-    /**
-     * Lists shared copies of a connection that the caller's organization owns.
-     * <p>The returned connections are the child copies, not the parent connection
-     * itself. This is useful when a partner workflow needs to confirm which
-     * downstream organizations have already received a shared copy.</p>
-     * <p>Creating a new shared copy is a separate operation. Use
-     * <a href="../../../../api-reference/connections/create-shared-connection"><code>POST /api/organizations/{org_id}/connections/{connection_id}/share</code></a>
-     * for the v5 partner-scoped flow.</p>
-     */
-    public ConnectionListResponseEnvelope listSharedConnections(String id) {
-        return this.rawClient.listSharedConnections(id).body();
-    }
-
-    /**
-     * Lists shared copies of a connection that the caller's organization owns.
-     * <p>The returned connections are the child copies, not the parent connection
-     * itself. This is useful when a partner workflow needs to confirm which
-     * downstream organizations have already received a shared copy.</p>
-     * <p>Creating a new shared copy is a separate operation. Use
-     * <a href="../../../../api-reference/connections/create-shared-connection"><code>POST /api/organizations/{org_id}/connections/{connection_id}/share</code></a>
-     * for the v5 partner-scoped flow.</p>
-     */
-    public ConnectionListResponseEnvelope listSharedConnections(String id, RequestOptions requestOptions) {
-        return this.rawClient.listSharedConnections(id, requestOptions).body();
-    }
-
-    /**
-     * Lists shared copies of a connection owned by a specific organization in the partner account.
-     * <p>The <code>org_id</code> must match the organization that owns the parent connection. If it
-     * does not, the endpoint returns <code>404</code> rather than exposing information about the
-     * parent connection.</p>
-     * <p>This endpoint is useful in partner workflows where the parent connection is in
-     * the partner owner organization and the caller needs to audit which child
-     * organizations already have a shared copy.</p>
-     */
-    public ConnectionListResponseEnvelope listSharedConnectionsForPartner(String orgId, String connectionId) {
-        return this.rawClient
-                .listSharedConnectionsForPartner(orgId, connectionId)
-                .body();
-    }
-
-    /**
-     * Lists shared copies of a connection owned by a specific organization in the partner account.
-     * <p>The <code>org_id</code> must match the organization that owns the parent connection. If it
-     * does not, the endpoint returns <code>404</code> rather than exposing information about the
-     * parent connection.</p>
-     * <p>This endpoint is useful in partner workflows where the parent connection is in
-     * the partner owner organization and the caller needs to audit which child
-     * organizations already have a shared copy.</p>
-     */
-    public ConnectionListResponseEnvelope listSharedConnectionsForPartner(
-            String orgId, String connectionId, RequestOptions requestOptions) {
-        return this.rawClient
-                .listSharedConnectionsForPartner(orgId, connectionId, requestOptions)
-                .body();
-    }
-
-    /**
-     * Shares a connection with another organization in the caller's partner account.
-     */
-    public CreateSharedConnectionResponseEnvelope createSharedConnection(
-            String orgId, String connectionId, PartnerCreateSharedConnectionRequestSchema request) {
-        return this.rawClient
-                .createSharedConnection(orgId, connectionId, request)
-                .body();
-    }
-
-    /**
-     * Shares a connection with another organization in the caller's partner account.
-     */
-    public CreateSharedConnectionResponseEnvelope createSharedConnection(
-            String orgId,
-            String connectionId,
-            PartnerCreateSharedConnectionRequestSchema request,
-            IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .createSharedConnection(orgId, connectionId, request, requestOptions)
-                .body();
+    public SharedConnectionsClient sharedConnections() {
+        return this.sharedConnectionsClient.get();
     }
 }

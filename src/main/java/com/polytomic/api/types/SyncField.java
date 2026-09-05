@@ -69,7 +69,7 @@ public final class SyncField {
     }
 
     /**
-     * @return Value to set in the target field; if provided, 'source' is ignored.
+     * @return Value to set in the target field; a mapping with an override value and no source is stored as an override field.
      */
     @JsonProperty("override_value")
     public Optional<String> getOverrideValue() {
@@ -163,7 +163,7 @@ public final class SyncField {
         _FinalStage new_(Boolean new_);
 
         /**
-         * <p>Value to set in the target field; if provided, 'source' is ignored.</p>
+         * <p>Value to set in the target field; a mapping with an override value and no source is stored as an override field.</p>
          */
         _FinalStage overrideValue(Optional<String> overrideValue);
 
@@ -257,7 +257,7 @@ public final class SyncField {
         }
 
         /**
-         * <p>Value to set in the target field; if provided, 'source' is ignored.</p>
+         * <p>Value to set in the target field; a mapping with an override value and no source is stored as an override field.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -267,7 +267,7 @@ public final class SyncField {
         }
 
         /**
-         * <p>Value to set in the target field; if provided, 'source' is ignored.</p>
+         * <p>Value to set in the target field; a mapping with an override value and no source is stored as an override field.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "override_value", nulls = Nulls.SKIP)

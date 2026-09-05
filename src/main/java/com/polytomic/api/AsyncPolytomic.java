@@ -9,6 +9,7 @@ import com.polytomic.api.resources.bulksync.AsyncBulkSyncClient;
 import com.polytomic.api.resources.connections.AsyncConnectionsClient;
 import com.polytomic.api.resources.entities.AsyncEntitiesClient;
 import com.polytomic.api.resources.events.AsyncEventsClient;
+import com.polytomic.api.resources.harbors.AsyncHarborsClient;
 import com.polytomic.api.resources.identity.AsyncIdentityClient;
 import com.polytomic.api.resources.jobs.AsyncJobsClient;
 import com.polytomic.api.resources.models.AsyncModelsClient;
@@ -17,7 +18,9 @@ import com.polytomic.api.resources.notifications.AsyncNotificationsClient;
 import com.polytomic.api.resources.organization.AsyncOrganizationClient;
 import com.polytomic.api.resources.permissions.AsyncPermissionsClient;
 import com.polytomic.api.resources.queryrunner.AsyncQueryRunnerClient;
+import com.polytomic.api.resources.recordviewlinks.AsyncRecordViewLinksClient;
 import com.polytomic.api.resources.schemas.AsyncSchemasClient;
+import com.polytomic.api.resources.temporarycredentials.AsyncTemporaryCredentialsClient;
 import com.polytomic.api.resources.users.AsyncUsersClient;
 import com.polytomic.api.resources.webhooks.AsyncWebhooksClient;
 import java.util.function.Supplier;
@@ -41,6 +44,8 @@ public class AsyncPolytomic {
 
     protected final Supplier<AsyncEventsClient> eventsClient;
 
+    protected final Supplier<AsyncHarborsClient> harborsClient;
+
     protected final Supplier<AsyncJobsClient> jobsClient;
 
     protected final Supplier<AsyncIdentityClient> identityClient;
@@ -50,6 +55,10 @@ public class AsyncPolytomic {
     protected final Supplier<AsyncOrganizationClient> organizationClient;
 
     protected final Supplier<AsyncUsersClient> usersClient;
+
+    protected final Supplier<AsyncRecordViewLinksClient> recordViewLinksClient;
+
+    protected final Supplier<AsyncTemporaryCredentialsClient> temporaryCredentialsClient;
 
     protected final Supplier<AsyncWebhooksClient> webhooksClient;
 
@@ -65,11 +74,14 @@ public class AsyncPolytomic {
         this.modelSyncClient = Suppliers.memoize(() -> new AsyncModelSyncClient(clientOptions));
         this.entitiesClient = Suppliers.memoize(() -> new AsyncEntitiesClient(clientOptions));
         this.eventsClient = Suppliers.memoize(() -> new AsyncEventsClient(clientOptions));
+        this.harborsClient = Suppliers.memoize(() -> new AsyncHarborsClient(clientOptions));
         this.jobsClient = Suppliers.memoize(() -> new AsyncJobsClient(clientOptions));
         this.identityClient = Suppliers.memoize(() -> new AsyncIdentityClient(clientOptions));
         this.notificationsClient = Suppliers.memoize(() -> new AsyncNotificationsClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new AsyncOrganizationClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new AsyncUsersClient(clientOptions));
+        this.recordViewLinksClient = Suppliers.memoize(() -> new AsyncRecordViewLinksClient(clientOptions));
+        this.temporaryCredentialsClient = Suppliers.memoize(() -> new AsyncTemporaryCredentialsClient(clientOptions));
         this.webhooksClient = Suppliers.memoize(() -> new AsyncWebhooksClient(clientOptions));
         this.permissionsClient = Suppliers.memoize(() -> new AsyncPermissionsClient(clientOptions));
     }
@@ -106,6 +118,10 @@ public class AsyncPolytomic {
         return this.eventsClient.get();
     }
 
+    public AsyncHarborsClient harbors() {
+        return this.harborsClient.get();
+    }
+
     public AsyncJobsClient jobs() {
         return this.jobsClient.get();
     }
@@ -124,6 +140,14 @@ public class AsyncPolytomic {
 
     public AsyncUsersClient users() {
         return this.usersClient.get();
+    }
+
+    public AsyncRecordViewLinksClient recordViewLinks() {
+        return this.recordViewLinksClient.get();
+    }
+
+    public AsyncTemporaryCredentialsClient temporaryCredentials() {
+        return this.temporaryCredentialsClient.get();
     }
 
     public AsyncWebhooksClient webhooks() {

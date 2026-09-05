@@ -54,6 +54,8 @@ public final class BulkSyncExecution {
 
     private final Optional<OffsetDateTime> updatedAt;
 
+    private final Optional<String> version;
+
     private final Optional<Long> warningCount;
 
     private final Map<String, Object> additionalProperties;
@@ -75,6 +77,7 @@ public final class BulkSyncExecution {
             Optional<String> statusMessage,
             Optional<String> type,
             Optional<OffsetDateTime> updatedAt,
+            Optional<String> version,
             Optional<Long> warningCount,
             Map<String, Object> additionalProperties) {
         this.completedAt = completedAt;
@@ -93,6 +96,7 @@ public final class BulkSyncExecution {
         this.statusMessage = statusMessage;
         this.type = type;
         this.updatedAt = updatedAt;
+        this.version = version;
         this.warningCount = warningCount;
         this.additionalProperties = additionalProperties;
     }
@@ -177,6 +181,14 @@ public final class BulkSyncExecution {
         return updatedAt;
     }
 
+    /**
+     * @return Polytomic version which last ran this execution.
+     */
+    @JsonProperty("version")
+    public Optional<String> getVersion() {
+        return version;
+    }
+
     @JsonProperty("warning_count")
     public Optional<Long> getWarningCount() {
         return warningCount;
@@ -210,6 +222,7 @@ public final class BulkSyncExecution {
                 && statusMessage.equals(other.statusMessage)
                 && type.equals(other.type)
                 && updatedAt.equals(other.updatedAt)
+                && version.equals(other.version)
                 && warningCount.equals(other.warningCount);
     }
 
@@ -232,6 +245,7 @@ public final class BulkSyncExecution {
                 this.statusMessage,
                 this.type,
                 this.updatedAt,
+                this.version,
                 this.warningCount);
     }
 
@@ -278,6 +292,8 @@ public final class BulkSyncExecution {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
+        private Optional<String> version = Optional.empty();
+
         private Optional<Long> warningCount = Optional.empty();
 
         @JsonAnySetter
@@ -302,6 +318,7 @@ public final class BulkSyncExecution {
             statusMessage(other.getStatusMessage());
             type(other.getType());
             updatedAt(other.getUpdatedAt());
+            version(other.getVersion());
             warningCount(other.getWarningCount());
             return this;
         }
@@ -482,6 +499,20 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Polytomic version which last ran this execution.</p>
+         */
+        @JsonSetter(value = "version", nulls = Nulls.SKIP)
+        public Builder version(Optional<String> version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder version(String version) {
+            this.version = Optional.ofNullable(version);
+            return this;
+        }
+
         @JsonSetter(value = "warning_count", nulls = Nulls.SKIP)
         public Builder warningCount(Optional<Long> warningCount) {
             this.warningCount = warningCount;
@@ -511,6 +542,7 @@ public final class BulkSyncExecution {
                     statusMessage,
                     type,
                     updatedAt,
+                    version,
                     warningCount,
                     additionalProperties);
         }

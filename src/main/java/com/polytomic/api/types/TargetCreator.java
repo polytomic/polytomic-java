@@ -21,14 +21,14 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetCreator.Builder.class)
 public final class TargetCreator {
-    private final Optional<List<TargetCreateInput>> properties;
+    private final Optional<List<TargetPropertyValues>> properties;
 
     private final Optional<Boolean> supported;
 
     private final Map<String, Object> additionalProperties;
 
     private TargetCreator(
-            Optional<List<TargetCreateInput>> properties,
+            Optional<List<TargetPropertyValues>> properties,
             Optional<Boolean> supported,
             Map<String, Object> additionalProperties) {
         this.properties = properties;
@@ -40,7 +40,7 @@ public final class TargetCreator {
      * @return The properties that are required for target creation.
      */
     @JsonProperty("properties")
-    public Optional<List<TargetCreateInput>> getProperties() {
+    public Optional<List<TargetPropertyValues>> getProperties() {
         return properties;
     }
 
@@ -83,7 +83,7 @@ public final class TargetCreator {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<List<TargetCreateInput>> properties = Optional.empty();
+        private Optional<List<TargetPropertyValues>> properties = Optional.empty();
 
         private Optional<Boolean> supported = Optional.empty();
 
@@ -102,12 +102,12 @@ public final class TargetCreator {
          * <p>The properties that are required for target creation.</p>
          */
         @JsonSetter(value = "properties", nulls = Nulls.SKIP)
-        public Builder properties(Optional<List<TargetCreateInput>> properties) {
+        public Builder properties(Optional<List<TargetPropertyValues>> properties) {
             this.properties = properties;
             return this;
         }
 
-        public Builder properties(List<TargetCreateInput> properties) {
+        public Builder properties(List<TargetPropertyValues> properties) {
             this.properties = Optional.ofNullable(properties);
             return this;
         }

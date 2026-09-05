@@ -65,7 +65,7 @@ public final class StartBulkSyncRequest {
     }
 
     /**
-     * @return When true, runs a test execution that validates the configuration without writing to the destination. Mutually exclusive with resync_mode.
+     * @return When true, runs a test execution that validates the configuration and syncs up to 5 records per schema. Mutually exclusive with resync_mode.
      */
     @JsonProperty("test")
     public Optional<Boolean> getTest() {
@@ -164,7 +164,7 @@ public final class StartBulkSyncRequest {
         }
 
         /**
-         * <p>When true, runs a test execution that validates the configuration without writing to the destination. Mutually exclusive with resync_mode.</p>
+         * <p>When true, runs a test execution that validates the configuration and syncs up to 5 records per schema. Mutually exclusive with resync_mode.</p>
          */
         @JsonSetter(value = "test", nulls = Nulls.SKIP)
         public Builder test(Optional<Boolean> test) {

@@ -13,41 +13,55 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TargetsGetTargetFieldsRequest.Builder.class)
 public final class TargetsGetTargetFieldsRequest {
-    private final String target;
+    private final Optional<String> target;
 
     private final Optional<Boolean> refresh;
+
+    private final Optional<Map<String, Optional<List<String>>>> properties;
 
     private final Map<String, Object> additionalProperties;
 
     private TargetsGetTargetFieldsRequest(
-            String target, Optional<Boolean> refresh, Map<String, Object> additionalProperties) {
+            Optional<String> target,
+            Optional<Boolean> refresh,
+            Optional<Map<String, Optional<List<String>>>> properties,
+            Map<String, Object> additionalProperties) {
         this.target = target;
         this.refresh = refresh;
+        this.properties = properties;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination).
+     * @return Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination). Required unless properties is supplied.
      */
     @JsonIgnore
-    public String getTarget() {
+    public Optional<String> getTarget() {
         return target;
     }
 
     /**
-     * @return When true, force a cache refresh of the target's schema before returning its fields.
+     * @return When true, force a cache refresh of the target's schema before returning its fields. Ignored when properties is supplied.
      */
     @JsonIgnore
     public Optional<Boolean> getRefresh() {
         return refresh;
+    }
+
+    /**
+     * @return Target-creation property values, supplied as properties[key]=value, matching the target_creation.properties returned by GET /api/connections/{id}/modelsync/targetobjects. When supplied, the response describes the not-yet-created target that would result from these inputs, in the same shape as for an existing target. Exactly one of target or properties must be supplied.
+     */
+    @JsonIgnore
+    public Optional<Map<String, Optional<List<String>>>> getProperties() {
+        return properties;
     }
 
     @java.lang.Override
@@ -62,12 +76,12 @@ public final class TargetsGetTargetFieldsRequest {
     }
 
     private boolean equalTo(TargetsGetTargetFieldsRequest other) {
-        return target.equals(other.target) && refresh.equals(other.refresh);
+        return target.equals(other.target) && refresh.equals(other.refresh) && properties.equals(other.properties);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.target, this.refresh);
+        return Objects.hash(this.target, this.refresh, this.properties);
     }
 
     @java.lang.Override
@@ -75,96 +89,81 @@ public final class TargetsGetTargetFieldsRequest {
         return ObjectMappers.stringify(this);
     }
 
-    public static TargetStage builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
-    public interface TargetStage {
-        /**
-         * <p>Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination).</p>
-         */
-        _FinalStage target(@NotNull String target);
-
-        Builder from(TargetsGetTargetFieldsRequest other);
-    }
-
-    public interface _FinalStage {
-        TargetsGetTargetFieldsRequest build();
-
-        _FinalStage additionalProperty(String key, Object value);
-
-        _FinalStage additionalProperties(Map<String, Object> additionalProperties);
-
-        /**
-         * <p>When true, force a cache refresh of the target's schema before returning its fields.</p>
-         */
-        _FinalStage refresh(Optional<Boolean> refresh);
-
-        _FinalStage refresh(Boolean refresh);
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements TargetStage, _FinalStage {
-        private String target;
+    public static final class Builder {
+        private Optional<String> target = Optional.empty();
 
         private Optional<Boolean> refresh = Optional.empty();
+
+        private Optional<Map<String, Optional<List<String>>>> properties = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        @java.lang.Override
         public Builder from(TargetsGetTargetFieldsRequest other) {
             target(other.getTarget());
             refresh(other.getRefresh());
+            properties(other.getProperties());
             return this;
         }
 
         /**
-         * <p>Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination).</p>
-         * <p>Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination).</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
+         * <p>Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination). Required unless properties is supplied.</p>
          */
-        @java.lang.Override
-        @JsonSetter("target")
-        public _FinalStage target(@NotNull String target) {
+        @JsonSetter(value = "target", nulls = Nulls.SKIP)
+        public Builder target(Optional<String> target) {
             this.target = target;
             return this;
         }
 
+        public Builder target(String target) {
+            this.target = Optional.ofNullable(target);
+            return this;
+        }
+
         /**
-         * <p>When true, force a cache refresh of the target's schema before returning its fields.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
+         * <p>When true, force a cache refresh of the target's schema before returning its fields. Ignored when properties is supplied.</p>
          */
-        @java.lang.Override
-        public _FinalStage refresh(Boolean refresh) {
+        @JsonSetter(value = "refresh", nulls = Nulls.SKIP)
+        public Builder refresh(Optional<Boolean> refresh) {
+            this.refresh = refresh;
+            return this;
+        }
+
+        public Builder refresh(Boolean refresh) {
             this.refresh = Optional.ofNullable(refresh);
             return this;
         }
 
         /**
-         * <p>When true, force a cache refresh of the target's schema before returning its fields.</p>
+         * <p>Target-creation property values, supplied as properties[key]=value, matching the target_creation.properties returned by GET /api/connections/{id}/modelsync/targetobjects. When supplied, the response describes the not-yet-created target that would result from these inputs, in the same shape as for an existing target. Exactly one of target or properties must be supplied.</p>
          */
-        @java.lang.Override
-        @JsonSetter(value = "refresh", nulls = Nulls.SKIP)
-        public _FinalStage refresh(Optional<Boolean> refresh) {
-            this.refresh = refresh;
+        @JsonSetter(value = "properties", nulls = Nulls.SKIP)
+        public Builder properties(Optional<Map<String, Optional<List<String>>>> properties) {
+            this.properties = properties;
             return this;
         }
 
-        @java.lang.Override
-        public TargetsGetTargetFieldsRequest build() {
-            return new TargetsGetTargetFieldsRequest(target, refresh, additionalProperties);
+        public Builder properties(Map<String, Optional<List<String>>> properties) {
+            this.properties = Optional.ofNullable(properties);
+            return this;
         }
 
-        @java.lang.Override
+        public TargetsGetTargetFieldsRequest build() {
+            return new TargetsGetTargetFieldsRequest(target, refresh, properties, additionalProperties);
+        }
+
         public Builder additionalProperty(String key, Object value) {
             this.additionalProperties.put(key, value);
             return this;
         }
 
-        @java.lang.Override
         public Builder additionalProperties(Map<String, Object> additionalProperties) {
             this.additionalProperties.putAll(additionalProperties);
             return this;

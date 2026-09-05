@@ -19,6 +19,7 @@ import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.RequestTimeoutError;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsExportLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetConsoleLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetIngestConsoleLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetSchemaConsoleLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListStatusRequest;
@@ -429,7 +430,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String executionId) {
@@ -438,7 +439,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String executionId, RequestOptions requestOptions) {
@@ -447,7 +448,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String executionId, ExecutionsGetConsoleLogsRequest request) {
@@ -455,7 +456,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String executionId, ExecutionsGetConsoleLogsRequest request, RequestOptions requestOptions) {
@@ -736,7 +737,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId, String executionId, String schemaId) {
@@ -748,7 +749,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId, String executionId, String schemaId, RequestOptions requestOptions) {
@@ -761,7 +762,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId, String executionId, String schemaId, ExecutionsGetSchemaConsoleLogsRequest request) {
@@ -769,7 +770,7 @@ public class RawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId,
@@ -786,6 +787,104 @@ public class RawExecutionsClient {
                 .addPathSegments("schemas")
                 .addPathSegment(schemaId)
                 .addPathSegments("consolelog");
+        if (request.getLimit().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getAfter().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "after", request.getAfter().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(
+                                responseBodyString, ExecutionConsoleLogsResponseEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 408:
+                        throw new RequestTimeoutError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(String connectionId) {
+        return getIngestConsoleLogs(
+                connectionId, ExecutionsGetIngestConsoleLogsRequest.builder().build());
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(
+            String connectionId, RequestOptions requestOptions) {
+        return getIngestConsoleLogs(
+                connectionId, ExecutionsGetIngestConsoleLogsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(
+            String connectionId, ExecutionsGetIngestConsoleLogsRequest request) {
+        return getIngestConsoleLogs(connectionId, request, null);
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(
+            String connectionId, ExecutionsGetIngestConsoleLogsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("ingest")
+                .addPathSegments("consolelog");
+        if (request.getSyncId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "sync_id", request.getSyncId().get(), false);
+        }
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "limit", request.getLimit().get(), false);

@@ -34,7 +34,7 @@ public final class ConnectCardResponse {
     }
 
     /**
-     * @return URL to redirect the user to in order to create the new connection.
+     * @return URL that opens the Polytomic Connect flow for creating or reconnecting a Connection.
      */
     @JsonProperty("redirect_url")
     public Optional<String> getRedirectUrl() {
@@ -42,7 +42,7 @@ public final class ConnectCardResponse {
     }
 
     /**
-     * @return Opaque single-use token identifying the Connect session.
+     * @return Token for the Polytomic Connect session.
      */
     @JsonProperty("token")
     public Optional<String> getToken() {
@@ -96,7 +96,7 @@ public final class ConnectCardResponse {
         }
 
         /**
-         * <p>URL to redirect the user to in order to create the new connection.</p>
+         * <p>URL that opens the Polytomic Connect flow for creating or reconnecting a Connection.</p>
          */
         @JsonSetter(value = "redirect_url", nulls = Nulls.SKIP)
         public Builder redirectUrl(Optional<String> redirectUrl) {
@@ -110,7 +110,7 @@ public final class ConnectCardResponse {
         }
 
         /**
-         * <p>Opaque single-use token identifying the Connect session.</p>
+         * <p>Token for the Polytomic Connect session.</p>
          */
         @JsonSetter(value = "token", nulls = Nulls.SKIP)
         public Builder token(Optional<String> token) {

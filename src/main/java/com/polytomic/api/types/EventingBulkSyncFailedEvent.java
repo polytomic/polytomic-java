@@ -28,6 +28,8 @@ public final class EventingBulkSyncFailedEvent {
 
     private final Optional<String> organizationId;
 
+    private final Optional<EventingBulkSyncSchedule> schedule;
+
     private final Optional<String> sourceConnectionId;
 
     private final Optional<String> syncId;
@@ -43,6 +45,7 @@ public final class EventingBulkSyncFailedEvent {
             Optional<String> error,
             Optional<String> executionId,
             Optional<String> organizationId,
+            Optional<EventingBulkSyncSchedule> schedule,
             Optional<String> sourceConnectionId,
             Optional<String> syncId,
             Optional<String> syncName,
@@ -52,6 +55,7 @@ public final class EventingBulkSyncFailedEvent {
         this.error = error;
         this.executionId = executionId;
         this.organizationId = organizationId;
+        this.schedule = schedule;
         this.sourceConnectionId = sourceConnectionId;
         this.syncId = syncId;
         this.syncName = syncName;
@@ -77,6 +81,11 @@ public final class EventingBulkSyncFailedEvent {
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
+    }
+
+    @JsonProperty("schedule")
+    public Optional<EventingBulkSyncSchedule> getSchedule() {
+        return schedule;
     }
 
     @JsonProperty("source_connection_id")
@@ -115,6 +124,7 @@ public final class EventingBulkSyncFailedEvent {
                 && error.equals(other.error)
                 && executionId.equals(other.executionId)
                 && organizationId.equals(other.organizationId)
+                && schedule.equals(other.schedule)
                 && sourceConnectionId.equals(other.sourceConnectionId)
                 && syncId.equals(other.syncId)
                 && syncName.equals(other.syncName)
@@ -128,6 +138,7 @@ public final class EventingBulkSyncFailedEvent {
                 this.error,
                 this.executionId,
                 this.organizationId,
+                this.schedule,
                 this.sourceConnectionId,
                 this.syncId,
                 this.syncName,
@@ -153,6 +164,8 @@ public final class EventingBulkSyncFailedEvent {
 
         private Optional<String> organizationId = Optional.empty();
 
+        private Optional<EventingBulkSyncSchedule> schedule = Optional.empty();
+
         private Optional<String> sourceConnectionId = Optional.empty();
 
         private Optional<String> syncId = Optional.empty();
@@ -171,6 +184,7 @@ public final class EventingBulkSyncFailedEvent {
             error(other.getError());
             executionId(other.getExecutionId());
             organizationId(other.getOrganizationId());
+            schedule(other.getSchedule());
             sourceConnectionId(other.getSourceConnectionId());
             syncId(other.getSyncId());
             syncName(other.getSyncName());
@@ -219,6 +233,17 @@ public final class EventingBulkSyncFailedEvent {
 
         public Builder organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
+            return this;
+        }
+
+        @JsonSetter(value = "schedule", nulls = Nulls.SKIP)
+        public Builder schedule(Optional<EventingBulkSyncSchedule> schedule) {
+            this.schedule = schedule;
+            return this;
+        }
+
+        public Builder schedule(EventingBulkSyncSchedule schedule) {
+            this.schedule = Optional.ofNullable(schedule);
             return this;
         }
 
@@ -272,6 +297,7 @@ public final class EventingBulkSyncFailedEvent {
                     error,
                     executionId,
                     organizationId,
+                    schedule,
                     sourceConnectionId,
                     syncId,
                     syncName,

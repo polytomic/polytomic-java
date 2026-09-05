@@ -26,6 +26,12 @@ public final class ConnectionProxyResponse {
 
     private final Optional<Map<String, Optional<String>>> headers;
 
+    private final Optional<String> jobId;
+
+    private final Optional<WorkTaskStatus> jobStatus;
+
+    private final Optional<String> jobUrl;
+
     private final Optional<Long> latencyMs;
 
     private final Optional<String> proxyCallId;
@@ -40,6 +46,9 @@ public final class ConnectionProxyResponse {
             Optional<String> body,
             Optional<String> contentType,
             Optional<Map<String, Optional<String>>> headers,
+            Optional<String> jobId,
+            Optional<WorkTaskStatus> jobStatus,
+            Optional<String> jobUrl,
             Optional<Long> latencyMs,
             Optional<String> proxyCallId,
             Optional<Integer> status,
@@ -48,6 +57,9 @@ public final class ConnectionProxyResponse {
         this.body = body;
         this.contentType = contentType;
         this.headers = headers;
+        this.jobId = jobId;
+        this.jobStatus = jobStatus;
+        this.jobUrl = jobUrl;
         this.latencyMs = latencyMs;
         this.proxyCallId = proxyCallId;
         this.status = status;
@@ -80,6 +92,27 @@ public final class ConnectionProxyResponse {
     }
 
     /**
+     * @return Identifier for the async proxy job when async is true.
+     */
+    @JsonProperty("jobId")
+    public Optional<String> getJobId() {
+        return jobId;
+    }
+
+    @JsonProperty("jobStatus")
+    public Optional<WorkTaskStatus> getJobStatus() {
+        return jobStatus;
+    }
+
+    /**
+     * @return Polling URL for the async proxy job when async is true.
+     */
+    @JsonProperty("jobUrl")
+    public Optional<String> getJobUrl() {
+        return jobUrl;
+    }
+
+    /**
      * @return End-to-end latency of the proxied request in milliseconds.
      */
     @JsonProperty("latencyMs")
@@ -96,7 +129,7 @@ public final class ConnectionProxyResponse {
     }
 
     /**
-     * @return HTTP status code returned by the upstream service.
+     * @return HTTP status code returned by the upstream service for synchronous calls, or 202 when an async proxy job is accepted.
      */
     @JsonProperty("status")
     public Optional<Integer> getStatus() {
@@ -126,6 +159,9 @@ public final class ConnectionProxyResponse {
         return body.equals(other.body)
                 && contentType.equals(other.contentType)
                 && headers.equals(other.headers)
+                && jobId.equals(other.jobId)
+                && jobStatus.equals(other.jobStatus)
+                && jobUrl.equals(other.jobUrl)
                 && latencyMs.equals(other.latencyMs)
                 && proxyCallId.equals(other.proxyCallId)
                 && status.equals(other.status)
@@ -138,6 +174,9 @@ public final class ConnectionProxyResponse {
                 this.body,
                 this.contentType,
                 this.headers,
+                this.jobId,
+                this.jobStatus,
+                this.jobUrl,
                 this.latencyMs,
                 this.proxyCallId,
                 this.status,
@@ -161,6 +200,12 @@ public final class ConnectionProxyResponse {
 
         private Optional<Map<String, Optional<String>>> headers = Optional.empty();
 
+        private Optional<String> jobId = Optional.empty();
+
+        private Optional<WorkTaskStatus> jobStatus = Optional.empty();
+
+        private Optional<String> jobUrl = Optional.empty();
+
         private Optional<Long> latencyMs = Optional.empty();
 
         private Optional<String> proxyCallId = Optional.empty();
@@ -178,6 +223,9 @@ public final class ConnectionProxyResponse {
             body(other.getBody());
             contentType(other.getContentType());
             headers(other.getHeaders());
+            jobId(other.getJobId());
+            jobStatus(other.getJobStatus());
+            jobUrl(other.getJobUrl());
             latencyMs(other.getLatencyMs());
             proxyCallId(other.getProxyCallId());
             status(other.getStatus());
@@ -228,6 +276,45 @@ public final class ConnectionProxyResponse {
         }
 
         /**
+         * <p>Identifier for the async proxy job when async is true.</p>
+         */
+        @JsonSetter(value = "jobId", nulls = Nulls.SKIP)
+        public Builder jobId(Optional<String> jobId) {
+            this.jobId = jobId;
+            return this;
+        }
+
+        public Builder jobId(String jobId) {
+            this.jobId = Optional.ofNullable(jobId);
+            return this;
+        }
+
+        @JsonSetter(value = "jobStatus", nulls = Nulls.SKIP)
+        public Builder jobStatus(Optional<WorkTaskStatus> jobStatus) {
+            this.jobStatus = jobStatus;
+            return this;
+        }
+
+        public Builder jobStatus(WorkTaskStatus jobStatus) {
+            this.jobStatus = Optional.ofNullable(jobStatus);
+            return this;
+        }
+
+        /**
+         * <p>Polling URL for the async proxy job when async is true.</p>
+         */
+        @JsonSetter(value = "jobUrl", nulls = Nulls.SKIP)
+        public Builder jobUrl(Optional<String> jobUrl) {
+            this.jobUrl = jobUrl;
+            return this;
+        }
+
+        public Builder jobUrl(String jobUrl) {
+            this.jobUrl = Optional.ofNullable(jobUrl);
+            return this;
+        }
+
+        /**
          * <p>End-to-end latency of the proxied request in milliseconds.</p>
          */
         @JsonSetter(value = "latencyMs", nulls = Nulls.SKIP)
@@ -256,7 +343,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>HTTP status code returned by the upstream service.</p>
+         * <p>HTTP status code returned by the upstream service for synchronous calls, or 202 when an async proxy job is accepted.</p>
          */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<Integer> status) {
@@ -285,7 +372,17 @@ public final class ConnectionProxyResponse {
 
         public ConnectionProxyResponse build() {
             return new ConnectionProxyResponse(
-                    body, contentType, headers, latencyMs, proxyCallId, status, truncated, additionalProperties);
+                    body,
+                    contentType,
+                    headers,
+                    jobId,
+                    jobStatus,
+                    jobUrl,
+                    latencyMs,
+                    proxyCallId,
+                    status,
+                    truncated,
+                    additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

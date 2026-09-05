@@ -20,12 +20,12 @@ import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.errors.UnprocessableEntityError;
-import com.polytomic.api.resources.modelsync.requests.CreateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
 import com.polytomic.api.resources.modelsync.requests.StartSyncRequest;
-import com.polytomic.api.resources.modelsync.requests.UpdateSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.ApiError;
@@ -33,9 +33,9 @@ import com.polytomic.api.types.CancelSyncResponseEnvelope;
 import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListSyncResponseEnvelope;
 import com.polytomic.api.types.ModelFieldResponse;
+import com.polytomic.api.types.ModelSyncV5ResponseEnvelope;
 import com.polytomic.api.types.ScheduleOptionResponseEnvelope;
 import com.polytomic.api.types.StartSyncResponseEnvelope;
-import com.polytomic.api.types.SyncResponseEnvelope;
 import com.polytomic.api.types.SyncStatusEnvelope;
 import java.io.IOException;
 import okhttp3.Headers;
@@ -459,7 +459,7 @@ public class RawModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public PolytomicHttpResponse<SyncResponseEnvelope> create(CreateSyncRequest request) {
+    public PolytomicHttpResponse<ModelSyncV5ResponseEnvelope> create(CreateModelSyncV5Request request) {
         return create(request, null);
     }
 
@@ -509,8 +509,8 @@ public class RawModelSyncClient {
      * <p>The <a href="../../api-reference/model-sync/targets/list">Get Target List</a> endpoint returns information about whether
      * a connection supports target creation.</p>
      */
-    public PolytomicHttpResponse<SyncResponseEnvelope> create(
-            CreateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public PolytomicHttpResponse<ModelSyncV5ResponseEnvelope> create(
+            CreateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs");
@@ -542,7 +542,8 @@ public class RawModelSyncClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new PolytomicHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SyncResponseEnvelope.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ModelSyncV5ResponseEnvelope.class),
+                        response);
             }
             try {
                 switch (response.code()) {
@@ -551,6 +552,9 @@ public class RawModelSyncClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 403:
                         throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 422:
                         throw new UnprocessableEntityError(
@@ -635,7 +639,7 @@ public class RawModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public PolytomicHttpResponse<SyncResponseEnvelope> get(String id) {
+    public PolytomicHttpResponse<ModelSyncV5ResponseEnvelope> get(String id) {
         return get(id, null);
     }
 
@@ -645,7 +649,7 @@ public class RawModelSyncClient {
      * <a href="../../../api-reference/model-sync/get-status"><code>GET /api/syncs/{id}/status</code></a>. For the full history of
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
-    public PolytomicHttpResponse<SyncResponseEnvelope> get(String id, RequestOptions requestOptions) {
+    public PolytomicHttpResponse<ModelSyncV5ResponseEnvelope> get(String id, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -670,7 +674,8 @@ public class RawModelSyncClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new PolytomicHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SyncResponseEnvelope.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ModelSyncV5ResponseEnvelope.class),
+                        response);
             }
             try {
                 switch (response.code()) {
@@ -706,7 +711,7 @@ public class RawModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public PolytomicHttpResponse<SyncResponseEnvelope> update(String id, UpdateSyncRequest request) {
+    public PolytomicHttpResponse<ModelSyncV5ResponseEnvelope> update(String id, UpdateModelSyncV5Request request) {
         return update(id, request, null);
     }
 
@@ -724,8 +729,8 @@ public class RawModelSyncClient {
      * Changes to source fields, target configuration, filters, or field mappings
      * take effect on the sync's next execution.</p>
      */
-    public PolytomicHttpResponse<SyncResponseEnvelope> update(
-            String id, UpdateSyncRequest request, IdempotentRequestOptions requestOptions) {
+    public PolytomicHttpResponse<ModelSyncV5ResponseEnvelope> update(
+            String id, UpdateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
@@ -758,7 +763,8 @@ public class RawModelSyncClient {
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
             if (response.isSuccessful()) {
                 return new PolytomicHttpResponse<>(
-                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SyncResponseEnvelope.class), response);
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ModelSyncV5ResponseEnvelope.class),
+                        response);
             }
             try {
                 switch (response.code()) {
@@ -931,6 +937,9 @@ public class RawModelSyncClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 404:
                         throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(

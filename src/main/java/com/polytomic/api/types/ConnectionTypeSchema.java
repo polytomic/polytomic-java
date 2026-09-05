@@ -23,6 +23,8 @@ import java.util.Optional;
 public final class ConnectionTypeSchema {
     private final Optional<String> id;
 
+    private final Optional<String> logoDarkUrl;
+
     private final Optional<String> logoUrl;
 
     private final Optional<String> name;
@@ -33,11 +35,13 @@ public final class ConnectionTypeSchema {
 
     private ConnectionTypeSchema(
             Optional<String> id,
+            Optional<String> logoDarkUrl,
             Optional<String> logoUrl,
             Optional<String> name,
             Optional<List<String>> operations,
             Map<String, Object> additionalProperties) {
         this.id = id;
+        this.logoDarkUrl = logoDarkUrl;
         this.logoUrl = logoUrl;
         this.name = name;
         this.operations = operations;
@@ -47,6 +51,11 @@ public final class ConnectionTypeSchema {
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
+    }
+
+    @JsonProperty("logo_dark_url")
+    public Optional<String> getLogoDarkUrl() {
+        return logoDarkUrl;
     }
 
     @JsonProperty("logo_url")
@@ -77,6 +86,7 @@ public final class ConnectionTypeSchema {
 
     private boolean equalTo(ConnectionTypeSchema other) {
         return id.equals(other.id)
+                && logoDarkUrl.equals(other.logoDarkUrl)
                 && logoUrl.equals(other.logoUrl)
                 && name.equals(other.name)
                 && operations.equals(other.operations);
@@ -84,7 +94,7 @@ public final class ConnectionTypeSchema {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.logoUrl, this.name, this.operations);
+        return Objects.hash(this.id, this.logoDarkUrl, this.logoUrl, this.name, this.operations);
     }
 
     @java.lang.Override
@@ -100,6 +110,8 @@ public final class ConnectionTypeSchema {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
+        private Optional<String> logoDarkUrl = Optional.empty();
+
         private Optional<String> logoUrl = Optional.empty();
 
         private Optional<String> name = Optional.empty();
@@ -113,6 +125,7 @@ public final class ConnectionTypeSchema {
 
         public Builder from(ConnectionTypeSchema other) {
             id(other.getId());
+            logoDarkUrl(other.getLogoDarkUrl());
             logoUrl(other.getLogoUrl());
             name(other.getName());
             operations(other.getOperations());
@@ -127,6 +140,17 @@ public final class ConnectionTypeSchema {
 
         public Builder id(String id) {
             this.id = Optional.ofNullable(id);
+            return this;
+        }
+
+        @JsonSetter(value = "logo_dark_url", nulls = Nulls.SKIP)
+        public Builder logoDarkUrl(Optional<String> logoDarkUrl) {
+            this.logoDarkUrl = logoDarkUrl;
+            return this;
+        }
+
+        public Builder logoDarkUrl(String logoDarkUrl) {
+            this.logoDarkUrl = Optional.ofNullable(logoDarkUrl);
             return this;
         }
 
@@ -164,7 +188,7 @@ public final class ConnectionTypeSchema {
         }
 
         public ConnectionTypeSchema build() {
-            return new ConnectionTypeSchema(id, logoUrl, name, operations, additionalProperties);
+            return new ConnectionTypeSchema(id, logoDarkUrl, logoUrl, name, operations, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

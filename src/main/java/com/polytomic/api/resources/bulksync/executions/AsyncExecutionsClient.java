@@ -8,6 +8,7 @@ import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsExportLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetConsoleLogsRequest;
+import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetIngestConsoleLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsGetSchemaConsoleLogsRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListRequest;
 import com.polytomic.api.resources.bulksync.executions.requests.ExecutionsListStatusRequest;
@@ -219,14 +220,14 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(String syncId, String executionId) {
         return this.rawClient.getConsoleLogs(syncId, executionId).thenApply(response -> response.body());
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String executionId, RequestOptions requestOptions) {
@@ -236,7 +237,7 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String executionId, ExecutionsGetConsoleLogsRequest request) {
@@ -244,7 +245,7 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a bulk sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String executionId, ExecutionsGetConsoleLogsRequest request, RequestOptions requestOptions) {
@@ -367,7 +368,7 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId, String executionId, String schemaId) {
@@ -377,7 +378,7 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId, String executionId, String schemaId, RequestOptions requestOptions) {
@@ -387,7 +388,7 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId, String executionId, String schemaId, ExecutionsGetSchemaConsoleLogsRequest request) {
@@ -397,7 +398,7 @@ public class AsyncExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a schema within a bulk sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a schema within a bulk sync execution. Returnst the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getSchemaConsoleLogs(
             String syncId,
@@ -407,6 +408,39 @@ public class AsyncExecutionsClient {
             RequestOptions requestOptions) {
         return this.rawClient
                 .getSchemaConsoleLogs(syncId, executionId, schemaId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(String connectionId) {
+        return this.rawClient.getIngestConsoleLogs(connectionId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(
+            String connectionId, RequestOptions requestOptions) {
+        return this.rawClient.getIngestConsoleLogs(connectionId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(
+            String connectionId, ExecutionsGetIngestConsoleLogsRequest request) {
+        return this.rawClient.getIngestConsoleLogs(connectionId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     */
+    public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getIngestConsoleLogs(
+            String connectionId, ExecutionsGetIngestConsoleLogsRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .getIngestConsoleLogs(connectionId, request, requestOptions)
                 .thenApply(response -> response.body());
     }
 }

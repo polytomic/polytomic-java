@@ -20,14 +20,27 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncSourceCapabilities.Builder.class)
 public final class BulkSyncSourceCapabilities {
+    private final Optional<Boolean> supportsNamespaces;
+
     private final Optional<Boolean> supportsTrackingFields;
 
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncSourceCapabilities(
-            Optional<Boolean> supportsTrackingFields, Map<String, Object> additionalProperties) {
+            Optional<Boolean> supportsNamespaces,
+            Optional<Boolean> supportsTrackingFields,
+            Map<String, Object> additionalProperties) {
+        this.supportsNamespaces = supportsNamespaces;
         this.supportsTrackingFields = supportsTrackingFields;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return When true, the portion of a schema ID before its last dot is that schema's namespace.
+     */
+    @JsonProperty("supports_namespaces")
+    public Optional<Boolean> getSupportsNamespaces() {
+        return supportsNamespaces;
     }
 
     @JsonProperty("supports_tracking_fields")
@@ -47,12 +60,13 @@ public final class BulkSyncSourceCapabilities {
     }
 
     private boolean equalTo(BulkSyncSourceCapabilities other) {
-        return supportsTrackingFields.equals(other.supportsTrackingFields);
+        return supportsNamespaces.equals(other.supportsNamespaces)
+                && supportsTrackingFields.equals(other.supportsTrackingFields);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.supportsTrackingFields);
+        return Objects.hash(this.supportsNamespaces, this.supportsTrackingFields);
     }
 
     @java.lang.Override
@@ -66,6 +80,8 @@ public final class BulkSyncSourceCapabilities {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Boolean> supportsNamespaces = Optional.empty();
+
         private Optional<Boolean> supportsTrackingFields = Optional.empty();
 
         @JsonAnySetter
@@ -74,7 +90,22 @@ public final class BulkSyncSourceCapabilities {
         private Builder() {}
 
         public Builder from(BulkSyncSourceCapabilities other) {
+            supportsNamespaces(other.getSupportsNamespaces());
             supportsTrackingFields(other.getSupportsTrackingFields());
+            return this;
+        }
+
+        /**
+         * <p>When true, the portion of a schema ID before its last dot is that schema's namespace.</p>
+         */
+        @JsonSetter(value = "supports_namespaces", nulls = Nulls.SKIP)
+        public Builder supportsNamespaces(Optional<Boolean> supportsNamespaces) {
+            this.supportsNamespaces = supportsNamespaces;
+            return this;
+        }
+
+        public Builder supportsNamespaces(Boolean supportsNamespaces) {
+            this.supportsNamespaces = Optional.ofNullable(supportsNamespaces);
             return this;
         }
 
@@ -90,7 +121,7 @@ public final class BulkSyncSourceCapabilities {
         }
 
         public BulkSyncSourceCapabilities build() {
-            return new BulkSyncSourceCapabilities(supportsTrackingFields, additionalProperties);
+            return new BulkSyncSourceCapabilities(supportsNamespaces, supportsTrackingFields, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

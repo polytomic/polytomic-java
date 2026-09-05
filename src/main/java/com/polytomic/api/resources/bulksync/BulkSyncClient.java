@@ -7,6 +7,7 @@ import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
+import com.polytomic.api.resources.bulksync.errorhandling.ErrorHandlingClient;
 import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
@@ -35,6 +36,8 @@ public class BulkSyncClient {
 
     protected final Supplier<ExecutionsClient> executionsClient;
 
+    protected final Supplier<ErrorHandlingClient> errorHandlingClient;
+
     protected final Supplier<SchemasClient> schemasClient;
 
     protected final Supplier<SchedulesClient> schedulesClient;
@@ -43,6 +46,7 @@ public class BulkSyncClient {
         this.clientOptions = clientOptions;
         this.rawClient = new RawBulkSyncClient(clientOptions);
         this.executionsClient = Suppliers.memoize(() -> new ExecutionsClient(clientOptions));
+        this.errorHandlingClient = Suppliers.memoize(() -> new ErrorHandlingClient(clientOptions));
         this.schemasClient = Suppliers.memoize(() -> new SchemasClient(clientOptions));
         this.schedulesClient = Suppliers.memoize(() -> new SchedulesClient(clientOptions));
     }
@@ -656,6 +660,10 @@ public class BulkSyncClient {
 
     public ExecutionsClient executions() {
         return this.executionsClient.get();
+    }
+
+    public ErrorHandlingClient errorHandling() {
+        return this.errorHandlingClient.get();
     }
 
     public SchemasClient schemas() {

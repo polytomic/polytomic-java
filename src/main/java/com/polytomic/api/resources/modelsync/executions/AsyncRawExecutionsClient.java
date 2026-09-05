@@ -26,6 +26,7 @@ import com.polytomic.api.types.ExecutionLogType;
 import com.polytomic.api.types.ExecutionLogsResponseEnvelope;
 import com.polytomic.api.types.GetExecutionResponseEnvelope;
 import com.polytomic.api.types.ListExecutionResponseEnvelope;
+import com.polytomic.api.types.LogsIndexResponseEnvelope;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
@@ -351,7 +352,7 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getConsoleLogs(
             String syncId, String id) {
@@ -360,7 +361,7 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getConsoleLogs(
             String syncId, String id, RequestOptions requestOptions) {
@@ -369,7 +370,7 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getConsoleLogs(
             String syncId, String id, ExecutionsGetConsoleLogsRequest request) {
@@ -377,7 +378,7 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for a sync execution. Returns at most the most recent 50 entries retained in Redis.
+     * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getConsoleLogs(
             String syncId, String id, ExecutionsGetConsoleLogsRequest request, RequestOptions requestOptions) {
@@ -439,6 +440,86 @@ public class AsyncRawExecutionsClient {
                                 return;
                             case 408:
                                 future.completeExceptionally(new RequestTimeoutError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Returns an index of the record-log types produced by this model sync execution, with the per-type endpoint to retrieve signed URLs for each type's segment files.
+     */
+    public CompletableFuture<PolytomicHttpResponse<LogsIndexResponseEnvelope>> getLogsIndex(String syncId, String id) {
+        return getLogsIndex(syncId, id, null);
+    }
+
+    /**
+     * Returns an index of the record-log types produced by this model sync execution, with the per-type endpoint to retrieve signed URLs for each type's segment files.
+     */
+    public CompletableFuture<PolytomicHttpResponse<LogsIndexResponseEnvelope>> getLogsIndex(
+            String syncId, String id, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/syncs")
+                .addPathSegment(syncId)
+                .addPathSegments("executions")
+                .addPathSegment(id)
+                .addPathSegments("logs");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        CompletableFuture<PolytomicHttpResponse<LogsIndexResponseEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, LogsIndexResponseEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
@@ -569,9 +650,11 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Returns a signed URL for a specific log file produced by a model sync execution.
-     * <p>The URL is signed and expires after a short period. If it has expired before
-     * you download the file, call this endpoint again to obtain a fresh URL.</p>
+     * Redirects to a signed URL for a specific log file produced by a model sync execution.
+     * <p>This endpoint responds with a <code>302 Found</code> redirect; the signed URL is returned
+     * in the <code>Location</code> header, and the response body is empty. The URL expires
+     * after a short period, so call this endpoint again to obtain a fresh URL if it
+     * expires before you download the file.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<Void>> getLogs(
             String syncId, String id, ExecutionLogType type, String filename) {
@@ -579,9 +662,11 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Returns a signed URL for a specific log file produced by a model sync execution.
-     * <p>The URL is signed and expires after a short period. If it has expired before
-     * you download the file, call this endpoint again to obtain a fresh URL.</p>
+     * Redirects to a signed URL for a specific log file produced by a model sync execution.
+     * <p>This endpoint responds with a <code>302 Found</code> redirect; the signed URL is returned
+     * in the <code>Location</code> header, and the response body is empty. The URL expires
+     * after a short period, so call this endpoint again to obtain a fresh URL if it
+     * expires before you download the file.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<Void>> getLogs(
             String syncId, String id, ExecutionLogType type, String filename, RequestOptions requestOptions) {
