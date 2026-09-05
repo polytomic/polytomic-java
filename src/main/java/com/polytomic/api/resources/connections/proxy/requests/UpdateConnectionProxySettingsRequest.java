@@ -99,7 +99,6 @@ public final class UpdateConnectionProxySettingsRequest {
 
         /**
          * <p>Whether the connection can be used through the Connection Proxy API.</p>
-         * <p>Whether the connection can be used through the Connection Proxy API.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

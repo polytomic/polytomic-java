@@ -5,9 +5,9 @@ package com.polytomic.api.resources.events.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -51,7 +51,7 @@ public final class EventsListRequest {
     /**
      * @return Organization to list events for. Only used by system callers; normal and partner callers are always scoped to their own organization.
      */
-    @JsonIgnore
+    @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
@@ -59,7 +59,7 @@ public final class EventsListRequest {
     /**
      * @return Filter to a single event type. Use GET /api/events_types to list valid values.
      */
-    @JsonIgnore
+    @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
@@ -67,7 +67,7 @@ public final class EventsListRequest {
     /**
      * @return Return events created strictly after this timestamp.
      */
-    @JsonIgnore
+    @JsonProperty("starting_after")
     public Optional<OffsetDateTime> getStartingAfter() {
         return startingAfter;
     }
@@ -75,7 +75,7 @@ public final class EventsListRequest {
     /**
      * @return Return events created strictly before this timestamp.
      */
-    @JsonIgnore
+    @JsonProperty("ending_before")
     public Optional<OffsetDateTime> getEndingBefore() {
         return endingBefore;
     }
@@ -83,7 +83,7 @@ public final class EventsListRequest {
     /**
      * @return Maximum number of events to return. Default 10, maximum 100.
      */
-    @JsonIgnore
+    @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;
     }

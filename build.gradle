@@ -1,9 +1,19 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        if (JavaVersion.current().isJava11Compatible()) {
+            classpath 'cl.franciscosolis:SonatypeCentralUpload:1.0.3'
+        }
+    }
+}
+
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '6.11.0'
     id 'signing'
-    id 'cl.franciscosolis.sonatype-central-upload' version '1.0.3'
 }
 
 repositories {
@@ -47,7 +57,7 @@ java {
 
 group = 'com.polytomic'
 
-version = '25.9.3'
+version = '25.9.4'
 
 jar {
     dependsOn(":generatePomFileForMavenPublication")
@@ -78,7 +88,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.polytomic'
             artifactId = 'polytomic-java'
-            version = '25.9.3'
+            version = '25.9.4'
             from components.java
             pom {
                 name = 'polytomic'
@@ -105,19 +115,25 @@ publishing {
     }
 }
 
-sonatypeCentralUpload {
-    username = "$System.env.MAVEN_USERNAME"
-    password = "$System.env.MAVEN_PASSWORD"
+if (JavaVersion.current().isJava11Compatible()) {
+    apply plugin: 'cl.franciscosolis.sonatype-central-upload'
 
-    archives = files(
-        "$buildDir/libs/polytomic-java-" + version + ".jar",
-        "$buildDir/libs/polytomic-java-" + version + "-sources.jar",
-        "$buildDir/libs/polytomic-java-" + version + "-javadoc.jar"
-    )
+    sonatypeCentralUpload {
+        username = "$System.env.MAVEN_USERNAME"
+        password = "$System.env.MAVEN_PASSWORD"
 
-    pom = file("$buildDir/publications/maven/pom-default.xml")
-    signingKey = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
-    signingKeyPassphrase = "$System.env.MAVEN_SIGNATURE_PASSWORD"
+        archives = files(
+            "$buildDir/libs/polytomic-java-" + version + ".jar",
+            "$buildDir/libs/polytomic-java-" + version + "-sources.jar",
+            "$buildDir/libs/polytomic-java-" + version + "-javadoc.jar"
+        )
+
+        pom = file("$buildDir/publications/maven/pom-default.xml")
+        signingKey = "$System.env.MAVEN_SIGNATURE_SECRET_KEY"
+        signingKeyPassphrase = "$System.env.MAVEN_SIGNATURE_PASSWORD"
+    }
+
+    sonatypeCentralUpload.dependsOn build
 }
 
 signing {
@@ -127,5 +143,3 @@ signing {
     useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
     sign publishing.publications.maven
 }
-
-sonatypeCentralUpload.dependsOn build

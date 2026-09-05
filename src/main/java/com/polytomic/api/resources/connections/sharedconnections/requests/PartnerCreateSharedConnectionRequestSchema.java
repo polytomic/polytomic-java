@@ -124,7 +124,6 @@ public final class PartnerCreateSharedConnectionRequestSchema {
 
         /**
          * <p>Unique identifier of the child organization that should receive the shared connection.</p>
-         * <p>Unique identifier of the child organization that should receive the shared connection.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

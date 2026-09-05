@@ -152,7 +152,6 @@ public final class TestConnectionRequest {
 
         /**
          * <p>The type of connection to test.</p>
-         * <p>The type of connection to test.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

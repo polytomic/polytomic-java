@@ -5,9 +5,9 @@ package com.polytomic.api.resources.modelsync.targets.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -33,7 +33,7 @@ public final class TargetsListRequest {
     /**
      * @return When true, inline the valid values for each enum target-creation property in the response. Skips the separate call to retrieve property values.
      */
-    @JsonIgnore
+    @JsonProperty("include_target_creation_values")
     public Optional<Boolean> getIncludeTargetCreationValues() {
         return includeTargetCreationValues;
     }

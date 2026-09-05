@@ -12,6 +12,7 @@ import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.core.RetryInterceptor;
 import com.polytomic.api.errors.ConflictError;
 import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
@@ -84,6 +85,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -109,6 +119,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }
@@ -143,6 +155,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -169,6 +190,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }
@@ -213,6 +236,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -245,6 +277,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }
@@ -293,6 +327,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -311,6 +354,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }
@@ -366,6 +411,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -391,6 +445,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }
@@ -438,6 +494,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -463,6 +528,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }
@@ -523,6 +590,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             String responseBodyString = responseBody != null ? responseBody.string() : "{}";
@@ -551,6 +627,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }
@@ -588,6 +666,15 @@ public class RawOrganizationClient {
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
         }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
         try (Response response = client.newCall(okhttpRequest).execute()) {
             ResponseBody responseBody = response.body();
             if (response.isSuccessful()) {
@@ -612,6 +699,8 @@ public class RawOrganizationClient {
             Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
             throw new PolytomicApiException(
                     "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new PolytomicException("Network error executing HTTP request", e);
         }

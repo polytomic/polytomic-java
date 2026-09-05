@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -42,7 +42,7 @@ public final class ExecutionsGetIngestConsoleLogsRequest {
     /**
      * @return Optional bulk sync ID for sync-scoped ingestion logs.
      */
-    @JsonIgnore
+    @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;
     }
@@ -50,7 +50,7 @@ public final class ExecutionsGetIngestConsoleLogsRequest {
     /**
      * @return Maximum number of entries to return. Values above the logger retention limit are capped to 50.
      */
-    @JsonIgnore
+    @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -58,7 +58,7 @@ public final class ExecutionsGetIngestConsoleLogsRequest {
     /**
      * @return Return only entries newer than this cursor.
      */
-    @JsonIgnore
+    @JsonProperty("after")
     public Optional<String> getAfter() {
         return after;
     }

@@ -195,7 +195,6 @@ public final class UserFieldRequest {
 
         /**
          * <p>Stable identifier for the user-defined field. Reuse an existing field_id to update a field in place.</p>
-         * <p>Stable identifier for the user-defined field. Reuse an existing field_id to update a field in place.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -207,7 +206,6 @@ public final class UserFieldRequest {
 
         /**
          * <p>Human-readable label shown to users selecting this field in the app.</p>
-         * <p>Human-readable label shown to users selecting this field in the app.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -218,7 +216,6 @@ public final class UserFieldRequest {
         }
 
         /**
-         * <p>Polytomic type of the field (e.g. string, integer, boolean).</p>
          * <p>Polytomic type of the field (e.g. string, integer, boolean).</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

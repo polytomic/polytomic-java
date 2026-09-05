@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -46,7 +46,7 @@ public final class ExecutionsListRequest {
     /**
      * @return Pagination cursor returned in the previous response. Omit on the first request.
      */
-    @JsonIgnore
+    @JsonProperty("page_token")
     public Optional<String> getPageToken() {
         return pageToken;
     }
@@ -54,7 +54,7 @@ public final class ExecutionsListRequest {
     /**
      * @return When true, only return executions that have finished. Terminal executions are ordered by updated_at.
      */
-    @JsonIgnore
+    @JsonProperty("only_terminal")
     public Optional<Boolean> getOnlyTerminal() {
         return onlyTerminal;
     }
@@ -62,7 +62,7 @@ public final class ExecutionsListRequest {
     /**
      * @return When true, return executions from oldest to newest. Default is newest first.
      */
-    @JsonIgnore
+    @JsonProperty("ascending")
     public Optional<Boolean> getAscending() {
         return ascending;
     }
@@ -70,7 +70,7 @@ public final class ExecutionsListRequest {
     /**
      * @return Maximum number of executions to return. Capped at 100.
      */
-    @JsonIgnore
+    @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;
     }

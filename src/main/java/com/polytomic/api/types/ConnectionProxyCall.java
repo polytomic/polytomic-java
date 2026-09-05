@@ -218,7 +218,6 @@ public final class ConnectionProxyCall {
 
         /**
          * <p>HTTP method. Must be one of GET, POST, PUT, PATCH, DELETE.</p>
-         * <p>HTTP method. Must be one of GET, POST, PUT, PATCH, DELETE.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -229,7 +228,6 @@ public final class ConnectionProxyCall {
         }
 
         /**
-         * <p>Relative upstream path. Query strings must be passed in request.query or request.rawQuery.</p>
          * <p>Relative upstream path. Query strings must be passed in request.query or request.rawQuery.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

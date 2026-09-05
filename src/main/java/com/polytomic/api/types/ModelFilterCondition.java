@@ -172,7 +172,6 @@ public final class ModelFilterCondition {
 
         /**
          * <p>Comparison this condition applies to the field's value.</p>
-         * <p>Comparison this condition applies to the field's value.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -183,7 +182,6 @@ public final class ModelFilterCondition {
         }
 
         /**
-         * <p>Model field this condition tests, named the same way as a field mapping's source.</p>
          * <p>Model field this condition tests, named the same way as a field mapping's source.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

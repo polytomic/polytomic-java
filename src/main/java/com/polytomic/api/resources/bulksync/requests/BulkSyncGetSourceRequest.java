@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -32,7 +32,7 @@ public final class BulkSyncGetSourceRequest {
     /**
      * @return When true, include per-schema field lists in the response. Set to false for a smaller payload when field details are not needed.
      */
-    @JsonIgnore
+    @JsonProperty("include_fields")
     public Optional<Boolean> getIncludeFields() {
         return includeFields;
     }

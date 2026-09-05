@@ -5,9 +5,9 @@ package com.polytomic.api.resources.modelsync.targets.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -43,7 +43,7 @@ public final class TargetsGetTargetFieldsRequest {
     /**
      * @return Identifier of the target object (e.g. schema.table for a database destination, object name for a SaaS destination). Required unless properties is supplied.
      */
-    @JsonIgnore
+    @JsonProperty("target")
     public Optional<String> getTarget() {
         return target;
     }
@@ -51,7 +51,7 @@ public final class TargetsGetTargetFieldsRequest {
     /**
      * @return When true, force a cache refresh of the target's schema before returning its fields. Ignored when properties is supplied.
      */
-    @JsonIgnore
+    @JsonProperty("refresh")
     public Optional<Boolean> getRefresh() {
         return refresh;
     }
@@ -59,7 +59,7 @@ public final class TargetsGetTargetFieldsRequest {
     /**
      * @return Target-creation property values, supplied as properties[key]=value, matching the target_creation.properties returned by GET /api/connections/{id}/modelsync/targetobjects. When supplied, the response describes the not-yet-created target that would result from these inputs, in the same shape as for an existing target. Exactly one of target or properties must be supplied.
      */
-    @JsonIgnore
+    @JsonProperty("properties")
     public Optional<Map<String, Optional<List<String>>>> getProperties() {
         return properties;
     }

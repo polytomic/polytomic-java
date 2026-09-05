@@ -123,7 +123,6 @@ public final class UpdateRecordLoggingSettingsRequest {
 
         /**
          * <p>Whether record logging is enabled for the organization.</p>
-         * <p>Whether record logging is enabled for the organization.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

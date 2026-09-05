@@ -291,7 +291,6 @@ public final class ConnectCardRequest {
 
         /**
          * <p>Name of the new connection. Must be unique per organization.</p>
-         * <p>Name of the new connection. Must be unique per organization.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -302,7 +301,6 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>URL to redirect to after connection is created.</p>
          * <p>URL to redirect to after connection is created.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

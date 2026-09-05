@@ -195,7 +195,6 @@ public final class TargetFilterCondition {
 
         /**
          * <p>Destination field this condition tests, identified the same way as a field mapping's target.</p>
-         * <p>Destination field this condition tests, identified the same way as a field mapping's target.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -206,7 +205,6 @@ public final class TargetFilterCondition {
         }
 
         /**
-         * <p>Comparison this condition applies to the field's value.</p>
          * <p>Comparison this condition applies to the field's value.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

@@ -195,7 +195,6 @@ public final class TemporaryCredentialSubject {
 
         /**
          * <p>Authority subject type. Use user for current user authority or profile for an Agent Data profile.</p>
-         * <p>Authority subject type. Use user for current user authority or profile for an Agent Data profile.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

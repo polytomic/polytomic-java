@@ -251,7 +251,6 @@ public final class CreateRecordViewLinkRequest {
 
         /**
          * <p>Connection containing the record.</p>
-         * <p>Connection containing the record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -262,7 +261,6 @@ public final class CreateRecordViewLinkRequest {
         }
 
         /**
-         * <p>The schema lookup-key field used to identify the record. V1 only accepts the schema's single effective primary key.</p>
          * <p>The schema lookup-key field used to identify the record. V1 only accepts the schema's single effective primary key.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -275,7 +273,6 @@ public final class CreateRecordViewLinkRequest {
 
         /**
          * <p>The lookup-key value for the record.</p>
-         * <p>The lookup-key value for the record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -286,7 +283,6 @@ public final class CreateRecordViewLinkRequest {
         }
 
         /**
-         * <p>Schema containing the record.</p>
          * <p>Schema containing the record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

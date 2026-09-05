@@ -172,7 +172,6 @@ public final class OverrideField {
 
         /**
          * <p>Value written to the target field for every record.</p>
-         * <p>Value written to the target field for every record.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -183,7 +182,6 @@ public final class OverrideField {
         }
 
         /**
-         * <p>Target field ID the value will be written to.</p>
          * <p>Target field ID the value will be written to.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

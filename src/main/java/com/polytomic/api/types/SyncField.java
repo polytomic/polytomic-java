@@ -213,7 +213,6 @@ public final class SyncField {
 
         /**
          * <p>Target field ID the source field value will be written to.</p>
-         * <p>Target field ID the source field value will be written to.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

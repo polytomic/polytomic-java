@@ -199,7 +199,6 @@ public final class HarborPipelineStatusResponse {
 
         /**
          * <p>Unique identifier of the Polytomic pipeline.</p>
-         * <p>Unique identifier of the Polytomic pipeline.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -211,7 +210,6 @@ public final class HarborPipelineStatusResponse {
 
         /**
          * <p>Whether this pipeline is enabled.</p>
-         * <p>Whether this pipeline is enabled.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -222,7 +220,6 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Type of Polytomic pipeline.</p>
          * <p>Type of Polytomic pipeline.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

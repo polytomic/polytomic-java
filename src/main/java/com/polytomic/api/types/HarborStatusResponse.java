@@ -127,7 +127,6 @@ public final class HarborStatusResponse {
 
         /**
          * <p>UTC time at which Polytomic assembled this status snapshot.</p>
-         * <p>UTC time at which Polytomic assembled this status snapshot.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

@@ -150,7 +150,6 @@ public final class HarborSourceReference {
 
         /**
          * <p>Source Connection the documented table belongs to.</p>
-         * <p>Source Connection the documented table belongs to.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -161,7 +160,6 @@ public final class HarborSourceReference {
         }
 
         /**
-         * <p>Source schema identifier, exactly as source schema discovery reports it.</p>
          * <p>Source schema identifier, exactly as source schema discovery reports it.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

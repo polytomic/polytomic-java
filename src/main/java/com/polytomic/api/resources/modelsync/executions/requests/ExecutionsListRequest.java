@@ -5,9 +5,9 @@ package com.polytomic.api.resources.modelsync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -39,17 +39,17 @@ public final class ExecutionsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonIgnore
+    @JsonProperty("page_token")
     public Optional<String> getPageToken() {
         return pageToken;
     }
 
-    @JsonIgnore
+    @JsonProperty("only_completed")
     public Optional<Boolean> getOnlyCompleted() {
         return onlyCompleted;
     }
 
-    @JsonIgnore
+    @JsonProperty("ascending")
     public Optional<Boolean> getAscending() {
         return ascending;
     }

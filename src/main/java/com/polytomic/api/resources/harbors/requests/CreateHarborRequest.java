@@ -196,7 +196,6 @@ public final class CreateHarborRequest {
 
         /**
          * <p>How the Harbor's queryable data store is provided. Valid values are managed and customer_managed.</p>
-         * <p>How the Harbor's queryable data store is provided. Valid values are managed and customer_managed.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -207,7 +206,6 @@ public final class CreateHarborRequest {
         }
 
         /**
-         * <p>Human-readable Harbor name.</p>
          * <p>Human-readable Harbor name.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

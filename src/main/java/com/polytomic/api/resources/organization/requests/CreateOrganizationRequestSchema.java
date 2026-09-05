@@ -218,7 +218,6 @@ public final class CreateOrganizationRequestSchema {
 
         /**
          * <p>Human-readable name of the organization. Must be unique across the partner account.</p>
-         * <p>Human-readable name of the organization. Must be unique across the partner account.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

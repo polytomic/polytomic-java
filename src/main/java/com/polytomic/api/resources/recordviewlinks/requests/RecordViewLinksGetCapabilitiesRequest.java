@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
@@ -56,7 +57,7 @@ public final class RecordViewLinksGetCapabilitiesRequest {
     /**
      * @return Connection to check for record-view link support.
      */
-    @JsonIgnore
+    @JsonProperty("connection_id")
     public String getConnectionId() {
         return connectionId;
     }
@@ -64,7 +65,7 @@ public final class RecordViewLinksGetCapabilitiesRequest {
     /**
      * @return Schema to check for record-view link support.
      */
-    @JsonIgnore
+    @JsonProperty("schema_id")
     public String getSchemaId() {
         return schemaId;
     }
@@ -161,7 +162,6 @@ public final class RecordViewLinksGetCapabilitiesRequest {
 
         /**
          * <p>Connection to check for record-view link support.</p>
-         * <p>Connection to check for record-view link support.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -172,7 +172,6 @@ public final class RecordViewLinksGetCapabilitiesRequest {
         }
 
         /**
-         * <p>Schema to check for record-view link support.</p>
          * <p>Schema to check for record-view link support.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

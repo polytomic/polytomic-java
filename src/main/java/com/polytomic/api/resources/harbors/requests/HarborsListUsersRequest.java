@@ -5,9 +5,9 @@ package com.polytomic.api.resources.harbors.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -36,7 +36,7 @@ public final class HarborsListUsersRequest {
     /**
      * @return Maximum number of assigned users to return. Defaults to 50 and cannot exceed 50.
      */
-    @JsonIgnore
+    @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;
     }
@@ -44,7 +44,7 @@ public final class HarborsListUsersRequest {
     /**
      * @return Opaque pagination cursor returned by the previous request.
      */
-    @JsonIgnore
+    @JsonProperty("page_token")
     public Optional<String> getPageToken() {
         return pageToken;
     }

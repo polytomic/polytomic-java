@@ -5,9 +5,9 @@ package com.polytomic.api.resources.models.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -34,7 +34,7 @@ public final class ModelsGetEnrichmentSourceRequest {
     /**
      * @return Query parameters used to incrementally refine a dependent source configuration. Keys correspond to configuration fields returned by previous calls to this endpoint.
      */
-    @JsonIgnore
+    @JsonProperty("params")
     public Optional<Map<String, Optional<List<String>>>> getParams() {
         return params;
     }

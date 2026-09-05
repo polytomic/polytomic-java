@@ -99,7 +99,6 @@ public final class InviteHarborUserRequest {
 
         /**
          * <p>Email address used to invite the Harbor-only user.</p>
-         * <p>Email address used to invite the Harbor-only user.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override

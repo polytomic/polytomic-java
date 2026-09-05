@@ -5,9 +5,9 @@ package com.polytomic.api.resources.bulksync.executions.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -44,7 +44,7 @@ public final class ExecutionsListStatusRequest {
     /**
      * @return Return status for the specified bulk sync. Repeat the parameter to target multiple syncs. Ignored if all or active is true.
      */
-    @JsonIgnore
+    @JsonProperty("sync_id")
     public Optional<List<String>> getSyncId() {
         return syncId;
     }
@@ -52,7 +52,7 @@ public final class ExecutionsListStatusRequest {
     /**
      * @return When true, return status for every sync in the caller's organization. Overrides any sync_id values.
      */
-    @JsonIgnore
+    @JsonProperty("all")
     public Optional<Boolean> getAll() {
         return all;
     }
@@ -60,7 +60,7 @@ public final class ExecutionsListStatusRequest {
     /**
      * @return When true, return status only for active syncs in the caller's organization. Overrides any sync_id values.
      */
-    @JsonIgnore
+    @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
     }

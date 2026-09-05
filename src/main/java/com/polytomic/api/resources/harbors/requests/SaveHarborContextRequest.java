@@ -213,7 +213,6 @@ public final class SaveHarborContextRequest {
 
         /**
          * <p>Plain-text context content. Maximum 20,000 characters.</p>
-         * <p>Plain-text context content. Maximum 20,000 characters.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -224,7 +223,6 @@ public final class SaveHarborContextRequest {
         }
 
         /**
-         * <p>Human-readable context title. Maximum 200 characters.</p>
          * <p>Human-readable context title. Maximum 200 characters.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */

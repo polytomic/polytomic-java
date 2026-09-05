@@ -529,7 +529,6 @@ public final class CreateBulkSyncRequest {
 
         /**
          * <p>Unique identifier of the connection rows are written to.</p>
-         * <p>Unique identifier of the connection rows are written to.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -541,7 +540,6 @@ public final class CreateBulkSyncRequest {
 
         /**
          * <p>Human-readable name for the bulk sync.</p>
-         * <p>Human-readable name for the bulk sync.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -552,7 +550,6 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Unique identifier of the connection rows are read from.</p>
          * <p>Unique identifier of the connection rows are read from.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
