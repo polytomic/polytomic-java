@@ -2701,7 +2701,7 @@ client.schemas().patchField(
 <dl>
 <dd>
 
-**definition:** `Optional<Map<String, Object>>` 
+**definition:** `Optional<TypesDefinition>` 
     
 </dd>
 </dl>

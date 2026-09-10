@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UserFieldRequest.Builder.class)
 public final class UserFieldRequest {
+    private final Optional<TypesDefinition> definition;
+
     private final Optional<Object> example;
 
     private final String fieldId;
@@ -34,18 +36,25 @@ public final class UserFieldRequest {
     private final Map<String, Object> additionalProperties;
 
     private UserFieldRequest(
+            Optional<TypesDefinition> definition,
             Optional<Object> example,
             String fieldId,
             String label,
             Optional<String> path,
             String type,
             Map<String, Object> additionalProperties) {
+        this.definition = definition;
         this.example = example;
         this.fieldId = fieldId;
         this.label = label;
         this.path = path;
         this.type = type;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("definition")
+    public Optional<TypesDefinition> getDefinition() {
+        return definition;
     }
 
     /**
@@ -81,7 +90,7 @@ public final class UserFieldRequest {
     }
 
     /**
-     * @return Polytomic type of the field (e.g. string, integer, boolean).
+     * @return One of: string, number, boolean, datetime, array, object, binary.
      */
     @JsonProperty("type")
     public String getType() {
@@ -100,7 +109,8 @@ public final class UserFieldRequest {
     }
 
     private boolean equalTo(UserFieldRequest other) {
-        return example.equals(other.example)
+        return definition.equals(other.definition)
+                && example.equals(other.example)
                 && fieldId.equals(other.fieldId)
                 && label.equals(other.label)
                 && path.equals(other.path)
@@ -109,7 +119,7 @@ public final class UserFieldRequest {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.example, this.fieldId, this.label, this.path, this.type);
+        return Objects.hash(this.definition, this.example, this.fieldId, this.label, this.path, this.type);
     }
 
     @java.lang.Override
@@ -139,7 +149,7 @@ public final class UserFieldRequest {
 
     public interface TypeStage {
         /**
-         * <p>Polytomic type of the field (e.g. string, integer, boolean).</p>
+         * <p>One of: string, number, boolean, datetime, array, object, binary.</p>
          */
         _FinalStage type(@NotNull String type);
     }
@@ -150,6 +160,10 @@ public final class UserFieldRequest {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        _FinalStage definition(Optional<TypesDefinition> definition);
+
+        _FinalStage definition(TypesDefinition definition);
 
         /**
          * <p>Example value shown in the UI and used as a hint for downstream consumers.</p>
@@ -178,6 +192,8 @@ public final class UserFieldRequest {
 
         private Optional<Object> example = Optional.empty();
 
+        private Optional<TypesDefinition> definition = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -185,6 +201,7 @@ public final class UserFieldRequest {
 
         @java.lang.Override
         public Builder from(UserFieldRequest other) {
+            definition(other.getDefinition());
             example(other.getExample());
             fieldId(other.getFieldId());
             label(other.getLabel());
@@ -216,7 +233,7 @@ public final class UserFieldRequest {
         }
 
         /**
-         * <p>Polytomic type of the field (e.g. string, integer, boolean).</p>
+         * <p>One of: string, number, boolean, datetime, array, object, binary.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -267,8 +284,21 @@ public final class UserFieldRequest {
         }
 
         @java.lang.Override
+        public _FinalStage definition(TypesDefinition definition) {
+            this.definition = Optional.ofNullable(definition);
+            return this;
+        }
+
+        @java.lang.Override
+        @JsonSetter(value = "definition", nulls = Nulls.SKIP)
+        public _FinalStage definition(Optional<TypesDefinition> definition) {
+            this.definition = definition;
+            return this;
+        }
+
+        @java.lang.Override
         public UserFieldRequest build() {
-            return new UserFieldRequest(example, fieldId, label, path, type, additionalProperties);
+            return new UserFieldRequest(definition, example, fieldId, label, path, type, additionalProperties);
         }
 
         @java.lang.Override

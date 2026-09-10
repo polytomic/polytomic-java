@@ -57,7 +57,7 @@ java {
 
 group = 'com.polytomic'
 
-version = '25.9.5'
+version = '25.9.6'
 
 jar {
     dependsOn(":generatePomFileForMavenPublication")
@@ -88,7 +88,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'com.polytomic'
             artifactId = 'polytomic-java'
-            version = '25.9.5'
+            version = '25.9.6'
             from components.java
             pom {
                 name = 'polytomic'

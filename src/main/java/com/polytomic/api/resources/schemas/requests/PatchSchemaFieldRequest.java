@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.TypesDefinition;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PatchSchemaFieldRequest.Builder.class)
 public final class PatchSchemaFieldRequest {
-    private final Optional<Map<String, Object>> definition;
+    private final Optional<TypesDefinition> definition;
 
     private final Optional<Object> example;
 
@@ -33,7 +34,7 @@ public final class PatchSchemaFieldRequest {
     private final Map<String, Object> additionalProperties;
 
     private PatchSchemaFieldRequest(
-            Optional<Map<String, Object>> definition,
+            Optional<TypesDefinition> definition,
             Optional<Object> example,
             Optional<String> label,
             Optional<String> path,
@@ -48,7 +49,7 @@ public final class PatchSchemaFieldRequest {
     }
 
     @JsonProperty("definition")
-    public Optional<Map<String, Object>> getDefinition() {
+    public Optional<TypesDefinition> getDefinition() {
         return definition;
     }
 
@@ -119,7 +120,7 @@ public final class PatchSchemaFieldRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Object>> definition = Optional.empty();
+        private Optional<TypesDefinition> definition = Optional.empty();
 
         private Optional<Object> example = Optional.empty();
 
@@ -144,12 +145,12 @@ public final class PatchSchemaFieldRequest {
         }
 
         @JsonSetter(value = "definition", nulls = Nulls.SKIP)
-        public Builder definition(Optional<Map<String, Object>> definition) {
+        public Builder definition(Optional<TypesDefinition> definition) {
             this.definition = definition;
             return this;
         }
 
-        public Builder definition(Map<String, Object> definition) {
+        public Builder definition(TypesDefinition definition) {
             this.definition = Optional.ofNullable(definition);
             return this;
         }
