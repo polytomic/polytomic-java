@@ -20,13 +20,33 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = RunQueryRequest.Builder.class)
 public final class RunQueryRequest {
+    private final Optional<String> polytomicHarborSession;
+
+    private final Optional<String> polytomicActivityRequestId;
+
     private final Optional<String> query;
 
     private final Map<String, Object> additionalProperties;
 
-    private RunQueryRequest(Optional<String> query, Map<String, Object> additionalProperties) {
+    private RunQueryRequest(
+            Optional<String> polytomicHarborSession,
+            Optional<String> polytomicActivityRequestId,
+            Optional<String> query,
+            Map<String, Object> additionalProperties) {
+        this.polytomicHarborSession = polytomicHarborSession;
+        this.polytomicActivityRequestId = polytomicActivityRequestId;
         this.query = query;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonIgnore
+    public Optional<String> getPolytomicHarborSession() {
+        return polytomicHarborSession;
+    }
+
+    @JsonIgnore
+    public Optional<String> getPolytomicActivityRequestId() {
+        return polytomicActivityRequestId;
     }
 
     /**
@@ -49,12 +69,14 @@ public final class RunQueryRequest {
     }
 
     private boolean equalTo(RunQueryRequest other) {
-        return query.equals(other.query);
+        return polytomicHarborSession.equals(other.polytomicHarborSession)
+                && polytomicActivityRequestId.equals(other.polytomicActivityRequestId)
+                && query.equals(other.query);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.query);
+        return Objects.hash(this.polytomicHarborSession, this.polytomicActivityRequestId, this.query);
     }
 
     @java.lang.Override
@@ -68,6 +90,10 @@ public final class RunQueryRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<String> polytomicHarborSession = Optional.empty();
+
+        private Optional<String> polytomicActivityRequestId = Optional.empty();
+
         private Optional<String> query = Optional.empty();
 
         @JsonAnySetter
@@ -76,7 +102,29 @@ public final class RunQueryRequest {
         private Builder() {}
 
         public Builder from(RunQueryRequest other) {
+            polytomicHarborSession(other.getPolytomicHarborSession());
+            polytomicActivityRequestId(other.getPolytomicActivityRequestId());
             query(other.getQuery());
+            return this;
+        }
+
+        public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
+            this.polytomicHarborSession = polytomicHarborSession;
+            return this;
+        }
+
+        public Builder polytomicHarborSession(String polytomicHarborSession) {
+            this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
+            return this;
+        }
+
+        public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
+            this.polytomicActivityRequestId = polytomicActivityRequestId;
+            return this;
+        }
+
+        public Builder polytomicActivityRequestId(String polytomicActivityRequestId) {
+            this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
@@ -95,7 +143,7 @@ public final class RunQueryRequest {
         }
 
         public RunQueryRequest build() {
-            return new RunQueryRequest(query, additionalProperties);
+            return new RunQueryRequest(polytomicHarborSession, polytomicActivityRequestId, query, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

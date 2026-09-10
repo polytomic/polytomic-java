@@ -21,14 +21,27 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = UpdateBulkSyncErrorHandlingRequest.Builder.class)
 public final class UpdateBulkSyncErrorHandlingRequest {
+    private final Optional<Integer> ingestionFailureThreshold;
+
     private final Optional<List<String>> subscribers;
 
     private final Map<String, Object> additionalProperties;
 
     private UpdateBulkSyncErrorHandlingRequest(
-            Optional<List<String>> subscribers, Map<String, Object> additionalProperties) {
+            Optional<Integer> ingestionFailureThreshold,
+            Optional<List<String>> subscribers,
+            Map<String, Object> additionalProperties) {
+        this.ingestionFailureThreshold = ingestionFailureThreshold;
         this.subscribers = subscribers;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return How far behind ingestion may fall before a terminal execution is failed, in the unit this sync's source reports: seconds for a source carrying event timestamps, outstanding items for a queue-backed source such as S3. Send 0 to clear this sync's own threshold, after which a source reporting seconds follows the deployment-wide default and a queue-backed source is left unchecked. Omit to leave unchanged.
+     */
+    @JsonProperty("ingestion_failure_threshold")
+    public Optional<Integer> getIngestionFailureThreshold() {
+        return ingestionFailureThreshold;
     }
 
     /**
@@ -52,12 +65,13 @@ public final class UpdateBulkSyncErrorHandlingRequest {
     }
 
     private boolean equalTo(UpdateBulkSyncErrorHandlingRequest other) {
-        return subscribers.equals(other.subscribers);
+        return ingestionFailureThreshold.equals(other.ingestionFailureThreshold)
+                && subscribers.equals(other.subscribers);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.subscribers);
+        return Objects.hash(this.ingestionFailureThreshold, this.subscribers);
     }
 
     @java.lang.Override
@@ -71,6 +85,8 @@ public final class UpdateBulkSyncErrorHandlingRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Integer> ingestionFailureThreshold = Optional.empty();
+
         private Optional<List<String>> subscribers = Optional.empty();
 
         @JsonAnySetter
@@ -79,7 +95,22 @@ public final class UpdateBulkSyncErrorHandlingRequest {
         private Builder() {}
 
         public Builder from(UpdateBulkSyncErrorHandlingRequest other) {
+            ingestionFailureThreshold(other.getIngestionFailureThreshold());
             subscribers(other.getSubscribers());
+            return this;
+        }
+
+        /**
+         * <p>How far behind ingestion may fall before a terminal execution is failed, in the unit this sync's source reports: seconds for a source carrying event timestamps, outstanding items for a queue-backed source such as S3. Send 0 to clear this sync's own threshold, after which a source reporting seconds follows the deployment-wide default and a queue-backed source is left unchecked. Omit to leave unchanged.</p>
+         */
+        @JsonSetter(value = "ingestion_failure_threshold", nulls = Nulls.SKIP)
+        public Builder ingestionFailureThreshold(Optional<Integer> ingestionFailureThreshold) {
+            this.ingestionFailureThreshold = ingestionFailureThreshold;
+            return this;
+        }
+
+        public Builder ingestionFailureThreshold(Integer ingestionFailureThreshold) {
+            this.ingestionFailureThreshold = Optional.ofNullable(ingestionFailureThreshold);
             return this;
         }
 
@@ -98,7 +129,7 @@ public final class UpdateBulkSyncErrorHandlingRequest {
         }
 
         public UpdateBulkSyncErrorHandlingRequest build() {
-            return new UpdateBulkSyncErrorHandlingRequest(subscribers, additionalProperties);
+            return new UpdateBulkSyncErrorHandlingRequest(ingestionFailureThreshold, subscribers, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

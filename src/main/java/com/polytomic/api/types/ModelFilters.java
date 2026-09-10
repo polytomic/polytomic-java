@@ -45,7 +45,7 @@ public final class ModelFilters {
     }
 
     /**
-     * @return Expression combining the conditions in this object by their labels; 'and', 'or', and parentheses are supported. An empty expression means every condition must be satisfied.
+     * @return Expression combining the conditions in this object by their labels; 'and', 'or', and parentheses are supported. The operators are not case-sensitive but the labels are, and the expression has to name every condition in this object -- a condition may be repeated, as in '(A and B) or (A and C)' -- and an expression which leaves one out is rejected. An empty expression means every condition must be satisfied.
      */
     @JsonProperty("logic")
     public Optional<String> getLogic() {
@@ -113,7 +113,7 @@ public final class ModelFilters {
         }
 
         /**
-         * <p>Expression combining the conditions in this object by their labels; 'and', 'or', and parentheses are supported. An empty expression means every condition must be satisfied.</p>
+         * <p>Expression combining the conditions in this object by their labels; 'and', 'or', and parentheses are supported. The operators are not case-sensitive but the labels are, and the expression has to name every condition in this object -- a condition may be repeated, as in '(A and B) or (A and C)' -- and an expression which leaves one out is rejected. An empty expression means every condition must be satisfied.</p>
          */
         @JsonSetter(value = "logic", nulls = Nulls.SKIP)
         public Builder logic(Optional<String> logic) {

@@ -858,6 +858,9 @@ public class RawHarborsClient {
 
     /**
      * Updates a Harbor's name and description.
+     * <p>Renaming a managed Harbor also renames its backing Connection. Both names
+     * change together; a name conflict returns <code>409 Conflict</code> and leaves both
+     * unchanged. Renaming a customer-managed Harbor preserves its Connection's name.</p>
      * <p>This operation does not change <code>backing_mode</code> or <code>backing_connection_id</code>.</p>
      */
     public PolytomicHttpResponse<HarborEnvelope> update(String harborId, UpdateHarborRequest request) {
@@ -866,6 +869,9 @@ public class RawHarborsClient {
 
     /**
      * Updates a Harbor's name and description.
+     * <p>Renaming a managed Harbor also renames its backing Connection. Both names
+     * change together; a name conflict returns <code>409 Conflict</code> and leaves both
+     * unchanged. Renaming a customer-managed Harbor preserves its Connection's name.</p>
      * <p>This operation does not change <code>backing_mode</code> or <code>backing_connection_id</code>.</p>
      */
     public PolytomicHttpResponse<HarborEnvelope> update(

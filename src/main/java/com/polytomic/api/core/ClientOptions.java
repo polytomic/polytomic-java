@@ -47,10 +47,10 @@ public final class ClientOptions {
         this.headers.putAll(headers);
         this.headers.putAll(new HashMap<String, String>() {
             {
-                put("User-Agent", "com.polytomic.polytomic-java/25.9.4");
+                put("User-Agent", "com.polytomic.polytomic-java/25.9.5");
                 put("X-Fern-Language", "JAVA");
                 put("X-Fern-SDK-Name", "com.polytomic:polytomic-java");
-                put("X-Fern-SDK-Version", "25.9.4");
+                put("X-Fern-SDK-Version", "25.9.5");
             }
         });
         this.headerSuppliers = headerSuppliers;

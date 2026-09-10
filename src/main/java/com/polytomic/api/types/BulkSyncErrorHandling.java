@@ -21,13 +21,27 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = BulkSyncErrorHandling.Builder.class)
 public final class BulkSyncErrorHandling {
+    private final Optional<Integer> ingestionFailureThreshold;
+
     private final Optional<List<String>> subscribers;
 
     private final Map<String, Object> additionalProperties;
 
-    private BulkSyncErrorHandling(Optional<List<String>> subscribers, Map<String, Object> additionalProperties) {
+    private BulkSyncErrorHandling(
+            Optional<Integer> ingestionFailureThreshold,
+            Optional<List<String>> subscribers,
+            Map<String, Object> additionalProperties) {
+        this.ingestionFailureThreshold = ingestionFailureThreshold;
         this.subscribers = subscribers;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return How far behind ingestion may fall before a terminal execution is failed, in the unit this sync's source reports: seconds for a source carrying event timestamps, outstanding items for a queue-backed source such as S3. Null means this sync has no threshold of its own: a source reporting seconds then follows the deployment-wide default, while a queue-backed source is left unchecked.
+     */
+    @JsonProperty("ingestion_failure_threshold")
+    public Optional<Integer> getIngestionFailureThreshold() {
+        return ingestionFailureThreshold;
     }
 
     /**
@@ -50,12 +64,13 @@ public final class BulkSyncErrorHandling {
     }
 
     private boolean equalTo(BulkSyncErrorHandling other) {
-        return subscribers.equals(other.subscribers);
+        return ingestionFailureThreshold.equals(other.ingestionFailureThreshold)
+                && subscribers.equals(other.subscribers);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.subscribers);
+        return Objects.hash(this.ingestionFailureThreshold, this.subscribers);
     }
 
     @java.lang.Override
@@ -69,6 +84,8 @@ public final class BulkSyncErrorHandling {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Integer> ingestionFailureThreshold = Optional.empty();
+
         private Optional<List<String>> subscribers = Optional.empty();
 
         @JsonAnySetter
@@ -77,7 +94,22 @@ public final class BulkSyncErrorHandling {
         private Builder() {}
 
         public Builder from(BulkSyncErrorHandling other) {
+            ingestionFailureThreshold(other.getIngestionFailureThreshold());
             subscribers(other.getSubscribers());
+            return this;
+        }
+
+        /**
+         * <p>How far behind ingestion may fall before a terminal execution is failed, in the unit this sync's source reports: seconds for a source carrying event timestamps, outstanding items for a queue-backed source such as S3. Null means this sync has no threshold of its own: a source reporting seconds then follows the deployment-wide default, while a queue-backed source is left unchecked.</p>
+         */
+        @JsonSetter(value = "ingestion_failure_threshold", nulls = Nulls.SKIP)
+        public Builder ingestionFailureThreshold(Optional<Integer> ingestionFailureThreshold) {
+            this.ingestionFailureThreshold = ingestionFailureThreshold;
+            return this;
+        }
+
+        public Builder ingestionFailureThreshold(Integer ingestionFailureThreshold) {
+            this.ingestionFailureThreshold = Optional.ofNullable(ingestionFailureThreshold);
             return this;
         }
 
@@ -96,7 +128,7 @@ public final class BulkSyncErrorHandling {
         }
 
         public BulkSyncErrorHandling build() {
-            return new BulkSyncErrorHandling(subscribers, additionalProperties);
+            return new BulkSyncErrorHandling(ingestionFailureThreshold, subscribers, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

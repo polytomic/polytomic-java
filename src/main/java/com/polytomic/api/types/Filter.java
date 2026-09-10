@@ -89,6 +89,9 @@ public final class Filter {
         return value;
     }
 
+    /**
+     * @return Model field whose value this filter compares against, resolved separately for each record. Only valid on a target filter, mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.
+     */
     @JsonProperty("value_field")
     public Optional<Source> getValueField() {
         return valueField;
@@ -166,6 +169,9 @@ public final class Filter {
 
         _FinalStage value(Object value);
 
+        /**
+         * <p>Model field whose value this filter compares against, resolved separately for each record. Only valid on a target filter, mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.</p>
+         */
         _FinalStage valueField(Optional<Source> valueField);
 
         _FinalStage valueField(Source valueField);
@@ -211,12 +217,19 @@ public final class Filter {
             return this;
         }
 
+        /**
+         * <p>Model field whose value this filter compares against, resolved separately for each record. Only valid on a target filter, mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage valueField(Source valueField) {
             this.valueField = Optional.ofNullable(valueField);
             return this;
         }
 
+        /**
+         * <p>Model field whose value this filter compares against, resolved separately for each record. Only valid on a target filter, mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "value_field", nulls = Nulls.SKIP)
         public _FinalStage valueField(Optional<Source> valueField) {

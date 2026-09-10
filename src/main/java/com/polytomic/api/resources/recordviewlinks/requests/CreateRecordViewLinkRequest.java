@@ -5,6 +5,7 @@ package com.polytomic.api.resources.recordviewlinks.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,6 +24,10 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CreateRecordViewLinkRequest.Builder.class)
 public final class CreateRecordViewLinkRequest {
+    private final Optional<String> polytomicHarborSession;
+
+    private final Optional<String> polytomicActivityRequestId;
+
     private final String connectionId;
 
     private final Optional<OffsetDateTime> expiresAt;
@@ -40,6 +45,8 @@ public final class CreateRecordViewLinkRequest {
     private final Map<String, Object> additionalProperties;
 
     private CreateRecordViewLinkRequest(
+            Optional<String> polytomicHarborSession,
+            Optional<String> polytomicActivityRequestId,
             String connectionId,
             Optional<OffsetDateTime> expiresAt,
             Optional<List<String>> fields,
@@ -48,6 +55,8 @@ public final class CreateRecordViewLinkRequest {
             String schemaId,
             Optional<String> source,
             Map<String, Object> additionalProperties) {
+        this.polytomicHarborSession = polytomicHarborSession;
+        this.polytomicActivityRequestId = polytomicActivityRequestId;
         this.connectionId = connectionId;
         this.expiresAt = expiresAt;
         this.fields = fields;
@@ -56,6 +65,16 @@ public final class CreateRecordViewLinkRequest {
         this.schemaId = schemaId;
         this.source = source;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonIgnore
+    public Optional<String> getPolytomicHarborSession() {
+        return polytomicHarborSession;
+    }
+
+    @JsonIgnore
+    public Optional<String> getPolytomicActivityRequestId() {
+        return polytomicActivityRequestId;
     }
 
     /**
@@ -126,7 +145,9 @@ public final class CreateRecordViewLinkRequest {
     }
 
     private boolean equalTo(CreateRecordViewLinkRequest other) {
-        return connectionId.equals(other.connectionId)
+        return polytomicHarborSession.equals(other.polytomicHarborSession)
+                && polytomicActivityRequestId.equals(other.polytomicActivityRequestId)
+                && connectionId.equals(other.connectionId)
                 && expiresAt.equals(other.expiresAt)
                 && fields.equals(other.fields)
                 && lookupKeyField.equals(other.lookupKeyField)
@@ -138,6 +159,8 @@ public final class CreateRecordViewLinkRequest {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.polytomicHarborSession,
+                this.polytomicActivityRequestId,
                 this.connectionId,
                 this.expiresAt,
                 this.fields,
@@ -193,6 +216,14 @@ public final class CreateRecordViewLinkRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession);
+
+        _FinalStage polytomicHarborSession(String polytomicHarborSession);
+
+        _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId);
+
+        _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId);
+
         /**
          * <p>Optional expiry timestamp. Defaults to 72 hours and cannot exceed 7 days.</p>
          */
@@ -232,6 +263,10 @@ public final class CreateRecordViewLinkRequest {
 
         private Optional<OffsetDateTime> expiresAt = Optional.empty();
 
+        private Optional<String> polytomicActivityRequestId = Optional.empty();
+
+        private Optional<String> polytomicHarborSession = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -239,6 +274,8 @@ public final class CreateRecordViewLinkRequest {
 
         @java.lang.Override
         public Builder from(CreateRecordViewLinkRequest other) {
+            polytomicHarborSession(other.getPolytomicHarborSession());
+            polytomicActivityRequestId(other.getPolytomicActivityRequestId());
             connectionId(other.getConnectionId());
             expiresAt(other.getExpiresAt());
             fields(other.getFields());
@@ -354,8 +391,34 @@ public final class CreateRecordViewLinkRequest {
         }
 
         @java.lang.Override
+        public _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId) {
+            this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
+            this.polytomicActivityRequestId = polytomicActivityRequestId;
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage polytomicHarborSession(String polytomicHarborSession) {
+            this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
+            return this;
+        }
+
+        @java.lang.Override
+        public _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession) {
+            this.polytomicHarborSession = polytomicHarborSession;
+            return this;
+        }
+
+        @java.lang.Override
         public CreateRecordViewLinkRequest build() {
             return new CreateRecordViewLinkRequest(
+                    polytomicHarborSession,
+                    polytomicActivityRequestId,
                     connectionId,
                     expiresAt,
                     fields,

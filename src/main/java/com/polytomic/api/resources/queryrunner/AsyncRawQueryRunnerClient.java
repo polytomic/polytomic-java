@@ -15,8 +15,11 @@ import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
 import com.polytomic.api.errors.BadRequestError;
+import com.polytomic.api.errors.ConflictError;
+import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
+import com.polytomic.api.errors.ServiceUnavailableError;
 import com.polytomic.api.resources.queryrunner.requests.QueryRunnerGetQueryRequest;
 import com.polytomic.api.resources.queryrunner.requests.RunQueryRequest;
 import com.polytomic.api.types.ApiError;
@@ -46,7 +49,7 @@ public class AsyncRawQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -59,7 +62,7 @@ public class AsyncRawQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -73,7 +76,7 @@ public class AsyncRawQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -87,7 +90,7 @@ public class AsyncRawQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -121,6 +124,16 @@ public class AsyncRawQueryRunnerClient {
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Accept", "application/json");
+        if (request.getPolytomicHarborSession().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Harbor-Session",
+                    request.getPolytomicHarborSession().get());
+        }
+        if (request.getPolytomicActivityRequestId().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Activity-Request-ID",
+                    request.getPolytomicActivityRequestId().get());
+        }
         Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -154,13 +167,28 @@ public class AsyncRawQueryRunnerClient {
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
                             case 404:
                                 future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
                             case 500:
                                 future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
@@ -197,7 +225,10 @@ public class AsyncRawQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> getQuery(String id) {
@@ -213,7 +244,10 @@ public class AsyncRawQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> getQuery(
@@ -230,7 +264,10 @@ public class AsyncRawQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> getQuery(
@@ -247,7 +284,10 @@ public class AsyncRawQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> getQuery(
@@ -270,6 +310,16 @@ public class AsyncRawQueryRunnerClient {
                 .method("GET", null)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
+        if (request.getPolytomicHarborSession().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Harbor-Session",
+                    request.getPolytomicHarborSession().get());
+        }
+        if (request.getPolytomicActivityRequestId().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Activity-Request-ID",
+                    request.getPolytomicActivityRequestId().get());
+        }
         Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
@@ -303,13 +353,28 @@ public class AsyncRawQueryRunnerClient {
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
                             case 404:
                                 future.completeExceptionally(new NotFoundError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
                             case 500:
                                 future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;

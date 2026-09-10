@@ -31,7 +31,11 @@ public final class SchemaField {
 
     private final Optional<String> path;
 
+    private final Optional<Boolean> primaryKeyOverride;
+
     private final Optional<String> remoteType;
+
+    private final Optional<Boolean> sourcePrimaryKey;
 
     private final Optional<UtilFieldType> type;
 
@@ -49,7 +53,9 @@ public final class SchemaField {
             Optional<Boolean> isPrimaryKey,
             Optional<String> name,
             Optional<String> path,
+            Optional<Boolean> primaryKeyOverride,
             Optional<String> remoteType,
+            Optional<Boolean> sourcePrimaryKey,
             Optional<UtilFieldType> type,
             Optional<TypesType> typeSpec,
             Optional<Boolean> userManaged,
@@ -60,7 +66,9 @@ public final class SchemaField {
         this.isPrimaryKey = isPrimaryKey;
         this.name = name;
         this.path = path;
+        this.primaryKeyOverride = primaryKeyOverride;
         this.remoteType = remoteType;
+        this.sourcePrimaryKey = sourcePrimaryKey;
         this.type = type;
         this.typeSpec = typeSpec;
         this.userManaged = userManaged;
@@ -100,11 +108,27 @@ public final class SchemaField {
     }
 
     /**
+     * @return The user-set primary key status for this field, which takes precedence over source_primary_key; omitted when no override is set.
+     */
+    @JsonProperty("primary_key_override")
+    public Optional<Boolean> getPrimaryKeyOverride() {
+        return primaryKeyOverride;
+    }
+
+    /**
      * @return The type of the field from the remote system.
      */
     @JsonProperty("remote_type")
     public Optional<String> getRemoteType() {
         return remoteType;
+    }
+
+    /**
+     * @return Whether the source system reports this field as part of the schema's primary key.
+     */
+    @JsonProperty("source_primary_key")
+    public Optional<Boolean> getSourcePrimaryKey() {
+        return sourcePrimaryKey;
     }
 
     @JsonProperty("type")
@@ -147,7 +171,9 @@ public final class SchemaField {
                 && isPrimaryKey.equals(other.isPrimaryKey)
                 && name.equals(other.name)
                 && path.equals(other.path)
+                && primaryKeyOverride.equals(other.primaryKeyOverride)
                 && remoteType.equals(other.remoteType)
+                && sourcePrimaryKey.equals(other.sourcePrimaryKey)
                 && type.equals(other.type)
                 && typeSpec.equals(other.typeSpec)
                 && userManaged.equals(other.userManaged)
@@ -162,7 +188,9 @@ public final class SchemaField {
                 this.isPrimaryKey,
                 this.name,
                 this.path,
+                this.primaryKeyOverride,
                 this.remoteType,
+                this.sourcePrimaryKey,
                 this.type,
                 this.typeSpec,
                 this.userManaged,
@@ -190,7 +218,11 @@ public final class SchemaField {
 
         private Optional<String> path = Optional.empty();
 
+        private Optional<Boolean> primaryKeyOverride = Optional.empty();
+
         private Optional<String> remoteType = Optional.empty();
+
+        private Optional<Boolean> sourcePrimaryKey = Optional.empty();
 
         private Optional<UtilFieldType> type = Optional.empty();
 
@@ -211,7 +243,9 @@ public final class SchemaField {
             isPrimaryKey(other.getIsPrimaryKey());
             name(other.getName());
             path(other.getPath());
+            primaryKeyOverride(other.getPrimaryKeyOverride());
             remoteType(other.getRemoteType());
+            sourcePrimaryKey(other.getSourcePrimaryKey());
             type(other.getType());
             typeSpec(other.getTypeSpec());
             userManaged(other.getUserManaged());
@@ -281,6 +315,20 @@ public final class SchemaField {
         }
 
         /**
+         * <p>The user-set primary key status for this field, which takes precedence over source_primary_key; omitted when no override is set.</p>
+         */
+        @JsonSetter(value = "primary_key_override", nulls = Nulls.SKIP)
+        public Builder primaryKeyOverride(Optional<Boolean> primaryKeyOverride) {
+            this.primaryKeyOverride = primaryKeyOverride;
+            return this;
+        }
+
+        public Builder primaryKeyOverride(Boolean primaryKeyOverride) {
+            this.primaryKeyOverride = Optional.ofNullable(primaryKeyOverride);
+            return this;
+        }
+
+        /**
          * <p>The type of the field from the remote system.</p>
          */
         @JsonSetter(value = "remote_type", nulls = Nulls.SKIP)
@@ -291,6 +339,20 @@ public final class SchemaField {
 
         public Builder remoteType(String remoteType) {
             this.remoteType = Optional.ofNullable(remoteType);
+            return this;
+        }
+
+        /**
+         * <p>Whether the source system reports this field as part of the schema's primary key.</p>
+         */
+        @JsonSetter(value = "source_primary_key", nulls = Nulls.SKIP)
+        public Builder sourcePrimaryKey(Optional<Boolean> sourcePrimaryKey) {
+            this.sourcePrimaryKey = sourcePrimaryKey;
+            return this;
+        }
+
+        public Builder sourcePrimaryKey(Boolean sourcePrimaryKey) {
+            this.sourcePrimaryKey = Optional.ofNullable(sourcePrimaryKey);
             return this;
         }
 
@@ -348,7 +410,9 @@ public final class SchemaField {
                     isPrimaryKey,
                     name,
                     path,
+                    primaryKeyOverride,
                     remoteType,
+                    sourcePrimaryKey,
                     type,
                     typeSpec,
                     userManaged,

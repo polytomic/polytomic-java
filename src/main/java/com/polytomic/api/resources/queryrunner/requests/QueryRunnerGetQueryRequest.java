@@ -5,6 +5,7 @@ package com.polytomic.api.resources.queryrunner.requests;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,13 +21,33 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = QueryRunnerGetQueryRequest.Builder.class)
 public final class QueryRunnerGetQueryRequest {
+    private final Optional<String> polytomicHarborSession;
+
+    private final Optional<String> polytomicActivityRequestId;
+
     private final Optional<String> page;
 
     private final Map<String, Object> additionalProperties;
 
-    private QueryRunnerGetQueryRequest(Optional<String> page, Map<String, Object> additionalProperties) {
+    private QueryRunnerGetQueryRequest(
+            Optional<String> polytomicHarborSession,
+            Optional<String> polytomicActivityRequestId,
+            Optional<String> page,
+            Map<String, Object> additionalProperties) {
+        this.polytomicHarborSession = polytomicHarborSession;
+        this.polytomicActivityRequestId = polytomicActivityRequestId;
         this.page = page;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonIgnore
+    public Optional<String> getPolytomicHarborSession() {
+        return polytomicHarborSession;
+    }
+
+    @JsonIgnore
+    public Optional<String> getPolytomicActivityRequestId() {
+        return polytomicActivityRequestId;
     }
 
     /**
@@ -49,12 +70,14 @@ public final class QueryRunnerGetQueryRequest {
     }
 
     private boolean equalTo(QueryRunnerGetQueryRequest other) {
-        return page.equals(other.page);
+        return polytomicHarborSession.equals(other.polytomicHarborSession)
+                && polytomicActivityRequestId.equals(other.polytomicActivityRequestId)
+                && page.equals(other.page);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.page);
+        return Objects.hash(this.polytomicHarborSession, this.polytomicActivityRequestId, this.page);
     }
 
     @java.lang.Override
@@ -68,6 +91,10 @@ public final class QueryRunnerGetQueryRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<String> polytomicHarborSession = Optional.empty();
+
+        private Optional<String> polytomicActivityRequestId = Optional.empty();
+
         private Optional<String> page = Optional.empty();
 
         @JsonAnySetter
@@ -76,7 +103,29 @@ public final class QueryRunnerGetQueryRequest {
         private Builder() {}
 
         public Builder from(QueryRunnerGetQueryRequest other) {
+            polytomicHarborSession(other.getPolytomicHarborSession());
+            polytomicActivityRequestId(other.getPolytomicActivityRequestId());
             page(other.getPage());
+            return this;
+        }
+
+        public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
+            this.polytomicHarborSession = polytomicHarborSession;
+            return this;
+        }
+
+        public Builder polytomicHarborSession(String polytomicHarborSession) {
+            this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
+            return this;
+        }
+
+        public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
+            this.polytomicActivityRequestId = polytomicActivityRequestId;
+            return this;
+        }
+
+        public Builder polytomicActivityRequestId(String polytomicActivityRequestId) {
+            this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
@@ -95,7 +144,8 @@ public final class QueryRunnerGetQueryRequest {
         }
 
         public QueryRunnerGetQueryRequest build() {
-            return new QueryRunnerGetQueryRequest(page, additionalProperties);
+            return new QueryRunnerGetQueryRequest(
+                    polytomicHarborSession, polytomicActivityRequestId, page, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

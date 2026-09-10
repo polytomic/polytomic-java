@@ -33,7 +33,7 @@ public final class RunQueryResult {
 
     private final Optional<List<Map<String, Object>>> results;
 
-    private final Optional<WorkTaskStatus> status;
+    private final Optional<QueryStatus> status;
 
     private final Map<String, Object> additionalProperties;
 
@@ -44,7 +44,7 @@ public final class RunQueryResult {
             Optional<List<String>> fields,
             Optional<String> id,
             Optional<List<Map<String, Object>>> results,
-            Optional<WorkTaskStatus> status,
+            Optional<QueryStatus> status,
             Map<String, Object> additionalProperties) {
         this.count = count;
         this.error = error;
@@ -89,7 +89,7 @@ public final class RunQueryResult {
     }
 
     /**
-     * @return The ID of the query task. Poll GET /api/queries/{id} until the task reaches done or failed to retrieve results.
+     * @return The ID of the query task. Poll GET /api/queries/{id} until the task reaches the terminal status done, failed, or unknown.
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -105,7 +105,7 @@ public final class RunQueryResult {
     }
 
     @JsonProperty("status")
-    public Optional<WorkTaskStatus> getStatus() {
+    public Optional<QueryStatus> getStatus() {
         return status;
     }
 
@@ -158,7 +158,7 @@ public final class RunQueryResult {
 
         private Optional<List<Map<String, Object>>> results = Optional.empty();
 
-        private Optional<WorkTaskStatus> status = Optional.empty();
+        private Optional<QueryStatus> status = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -233,7 +233,7 @@ public final class RunQueryResult {
         }
 
         /**
-         * <p>The ID of the query task. Poll GET /api/queries/{id} until the task reaches done or failed to retrieve results.</p>
+         * <p>The ID of the query task. Poll GET /api/queries/{id} until the task reaches the terminal status done, failed, or unknown.</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -261,12 +261,12 @@ public final class RunQueryResult {
         }
 
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
-        public Builder status(Optional<WorkTaskStatus> status) {
+        public Builder status(Optional<QueryStatus> status) {
             this.status = status;
             return this;
         }
 
-        public Builder status(WorkTaskStatus status) {
+        public Builder status(QueryStatus status) {
             this.status = Optional.ofNullable(status);
             return this;
         }

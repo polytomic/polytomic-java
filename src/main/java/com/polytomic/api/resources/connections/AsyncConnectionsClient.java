@@ -301,6 +301,9 @@ public class AsyncConnectionsClient {
 
     /**
      * Updates a connection's configuration.
+     * <p>Connections owned by a managed Harbor return <code>409 Conflict</code>. To rename the
+     * Connection, <a href="../../../api-reference/harbors/update">update its Harbor</a>. Customer-managed
+     * Harbor backing Connections remain independently editable.</p>
      * <p>Updating a connection is a <strong>full replacement</strong> of its configuration. Any
      * <code>configuration</code> field you omit is cleared. To make a partial change, fetch
      * the current connection with
@@ -321,6 +324,9 @@ public class AsyncConnectionsClient {
 
     /**
      * Updates a connection's configuration.
+     * <p>Connections owned by a managed Harbor return <code>409 Conflict</code>. To rename the
+     * Connection, <a href="../../../api-reference/harbors/update">update its Harbor</a>. Customer-managed
+     * Harbor backing Connections remain independently editable.</p>
      * <p>Updating a connection is a <strong>full replacement</strong> of its configuration. Any
      * <code>configuration</code> field you omit is cleared. To make a partial change, fetch
      * the current connection with
@@ -341,6 +347,11 @@ public class AsyncConnectionsClient {
 
     /**
      * Deletes a connection.
+     * <p>A Connection that backs any active Harbor returns <code>409 Conflict</code>, including
+     * when you pass <code>force=true</code>. No dependent resources are deleted in this case.
+     * <a href="../../../api-reference/harbors/delete">Delete the Harbor</a> first. Deleting a managed
+     * Harbor also deletes its managed Connection; deleting a customer-managed Harbor
+     * preserves its backing Connection.</p>
      * <blockquote>
      * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
      * syncs, or schedules returns <code>422 connection in use</code> unless you pass
@@ -354,6 +365,11 @@ public class AsyncConnectionsClient {
 
     /**
      * Deletes a connection.
+     * <p>A Connection that backs any active Harbor returns <code>409 Conflict</code>, including
+     * when you pass <code>force=true</code>. No dependent resources are deleted in this case.
+     * <a href="../../../api-reference/harbors/delete">Delete the Harbor</a> first. Deleting a managed
+     * Harbor also deletes its managed Connection; deleting a customer-managed Harbor
+     * preserves its backing Connection.</p>
      * <blockquote>
      * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
      * syncs, or schedules returns <code>422 connection in use</code> unless you pass
@@ -367,6 +383,11 @@ public class AsyncConnectionsClient {
 
     /**
      * Deletes a connection.
+     * <p>A Connection that backs any active Harbor returns <code>409 Conflict</code>, including
+     * when you pass <code>force=true</code>. No dependent resources are deleted in this case.
+     * <a href="../../../api-reference/harbors/delete">Delete the Harbor</a> first. Deleting a managed
+     * Harbor also deletes its managed Connection; deleting a customer-managed Harbor
+     * preserves its backing Connection.</p>
      * <blockquote>
      * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
      * syncs, or schedules returns <code>422 connection in use</code> unless you pass
@@ -380,6 +401,11 @@ public class AsyncConnectionsClient {
 
     /**
      * Deletes a connection.
+     * <p>A Connection that backs any active Harbor returns <code>409 Conflict</code>, including
+     * when you pass <code>force=true</code>. No dependent resources are deleted in this case.
+     * <a href="../../../api-reference/harbors/delete">Delete the Harbor</a> first. Deleting a managed
+     * Harbor also deletes its managed Connection; deleting a customer-managed Harbor
+     * preserves its backing Connection.</p>
      * <blockquote>
      * <p>🚧 Deleting a connection that is referenced by fieldsets, syncs, bulk
      * syncs, or schedules returns <code>422 connection in use</code> unless you pass

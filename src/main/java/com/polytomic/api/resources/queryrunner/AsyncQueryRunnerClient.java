@@ -33,7 +33,7 @@ public class AsyncQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -46,7 +46,7 @@ public class AsyncQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -59,7 +59,7 @@ public class AsyncQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -72,7 +72,7 @@ public class AsyncQueryRunnerClient {
      * Submits a query for asynchronous execution against the connection.
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
-     * reaches <code>done</code> or <code>failed</code>.</p>
+     * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
      * <p>Only the user who created the query can fetch its results later. Query results
      * are stored temporarily and may expire; use the <code>expires</code> field from the result
      * endpoint to understand how long they will remain available.</p>
@@ -91,7 +91,10 @@ public class AsyncQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(String id) {
@@ -107,7 +110,10 @@ public class AsyncQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(String id, RequestOptions requestOptions) {
@@ -123,7 +129,10 @@ public class AsyncQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(String id, QueryRunnerGetQueryRequest request) {
@@ -139,7 +148,10 @@ public class AsyncQueryRunnerClient {
      * opaque <code>links.next</code> and <code>links.previous</code> URLs exactly as returned. Do not try to
      * construct the <code>page</code> token yourself.</p>
      * <p>If the query is still running, the response may include only status metadata.
-     * If the task is complete but the caller is not the same user that created it,
+     * The terminal statuses are <code>done</code>, <code>failed</code>, and <code>unknown</code>. An <code>unknown</code> status
+     * means execution started, but its durable terminal result was lost or expired.
+     * Stop polling when you receive any terminal status.</p>
+     * <p>If the task is complete but the caller is not the same user that created it,
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(

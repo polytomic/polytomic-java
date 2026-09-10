@@ -29,6 +29,8 @@ public final class TargetField {
 
     private final Optional<Boolean> encryptable;
 
+    private final Optional<List<SupportedFilterFunction>> filterFunctions;
+
     private final Optional<Boolean> filterable;
 
     private final Optional<String> id;
@@ -56,6 +58,7 @@ public final class TargetField {
             Optional<Boolean> createable,
             Optional<String> description,
             Optional<Boolean> encryptable,
+            Optional<List<SupportedFilterFunction>> filterFunctions,
             Optional<Boolean> filterable,
             Optional<String> id,
             Optional<List<IdentityFunction>> identityFunctions,
@@ -71,6 +74,7 @@ public final class TargetField {
         this.createable = createable;
         this.description = description;
         this.encryptable = encryptable;
+        this.filterFunctions = filterFunctions;
         this.filterable = filterable;
         this.id = id;
         this.identityFunctions = identityFunctions;
@@ -114,6 +118,14 @@ public final class TargetField {
     @JsonProperty("encryptable")
     public Optional<Boolean> getEncryptable() {
         return encryptable;
+    }
+
+    /**
+     * @return Comparisons this field accepts in a target filter. A condition whose function is absent from this list is rejected when the sync is saved. Empty when the destination publishes no per-field list, in which case any comparison is accepted.
+     */
+    @JsonProperty("filter_functions")
+    public Optional<List<SupportedFilterFunction>> getFilterFunctions() {
+        return filterFunctions;
     }
 
     /**
@@ -212,6 +224,7 @@ public final class TargetField {
                 && createable.equals(other.createable)
                 && description.equals(other.description)
                 && encryptable.equals(other.encryptable)
+                && filterFunctions.equals(other.filterFunctions)
                 && filterable.equals(other.filterable)
                 && id.equals(other.id)
                 && identityFunctions.equals(other.identityFunctions)
@@ -231,6 +244,7 @@ public final class TargetField {
                 this.createable,
                 this.description,
                 this.encryptable,
+                this.filterFunctions,
                 this.filterable,
                 this.id,
                 this.identityFunctions,
@@ -262,6 +276,8 @@ public final class TargetField {
 
         private Optional<Boolean> encryptable = Optional.empty();
 
+        private Optional<List<SupportedFilterFunction>> filterFunctions = Optional.empty();
+
         private Optional<Boolean> filterable = Optional.empty();
 
         private Optional<String> id = Optional.empty();
@@ -292,6 +308,7 @@ public final class TargetField {
             createable(other.getCreateable());
             description(other.getDescription());
             encryptable(other.getEncryptable());
+            filterFunctions(other.getFilterFunctions());
             filterable(other.getFilterable());
             id(other.getId());
             identityFunctions(other.getIdentityFunctions());
@@ -358,6 +375,20 @@ public final class TargetField {
 
         public Builder encryptable(Boolean encryptable) {
             this.encryptable = Optional.ofNullable(encryptable);
+            return this;
+        }
+
+        /**
+         * <p>Comparisons this field accepts in a target filter. A condition whose function is absent from this list is rejected when the sync is saved. Empty when the destination publishes no per-field list, in which case any comparison is accepted.</p>
+         */
+        @JsonSetter(value = "filter_functions", nulls = Nulls.SKIP)
+        public Builder filterFunctions(Optional<List<SupportedFilterFunction>> filterFunctions) {
+            this.filterFunctions = filterFunctions;
+            return this;
+        }
+
+        public Builder filterFunctions(List<SupportedFilterFunction> filterFunctions) {
+            this.filterFunctions = Optional.ofNullable(filterFunctions);
             return this;
         }
 
@@ -507,6 +538,7 @@ public final class TargetField {
                     createable,
                     description,
                     encryptable,
+                    filterFunctions,
                     filterable,
                     id,
                     identityFunctions,

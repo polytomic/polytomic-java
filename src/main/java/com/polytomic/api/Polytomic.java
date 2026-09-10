@@ -5,6 +5,7 @@ package com.polytomic.api;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.Suppliers;
+import com.polytomic.api.resources.activity.ActivityClient;
 import com.polytomic.api.resources.bulksync.BulkSyncClient;
 import com.polytomic.api.resources.connections.ConnectionsClient;
 import com.polytomic.api.resources.entities.EntitiesClient;
@@ -54,6 +55,8 @@ public class Polytomic {
 
     protected final Supplier<OrganizationClient> organizationClient;
 
+    protected final Supplier<ActivityClient> activityClient;
+
     protected final Supplier<UsersClient> usersClient;
 
     protected final Supplier<RecordViewLinksClient> recordViewLinksClient;
@@ -79,6 +82,7 @@ public class Polytomic {
         this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
         this.notificationsClient = Suppliers.memoize(() -> new NotificationsClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new OrganizationClient(clientOptions));
+        this.activityClient = Suppliers.memoize(() -> new ActivityClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new UsersClient(clientOptions));
         this.recordViewLinksClient = Suppliers.memoize(() -> new RecordViewLinksClient(clientOptions));
         this.temporaryCredentialsClient = Suppliers.memoize(() -> new TemporaryCredentialsClient(clientOptions));
@@ -136,6 +140,10 @@ public class Polytomic {
 
     public OrganizationClient organization() {
         return this.organizationClient.get();
+    }
+
+    public ActivityClient activity() {
+        return this.activityClient.get();
     }
 
     public UsersClient users() {

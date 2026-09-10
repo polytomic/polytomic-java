@@ -15,9 +15,11 @@ import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
 import com.polytomic.api.errors.BadRequestError;
+import com.polytomic.api.errors.ConflictError;
 import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
+import com.polytomic.api.errors.ServiceUnavailableError;
 import com.polytomic.api.resources.recordviewlinks.requests.CreateRecordViewLinkRequest;
 import com.polytomic.api.resources.recordviewlinks.requests.RecordViewLinksGetCapabilitiesRequest;
 import com.polytomic.api.types.ApiError;
@@ -63,16 +65,26 @@ public class RawRecordViewLinksClient {
         try {
             body = RequestBody.create(
                     ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
-        } catch (JsonProcessingException e) {
-            throw new PolytomicException("Failed to serialize request", e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        Request okhttpRequest = new Request.Builder()
+        Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
                 .method("POST", body)
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+        if (request.getPolytomicHarborSession().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Harbor-Session",
+                    request.getPolytomicHarborSession().get());
+        }
+        if (request.getPolytomicActivityRequestId().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Activity-Request-ID",
+                    request.getPolytomicActivityRequestId().get());
+        }
+        Request okhttpRequest = _requestBuilder.build();
         OkHttpClient client = clientOptions.httpClient();
         if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
             client = clientOptions.httpClientWithTimeout(requestOptions);
@@ -105,8 +117,14 @@ public class RawRecordViewLinksClient {
                     case 404:
                         throw new NotFoundError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 503:
+                        throw new ServiceUnavailableError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                 }
             } catch (JsonProcessingException ignored) {

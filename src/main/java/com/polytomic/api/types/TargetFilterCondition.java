@@ -65,7 +65,7 @@ public final class TargetFilterCondition {
     }
 
     /**
-     * @return Handle naming this condition in 'logic'. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.
+     * @return Handle naming this condition in 'logic'. A label starts with a letter or underscore and continues with letters, digits and underscores. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.
      */
     @JsonProperty("label")
     public Optional<String> getLabel() {
@@ -81,7 +81,7 @@ public final class TargetFilterCondition {
     }
 
     /**
-     * @return Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations whose mode reports 'supports_filter_value_fields'.
+     * @return Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.
      */
     @JsonProperty("value_source")
     public Optional<Source> getValueSource() {
@@ -145,7 +145,7 @@ public final class TargetFilterCondition {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Handle naming this condition in 'logic'. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.</p>
+         * <p>Handle naming this condition in 'logic'. A label starts with a letter or underscore and continues with letters, digits and underscores. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.</p>
          */
         _FinalStage label(Optional<String> label);
 
@@ -159,7 +159,7 @@ public final class TargetFilterCondition {
         _FinalStage value(Object value);
 
         /**
-         * <p>Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations whose mode reports 'supports_filter_value_fields'.</p>
+         * <p>Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.</p>
          */
         _FinalStage valueSource(Optional<Source> valueSource);
 
@@ -216,7 +216,7 @@ public final class TargetFilterCondition {
         }
 
         /**
-         * <p>Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations whose mode reports 'supports_filter_value_fields'.</p>
+         * <p>Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -226,7 +226,7 @@ public final class TargetFilterCondition {
         }
 
         /**
-         * <p>Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations whose mode reports 'supports_filter_value_fields'.</p>
+         * <p>Model field whose value the destination field is compared against, resolved separately for every record, named the way a model condition names its source. Mutually exclusive with 'value', and accepted only by destinations reporting 'supports_filter_value_fields'.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "value_source", nulls = Nulls.SKIP)
@@ -256,7 +256,7 @@ public final class TargetFilterCondition {
         }
 
         /**
-         * <p>Handle naming this condition in 'logic'. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.</p>
+         * <p>Handle naming this condition in 'logic'. A label starts with a letter or underscore and continues with letters, digits and underscores. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -266,7 +266,7 @@ public final class TargetFilterCondition {
         }
 
         /**
-         * <p>Handle naming this condition in 'logic'. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.</p>
+         * <p>Handle naming this condition in 'logic'. A label starts with a letter or underscore and continues with letters, digits and underscores. Labels are scoped to this object, so a model condition and a target condition may share one. Optional: label every condition in the object or none of them, and an unlabelled object is labelled by position -- A, B, C -- which is how labels are always reported back.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
