@@ -38,6 +38,8 @@ public final class ModelSyncV5Response {
 
     private final Optional<String> id;
 
+    private final Optional<ModelSyncIdentities> identities;
+
     private final Optional<Identity> identity;
 
     private final Optional<ModelsyncSyncTargetMode> mode;
@@ -57,6 +59,8 @@ public final class ModelSyncV5Response {
     private final Optional<List<Override>> overrides;
 
     private final Optional<List<String>> policies;
+
+    private final Optional<List<ModelSyncProblem>> problems;
 
     private final Optional<Schedule> schedule;
 
@@ -83,6 +87,7 @@ public final class ModelSyncV5Response {
             Optional<String> filterLogic,
             Optional<List<Filter>> filters,
             Optional<String> id,
+            Optional<ModelSyncIdentities> identities,
             Optional<Identity> identity,
             Optional<ModelsyncSyncTargetMode> mode,
             Optional<ModelFilters> modelFilters,
@@ -93,6 +98,7 @@ public final class ModelSyncV5Response {
             Optional<List<OverrideField>> overrideFields,
             Optional<List<Override>> overrides,
             Optional<List<String>> policies,
+            Optional<List<ModelSyncProblem>> problems,
             Optional<Schedule> schedule,
             Optional<Boolean> skipInitialBackfill,
             Optional<Boolean> syncAllRecords,
@@ -109,6 +115,7 @@ public final class ModelSyncV5Response {
         this.filterLogic = filterLogic;
         this.filters = filters;
         this.id = id;
+        this.identities = identities;
         this.identity = identity;
         this.mode = mode;
         this.modelFilters = modelFilters;
@@ -119,6 +126,7 @@ public final class ModelSyncV5Response {
         this.overrideFields = overrideFields;
         this.overrides = overrides;
         this.policies = policies;
+        this.problems = problems;
         this.schedule = schedule;
         this.skipInitialBackfill = skipInitialBackfill;
         this.syncAllRecords = syncAllRecords;
@@ -175,6 +183,17 @@ public final class ModelSyncV5Response {
         return id;
     }
 
+    /**
+     * @return Identity mappings for the sync and the strategy combining them.
+     */
+    @JsonProperty("identities")
+    public Optional<ModelSyncIdentities> getIdentities() {
+        return identities;
+    }
+
+    /**
+     * @return Deprecated. Use 'identities'. Reports the first identity mapping only.
+     */
     @JsonProperty("identity")
     public Optional<Identity> getIdentity() {
         return identity;
@@ -226,6 +245,14 @@ public final class ModelSyncV5Response {
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
+    }
+
+    /**
+     * @return Parts of this configuration which could not be resolved when it was read. The configuration is reported unchanged, references included, so it can be corrected and written back; this property is ignored on input.
+     */
+    @JsonProperty("problems")
+    public Optional<List<ModelSyncProblem>> getProblems() {
+        return problems;
     }
 
     @JsonProperty("schedule")
@@ -283,6 +310,7 @@ public final class ModelSyncV5Response {
                 && filterLogic.equals(other.filterLogic)
                 && filters.equals(other.filters)
                 && id.equals(other.id)
+                && identities.equals(other.identities)
                 && identity.equals(other.identity)
                 && mode.equals(other.mode)
                 && modelFilters.equals(other.modelFilters)
@@ -293,6 +321,7 @@ public final class ModelSyncV5Response {
                 && overrideFields.equals(other.overrideFields)
                 && overrides.equals(other.overrides)
                 && policies.equals(other.policies)
+                && problems.equals(other.problems)
                 && schedule.equals(other.schedule)
                 && skipInitialBackfill.equals(other.skipInitialBackfill)
                 && syncAllRecords.equals(other.syncAllRecords)
@@ -313,6 +342,7 @@ public final class ModelSyncV5Response {
                 this.filterLogic,
                 this.filters,
                 this.id,
+                this.identities,
                 this.identity,
                 this.mode,
                 this.modelFilters,
@@ -323,6 +353,7 @@ public final class ModelSyncV5Response {
                 this.overrideFields,
                 this.overrides,
                 this.policies,
+                this.problems,
                 this.schedule,
                 this.skipInitialBackfill,
                 this.syncAllRecords,
@@ -359,6 +390,8 @@ public final class ModelSyncV5Response {
 
         private Optional<String> id = Optional.empty();
 
+        private Optional<ModelSyncIdentities> identities = Optional.empty();
+
         private Optional<Identity> identity = Optional.empty();
 
         private Optional<ModelsyncSyncTargetMode> mode = Optional.empty();
@@ -378,6 +411,8 @@ public final class ModelSyncV5Response {
         private Optional<List<Override>> overrides = Optional.empty();
 
         private Optional<List<String>> policies = Optional.empty();
+
+        private Optional<List<ModelSyncProblem>> problems = Optional.empty();
 
         private Optional<Schedule> schedule = Optional.empty();
 
@@ -407,6 +442,7 @@ public final class ModelSyncV5Response {
             filterLogic(other.getFilterLogic());
             filters(other.getFilters());
             id(other.getId());
+            identities(other.getIdentities());
             identity(other.getIdentity());
             mode(other.getMode());
             modelFilters(other.getModelFilters());
@@ -417,6 +453,7 @@ public final class ModelSyncV5Response {
             overrideFields(other.getOverrideFields());
             overrides(other.getOverrides());
             policies(other.getPolicies());
+            problems(other.getProblems());
             schedule(other.getSchedule());
             skipInitialBackfill(other.getSkipInitialBackfill());
             syncAllRecords(other.getSyncAllRecords());
@@ -521,6 +558,23 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Identity mappings for the sync and the strategy combining them.</p>
+         */
+        @JsonSetter(value = "identities", nulls = Nulls.SKIP)
+        public Builder identities(Optional<ModelSyncIdentities> identities) {
+            this.identities = identities;
+            return this;
+        }
+
+        public Builder identities(ModelSyncIdentities identities) {
+            this.identities = Optional.ofNullable(identities);
+            return this;
+        }
+
+        /**
+         * <p>Deprecated. Use 'identities'. Reports the first identity mapping only.</p>
+         */
         @JsonSetter(value = "identity", nulls = Nulls.SKIP)
         public Builder identity(Optional<Identity> identity) {
             this.identity = identity;
@@ -634,6 +688,20 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Parts of this configuration which could not be resolved when it was read. The configuration is reported unchanged, references included, so it can be corrected and written back; this property is ignored on input.</p>
+         */
+        @JsonSetter(value = "problems", nulls = Nulls.SKIP)
+        public Builder problems(Optional<List<ModelSyncProblem>> problems) {
+            this.problems = problems;
+            return this;
+        }
+
+        public Builder problems(List<ModelSyncProblem> problems) {
+            this.problems = Optional.ofNullable(problems);
+            return this;
+        }
+
         @JsonSetter(value = "schedule", nulls = Nulls.SKIP)
         public Builder schedule(Optional<Schedule> schedule) {
             this.schedule = schedule;
@@ -721,6 +789,7 @@ public final class ModelSyncV5Response {
                     filterLogic,
                     filters,
                     id,
+                    identities,
                     identity,
                     mode,
                     modelFilters,
@@ -731,6 +800,7 @@ public final class ModelSyncV5Response {
                     overrideFields,
                     overrides,
                     policies,
+                    problems,
                     schedule,
                     skipInitialBackfill,
                     syncAllRecords,

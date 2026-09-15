@@ -9,6 +9,8 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborRequest;
+import com.polytomic.api.resources.harbors.requests.CreateHarborSavedQueryDraftRequest;
+import com.polytomic.api.resources.harbors.requests.ExecuteHarborSavedQueryRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsCloseSessionRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsDeleteContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsDeleteContextRequest;
@@ -16,6 +18,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsGetAuthorizedSchemaRe
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextVersionRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsGetSavedQueryRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedConnectionsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedSchemasRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListContextDraftsRequest;
@@ -23,6 +26,8 @@ import com.polytomic.api.resources.harbors.requests.HarborsListContextVersionsRe
 import com.polytomic.api.resources.harbors.requests.HarborsListContextsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListKeysRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueriesRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueryDraftsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListUsersRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsPromoteContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.InviteHarborUserRequest;
@@ -30,12 +35,16 @@ import com.polytomic.api.resources.harbors.requests.RegisterHarborSessionRequest
 import com.polytomic.api.resources.harbors.requests.ResolveHarborSourceMappingsRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextRequest;
+import com.polytomic.api.resources.harbors.requests.SaveHarborSavedQueryDraftRequest;
 import com.polytomic.api.resources.harbors.requests.UpdateHarborRequest;
 import com.polytomic.api.types.CloseHarborSessionEnvelope;
 import com.polytomic.api.types.CreateHarborEnvelope;
 import com.polytomic.api.types.DeletedHarborContextDraftEnvelope;
 import com.polytomic.api.types.DeletedHarborContextEnvelope;
 import com.polytomic.api.types.DeletedHarborEnvelope;
+import com.polytomic.api.types.DeletedHarborSavedQueryDraftEnvelope;
+import com.polytomic.api.types.DeletedHarborSavedQueryEnvelope;
+import com.polytomic.api.types.ExecuteHarborSavedQueryEnvelope;
 import com.polytomic.api.types.HarborConnectionListEnvelope;
 import com.polytomic.api.types.HarborConnectionSchemaEnvelope;
 import com.polytomic.api.types.HarborContextDraftEnvelope;
@@ -48,6 +57,11 @@ import com.polytomic.api.types.HarborEnvelope;
 import com.polytomic.api.types.HarborKeyEnvelope;
 import com.polytomic.api.types.HarborKeyListEnvelope;
 import com.polytomic.api.types.HarborListEnvelope;
+import com.polytomic.api.types.HarborSavedQueryDraftEnvelope;
+import com.polytomic.api.types.HarborSavedQueryDraftListEnvelope;
+import com.polytomic.api.types.HarborSavedQueryEnvelope;
+import com.polytomic.api.types.HarborSavedQueryListEnvelope;
+import com.polytomic.api.types.HarborSavedQueryValidationEnvelope;
 import com.polytomic.api.types.HarborSchemaListEnvelope;
 import com.polytomic.api.types.HarborStatusEnvelope;
 import com.polytomic.api.types.HarborUserEnvelope;
@@ -276,6 +290,10 @@ public class AsyncHarborsClient {
      * Creates a managed or customer-managed Harbor in the caller's current organization.
      * <p><code>generate_api_key</code> defaults to <code>true</code>. Polytomic returns a new plaintext credential only in this response. Set it to <code>false</code> to create the Harbor without a credential.</p>
      * <p>For <code>customer_managed</code>, <code>backing_connection_id</code> must identify a queryable Connection that your credential can access.</p>
+     * <p>Managed Harbors return with <code>status: provisioning</code> while Polytomic sets up their
+     * storage in the background. Poll <code>GET /api/harbors/{harbor_id}</code> until the status is
+     * <code>ready</code> before adding sources or querying data. If provisioning fails, the status
+     * is <code>provisioning_failed</code> and Polytomic retries automatically.</p>
      */
     public CompletableFuture<CreateHarborEnvelope> create(CreateHarborRequest request) {
         return this.rawClient.create(request).thenApply(response -> response.body());
@@ -285,6 +303,10 @@ public class AsyncHarborsClient {
      * Creates a managed or customer-managed Harbor in the caller's current organization.
      * <p><code>generate_api_key</code> defaults to <code>true</code>. Polytomic returns a new plaintext credential only in this response. Set it to <code>false</code> to create the Harbor without a credential.</p>
      * <p>For <code>customer_managed</code>, <code>backing_connection_id</code> must identify a queryable Connection that your credential can access.</p>
+     * <p>Managed Harbors return with <code>status: provisioning</code> while Polytomic sets up their
+     * storage in the background. Poll <code>GET /api/harbors/{harbor_id}</code> until the status is
+     * <code>ready</code> before adding sources or querying data. If provisioning fails, the status
+     * is <code>provisioning_failed</code> and Polytomic retries automatically.</p>
      */
     public CompletableFuture<CreateHarborEnvelope> create(
             CreateHarborRequest request, IdempotentRequestOptions requestOptions) {
@@ -336,6 +358,9 @@ public class AsyncHarborsClient {
      * <p>🚧 Harbor deletion</p>
      * <p>Deleting a Harbor revokes its credentials, context documents, and user assignments. A customer-managed backing Connection remains available. Polytomic deletes a managed backing Connection only when no other resource uses it.</p>
      * </blockquote>
+     * <p>The response confirms that access has been revoked. Polytomic removes managed
+     * storage in the background and retries failed cleanup automatically. You can also
+     * delete a Harbor while it is provisioning.</p>
      */
     public CompletableFuture<DeletedHarborEnvelope> delete(String harborId) {
         return this.rawClient.delete(harborId).thenApply(response -> response.body());
@@ -347,6 +372,9 @@ public class AsyncHarborsClient {
      * <p>🚧 Harbor deletion</p>
      * <p>Deleting a Harbor revokes its credentials, context documents, and user assignments. A customer-managed backing Connection remains available. Polytomic deletes a managed backing Connection only when no other resource uses it.</p>
      * </blockquote>
+     * <p>The response confirms that access has been revoked. Polytomic removes managed
+     * storage in the background and retries failed cleanup automatically. You can also
+     * delete a Harbor while it is provisioning.</p>
      */
     public CompletableFuture<DeletedHarborEnvelope> delete(String harborId, IdempotentRequestOptions requestOptions) {
         return this.rawClient.delete(harborId, requestOptions).thenApply(response -> response.body());
@@ -1020,6 +1048,738 @@ public class AsyncHarborsClient {
     public CompletableFuture<RevokedHarborKeyEnvelope> deleteKey(
             String harborId, String keyId, IdempotentRequestOptions requestOptions) {
         return this.rawClient.deleteKey(harborId, keyId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryListEnvelope> listSavedQueries(String harborId) {
+        return this.rawClient.listSavedQueries(harborId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryListEnvelope> listSavedQueries(
+            String harborId, RequestOptions requestOptions) {
+        return this.rawClient.listSavedQueries(harborId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryListEnvelope> listSavedQueries(
+            String harborId, HarborsListSavedQueriesRequest request) {
+        return this.rawClient.listSavedQueries(harborId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryListEnvelope> listSavedQueries(
+            String harborId, HarborsListSavedQueriesRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .listSavedQueries(harborId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates a stable Harbor saved query with its initial mutable draft.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>. Customer-managed Harbor backings return
+     * an unsupported-backing error.</p>
+     * <p>The saved query receives a stable ID, but it remains absent from published
+     * saved-query reads until an administrator publishes its initial draft.</p>
+     * <p>Use <code>{{parameter_name}}</code> references in <code>sql_template</code>. Each reference must have
+     * one scalar declaration. Validation values and defaults must match the declared
+     * <code>string</code>, <code>number</code>, <code>boolean</code>, <code>date</code>, <code>timestamp</code>, or <code>uuid</code> type.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public CompletableFuture<HarborSavedQueryDraftEnvelope> createSavedQueryDraft(
+            String harborId, CreateHarborSavedQueryDraftRequest request) {
+        return this.rawClient.createSavedQueryDraft(harborId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates a stable Harbor saved query with its initial mutable draft.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>. Customer-managed Harbor backings return
+     * an unsupported-backing error.</p>
+     * <p>The saved query receives a stable ID, but it remains absent from published
+     * saved-query reads until an administrator publishes its initial draft.</p>
+     * <p>Use <code>{{parameter_name}}</code> references in <code>sql_template</code>. Each reference must have
+     * one scalar declaration. Validation values and defaults must match the declared
+     * <code>string</code>, <code>number</code>, <code>boolean</code>, <code>date</code>, <code>timestamp</code>, or <code>uuid</code> type.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public CompletableFuture<HarborSavedQueryDraftEnvelope> createSavedQueryDraft(
+            String harborId, CreateHarborSavedQueryDraftRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .createSavedQueryDraft(harborId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public CompletableFuture<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(String harborId) {
+        return this.rawClient.listSavedQueryDrafts(harborId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public CompletableFuture<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(
+            String harborId, RequestOptions requestOptions) {
+        return this.rawClient.listSavedQueryDrafts(harborId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public CompletableFuture<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(
+            String harborId, HarborsListSavedQueryDraftsRequest request) {
+        return this.rawClient.listSavedQueryDrafts(harborId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public CompletableFuture<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(
+            String harborId, HarborsListSavedQueryDraftsRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .listSavedQueryDrafts(harborId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryEnvelope> getSavedQuery(String harborId, String savedQueryId) {
+        return this.rawClient.getSavedQuery(harborId, savedQueryId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryEnvelope> getSavedQuery(
+            String harborId, String savedQueryId, RequestOptions requestOptions) {
+        return this.rawClient
+                .getSavedQuery(harborId, savedQueryId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryEnvelope> getSavedQuery(
+            String harborId, String savedQueryId, HarborsGetSavedQueryRequest request) {
+        return this.rawClient.getSavedQuery(harborId, savedQueryId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public CompletableFuture<HarborSavedQueryEnvelope> getSavedQuery(
+            String harborId, String savedQueryId, HarborsGetSavedQueryRequest request, RequestOptions requestOptions) {
+        return this.rawClient
+                .getSavedQuery(harborId, savedQueryId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Archives one Harbor saved query and removes it from active reads.
+     * <p>Archiving removes the saved query and any draft from active reads while
+     * retaining its immutable revisions for provenance. The operation does not run
+     * the saved SQL or modify the Harbor backing Connection. Archiving does not cancel
+     * in-flight execution requests or queued executions.</p>
+     * <p>This REST operation archives the saved query; it does not merely unpublish it.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation. There is no REST unpublish endpoint.</p>
+     */
+    public CompletableFuture<DeletedHarborSavedQueryEnvelope> deleteSavedQuery(String harborId, String savedQueryId) {
+        return this.rawClient.deleteSavedQuery(harborId, savedQueryId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Archives one Harbor saved query and removes it from active reads.
+     * <p>Archiving removes the saved query and any draft from active reads while
+     * retaining its immutable revisions for provenance. The operation does not run
+     * the saved SQL or modify the Harbor backing Connection. Archiving does not cancel
+     * in-flight execution requests or queued executions.</p>
+     * <p>This REST operation archives the saved query; it does not merely unpublish it.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation. There is no REST unpublish endpoint.</p>
+     */
+    public CompletableFuture<DeletedHarborSavedQueryEnvelope> deleteSavedQuery(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .deleteSavedQuery(harborId, savedQueryId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates or completely replaces the mutable draft for a Harbor saved query.
+     * <p>Replacement is complete rather than partial. The next validation or publication
+     * uses the replacement SQL, parameter declarations, and validation values.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public CompletableFuture<HarborSavedQueryDraftEnvelope> saveSavedQueryDraft(
+            String harborId, String savedQueryId, SaveHarborSavedQueryDraftRequest request) {
+        return this.rawClient
+                .saveSavedQueryDraft(harborId, savedQueryId, request)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates or completely replaces the mutable draft for a Harbor saved query.
+     * <p>Replacement is complete rather than partial. The next validation or publication
+     * uses the replacement SQL, parameter declarations, and validation values.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public CompletableFuture<HarborSavedQueryDraftEnvelope> saveSavedQueryDraft(
+            String harborId,
+            String savedQueryId,
+            SaveHarborSavedQueryDraftRequest request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .saveSavedQueryDraft(harborId, savedQueryId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Discards the mutable draft for one Harbor saved query.
+     * <p>Discarding an initial unpublished draft also removes its otherwise empty stable
+     * saved-query identity. Discarding a later draft preserves every immutable
+     * published version.</p>
+     */
+    public CompletableFuture<DeletedHarborSavedQueryDraftEnvelope> deleteSavedQueryDraft(
+            String harborId, String savedQueryId) {
+        return this.rawClient.deleteSavedQueryDraft(harborId, savedQueryId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Discards the mutable draft for one Harbor saved query.
+     * <p>Discarding an initial unpublished draft also removes its otherwise empty stable
+     * saved-query identity. Discarding a later draft preserves every immutable
+     * published version.</p>
+     */
+    public CompletableFuture<DeletedHarborSavedQueryDraftEnvelope> deleteSavedQueryDraft(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .deleteSavedQueryDraft(harborId, savedQueryId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Validates and publishes the current draft as the next immutable saved-query version.
+     * <p>Only organization administrators can publish. Publication executes and validates
+     * the current draft with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. It fails instead of using the Harbor writer credential when the
+     * reader credential is missing or incomplete.</p>
+     * <p>After execution, publication verifies that the draft did not change. A
+     * concurrent edit returns a conflict and remains a draft. Successful publication
+     * creates the next immutable revision, records the observed ordered columns as its
+     * output contract, removes validation inputs from the published definition, and
+     * deletes the mutable draft. The response includes the immutable <code>revision_id</code>
+     * that future executions use for exact provenance.</p>
+     */
+    public CompletableFuture<HarborSavedQueryEnvelope> publishSavedQueryDraft(String harborId, String savedQueryId) {
+        return this.rawClient.publishSavedQueryDraft(harborId, savedQueryId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Validates and publishes the current draft as the next immutable saved-query version.
+     * <p>Only organization administrators can publish. Publication executes and validates
+     * the current draft with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. It fails instead of using the Harbor writer credential when the
+     * reader credential is missing or incomplete.</p>
+     * <p>After execution, publication verifies that the draft did not change. A
+     * concurrent edit returns a conflict and remains a draft. Successful publication
+     * creates the next immutable revision, records the observed ordered columns as its
+     * output contract, removes validation inputs from the published definition, and
+     * deletes the mutable draft. The response includes the immutable <code>revision_id</code>
+     * that future executions use for exact provenance.</p>
+     */
+    public CompletableFuture<HarborSavedQueryEnvelope> publishSavedQueryDraft(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .publishSavedQueryDraft(harborId, savedQueryId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Validates the exact current saved-query draft and returns a bounded ephemeral preview.
+     * <p>Only organization administrators can validate drafts. Named template references
+     * compile to DuckDB placeholders, and typed values are passed separately rather
+     * than interpolated into SQL.</p>
+     * <p>The query runs with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. Validation fails when that credential is missing or incomplete and
+     * never falls back to the Harbor writer credential. Preview rows and serialized
+     * response size are bounded. The preview and validation attempt are not persisted.</p>
+     */
+    public CompletableFuture<HarborSavedQueryValidationEnvelope> validateSavedQueryDraft(
+            String harborId, String savedQueryId) {
+        return this.rawClient.validateSavedQueryDraft(harborId, savedQueryId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Validates the exact current saved-query draft and returns a bounded ephemeral preview.
+     * <p>Only organization administrators can validate drafts. Named template references
+     * compile to DuckDB placeholders, and typed values are passed separately rather
+     * than interpolated into SQL.</p>
+     * <p>The query runs with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. Validation fails when that credential is missing or incomplete and
+     * never falls back to the Harbor writer credential. Preview rows and serialized
+     * response size are bounded. The preview and validation attempt are not persisted.</p>
+     */
+    public CompletableFuture<HarborSavedQueryValidationEnvelope> validateSavedQueryDraft(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .validateSavedQueryDraft(harborId, savedQueryId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public CompletableFuture<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(String harborId, String savedQueryId) {
+        return this.rawClient.executeSavedQuery(harborId, savedQueryId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public CompletableFuture<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .executeSavedQuery(harborId, savedQueryId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public CompletableFuture<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(
+            String harborId, String savedQueryId, ExecuteHarborSavedQueryRequest request) {
+        return this.rawClient.executeSavedQuery(harborId, savedQueryId, request).thenApply(response -> response.body());
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public CompletableFuture<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(
+            String harborId,
+            String savedQueryId,
+            ExecuteHarborSavedQueryRequest request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .executeSavedQuery(harborId, savedQueryId, request, requestOptions)
+                .thenApply(response -> response.body());
     }
 
     /**

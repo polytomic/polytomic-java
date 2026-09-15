@@ -287,10 +287,12 @@ public class BulkSyncClient {
      * <li><code>normalize_names</code> resets to enabled.</li>
      * </ul>
      * <p>Send the existing values explicitly if you want to preserve a non-default or
-     * non-empty setting, including schema and field selections.</p>
+     * non-empty setting.</p>
      * <blockquote>
      * <p>📘 Updating schemas</p>
-     * <p>Schema updates are not performed through this endpoint. Use the
+     * <p>When <code>schemas</code> is present, it replaces the sync's schema selection: schemas
+     * not in the list are disabled. When <code>schemas</code> is omitted or empty, the sync's
+     * schemas are left unchanged. Use the
      * <a href="../../../../api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a>
      * endpoint to change a subset of schemas, or
      * <a href="../../../../api-reference/bulk-sync/schemas/update">Update Bulk Sync Schema</a>
@@ -324,10 +326,12 @@ public class BulkSyncClient {
      * <li><code>normalize_names</code> resets to enabled.</li>
      * </ul>
      * <p>Send the existing values explicitly if you want to preserve a non-default or
-     * non-empty setting, including schema and field selections.</p>
+     * non-empty setting.</p>
      * <blockquote>
      * <p>📘 Updating schemas</p>
-     * <p>Schema updates are not performed through this endpoint. Use the
+     * <p>When <code>schemas</code> is present, it replaces the sync's schema selection: schemas
+     * not in the list are disabled. When <code>schemas</code> is omitted or empty, the sync's
+     * schemas are left unchanged. Use the
      * <a href="../../../../api-reference/bulk-sync/schemas/patch">Update Bulk Sync Schemas</a>
      * endpoint to change a subset of schemas, or
      * <a href="../../../../api-reference/bulk-sync/schemas/update">Update Bulk Sync Schema</a>

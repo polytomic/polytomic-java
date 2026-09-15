@@ -58,6 +58,8 @@ public final class HarboractivityapiHarborActivityEvent {
 
     private final Optional<String> provenance;
 
+    private final Optional<HarboractivityapiHarborActivityQuerySource> querySource;
+
     private final Optional<OffsetDateTime> recordedAt;
 
     private final Optional<String> sessionId;
@@ -85,6 +87,7 @@ public final class HarboractivityapiHarborActivityEvent {
             Optional<String> outcome,
             Optional<HarboractivityapiHarborActivityIdentitySnapshot> profile,
             Optional<String> provenance,
+            Optional<HarboractivityapiHarborActivityQuerySource> querySource,
             Optional<OffsetDateTime> recordedAt,
             Optional<String> sessionId,
             Optional<List<HarboractivityapiHarborActivityTarget>> targets,
@@ -107,6 +110,7 @@ public final class HarboractivityapiHarborActivityEvent {
         this.outcome = outcome;
         this.profile = profile;
         this.provenance = provenance;
+        this.querySource = querySource;
         this.recordedAt = recordedAt;
         this.sessionId = sessionId;
         this.targets = targets;
@@ -203,6 +207,11 @@ public final class HarboractivityapiHarborActivityEvent {
         return provenance;
     }
 
+    @JsonProperty("query_source")
+    public Optional<HarboractivityapiHarborActivityQuerySource> getQuerySource() {
+        return querySource;
+    }
+
     @JsonProperty("recorded_at")
     public Optional<OffsetDateTime> getRecordedAt() {
         return recordedAt;
@@ -249,6 +258,7 @@ public final class HarboractivityapiHarborActivityEvent {
                 && outcome.equals(other.outcome)
                 && profile.equals(other.profile)
                 && provenance.equals(other.provenance)
+                && querySource.equals(other.querySource)
                 && recordedAt.equals(other.recordedAt)
                 && sessionId.equals(other.sessionId)
                 && targets.equals(other.targets);
@@ -275,6 +285,7 @@ public final class HarboractivityapiHarborActivityEvent {
                 this.outcome,
                 this.profile,
                 this.provenance,
+                this.querySource,
                 this.recordedAt,
                 this.sessionId,
                 this.targets);
@@ -327,6 +338,8 @@ public final class HarboractivityapiHarborActivityEvent {
 
         private Optional<String> provenance = Optional.empty();
 
+        private Optional<HarboractivityapiHarborActivityQuerySource> querySource = Optional.empty();
+
         private Optional<OffsetDateTime> recordedAt = Optional.empty();
 
         private Optional<String> sessionId = Optional.empty();
@@ -357,6 +370,7 @@ public final class HarboractivityapiHarborActivityEvent {
             outcome(other.getOutcome());
             profile(other.getProfile());
             provenance(other.getProvenance());
+            querySource(other.getQuerySource());
             recordedAt(other.getRecordedAt());
             sessionId(other.getSessionId());
             targets(other.getTargets());
@@ -561,6 +575,17 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        @JsonSetter(value = "query_source", nulls = Nulls.SKIP)
+        public Builder querySource(Optional<HarboractivityapiHarborActivityQuerySource> querySource) {
+            this.querySource = querySource;
+            return this;
+        }
+
+        public Builder querySource(HarboractivityapiHarborActivityQuerySource querySource) {
+            this.querySource = Optional.ofNullable(querySource);
+            return this;
+        }
+
         @JsonSetter(value = "recorded_at", nulls = Nulls.SKIP)
         public Builder recordedAt(Optional<OffsetDateTime> recordedAt) {
             this.recordedAt = recordedAt;
@@ -614,6 +639,7 @@ public final class HarboractivityapiHarborActivityEvent {
                     outcome,
                     profile,
                     provenance,
+                    querySource,
                     recordedAt,
                     sessionId,
                     targets,

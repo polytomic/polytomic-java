@@ -62,6 +62,12 @@ public final class HarboractivityapiHarborActivityMetadata {
 
     private final Optional<Integer> rowCount;
 
+    private final Optional<String> savedQueryId;
+
+    private final Optional<String> savedQueryRevisionId;
+
+    private final Optional<Integer> savedQueryVersion;
+
     private final Optional<String> schemaId;
 
     private final Optional<String> statementCategory;
@@ -94,6 +100,9 @@ public final class HarboractivityapiHarborActivityMetadata {
             Optional<String> reason,
             Optional<String> recordId,
             Optional<Integer> rowCount,
+            Optional<String> savedQueryId,
+            Optional<String> savedQueryRevisionId,
+            Optional<Integer> savedQueryVersion,
             Optional<String> schemaId,
             Optional<String> statementCategory,
             Optional<Boolean> supported,
@@ -120,6 +129,9 @@ public final class HarboractivityapiHarborActivityMetadata {
         this.reason = reason;
         this.recordId = recordId;
         this.rowCount = rowCount;
+        this.savedQueryId = savedQueryId;
+        this.savedQueryRevisionId = savedQueryRevisionId;
+        this.savedQueryVersion = savedQueryVersion;
         this.schemaId = schemaId;
         this.statementCategory = statementCategory;
         this.supported = supported;
@@ -244,6 +256,21 @@ public final class HarboractivityapiHarborActivityMetadata {
         return rowCount;
     }
 
+    @JsonProperty("saved_query_id")
+    public Optional<String> getSavedQueryId() {
+        return savedQueryId;
+    }
+
+    @JsonProperty("saved_query_revision_id")
+    public Optional<String> getSavedQueryRevisionId() {
+        return savedQueryRevisionId;
+    }
+
+    @JsonProperty("saved_query_version")
+    public Optional<Integer> getSavedQueryVersion() {
+        return savedQueryVersion;
+    }
+
     @JsonProperty("schema_id")
     public Optional<String> getSchemaId() {
         return schemaId;
@@ -298,6 +325,9 @@ public final class HarboractivityapiHarborActivityMetadata {
                 && reason.equals(other.reason)
                 && recordId.equals(other.recordId)
                 && rowCount.equals(other.rowCount)
+                && savedQueryId.equals(other.savedQueryId)
+                && savedQueryRevisionId.equals(other.savedQueryRevisionId)
+                && savedQueryVersion.equals(other.savedQueryVersion)
                 && schemaId.equals(other.schemaId)
                 && statementCategory.equals(other.statementCategory)
                 && supported.equals(other.supported)
@@ -328,6 +358,9 @@ public final class HarboractivityapiHarborActivityMetadata {
                 this.reason,
                 this.recordId,
                 this.rowCount,
+                this.savedQueryId,
+                this.savedQueryRevisionId,
+                this.savedQueryVersion,
                 this.schemaId,
                 this.statementCategory,
                 this.supported,
@@ -387,6 +420,12 @@ public final class HarboractivityapiHarborActivityMetadata {
 
         private Optional<Integer> rowCount = Optional.empty();
 
+        private Optional<String> savedQueryId = Optional.empty();
+
+        private Optional<String> savedQueryRevisionId = Optional.empty();
+
+        private Optional<Integer> savedQueryVersion = Optional.empty();
+
         private Optional<String> schemaId = Optional.empty();
 
         private Optional<String> statementCategory = Optional.empty();
@@ -422,6 +461,9 @@ public final class HarboractivityapiHarborActivityMetadata {
             reason(other.getReason());
             recordId(other.getRecordId());
             rowCount(other.getRowCount());
+            savedQueryId(other.getSavedQueryId());
+            savedQueryRevisionId(other.getSavedQueryRevisionId());
+            savedQueryVersion(other.getSavedQueryVersion());
             schemaId(other.getSchemaId());
             statementCategory(other.getStatementCategory());
             supported(other.getSupported());
@@ -672,6 +714,39 @@ public final class HarboractivityapiHarborActivityMetadata {
             return this;
         }
 
+        @JsonSetter(value = "saved_query_id", nulls = Nulls.SKIP)
+        public Builder savedQueryId(Optional<String> savedQueryId) {
+            this.savedQueryId = savedQueryId;
+            return this;
+        }
+
+        public Builder savedQueryId(String savedQueryId) {
+            this.savedQueryId = Optional.ofNullable(savedQueryId);
+            return this;
+        }
+
+        @JsonSetter(value = "saved_query_revision_id", nulls = Nulls.SKIP)
+        public Builder savedQueryRevisionId(Optional<String> savedQueryRevisionId) {
+            this.savedQueryRevisionId = savedQueryRevisionId;
+            return this;
+        }
+
+        public Builder savedQueryRevisionId(String savedQueryRevisionId) {
+            this.savedQueryRevisionId = Optional.ofNullable(savedQueryRevisionId);
+            return this;
+        }
+
+        @JsonSetter(value = "saved_query_version", nulls = Nulls.SKIP)
+        public Builder savedQueryVersion(Optional<Integer> savedQueryVersion) {
+            this.savedQueryVersion = savedQueryVersion;
+            return this;
+        }
+
+        public Builder savedQueryVersion(Integer savedQueryVersion) {
+            this.savedQueryVersion = Optional.ofNullable(savedQueryVersion);
+            return this;
+        }
+
         @JsonSetter(value = "schema_id", nulls = Nulls.SKIP)
         public Builder schemaId(Optional<String> schemaId) {
             this.schemaId = schemaId;
@@ -739,6 +814,9 @@ public final class HarboractivityapiHarborActivityMetadata {
                     reason,
                     recordId,
                     rowCount,
+                    savedQueryId,
+                    savedQueryRevisionId,
+                    savedQueryVersion,
                     schemaId,
                     statementCategory,
                     supported,

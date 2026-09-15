@@ -15,6 +15,7 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.types.Filter;
 import com.polytomic.api.types.Identity;
 import com.polytomic.api.types.ModelFilters;
+import com.polytomic.api.types.ModelSyncIdentities;
 import com.polytomic.api.types.ModelSyncV5Target;
 import com.polytomic.api.types.ModelsyncSyncTargetMode;
 import com.polytomic.api.types.Override;
@@ -42,6 +43,8 @@ public final class CreateModelSyncV5Request {
     private final Optional<String> filterLogic;
 
     private final Optional<List<Filter>> filters;
+
+    private final Optional<ModelSyncIdentities> identities;
 
     private final Optional<Identity> identity;
 
@@ -79,6 +82,7 @@ public final class CreateModelSyncV5Request {
             List<SyncField> fields,
             Optional<String> filterLogic,
             Optional<List<Filter>> filters,
+            Optional<ModelSyncIdentities> identities,
             Optional<Identity> identity,
             ModelsyncSyncTargetMode mode,
             Optional<ModelFilters> modelFilters,
@@ -99,6 +103,7 @@ public final class CreateModelSyncV5Request {
         this.fields = fields;
         this.filterLogic = filterLogic;
         this.filters = filters;
+        this.identities = identities;
         this.identity = identity;
         this.mode = mode;
         this.modelFilters = modelFilters;
@@ -156,6 +161,17 @@ public final class CreateModelSyncV5Request {
         return filters;
     }
 
+    /**
+     * @return Identity mappings for the sync and the strategy combining them, replacing any the sync has. When this is omitted, 'identity' is used instead; updating a sync with more than one mapping requires this property.
+     */
+    @JsonProperty("identities")
+    public Optional<ModelSyncIdentities> getIdentities() {
+        return identities;
+    }
+
+    /**
+     * @return Deprecated. Use 'identities'. Reports and accepts the first identity mapping only.
+     */
     @JsonProperty("identity")
     public Optional<Identity> getIdentity() {
         return identity;
@@ -261,6 +277,7 @@ public final class CreateModelSyncV5Request {
                 && fields.equals(other.fields)
                 && filterLogic.equals(other.filterLogic)
                 && filters.equals(other.filters)
+                && identities.equals(other.identities)
                 && identity.equals(other.identity)
                 && mode.equals(other.mode)
                 && modelFilters.equals(other.modelFilters)
@@ -285,6 +302,7 @@ public final class CreateModelSyncV5Request {
                 this.fields,
                 this.filterLogic,
                 this.filters,
+                this.identities,
                 this.identity,
                 this.mode,
                 this.modelFilters,
@@ -372,6 +390,16 @@ public final class CreateModelSyncV5Request {
 
         _FinalStage filters(List<Filter> filters);
 
+        /**
+         * <p>Identity mappings for the sync and the strategy combining them, replacing any the sync has. When this is omitted, 'identity' is used instead; updating a sync with more than one mapping requires this property.</p>
+         */
+        _FinalStage identities(Optional<ModelSyncIdentities> identities);
+
+        _FinalStage identities(ModelSyncIdentities identities);
+
+        /**
+         * <p>Deprecated. Use 'identities'. Reports and accepts the first identity mapping only.</p>
+         */
         _FinalStage identity(Optional<Identity> identity);
 
         _FinalStage identity(Identity identity);
@@ -461,6 +489,8 @@ public final class CreateModelSyncV5Request {
 
         private Optional<Identity> identity = Optional.empty();
 
+        private Optional<ModelSyncIdentities> identities = Optional.empty();
+
         private Optional<List<Filter>> filters = Optional.empty();
 
         private Optional<String> filterLogic = Optional.empty();
@@ -483,6 +513,7 @@ public final class CreateModelSyncV5Request {
             fields(other.getFields());
             filterLogic(other.getFilterLogic());
             filters(other.getFilters());
+            identities(other.getIdentities());
             identity(other.getIdentity());
             mode(other.getMode());
             modelFilters(other.getModelFilters());
@@ -687,16 +718,43 @@ public final class CreateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>Deprecated. Use 'identities'. Reports and accepts the first identity mapping only.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage identity(Identity identity) {
             this.identity = Optional.ofNullable(identity);
             return this;
         }
 
+        /**
+         * <p>Deprecated. Use 'identities'. Reports and accepts the first identity mapping only.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "identity", nulls = Nulls.SKIP)
         public _FinalStage identity(Optional<Identity> identity) {
             this.identity = identity;
+            return this;
+        }
+
+        /**
+         * <p>Identity mappings for the sync and the strategy combining them, replacing any the sync has. When this is omitted, 'identity' is used instead; updating a sync with more than one mapping requires this property.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage identities(ModelSyncIdentities identities) {
+            this.identities = Optional.ofNullable(identities);
+            return this;
+        }
+
+        /**
+         * <p>Identity mappings for the sync and the strategy combining them, replacing any the sync has. When this is omitted, 'identity' is used instead; updating a sync with more than one mapping requires this property.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "identities", nulls = Nulls.SKIP)
+        public _FinalStage identities(Optional<ModelSyncIdentities> identities) {
+            this.identities = identities;
             return this;
         }
 
@@ -823,6 +881,7 @@ public final class CreateModelSyncV5Request {
                     fields,
                     filterLogic,
                     filters,
+                    identities,
                     identity,
                     mode,
                     modelFilters,

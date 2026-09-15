@@ -18,35 +18,31 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = HarboractivityapiHarborActivityTarget.Builder.class)
-public final class HarboractivityapiHarborActivityTarget {
+@JsonDeserialize(builder = HarboractivityapiHarborActivitySavedQuerySource.Builder.class)
+public final class HarboractivityapiHarborActivitySavedQuerySource {
     private final Optional<String> id;
 
-    private final Optional<String> label;
+    private final Optional<String> name;
 
-    private final Optional<Boolean> labelTruncated;
+    private final Optional<Boolean> nameTruncated;
 
     private final Optional<String> revisionId;
-
-    private final Optional<String> type;
 
     private final Optional<Integer> version;
 
     private final Map<String, Object> additionalProperties;
 
-    private HarboractivityapiHarborActivityTarget(
+    private HarboractivityapiHarborActivitySavedQuerySource(
             Optional<String> id,
-            Optional<String> label,
-            Optional<Boolean> labelTruncated,
+            Optional<String> name,
+            Optional<Boolean> nameTruncated,
             Optional<String> revisionId,
-            Optional<String> type,
             Optional<Integer> version,
             Map<String, Object> additionalProperties) {
         this.id = id;
-        this.label = label;
-        this.labelTruncated = labelTruncated;
+        this.name = name;
+        this.nameTruncated = nameTruncated;
         this.revisionId = revisionId;
-        this.type = type;
         this.version = version;
         this.additionalProperties = additionalProperties;
     }
@@ -56,24 +52,19 @@ public final class HarboractivityapiHarborActivityTarget {
         return id;
     }
 
-    @JsonProperty("label")
-    public Optional<String> getLabel() {
-        return label;
+    @JsonProperty("name")
+    public Optional<String> getName() {
+        return name;
     }
 
-    @JsonProperty("label_truncated")
-    public Optional<Boolean> getLabelTruncated() {
-        return labelTruncated;
+    @JsonProperty("name_truncated")
+    public Optional<Boolean> getNameTruncated() {
+        return nameTruncated;
     }
 
     @JsonProperty("revision_id")
     public Optional<String> getRevisionId() {
         return revisionId;
-    }
-
-    @JsonProperty("type")
-    public Optional<String> getType() {
-        return type;
     }
 
     @JsonProperty("version")
@@ -84,8 +75,8 @@ public final class HarboractivityapiHarborActivityTarget {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof HarboractivityapiHarborActivityTarget
-                && equalTo((HarboractivityapiHarborActivityTarget) other);
+        return other instanceof HarboractivityapiHarborActivitySavedQuerySource
+                && equalTo((HarboractivityapiHarborActivitySavedQuerySource) other);
     }
 
     @JsonAnyGetter
@@ -93,18 +84,17 @@ public final class HarboractivityapiHarborActivityTarget {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(HarboractivityapiHarborActivityTarget other) {
+    private boolean equalTo(HarboractivityapiHarborActivitySavedQuerySource other) {
         return id.equals(other.id)
-                && label.equals(other.label)
-                && labelTruncated.equals(other.labelTruncated)
+                && name.equals(other.name)
+                && nameTruncated.equals(other.nameTruncated)
                 && revisionId.equals(other.revisionId)
-                && type.equals(other.type)
                 && version.equals(other.version);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.id, this.label, this.labelTruncated, this.revisionId, this.type, this.version);
+        return Objects.hash(this.id, this.name, this.nameTruncated, this.revisionId, this.version);
     }
 
     @java.lang.Override
@@ -120,13 +110,11 @@ public final class HarboractivityapiHarborActivityTarget {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        private Optional<String> label = Optional.empty();
+        private Optional<String> name = Optional.empty();
 
-        private Optional<Boolean> labelTruncated = Optional.empty();
+        private Optional<Boolean> nameTruncated = Optional.empty();
 
         private Optional<String> revisionId = Optional.empty();
-
-        private Optional<String> type = Optional.empty();
 
         private Optional<Integer> version = Optional.empty();
 
@@ -135,12 +123,11 @@ public final class HarboractivityapiHarborActivityTarget {
 
         private Builder() {}
 
-        public Builder from(HarboractivityapiHarborActivityTarget other) {
+        public Builder from(HarboractivityapiHarborActivitySavedQuerySource other) {
             id(other.getId());
-            label(other.getLabel());
-            labelTruncated(other.getLabelTruncated());
+            name(other.getName());
+            nameTruncated(other.getNameTruncated());
             revisionId(other.getRevisionId());
-            type(other.getType());
             version(other.getVersion());
             return this;
         }
@@ -156,25 +143,25 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
-        @JsonSetter(value = "label", nulls = Nulls.SKIP)
-        public Builder label(Optional<String> label) {
-            this.label = label;
+        @JsonSetter(value = "name", nulls = Nulls.SKIP)
+        public Builder name(Optional<String> name) {
+            this.name = name;
             return this;
         }
 
-        public Builder label(String label) {
-            this.label = Optional.ofNullable(label);
+        public Builder name(String name) {
+            this.name = Optional.ofNullable(name);
             return this;
         }
 
-        @JsonSetter(value = "label_truncated", nulls = Nulls.SKIP)
-        public Builder labelTruncated(Optional<Boolean> labelTruncated) {
-            this.labelTruncated = labelTruncated;
+        @JsonSetter(value = "name_truncated", nulls = Nulls.SKIP)
+        public Builder nameTruncated(Optional<Boolean> nameTruncated) {
+            this.nameTruncated = nameTruncated;
             return this;
         }
 
-        public Builder labelTruncated(Boolean labelTruncated) {
-            this.labelTruncated = Optional.ofNullable(labelTruncated);
+        public Builder nameTruncated(Boolean nameTruncated) {
+            this.nameTruncated = Optional.ofNullable(nameTruncated);
             return this;
         }
 
@@ -189,17 +176,6 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
-        @JsonSetter(value = "type", nulls = Nulls.SKIP)
-        public Builder type(Optional<String> type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder type(String type) {
-            this.type = Optional.ofNullable(type);
-            return this;
-        }
-
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
             this.version = version;
@@ -211,9 +187,9 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
-        public HarboractivityapiHarborActivityTarget build() {
-            return new HarboractivityapiHarborActivityTarget(
-                    id, label, labelTruncated, revisionId, type, version, additionalProperties);
+        public HarboractivityapiHarborActivitySavedQuerySource build() {
+            return new HarboractivityapiHarborActivitySavedQuerySource(
+                    id, name, nameTruncated, revisionId, version, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

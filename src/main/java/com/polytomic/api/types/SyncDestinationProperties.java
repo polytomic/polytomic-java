@@ -42,6 +42,8 @@ public final class SyncDestinationProperties {
 
     private final Optional<Boolean> supportsIdentityFieldCreation;
 
+    private final Optional<Boolean> supportsMultipleIdentities;
+
     private final Optional<Boolean> supportsTargetFilters;
 
     private final Optional<Boolean> targetCreator;
@@ -62,6 +64,7 @@ public final class SyncDestinationProperties {
             Optional<Boolean> supportsFieldTypeSelection,
             Optional<Boolean> supportsFilterValueFields,
             Optional<Boolean> supportsIdentityFieldCreation,
+            Optional<Boolean> supportsMultipleIdentities,
             Optional<Boolean> supportsTargetFilters,
             Optional<Boolean> targetCreator,
             Optional<Boolean> useFieldNamesAsLabels,
@@ -77,6 +80,7 @@ public final class SyncDestinationProperties {
         this.supportsFieldTypeSelection = supportsFieldTypeSelection;
         this.supportsFilterValueFields = supportsFilterValueFields;
         this.supportsIdentityFieldCreation = supportsIdentityFieldCreation;
+        this.supportsMultipleIdentities = supportsMultipleIdentities;
         this.supportsTargetFilters = supportsTargetFilters;
         this.targetCreator = targetCreator;
         this.useFieldNamesAsLabels = useFieldNamesAsLabels;
@@ -172,6 +176,14 @@ public final class SyncDestinationProperties {
     }
 
     /**
+     * @return True if the destination can match records on more than one identity mapping.
+     */
+    @JsonProperty("supports_multiple_identities")
+    public Optional<Boolean> getSupportsMultipleIdentities() {
+        return supportsMultipleIdentities;
+    }
+
+    /**
      * @return True if target filters are supported on this destination; the chosen sync mode may further constrain availability.
      */
     @JsonProperty("supports_target_filters")
@@ -218,6 +230,7 @@ public final class SyncDestinationProperties {
                 && supportsFieldTypeSelection.equals(other.supportsFieldTypeSelection)
                 && supportsFilterValueFields.equals(other.supportsFilterValueFields)
                 && supportsIdentityFieldCreation.equals(other.supportsIdentityFieldCreation)
+                && supportsMultipleIdentities.equals(other.supportsMultipleIdentities)
                 && supportsTargetFilters.equals(other.supportsTargetFilters)
                 && targetCreator.equals(other.targetCreator)
                 && useFieldNamesAsLabels.equals(other.useFieldNamesAsLabels);
@@ -237,6 +250,7 @@ public final class SyncDestinationProperties {
                 this.supportsFieldTypeSelection,
                 this.supportsFilterValueFields,
                 this.supportsIdentityFieldCreation,
+                this.supportsMultipleIdentities,
                 this.supportsTargetFilters,
                 this.targetCreator,
                 this.useFieldNamesAsLabels);
@@ -275,6 +289,8 @@ public final class SyncDestinationProperties {
 
         private Optional<Boolean> supportsIdentityFieldCreation = Optional.empty();
 
+        private Optional<Boolean> supportsMultipleIdentities = Optional.empty();
+
         private Optional<Boolean> supportsTargetFilters = Optional.empty();
 
         private Optional<Boolean> targetCreator = Optional.empty();
@@ -298,6 +314,7 @@ public final class SyncDestinationProperties {
             supportsFieldTypeSelection(other.getSupportsFieldTypeSelection());
             supportsFilterValueFields(other.getSupportsFilterValueFields());
             supportsIdentityFieldCreation(other.getSupportsIdentityFieldCreation());
+            supportsMultipleIdentities(other.getSupportsMultipleIdentities());
             supportsTargetFilters(other.getSupportsTargetFilters());
             targetCreator(other.getTargetCreator());
             useFieldNamesAsLabels(other.getUseFieldNamesAsLabels());
@@ -459,6 +476,20 @@ public final class SyncDestinationProperties {
         }
 
         /**
+         * <p>True if the destination can match records on more than one identity mapping.</p>
+         */
+        @JsonSetter(value = "supports_multiple_identities", nulls = Nulls.SKIP)
+        public Builder supportsMultipleIdentities(Optional<Boolean> supportsMultipleIdentities) {
+            this.supportsMultipleIdentities = supportsMultipleIdentities;
+            return this;
+        }
+
+        public Builder supportsMultipleIdentities(Boolean supportsMultipleIdentities) {
+            this.supportsMultipleIdentities = Optional.ofNullable(supportsMultipleIdentities);
+            return this;
+        }
+
+        /**
          * <p>True if target filters are supported on this destination; the chosen sync mode may further constrain availability.</p>
          */
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
@@ -513,6 +544,7 @@ public final class SyncDestinationProperties {
                     supportsFieldTypeSelection,
                     supportsFilterValueFields,
                     supportsIdentityFieldCreation,
+                    supportsMultipleIdentities,
                     supportsTargetFilters,
                     targetCreator,
                     useFieldNamesAsLabels,

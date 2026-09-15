@@ -37,6 +37,8 @@ public final class HarborResponse {
 
     private final Optional<String> organizationId;
 
+    private final Optional<String> status;
+
     private final Optional<OffsetDateTime> updatedAt;
 
     private final Map<String, Object> additionalProperties;
@@ -50,6 +52,7 @@ public final class HarborResponse {
             Optional<String> mcpServerUrl,
             Optional<String> name,
             Optional<String> organizationId,
+            Optional<String> status,
             Optional<OffsetDateTime> updatedAt,
             Map<String, Object> additionalProperties) {
         this.backingConnectionId = backingConnectionId;
@@ -60,6 +63,7 @@ public final class HarborResponse {
         this.mcpServerUrl = mcpServerUrl;
         this.name = name;
         this.organizationId = organizationId;
+        this.status = status;
         this.updatedAt = updatedAt;
         this.additionalProperties = additionalProperties;
     }
@@ -129,6 +133,14 @@ public final class HarborResponse {
     }
 
     /**
+     * @return Storage lifecycle status. Wait for ready before using the Harbor; failed provisioning is retried automatically.
+     */
+    @JsonProperty("status")
+    public Optional<String> getStatus() {
+        return status;
+    }
+
+    /**
      * @return When the Harbor was last updated.
      */
     @JsonProperty("updated_at")
@@ -156,6 +168,7 @@ public final class HarborResponse {
                 && mcpServerUrl.equals(other.mcpServerUrl)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
+                && status.equals(other.status)
                 && updatedAt.equals(other.updatedAt);
     }
 
@@ -170,6 +183,7 @@ public final class HarborResponse {
                 this.mcpServerUrl,
                 this.name,
                 this.organizationId,
+                this.status,
                 this.updatedAt);
     }
 
@@ -200,6 +214,8 @@ public final class HarborResponse {
 
         private Optional<String> organizationId = Optional.empty();
 
+        private Optional<String> status = Optional.empty();
+
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
         @JsonAnySetter
@@ -216,6 +232,7 @@ public final class HarborResponse {
             mcpServerUrl(other.getMcpServerUrl());
             name(other.getName());
             organizationId(other.getOrganizationId());
+            status(other.getStatus());
             updatedAt(other.getUpdatedAt());
             return this;
         }
@@ -333,6 +350,20 @@ public final class HarborResponse {
         }
 
         /**
+         * <p>Storage lifecycle status. Wait for ready before using the Harbor; failed provisioning is retried automatically.</p>
+         */
+        @JsonSetter(value = "status", nulls = Nulls.SKIP)
+        public Builder status(Optional<String> status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder status(String status) {
+            this.status = Optional.ofNullable(status);
+            return this;
+        }
+
+        /**
          * <p>When the Harbor was last updated.</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
@@ -356,6 +387,7 @@ public final class HarborResponse {
                     mcpServerUrl,
                     name,
                     organizationId,
+                    status,
                     updatedAt,
                     additionalProperties);
         }

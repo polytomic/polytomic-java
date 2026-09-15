@@ -14,6 +14,7 @@ import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
+import com.polytomic.api.errors.BadRequestError;
 import com.polytomic.api.errors.ConflictError;
 import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
@@ -23,6 +24,8 @@ import com.polytomic.api.errors.UnprocessableEntityError;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborRequest;
+import com.polytomic.api.resources.harbors.requests.CreateHarborSavedQueryDraftRequest;
+import com.polytomic.api.resources.harbors.requests.ExecuteHarborSavedQueryRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsCloseSessionRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsDeleteContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsDeleteContextRequest;
@@ -30,6 +33,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsGetAuthorizedSchemaRe
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextVersionRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsGetSavedQueryRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedConnectionsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedSchemasRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListContextDraftsRequest;
@@ -37,6 +41,8 @@ import com.polytomic.api.resources.harbors.requests.HarborsListContextVersionsRe
 import com.polytomic.api.resources.harbors.requests.HarborsListContextsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListKeysRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueriesRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueryDraftsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListUsersRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsPromoteContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.InviteHarborUserRequest;
@@ -44,6 +50,7 @@ import com.polytomic.api.resources.harbors.requests.RegisterHarborSessionRequest
 import com.polytomic.api.resources.harbors.requests.ResolveHarborSourceMappingsRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextRequest;
+import com.polytomic.api.resources.harbors.requests.SaveHarborSavedQueryDraftRequest;
 import com.polytomic.api.resources.harbors.requests.UpdateHarborRequest;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.CloseHarborSessionEnvelope;
@@ -51,6 +58,9 @@ import com.polytomic.api.types.CreateHarborEnvelope;
 import com.polytomic.api.types.DeletedHarborContextDraftEnvelope;
 import com.polytomic.api.types.DeletedHarborContextEnvelope;
 import com.polytomic.api.types.DeletedHarborEnvelope;
+import com.polytomic.api.types.DeletedHarborSavedQueryDraftEnvelope;
+import com.polytomic.api.types.DeletedHarborSavedQueryEnvelope;
+import com.polytomic.api.types.ExecuteHarborSavedQueryEnvelope;
 import com.polytomic.api.types.HarborConnectionListEnvelope;
 import com.polytomic.api.types.HarborConnectionSchemaEnvelope;
 import com.polytomic.api.types.HarborContextDraftEnvelope;
@@ -63,6 +73,11 @@ import com.polytomic.api.types.HarborEnvelope;
 import com.polytomic.api.types.HarborKeyEnvelope;
 import com.polytomic.api.types.HarborKeyListEnvelope;
 import com.polytomic.api.types.HarborListEnvelope;
+import com.polytomic.api.types.HarborSavedQueryDraftEnvelope;
+import com.polytomic.api.types.HarborSavedQueryDraftListEnvelope;
+import com.polytomic.api.types.HarborSavedQueryEnvelope;
+import com.polytomic.api.types.HarborSavedQueryListEnvelope;
+import com.polytomic.api.types.HarborSavedQueryValidationEnvelope;
 import com.polytomic.api.types.HarborSchemaListEnvelope;
 import com.polytomic.api.types.HarborStatusEnvelope;
 import com.polytomic.api.types.HarborUserEnvelope;
@@ -701,6 +716,10 @@ public class RawHarborsClient {
      * Creates a managed or customer-managed Harbor in the caller's current organization.
      * <p><code>generate_api_key</code> defaults to <code>true</code>. Polytomic returns a new plaintext credential only in this response. Set it to <code>false</code> to create the Harbor without a credential.</p>
      * <p>For <code>customer_managed</code>, <code>backing_connection_id</code> must identify a queryable Connection that your credential can access.</p>
+     * <p>Managed Harbors return with <code>status: provisioning</code> while Polytomic sets up their
+     * storage in the background. Poll <code>GET /api/harbors/{harbor_id}</code> until the status is
+     * <code>ready</code> before adding sources or querying data. If provisioning fails, the status
+     * is <code>provisioning_failed</code> and Polytomic retries automatically.</p>
      */
     public PolytomicHttpResponse<CreateHarborEnvelope> create(CreateHarborRequest request) {
         return create(request, null);
@@ -710,6 +729,10 @@ public class RawHarborsClient {
      * Creates a managed or customer-managed Harbor in the caller's current organization.
      * <p><code>generate_api_key</code> defaults to <code>true</code>. Polytomic returns a new plaintext credential only in this response. Set it to <code>false</code> to create the Harbor without a credential.</p>
      * <p>For <code>customer_managed</code>, <code>backing_connection_id</code> must identify a queryable Connection that your credential can access.</p>
+     * <p>Managed Harbors return with <code>status: provisioning</code> while Polytomic sets up their
+     * storage in the background. Poll <code>GET /api/harbors/{harbor_id}</code> until the status is
+     * <code>ready</code> before adding sources or querying data. If provisioning fails, the status
+     * is <code>provisioning_failed</code> and Polytomic retries automatically.</p>
      */
     public PolytomicHttpResponse<CreateHarborEnvelope> create(
             CreateHarborRequest request, IdempotentRequestOptions requestOptions) {
@@ -956,6 +979,9 @@ public class RawHarborsClient {
      * <p>🚧 Harbor deletion</p>
      * <p>Deleting a Harbor revokes its credentials, context documents, and user assignments. A customer-managed backing Connection remains available. Polytomic deletes a managed backing Connection only when no other resource uses it.</p>
      * </blockquote>
+     * <p>The response confirms that access has been revoked. Polytomic removes managed
+     * storage in the background and retries failed cleanup automatically. You can also
+     * delete a Harbor while it is provisioning.</p>
      */
     public PolytomicHttpResponse<DeletedHarborEnvelope> delete(String harborId) {
         return delete(harborId, null);
@@ -967,6 +993,9 @@ public class RawHarborsClient {
      * <p>🚧 Harbor deletion</p>
      * <p>Deleting a Harbor revokes its credentials, context documents, and user assignments. A customer-managed backing Connection remains available. Polytomic deletes a managed backing Connection only when no other resource uses it.</p>
      * </blockquote>
+     * <p>The response confirms that access has been revoked. Polytomic removes managed
+     * storage in the background and retries failed cleanup automatically. You can also
+     * delete a Harbor while it is provisioning.</p>
      */
     public PolytomicHttpResponse<DeletedHarborEnvelope> delete(
             String harborId, IdempotentRequestOptions requestOptions) {
@@ -2833,6 +2862,1470 @@ public class RawHarborsClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryListEnvelope> listSavedQueries(String harborId) {
+        return listSavedQueries(
+                harborId, HarborsListSavedQueriesRequest.builder().build());
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryListEnvelope> listSavedQueries(
+            String harborId, RequestOptions requestOptions) {
+        return listSavedQueries(
+                harborId, HarborsListSavedQueriesRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryListEnvelope> listSavedQueries(
+            String harborId, HarborsListSavedQueriesRequest request) {
+        return listSavedQueries(harborId, request, null);
+    }
+
+    /**
+     * Lists current published saved queries for a Harbor.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>.</p>
+     * <p>Collection items contain current published metadata and omit SQL, parameter
+     * values, and unpublished drafts. A Harbor profile credential can list saved
+     * queries only when <code>harbor_id</code> identifies its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request, including each page. A
+     * missing or invalid ID returns <code>400 Bad Request</code>. Reusing a consumed ID returns
+     * <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.listed</code> before returning data. The event describes
+     * only the returned page, including saved-query IDs, immutable revision IDs,
+     * version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+     * values, and expected column names. If Polytomic cannot record the event, the
+     * request returns <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryListEnvelope> listSavedQueries(
+            String harborId, HarborsListSavedQueriesRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries");
+        if (request.getLimit().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getPageToken().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_token", request.getPageToken().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        if (request.getPolytomicHarborSession().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Harbor-Session",
+                    request.getPolytomicHarborSession().get());
+        }
+        if (request.getPolytomicActivityRequestId().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Activity-Request-ID",
+                    request.getPolytomicActivityRequestId().get());
+        }
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, HarborSavedQueryListEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 503:
+                        throw new ServiceUnavailableError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Creates a stable Harbor saved query with its initial mutable draft.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>. Customer-managed Harbor backings return
+     * an unsupported-backing error.</p>
+     * <p>The saved query receives a stable ID, but it remains absent from published
+     * saved-query reads until an administrator publishes its initial draft.</p>
+     * <p>Use <code>{{parameter_name}}</code> references in <code>sql_template</code>. Each reference must have
+     * one scalar declaration. Validation values and defaults must match the declared
+     * <code>string</code>, <code>number</code>, <code>boolean</code>, <code>date</code>, <code>timestamp</code>, or <code>uuid</code> type.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftEnvelope> createSavedQueryDraft(
+            String harborId, CreateHarborSavedQueryDraftRequest request) {
+        return createSavedQueryDraft(harborId, request, null);
+    }
+
+    /**
+     * Creates a stable Harbor saved query with its initial mutable draft.
+     * <p>Saved queries are supported only for Polytomic-managed Harbors whose backing
+     * Connection type is <code>polytomic_harbor</code>. Customer-managed Harbor backings return
+     * an unsupported-backing error.</p>
+     * <p>The saved query receives a stable ID, but it remains absent from published
+     * saved-query reads until an administrator publishes its initial draft.</p>
+     * <p>Use <code>{{parameter_name}}</code> references in <code>sql_template</code>. Each reference must have
+     * one scalar declaration. Validation values and defaults must match the declared
+     * <code>string</code>, <code>number</code>, <code>boolean</code>, <code>date</code>, <code>timestamp</code>, or <code>uuid</code> type.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftEnvelope> createSavedQueryDraft(
+            String harborId, CreateHarborSavedQueryDraftRequest request, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, HarborSavedQueryDraftEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(String harborId) {
+        return listSavedQueryDrafts(
+                harborId, HarborsListSavedQueryDraftsRequest.builder().build());
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(
+            String harborId, RequestOptions requestOptions) {
+        return listSavedQueryDrafts(
+                harborId, HarborsListSavedQueryDraftsRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(
+            String harborId, HarborsListSavedQueryDraftsRequest request) {
+        return listSavedQueryDrafts(harborId, request, null);
+    }
+
+    /**
+     * Lists mutable Harbor saved-query drafts.
+     * <p>Drafts are ordered from newest to oldest and include complete SQL, typed
+     * parameter declarations, and author-supplied validation values. Harbor profile
+     * credentials cannot access this endpoint.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftListEnvelope> listSavedQueryDrafts(
+            String harborId, HarborsListSavedQueryDraftsRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegments("drafts");
+        if (request.getLimit().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getPageToken().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_token", request.getPageToken().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(
+                                responseBodyString, HarborSavedQueryDraftListEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryEnvelope> getSavedQuery(String harborId, String savedQueryId) {
+        return getSavedQuery(
+                harborId, savedQueryId, HarborsGetSavedQueryRequest.builder().build());
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryEnvelope> getSavedQuery(
+            String harborId, String savedQueryId, RequestOptions requestOptions) {
+        return getSavedQuery(
+                harborId, savedQueryId, HarborsGetSavedQueryRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryEnvelope> getSavedQuery(
+            String harborId, String savedQueryId, HarborsGetSavedQueryRequest request) {
+        return getSavedQuery(harborId, savedQueryId, request, null);
+    }
+
+    /**
+     * Returns the current published version of one Harbor saved query.
+     * <p>The response contains the current immutable <code>revision_id</code>, SQL template,
+     * parameter contract, expected columns, and publication provenance. Validation
+     * inputs are draft-only and are never part of a published response.</p>
+     * <p>A Harbor profile credential can retrieve a saved query only from its own Harbor.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>When you use a Harbor profile credential, send a new nonzero UUID in
+     * <code>X-Polytomic-Activity-Request-ID</code> for each request. A missing or invalid ID
+     * returns <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code>.</p>
+     * <p>If you supply <code>X-Polytomic-Harbor-Session</code>, the session must be active and bound
+     * to your credential and Harbor. An invalid session returns <code>403 Forbidden</code>.
+     * Direct scoped REST requests may omit the session header.</p>
+     * <p>Polytomic records <code>saved_query.fetched</code> before returning the definition. The
+     * event identifies the saved query, exact immutable revision, published version,
+     * and bounded name snapshot. It does not indicate query execution. Activity
+     * excludes SQL, parameter defaults and validation values, expected column names,
+     * and result rows. If Polytomic cannot record the event, the request returns
+     * <code>503 Service Unavailable</code> without saved-query data.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryEnvelope> getSavedQuery(
+            String harborId, String savedQueryId, HarborsGetSavedQueryRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegment(savedQueryId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        if (request.getPolytomicHarborSession().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Harbor-Session",
+                    request.getPolytomicHarborSession().get());
+        }
+        if (request.getPolytomicActivityRequestId().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Activity-Request-ID",
+                    request.getPolytomicActivityRequestId().get());
+        }
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, HarborSavedQueryEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 503:
+                        throw new ServiceUnavailableError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Archives one Harbor saved query and removes it from active reads.
+     * <p>Archiving removes the saved query and any draft from active reads while
+     * retaining its immutable revisions for provenance. The operation does not run
+     * the saved SQL or modify the Harbor backing Connection. Archiving does not cancel
+     * in-flight execution requests or queued executions.</p>
+     * <p>This REST operation archives the saved query; it does not merely unpublish it.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation. There is no REST unpublish endpoint.</p>
+     */
+    public PolytomicHttpResponse<DeletedHarborSavedQueryEnvelope> deleteSavedQuery(
+            String harborId, String savedQueryId) {
+        return deleteSavedQuery(harborId, savedQueryId, null);
+    }
+
+    /**
+     * Archives one Harbor saved query and removes it from active reads.
+     * <p>Archiving removes the saved query and any draft from active reads while
+     * retaining its immutable revisions for provenance. The operation does not run
+     * the saved SQL or modify the Harbor backing Connection. Archiving does not cancel
+     * in-flight execution requests or queued executions.</p>
+     * <p>This REST operation archives the saved query; it does not merely unpublish it.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation. There is no REST unpublish endpoint.</p>
+     */
+    public PolytomicHttpResponse<DeletedHarborSavedQueryEnvelope> deleteSavedQuery(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegment(savedQueryId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, DeletedHarborSavedQueryEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Creates or completely replaces the mutable draft for a Harbor saved query.
+     * <p>Replacement is complete rather than partial. The next validation or publication
+     * uses the replacement SQL, parameter declarations, and validation values.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftEnvelope> saveSavedQueryDraft(
+            String harborId, String savedQueryId, SaveHarborSavedQueryDraftRequest request) {
+        return saveSavedQueryDraft(harborId, savedQueryId, request, null);
+    }
+
+    /**
+     * Creates or completely replaces the mutable draft for a Harbor saved query.
+     * <p>Replacement is complete rather than partial. The next validation or publication
+     * uses the replacement SQL, parameter declarations, and validation values.</p>
+     * <p>Unknown JSON fields, including fields inside parameter declarations, return
+     * <code>400 Bad Request</code> before the draft is saved. Use <code>default_value</code>, not <code>default</code>,
+     * for parameter defaults.</p>
+     * <p>When you omit a parameter during execution, Polytomic uses its published
+     * <code>default_value</code>, never its draft validation value. An omitted optional parameter
+     * without a default binds SQL <code>NULL</code>. A required parameter allows omission when a
+     * default exists, but rejects explicit <code>null</code> even with a default.</p>
+     * <p>For a report window, use a required parameter with a default so omission selects
+     * a useful window and explicit <code>null</code> is rejected:</p>
+     * <pre><code class="language-json">{&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;number&quot;, &quot;required&quot;: true, &quot;default_value&quot;: 7}
+     * </code></pre>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryDraftEnvelope> saveSavedQueryDraft(
+            String harborId,
+            String savedQueryId,
+            SaveHarborSavedQueryDraftRequest request,
+            IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegment(savedQueryId)
+                .addPathSegments("draft");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, HarborSavedQueryDraftEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Discards the mutable draft for one Harbor saved query.
+     * <p>Discarding an initial unpublished draft also removes its otherwise empty stable
+     * saved-query identity. Discarding a later draft preserves every immutable
+     * published version.</p>
+     */
+    public PolytomicHttpResponse<DeletedHarborSavedQueryDraftEnvelope> deleteSavedQueryDraft(
+            String harborId, String savedQueryId) {
+        return deleteSavedQueryDraft(harborId, savedQueryId, null);
+    }
+
+    /**
+     * Discards the mutable draft for one Harbor saved query.
+     * <p>Discarding an initial unpublished draft also removes its otherwise empty stable
+     * saved-query identity. Discarding a later draft preserves every immutable
+     * published version.</p>
+     */
+    public PolytomicHttpResponse<DeletedHarborSavedQueryDraftEnvelope> deleteSavedQueryDraft(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegment(savedQueryId)
+                .addPathSegments("draft");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(
+                                responseBodyString, DeletedHarborSavedQueryDraftEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Validates and publishes the current draft as the next immutable saved-query version.
+     * <p>Only organization administrators can publish. Publication executes and validates
+     * the current draft with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. It fails instead of using the Harbor writer credential when the
+     * reader credential is missing or incomplete.</p>
+     * <p>After execution, publication verifies that the draft did not change. A
+     * concurrent edit returns a conflict and remains a draft. Successful publication
+     * creates the next immutable revision, records the observed ordered columns as its
+     * output contract, removes validation inputs from the published definition, and
+     * deletes the mutable draft. The response includes the immutable <code>revision_id</code>
+     * that future executions use for exact provenance.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryEnvelope> publishSavedQueryDraft(
+            String harborId, String savedQueryId) {
+        return publishSavedQueryDraft(harborId, savedQueryId, null);
+    }
+
+    /**
+     * Validates and publishes the current draft as the next immutable saved-query version.
+     * <p>Only organization administrators can publish. Publication executes and validates
+     * the current draft with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. It fails instead of using the Harbor writer credential when the
+     * reader credential is missing or incomplete.</p>
+     * <p>After execution, publication verifies that the draft did not change. A
+     * concurrent edit returns a conflict and remains a draft. Successful publication
+     * creates the next immutable revision, records the observed ordered columns as its
+     * output contract, removes validation inputs from the published definition, and
+     * deletes the mutable draft. The response includes the immutable <code>revision_id</code>
+     * that future executions use for exact provenance.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryEnvelope> publishSavedQueryDraft(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegment(savedQueryId)
+                .addPathSegments("draft")
+                .addPathSegments("publish");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, HarborSavedQueryEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Validates the exact current saved-query draft and returns a bounded ephemeral preview.
+     * <p>Only organization administrators can validate drafts. Named template references
+     * compile to DuckDB placeholders, and typed values are passed separately rather
+     * than interpolated into SQL.</p>
+     * <p>The query runs with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. Validation fails when that credential is missing or incomplete and
+     * never falls back to the Harbor writer credential. Preview rows and serialized
+     * response size are bounded. The preview and validation attempt are not persisted.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryValidationEnvelope> validateSavedQueryDraft(
+            String harborId, String savedQueryId) {
+        return validateSavedQueryDraft(harborId, savedQueryId, null);
+    }
+
+    /**
+     * Validates the exact current saved-query draft and returns a bounded ephemeral preview.
+     * <p>Only organization administrators can validate drafts. Named template references
+     * compile to DuckDB placeholders, and typed values are passed separately rather
+     * than interpolated into SQL.</p>
+     * <p>The query runs with the Polytomic-managed Harbor's MotherDuck <code>read_scaling</code>
+     * credential. Validation fails when that credential is missing or incomplete and
+     * never falls back to the Harbor writer credential. Preview rows and serialized
+     * response size are bounded. The preview and validation attempt are not persisted.</p>
+     */
+    public PolytomicHttpResponse<HarborSavedQueryValidationEnvelope> validateSavedQueryDraft(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegment(savedQueryId)
+                .addPathSegments("draft")
+                .addPathSegments("validate");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", RequestBody.create("", null))
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(
+                                responseBodyString, HarborSavedQueryValidationEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public PolytomicHttpResponse<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(
+            String harborId, String savedQueryId) {
+        return executeSavedQuery(
+                harborId, savedQueryId, ExecuteHarborSavedQueryRequest.builder().build());
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public PolytomicHttpResponse<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(
+            String harborId, String savedQueryId, IdempotentRequestOptions requestOptions) {
+        return executeSavedQuery(
+                harborId, savedQueryId, ExecuteHarborSavedQueryRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public PolytomicHttpResponse<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(
+            String harborId, String savedQueryId, ExecuteHarborSavedQueryRequest request) {
+        return executeSavedQuery(harborId, savedQueryId, request, null);
+    }
+
+    /**
+     * Submits the current published Harbor saved query for asynchronous reader-only execution.
+     * <p>Use a Harbor-bound scoped credential with query access to the Harbor's backing
+     * Connection. Administrator credentials cannot submit executions here. Saved
+     * queries require a Polytomic-managed Harbor.</p>
+     * <p>Polytomic selects the current published revision while processing your request.
+     * The response identifies that exact immutable revision. Selection happens before
+     * Polytomic accepts the execution. Drafts, unpublished queries, and archived
+     * queries are unavailable for selection. You cannot select a historical revision
+     * or supply SQL through this endpoint.</p>
+     * <blockquote>
+     * <p>⚠️ Concurrent publication changes</p>
+     * <p>Publishing, unpublishing, or archiving a saved query after selection does not
+     * change the selected revision. An in-flight request may still be accepted and
+     * execute that revision. Unpublishing or archiving does not cancel in-flight
+     * requests or queued executions. Query access is checked again before execution
+     * and result retrieval.</p>
+     * </blockquote>
+     * <p>Parameter values are bound separately from SQL. Omitted parameters use the
+     * published <code>default_value</code>, never draft validation values. An omitted optional
+     * parameter without a default binds SQL <code>NULL</code>. Required parameters allow omission
+     * when a default exists, but reject explicit <code>null</code> even with a default. Missing
+     * required values without defaults, explicit <code>null</code> for required parameters,
+     * unknown parameter names, and invalid scalar types return
+     * <code>422 Unprocessable Entity</code> without accepting an execution. Execution requires
+     * reader credentials and never falls back to writer credentials.</p>
+     * <p>For report windows, define parameters with <code>required: true</code> and a
+     * <code>default_value</code>, such as <code>7</code> for a <code>days</code> parameter. This allows omission while
+     * preventing explicit <code>null</code> from turning a time filter into a SQL <code>NULL</code>
+     * comparison.</p>
+     * <p>To archive a saved query through REST, use
+     * <a href="../../../../../../api-reference/harbors/delete-saved-query"><code>DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}</code></a>.
+     * Unpublish is available only through the GraphQL <code>unpublishHarborSavedQuery</code>
+     * mutation, not a REST endpoint.</p>
+     * <h2>Results</h2>
+     * <p>The response returns a task ID with status <code>created</code>, not result rows. Poll
+     * <a href="../../../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> using a credential
+     * from the same Harbor profile. Query access is checked again before execution and
+     * result retrieval. Stop polling at <code>done</code>, <code>failed</code>, or <code>unknown</code>; <code>unknown</code> means
+     * execution started but no durable terminal result is available.</p>
+     * <p>Results and detailed failure information expire after 24 hours. Use the
+     * <code>expires</code> field and follow <code>links.next</code> to retrieve additional result pages.</p>
+     * <h2>Harbor Activity</h2>
+     * <p>Send a new nonzero UUID in <code>X-Polytomic-Activity-Request-ID</code>. Missing or invalid
+     * IDs return <code>400 Bad Request</code>. Reusing a consumed ID returns <code>409 Conflict</code> and
+     * does not create another execution.</p>
+     * <p>You may omit <code>X-Polytomic-Harbor-Session</code> for direct REST requests. If supplied,
+     * the session must be active and bound to your credential and Harbor.</p>
+     * <p>Polytomic records <code>query.submitted</code> atomically with acceptance. The event
+     * identifies the saved query, immutable revision, published version, and bounded
+     * name snapshot. SQL, parameter values and defaults, column names, and result rows
+     * remain outside Activity metadata. If Activity persistence is unavailable, the
+     * request returns <code>503 Service Unavailable</code> without accepting an execution.</p>
+     * <p><code>query.started</code> records provider invocation. <code>query.succeeded</code> means results are
+     * available for authorized retrieval, not that you have consumed them.</p>
+     */
+    public PolytomicHttpResponse<ExecuteHarborSavedQueryEnvelope> executeSavedQuery(
+            String harborId,
+            String savedQueryId,
+            ExecuteHarborSavedQueryRequest request,
+            IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("saved-queries")
+                .addPathSegment(savedQueryId)
+                .addPathSegments("execute");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json");
+        if (request.getPolytomicHarborSession().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Harbor-Session",
+                    request.getPolytomicHarborSession().get());
+        }
+        if (request.getPolytomicActivityRequestId().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Activity-Request-ID",
+                    request.getPolytomicActivityRequestId().get());
+        }
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ExecuteHarborSavedQueryEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 503:
+                        throw new ServiceUnavailableError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                 }
             } catch (JsonProcessingException ignored) {

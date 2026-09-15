@@ -227,7 +227,7 @@ public final class UpdateBulkSyncRequest {
     }
 
     /**
-     * @return List of schemas to sync; if omitted, all schemas will be selected for syncing.
+     * @return Schemas to sync. Schemas not in the list are disabled; if omitted or empty, the sync's schemas are left unchanged.
      */
     @JsonProperty("schemas")
     public Optional<List<UpdateBulkSyncRequestSchemasItem>> getSchemas() {
@@ -432,7 +432,7 @@ public final class UpdateBulkSyncRequest {
         _FinalStage resyncConcurrencyLimit(Integer resyncConcurrencyLimit);
 
         /**
-         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         * <p>Schemas to sync. Schemas not in the list are disabled; if omitted or empty, the sync's schemas are left unchanged.</p>
          */
         _FinalStage schemas(Optional<List<UpdateBulkSyncRequestSchemasItem>> schemas);
 
@@ -581,7 +581,7 @@ public final class UpdateBulkSyncRequest {
         }
 
         /**
-         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         * <p>Schemas to sync. Schemas not in the list are disabled; if omitted or empty, the sync's schemas are left unchanged.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -591,7 +591,7 @@ public final class UpdateBulkSyncRequest {
         }
 
         /**
-         * <p>List of schemas to sync; if omitted, all schemas will be selected for syncing.</p>
+         * <p>Schemas to sync. Schemas not in the list are disabled; if omitted or empty, the sync's schemas are left unchanged.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
