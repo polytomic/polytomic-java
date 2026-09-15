@@ -25,7 +25,7 @@ import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
-import com.polytomic.api.resources.modelsync.requests.StartSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.types.ActivateSyncEnvelope;
 import com.polytomic.api.types.ActivateSyncInput;
@@ -1148,7 +1148,7 @@ public class RawModelSyncClient {
      * </blockquote>
      */
     public PolytomicHttpResponse<StartSyncResponseEnvelope> start(String id) {
-        return start(id, StartSyncRequest.builder().build());
+        return start(id, StartModelSyncRequest.builder().build());
     }
 
     /**
@@ -1159,7 +1159,7 @@ public class RawModelSyncClient {
      * </blockquote>
      */
     public PolytomicHttpResponse<StartSyncResponseEnvelope> start(String id, IdempotentRequestOptions requestOptions) {
-        return start(id, StartSyncRequest.builder().build(), requestOptions);
+        return start(id, StartModelSyncRequest.builder().build(), requestOptions);
     }
 
     /**
@@ -1169,7 +1169,7 @@ public class RawModelSyncClient {
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
-    public PolytomicHttpResponse<StartSyncResponseEnvelope> start(String id, StartSyncRequest request) {
+    public PolytomicHttpResponse<StartSyncResponseEnvelope> start(String id, StartModelSyncRequest request) {
         return start(id, request, null);
     }
 
@@ -1181,7 +1181,7 @@ public class RawModelSyncClient {
      * </blockquote>
      */
     public PolytomicHttpResponse<StartSyncResponseEnvelope> start(
-            String id, StartSyncRequest request, IdempotentRequestOptions requestOptions) {
+            String id, StartModelSyncRequest request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")

@@ -198,7 +198,7 @@ public class RawOrganizationClient {
     }
 
     /**
-     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> is replaced, not merged: omitting it, or sending null, removes any destination previously configured.
+     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> and <code>deliveryPrefix</code> are replaced, not merged: omitting either, or sending null, removes what was previously configured.
      */
     public PolytomicHttpResponse<RecordLoggingSettingsEnvelope> updateRecordLogging(
             UpdateRecordLoggingSettingsRequest request) {
@@ -206,7 +206,7 @@ public class RawOrganizationClient {
     }
 
     /**
-     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> is replaced, not merged: omitting it, or sending null, removes any destination previously configured.
+     * Replaces the organization's record logging settings. <code>deliveryConnectionId</code> and <code>deliveryPrefix</code> are replaced, not merged: omitting either, or sending null, removes what was previously configured.
      */
     public PolytomicHttpResponse<RecordLoggingSettingsEnvelope> updateRecordLogging(
             UpdateRecordLoggingSettingsRequest request, IdempotentRequestOptions requestOptions) {

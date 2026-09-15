@@ -24,6 +24,8 @@ public final class RecordLoggingSettingsResponse {
 
     private final Optional<String> deliveryConnectionName;
 
+    private final Optional<String> deliveryPrefix;
+
     private final Optional<Boolean> enabled;
 
     private final Map<String, Object> additionalProperties;
@@ -31,10 +33,12 @@ public final class RecordLoggingSettingsResponse {
     private RecordLoggingSettingsResponse(
             Optional<String> deliveryConnectionId,
             Optional<String> deliveryConnectionName,
+            Optional<String> deliveryPrefix,
             Optional<Boolean> enabled,
             Map<String, Object> additionalProperties) {
         this.deliveryConnectionId = deliveryConnectionId;
         this.deliveryConnectionName = deliveryConnectionName;
+        this.deliveryPrefix = deliveryPrefix;
         this.enabled = enabled;
         this.additionalProperties = additionalProperties;
     }
@@ -53,6 +57,14 @@ public final class RecordLoggingSettingsResponse {
     @JsonProperty("deliveryConnectionName")
     public Optional<String> getDeliveryConnectionName() {
         return deliveryConnectionName;
+    }
+
+    /**
+     * @return Path record logs are delivered under, ahead of the organization ID, if one is set.
+     */
+    @JsonProperty("deliveryPrefix")
+    public Optional<String> getDeliveryPrefix() {
+        return deliveryPrefix;
     }
 
     /**
@@ -77,12 +89,13 @@ public final class RecordLoggingSettingsResponse {
     private boolean equalTo(RecordLoggingSettingsResponse other) {
         return deliveryConnectionId.equals(other.deliveryConnectionId)
                 && deliveryConnectionName.equals(other.deliveryConnectionName)
+                && deliveryPrefix.equals(other.deliveryPrefix)
                 && enabled.equals(other.enabled);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.deliveryConnectionId, this.deliveryConnectionName, this.enabled);
+        return Objects.hash(this.deliveryConnectionId, this.deliveryConnectionName, this.deliveryPrefix, this.enabled);
     }
 
     @java.lang.Override
@@ -100,6 +113,8 @@ public final class RecordLoggingSettingsResponse {
 
         private Optional<String> deliveryConnectionName = Optional.empty();
 
+        private Optional<String> deliveryPrefix = Optional.empty();
+
         private Optional<Boolean> enabled = Optional.empty();
 
         @JsonAnySetter
@@ -110,6 +125,7 @@ public final class RecordLoggingSettingsResponse {
         public Builder from(RecordLoggingSettingsResponse other) {
             deliveryConnectionId(other.getDeliveryConnectionId());
             deliveryConnectionName(other.getDeliveryConnectionName());
+            deliveryPrefix(other.getDeliveryPrefix());
             enabled(other.getEnabled());
             return this;
         }
@@ -143,6 +159,20 @@ public final class RecordLoggingSettingsResponse {
         }
 
         /**
+         * <p>Path record logs are delivered under, ahead of the organization ID, if one is set.</p>
+         */
+        @JsonSetter(value = "deliveryPrefix", nulls = Nulls.SKIP)
+        public Builder deliveryPrefix(Optional<String> deliveryPrefix) {
+            this.deliveryPrefix = deliveryPrefix;
+            return this;
+        }
+
+        public Builder deliveryPrefix(String deliveryPrefix) {
+            this.deliveryPrefix = Optional.ofNullable(deliveryPrefix);
+            return this;
+        }
+
+        /**
          * <p>True when record logging is enabled for the organization.</p>
          */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
@@ -158,7 +188,7 @@ public final class RecordLoggingSettingsResponse {
 
         public RecordLoggingSettingsResponse build() {
             return new RecordLoggingSettingsResponse(
-                    deliveryConnectionId, deliveryConnectionName, enabled, additionalProperties);
+                    deliveryConnectionId, deliveryConnectionName, deliveryPrefix, enabled, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

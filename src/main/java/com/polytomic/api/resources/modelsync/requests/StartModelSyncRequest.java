@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.ModelSyncSourceIdentity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,27 +20,34 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = StartSyncRequest.Builder.class)
-public final class StartSyncRequest {
+@JsonDeserialize(builder = StartModelSyncRequest.Builder.class)
+public final class StartModelSyncRequest {
     private final Optional<List<String>> identities;
 
     private final Optional<Boolean> resync;
+
+    private final Optional<List<List<ModelSyncSourceIdentity>>> sourceIdentities;
 
     private final Optional<Boolean> test;
 
     private final Map<String, Object> additionalProperties;
 
-    private StartSyncRequest(
+    private StartModelSyncRequest(
             Optional<List<String>> identities,
             Optional<Boolean> resync,
+            Optional<List<List<ModelSyncSourceIdentity>>> sourceIdentities,
             Optional<Boolean> test,
             Map<String, Object> additionalProperties) {
         this.identities = identities;
         this.resync = resync;
+        this.sourceIdentities = sourceIdentities;
         this.test = test;
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead.
+     */
     @JsonProperty("identities")
     public Optional<List<String>> getIdentities() {
         return identities;
@@ -50,6 +58,14 @@ public final class StartSyncRequest {
         return resync;
     }
 
+    /**
+     * @return Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities'; at most 1000 entries.
+     */
+    @JsonProperty("source_identities")
+    public Optional<List<List<ModelSyncSourceIdentity>>> getSourceIdentities() {
+        return sourceIdentities;
+    }
+
     @JsonProperty("test")
     public Optional<Boolean> getTest() {
         return test;
@@ -58,7 +74,7 @@ public final class StartSyncRequest {
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof StartSyncRequest && equalTo((StartSyncRequest) other);
+        return other instanceof StartModelSyncRequest && equalTo((StartModelSyncRequest) other);
     }
 
     @JsonAnyGetter
@@ -66,13 +82,16 @@ public final class StartSyncRequest {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(StartSyncRequest other) {
-        return identities.equals(other.identities) && resync.equals(other.resync) && test.equals(other.test);
+    private boolean equalTo(StartModelSyncRequest other) {
+        return identities.equals(other.identities)
+                && resync.equals(other.resync)
+                && sourceIdentities.equals(other.sourceIdentities)
+                && test.equals(other.test);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.identities, this.resync, this.test);
+        return Objects.hash(this.identities, this.resync, this.sourceIdentities, this.test);
     }
 
     @java.lang.Override
@@ -90,6 +109,8 @@ public final class StartSyncRequest {
 
         private Optional<Boolean> resync = Optional.empty();
 
+        private Optional<List<List<ModelSyncSourceIdentity>>> sourceIdentities = Optional.empty();
+
         private Optional<Boolean> test = Optional.empty();
 
         @JsonAnySetter
@@ -97,13 +118,17 @@ public final class StartSyncRequest {
 
         private Builder() {}
 
-        public Builder from(StartSyncRequest other) {
+        public Builder from(StartModelSyncRequest other) {
             identities(other.getIdentities());
             resync(other.getResync());
+            sourceIdentities(other.getSourceIdentities());
             test(other.getTest());
             return this;
         }
 
+        /**
+         * <p>Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead.</p>
+         */
         @JsonSetter(value = "identities", nulls = Nulls.SKIP)
         public Builder identities(Optional<List<String>> identities) {
             this.identities = identities;
@@ -126,6 +151,20 @@ public final class StartSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities'; at most 1000 entries.</p>
+         */
+        @JsonSetter(value = "source_identities", nulls = Nulls.SKIP)
+        public Builder sourceIdentities(Optional<List<List<ModelSyncSourceIdentity>>> sourceIdentities) {
+            this.sourceIdentities = sourceIdentities;
+            return this;
+        }
+
+        public Builder sourceIdentities(List<List<ModelSyncSourceIdentity>> sourceIdentities) {
+            this.sourceIdentities = Optional.ofNullable(sourceIdentities);
+            return this;
+        }
+
         @JsonSetter(value = "test", nulls = Nulls.SKIP)
         public Builder test(Optional<Boolean> test) {
             this.test = test;
@@ -137,8 +176,8 @@ public final class StartSyncRequest {
             return this;
         }
 
-        public StartSyncRequest build() {
-            return new StartSyncRequest(identities, resync, test, additionalProperties);
+        public StartModelSyncRequest build() {
+            return new StartModelSyncRequest(identities, resync, sourceIdentities, test, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

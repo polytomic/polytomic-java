@@ -22,13 +22,19 @@ import java.util.Optional;
 public final class UpdateRecordLoggingSettingsRequest {
     private final Optional<String> deliveryConnectionId;
 
+    private final Optional<String> deliveryPrefix;
+
     private final boolean enabled;
 
     private final Map<String, Object> additionalProperties;
 
     private UpdateRecordLoggingSettingsRequest(
-            Optional<String> deliveryConnectionId, boolean enabled, Map<String, Object> additionalProperties) {
+            Optional<String> deliveryConnectionId,
+            Optional<String> deliveryPrefix,
+            boolean enabled,
+            Map<String, Object> additionalProperties) {
         this.deliveryConnectionId = deliveryConnectionId;
+        this.deliveryPrefix = deliveryPrefix;
         this.enabled = enabled;
         this.additionalProperties = additionalProperties;
     }
@@ -39,6 +45,14 @@ public final class UpdateRecordLoggingSettingsRequest {
     @JsonProperty("deliveryConnectionId")
     public Optional<String> getDeliveryConnectionId() {
         return deliveryConnectionId;
+    }
+
+    /**
+     * @return Path record logs are delivered under, ahead of the organization ID. Omit or send null for none; this field is replaced, not merged.
+     */
+    @JsonProperty("deliveryPrefix")
+    public Optional<String> getDeliveryPrefix() {
+        return deliveryPrefix;
     }
 
     /**
@@ -62,12 +76,14 @@ public final class UpdateRecordLoggingSettingsRequest {
     }
 
     private boolean equalTo(UpdateRecordLoggingSettingsRequest other) {
-        return deliveryConnectionId.equals(other.deliveryConnectionId) && enabled == other.enabled;
+        return deliveryConnectionId.equals(other.deliveryConnectionId)
+                && deliveryPrefix.equals(other.deliveryPrefix)
+                && enabled == other.enabled;
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.deliveryConnectionId, this.enabled);
+        return Objects.hash(this.deliveryConnectionId, this.deliveryPrefix, this.enabled);
     }
 
     @java.lang.Override
@@ -101,11 +117,20 @@ public final class UpdateRecordLoggingSettingsRequest {
         _FinalStage deliveryConnectionId(Optional<String> deliveryConnectionId);
 
         _FinalStage deliveryConnectionId(String deliveryConnectionId);
+
+        /**
+         * <p>Path record logs are delivered under, ahead of the organization ID. Omit or send null for none; this field is replaced, not merged.</p>
+         */
+        _FinalStage deliveryPrefix(Optional<String> deliveryPrefix);
+
+        _FinalStage deliveryPrefix(String deliveryPrefix);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder implements EnabledStage, _FinalStage {
         private boolean enabled;
+
+        private Optional<String> deliveryPrefix = Optional.empty();
 
         private Optional<String> deliveryConnectionId = Optional.empty();
 
@@ -117,6 +142,7 @@ public final class UpdateRecordLoggingSettingsRequest {
         @java.lang.Override
         public Builder from(UpdateRecordLoggingSettingsRequest other) {
             deliveryConnectionId(other.getDeliveryConnectionId());
+            deliveryPrefix(other.getDeliveryPrefix());
             enabled(other.getEnabled());
             return this;
         }
@@ -129,6 +155,26 @@ public final class UpdateRecordLoggingSettingsRequest {
         @JsonSetter("enabled")
         public _FinalStage enabled(boolean enabled) {
             this.enabled = enabled;
+            return this;
+        }
+
+        /**
+         * <p>Path record logs are delivered under, ahead of the organization ID. Omit or send null for none; this field is replaced, not merged.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage deliveryPrefix(String deliveryPrefix) {
+            this.deliveryPrefix = Optional.ofNullable(deliveryPrefix);
+            return this;
+        }
+
+        /**
+         * <p>Path record logs are delivered under, ahead of the organization ID. Omit or send null for none; this field is replaced, not merged.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "deliveryPrefix", nulls = Nulls.SKIP)
+        public _FinalStage deliveryPrefix(Optional<String> deliveryPrefix) {
+            this.deliveryPrefix = deliveryPrefix;
             return this;
         }
 
@@ -154,7 +200,8 @@ public final class UpdateRecordLoggingSettingsRequest {
 
         @java.lang.Override
         public UpdateRecordLoggingSettingsRequest build() {
-            return new UpdateRecordLoggingSettingsRequest(deliveryConnectionId, enabled, additionalProperties);
+            return new UpdateRecordLoggingSettingsRequest(
+                    deliveryConnectionId, deliveryPrefix, enabled, additionalProperties);
         }
 
         @java.lang.Override

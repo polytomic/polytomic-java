@@ -5091,7 +5091,7 @@ Starts a new execution of a model sync.
 ```java
 client.modelSync().start(
     "248df4b7-aa70-47b8-a036-33ac447e668d",
-    StartSyncRequest
+    StartModelSyncRequest
         .builder()
         .build()
 );
@@ -5117,7 +5117,7 @@ client.modelSync().start(
 <dl>
 <dd>
 
-**identities:** `Optional<List<String>>` 
+**identities:** `Optional<List<String>>` — Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead.
     
 </dd>
 </dl>
@@ -5126,6 +5126,14 @@ client.modelSync().start(
 <dd>
 
 **resync:** `Optional<Boolean>` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sourceIdentities:** `Optional<List<List<ModelSyncSourceIdentity>>>` — Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities'; at most 1000 entries.
     
 </dd>
 </dl>
@@ -9680,7 +9688,7 @@ client.organization().getRecordLogging();
 <dl>
 <dd>
 
-Replaces the organization's record logging settings. `deliveryConnectionId` is replaced, not merged: omitting it, or sending null, removes any destination previously configured.
+Replaces the organization's record logging settings. `deliveryConnectionId` and `deliveryPrefix` are replaced, not merged: omitting either, or sending null, removes what was previously configured.
 </dd>
 </dl>
 </dd>
@@ -9716,6 +9724,14 @@ client.organization().updateRecordLogging(
 <dd>
 
 **deliveryConnectionId:** `Optional<String>` — Blobstorage connection that receives record logs after each model sync execution. Omit or send null to deliver nowhere; this field is replaced, not merged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**deliveryPrefix:** `Optional<String>` — Path record logs are delivered under, ahead of the organization ID. Omit or send null for none; this field is replaced, not merged.
     
 </dd>
 </dl>

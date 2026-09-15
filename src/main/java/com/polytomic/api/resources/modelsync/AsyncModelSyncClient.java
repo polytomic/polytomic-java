@@ -13,7 +13,7 @@ import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
-import com.polytomic.api.resources.modelsync.requests.StartSyncRequest;
+import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.targets.AsyncTargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
@@ -514,7 +514,7 @@ public class AsyncModelSyncClient {
      * <p>Use caution when setting the <code>resync</code> parameter to <code>true</code>. This will force a full resync of the data from the source system. This can be a time-consuming operation and may impact the performance of the source system. It is recommended to only use this option when necessary.</p>
      * </blockquote>
      */
-    public CompletableFuture<StartSyncResponseEnvelope> start(String id, StartSyncRequest request) {
+    public CompletableFuture<StartSyncResponseEnvelope> start(String id, StartModelSyncRequest request) {
         return this.rawClient.start(id, request).thenApply(response -> response.body());
     }
 
@@ -526,7 +526,7 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<StartSyncResponseEnvelope> start(
-            String id, StartSyncRequest request, IdempotentRequestOptions requestOptions) {
+            String id, StartModelSyncRequest request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.start(id, request, requestOptions).thenApply(response -> response.body());
     }
 
