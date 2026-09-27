@@ -316,6 +316,23 @@ public class RawConnectionsClient {
      * <p>To inspect the data objects available on a specific connection, use
      * <a href="../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
      * followed by <a href="../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     * <h2>Observed rate limits</h2>
+     * <p>You can use <code>rate_limit</code> to inspect observed rate limiting separately from
+     * Connection health. A Connection can be healthy while Polytomic has an active
+     * rate-limit marker. Shared Connections combine observations recorded for their
+     * own ID and their root Connection. Observations recorded only for another shared
+     * copy are not included.</p>
+     * <p>When these observed periods overlap or touch, <code>limited_since</code> reflects the start
+     * of the continuous period and <code>expires_at</code> reflects its latest expiry. An expired
+     * period separated from the active period by a gap does not extend that start.</p>
+     * <blockquote>
+     * <p>⚠️ Observation, not a capacity guarantee</p>
+     * <p>An active marker does not mean every endpoint or sync is blocked. No active
+     * marker does not guarantee that the upstream service has capacity. The marker
+     * expiry can be extended and is not a promised provider reset or exact retry time.</p>
+     * </blockquote>
+     * <p>If any required lookup is unavailable, <code>rate_limit</code> is <code>null</code>. This does not change
+     * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public PolytomicHttpResponse<ConnectionListResponseEnvelope> list() {
         return list(null);
@@ -330,6 +347,23 @@ public class RawConnectionsClient {
      * <p>To inspect the data objects available on a specific connection, use
      * <a href="../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a>
      * followed by <a href="../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     * <h2>Observed rate limits</h2>
+     * <p>You can use <code>rate_limit</code> to inspect observed rate limiting separately from
+     * Connection health. A Connection can be healthy while Polytomic has an active
+     * rate-limit marker. Shared Connections combine observations recorded for their
+     * own ID and their root Connection. Observations recorded only for another shared
+     * copy are not included.</p>
+     * <p>When these observed periods overlap or touch, <code>limited_since</code> reflects the start
+     * of the continuous period and <code>expires_at</code> reflects its latest expiry. An expired
+     * period separated from the active period by a gap does not extend that start.</p>
+     * <blockquote>
+     * <p>⚠️ Observation, not a capacity guarantee</p>
+     * <p>An active marker does not mean every endpoint or sync is blocked. No active
+     * marker does not guarantee that the upstream service has capacity. The marker
+     * expiry can be extended and is not a promised provider reset or exact retry time.</p>
+     * </blockquote>
+     * <p>If any required lookup is unavailable, <code>rate_limit</code> is <code>null</code>. This does not change
+     * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public PolytomicHttpResponse<ConnectionListResponseEnvelope> list(RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
@@ -764,6 +798,23 @@ public class RawConnectionsClient {
      * <a href="../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
      * track progress via
      * <a href="../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     * <h2>Observed rate limits</h2>
+     * <p>You can use <code>rate_limit</code> to inspect observed rate limiting separately from
+     * Connection health. A Connection can be healthy while Polytomic has an active
+     * rate-limit marker. Shared Connections combine observations recorded for their
+     * own ID and their root Connection. Observations recorded only for another shared
+     * copy are not included.</p>
+     * <p>When these observed periods overlap or touch, <code>limited_since</code> reflects the start
+     * of the continuous period and <code>expires_at</code> reflects its latest expiry. An expired
+     * period separated from the active period by a gap does not extend that start.</p>
+     * <blockquote>
+     * <p>⚠️ Observation, not a capacity guarantee</p>
+     * <p>An active marker does not mean every endpoint or sync is blocked. No active
+     * marker does not guarantee that the upstream service has capacity. The marker
+     * expiry can be extended and is not a promised provider reset or exact retry time.</p>
+     * </blockquote>
+     * <p>If any required lookup is unavailable, <code>rate_limit</code> is <code>null</code>. This does not change
+     * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public PolytomicHttpResponse<ConnectionResponseEnvelope> get(String id) {
         return get(id, null);
@@ -775,6 +826,23 @@ public class RawConnectionsClient {
      * <a href="../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> and
      * track progress via
      * <a href="../../../api-reference/schemas/get-status"><code>GET /api/connections/{id}/schemas/status</code></a>.</p>
+     * <h2>Observed rate limits</h2>
+     * <p>You can use <code>rate_limit</code> to inspect observed rate limiting separately from
+     * Connection health. A Connection can be healthy while Polytomic has an active
+     * rate-limit marker. Shared Connections combine observations recorded for their
+     * own ID and their root Connection. Observations recorded only for another shared
+     * copy are not included.</p>
+     * <p>When these observed periods overlap or touch, <code>limited_since</code> reflects the start
+     * of the continuous period and <code>expires_at</code> reflects its latest expiry. An expired
+     * period separated from the active period by a gap does not extend that start.</p>
+     * <blockquote>
+     * <p>⚠️ Observation, not a capacity guarantee</p>
+     * <p>An active marker does not mean every endpoint or sync is blocked. No active
+     * marker does not guarantee that the upstream service has capacity. The marker
+     * expiry can be extended and is not a promised provider reset or exact retry time.</p>
+     * </blockquote>
+     * <p>If any required lookup is unavailable, <code>rate_limit</code> is <code>null</code>. This does not change
+     * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public PolytomicHttpResponse<ConnectionResponseEnvelope> get(String id, RequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())

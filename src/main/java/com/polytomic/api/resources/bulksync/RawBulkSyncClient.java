@@ -569,6 +569,9 @@ public class RawBulkSyncClient {
                     case 404:
                         throw new NotFoundError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
@@ -780,6 +783,9 @@ public class RawBulkSyncClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 404:
                         throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(

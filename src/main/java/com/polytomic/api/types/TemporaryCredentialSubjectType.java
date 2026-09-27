@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum TemporaryCredentialSubjectType {
     USER("user"),
 
-    PROFILE("profile");
+    HARBOR("harbor");
 
     private final String value;
 

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,6 +21,18 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = HarboractivityapiHarborActivityMetadata.Builder.class)
 public final class HarboractivityapiHarborActivityMetadata {
+    private final Optional<Boolean> actionEnabled;
+
+    private final Optional<List<String>> actionFieldIds;
+
+    private final Optional<String> actionId;
+
+    private final Optional<String> actionLookupFieldId;
+
+    private final Optional<List<String>> actionLookupFieldIds;
+
+    private final Optional<String> actionRequestId;
+
     private final Optional<Integer> attemptNumber;
 
     private final Optional<String> category;
@@ -41,6 +54,8 @@ public final class HarboractivityapiHarborActivityMetadata {
     private final Optional<Integer> executionDurationMs;
 
     private final Optional<String> externalRunId;
+
+    private final Optional<String> failureCode;
 
     private final Optional<Integer> fieldCount;
 
@@ -79,6 +94,12 @@ public final class HarboractivityapiHarborActivityMetadata {
     private final Map<String, Object> additionalProperties;
 
     private HarboractivityapiHarborActivityMetadata(
+            Optional<Boolean> actionEnabled,
+            Optional<List<String>> actionFieldIds,
+            Optional<String> actionId,
+            Optional<String> actionLookupFieldId,
+            Optional<List<String>> actionLookupFieldIds,
+            Optional<String> actionRequestId,
             Optional<Integer> attemptNumber,
             Optional<String> category,
             Optional<String> clientName,
@@ -90,6 +111,7 @@ public final class HarboractivityapiHarborActivityMetadata {
             Optional<String> errorCategory,
             Optional<Integer> executionDurationMs,
             Optional<String> externalRunId,
+            Optional<String> failureCode,
             Optional<Integer> fieldCount,
             Optional<Boolean> hasNextPage,
             Optional<String> label,
@@ -108,6 +130,12 @@ public final class HarboractivityapiHarborActivityMetadata {
             Optional<Boolean> supported,
             Optional<Integer> totalDurationMs,
             Map<String, Object> additionalProperties) {
+        this.actionEnabled = actionEnabled;
+        this.actionFieldIds = actionFieldIds;
+        this.actionId = actionId;
+        this.actionLookupFieldId = actionLookupFieldId;
+        this.actionLookupFieldIds = actionLookupFieldIds;
+        this.actionRequestId = actionRequestId;
         this.attemptNumber = attemptNumber;
         this.category = category;
         this.clientName = clientName;
@@ -119,6 +147,7 @@ public final class HarboractivityapiHarborActivityMetadata {
         this.errorCategory = errorCategory;
         this.executionDurationMs = executionDurationMs;
         this.externalRunId = externalRunId;
+        this.failureCode = failureCode;
         this.fieldCount = fieldCount;
         this.hasNextPage = hasNextPage;
         this.label = label;
@@ -137,6 +166,36 @@ public final class HarboractivityapiHarborActivityMetadata {
         this.supported = supported;
         this.totalDurationMs = totalDurationMs;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("action_enabled")
+    public Optional<Boolean> getActionEnabled() {
+        return actionEnabled;
+    }
+
+    @JsonProperty("action_field_ids")
+    public Optional<List<String>> getActionFieldIds() {
+        return actionFieldIds;
+    }
+
+    @JsonProperty("action_id")
+    public Optional<String> getActionId() {
+        return actionId;
+    }
+
+    @JsonProperty("action_lookup_field_id")
+    public Optional<String> getActionLookupFieldId() {
+        return actionLookupFieldId;
+    }
+
+    @JsonProperty("action_lookup_field_ids")
+    public Optional<List<String>> getActionLookupFieldIds() {
+        return actionLookupFieldIds;
+    }
+
+    @JsonProperty("action_request_id")
+    public Optional<String> getActionRequestId() {
+        return actionRequestId;
     }
 
     @JsonProperty("attempt_number")
@@ -195,6 +254,11 @@ public final class HarboractivityapiHarborActivityMetadata {
     @JsonProperty("external_run_id")
     public Optional<String> getExternalRunId() {
         return externalRunId;
+    }
+
+    @JsonProperty("failure_code")
+    public Optional<String> getFailureCode() {
+        return failureCode;
     }
 
     /**
@@ -304,7 +368,13 @@ public final class HarboractivityapiHarborActivityMetadata {
     }
 
     private boolean equalTo(HarboractivityapiHarborActivityMetadata other) {
-        return attemptNumber.equals(other.attemptNumber)
+        return actionEnabled.equals(other.actionEnabled)
+                && actionFieldIds.equals(other.actionFieldIds)
+                && actionId.equals(other.actionId)
+                && actionLookupFieldId.equals(other.actionLookupFieldId)
+                && actionLookupFieldIds.equals(other.actionLookupFieldIds)
+                && actionRequestId.equals(other.actionRequestId)
+                && attemptNumber.equals(other.attemptNumber)
                 && category.equals(other.category)
                 && clientName.equals(other.clientName)
                 && clientVersion.equals(other.clientVersion)
@@ -315,6 +385,7 @@ public final class HarboractivityapiHarborActivityMetadata {
                 && errorCategory.equals(other.errorCategory)
                 && executionDurationMs.equals(other.executionDurationMs)
                 && externalRunId.equals(other.externalRunId)
+                && failureCode.equals(other.failureCode)
                 && fieldCount.equals(other.fieldCount)
                 && hasNextPage.equals(other.hasNextPage)
                 && label.equals(other.label)
@@ -337,6 +408,12 @@ public final class HarboractivityapiHarborActivityMetadata {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.actionEnabled,
+                this.actionFieldIds,
+                this.actionId,
+                this.actionLookupFieldId,
+                this.actionLookupFieldIds,
+                this.actionRequestId,
                 this.attemptNumber,
                 this.category,
                 this.clientName,
@@ -348,6 +425,7 @@ public final class HarboractivityapiHarborActivityMetadata {
                 this.errorCategory,
                 this.executionDurationMs,
                 this.externalRunId,
+                this.failureCode,
                 this.fieldCount,
                 this.hasNextPage,
                 this.label,
@@ -378,6 +456,18 @@ public final class HarboractivityapiHarborActivityMetadata {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Boolean> actionEnabled = Optional.empty();
+
+        private Optional<List<String>> actionFieldIds = Optional.empty();
+
+        private Optional<String> actionId = Optional.empty();
+
+        private Optional<String> actionLookupFieldId = Optional.empty();
+
+        private Optional<List<String>> actionLookupFieldIds = Optional.empty();
+
+        private Optional<String> actionRequestId = Optional.empty();
+
         private Optional<Integer> attemptNumber = Optional.empty();
 
         private Optional<String> category = Optional.empty();
@@ -399,6 +489,8 @@ public final class HarboractivityapiHarborActivityMetadata {
         private Optional<Integer> executionDurationMs = Optional.empty();
 
         private Optional<String> externalRunId = Optional.empty();
+
+        private Optional<String> failureCode = Optional.empty();
 
         private Optional<Integer> fieldCount = Optional.empty();
 
@@ -440,6 +532,12 @@ public final class HarboractivityapiHarborActivityMetadata {
         private Builder() {}
 
         public Builder from(HarboractivityapiHarborActivityMetadata other) {
+            actionEnabled(other.getActionEnabled());
+            actionFieldIds(other.getActionFieldIds());
+            actionId(other.getActionId());
+            actionLookupFieldId(other.getActionLookupFieldId());
+            actionLookupFieldIds(other.getActionLookupFieldIds());
+            actionRequestId(other.getActionRequestId());
             attemptNumber(other.getAttemptNumber());
             category(other.getCategory());
             clientName(other.getClientName());
@@ -451,6 +549,7 @@ public final class HarboractivityapiHarborActivityMetadata {
             errorCategory(other.getErrorCategory());
             executionDurationMs(other.getExecutionDurationMs());
             externalRunId(other.getExternalRunId());
+            failureCode(other.getFailureCode());
             fieldCount(other.getFieldCount());
             hasNextPage(other.getHasNextPage());
             label(other.getLabel());
@@ -468,6 +567,72 @@ public final class HarboractivityapiHarborActivityMetadata {
             statementCategory(other.getStatementCategory());
             supported(other.getSupported());
             totalDurationMs(other.getTotalDurationMs());
+            return this;
+        }
+
+        @JsonSetter(value = "action_enabled", nulls = Nulls.SKIP)
+        public Builder actionEnabled(Optional<Boolean> actionEnabled) {
+            this.actionEnabled = actionEnabled;
+            return this;
+        }
+
+        public Builder actionEnabled(Boolean actionEnabled) {
+            this.actionEnabled = Optional.ofNullable(actionEnabled);
+            return this;
+        }
+
+        @JsonSetter(value = "action_field_ids", nulls = Nulls.SKIP)
+        public Builder actionFieldIds(Optional<List<String>> actionFieldIds) {
+            this.actionFieldIds = actionFieldIds;
+            return this;
+        }
+
+        public Builder actionFieldIds(List<String> actionFieldIds) {
+            this.actionFieldIds = Optional.ofNullable(actionFieldIds);
+            return this;
+        }
+
+        @JsonSetter(value = "action_id", nulls = Nulls.SKIP)
+        public Builder actionId(Optional<String> actionId) {
+            this.actionId = actionId;
+            return this;
+        }
+
+        public Builder actionId(String actionId) {
+            this.actionId = Optional.ofNullable(actionId);
+            return this;
+        }
+
+        @JsonSetter(value = "action_lookup_field_id", nulls = Nulls.SKIP)
+        public Builder actionLookupFieldId(Optional<String> actionLookupFieldId) {
+            this.actionLookupFieldId = actionLookupFieldId;
+            return this;
+        }
+
+        public Builder actionLookupFieldId(String actionLookupFieldId) {
+            this.actionLookupFieldId = Optional.ofNullable(actionLookupFieldId);
+            return this;
+        }
+
+        @JsonSetter(value = "action_lookup_field_ids", nulls = Nulls.SKIP)
+        public Builder actionLookupFieldIds(Optional<List<String>> actionLookupFieldIds) {
+            this.actionLookupFieldIds = actionLookupFieldIds;
+            return this;
+        }
+
+        public Builder actionLookupFieldIds(List<String> actionLookupFieldIds) {
+            this.actionLookupFieldIds = Optional.ofNullable(actionLookupFieldIds);
+            return this;
+        }
+
+        @JsonSetter(value = "action_request_id", nulls = Nulls.SKIP)
+        public Builder actionRequestId(Optional<String> actionRequestId) {
+            this.actionRequestId = actionRequestId;
+            return this;
+        }
+
+        public Builder actionRequestId(String actionRequestId) {
+            this.actionRequestId = Optional.ofNullable(actionRequestId);
             return this;
         }
 
@@ -592,6 +757,17 @@ public final class HarboractivityapiHarborActivityMetadata {
 
         public Builder externalRunId(String externalRunId) {
             this.externalRunId = Optional.ofNullable(externalRunId);
+            return this;
+        }
+
+        @JsonSetter(value = "failure_code", nulls = Nulls.SKIP)
+        public Builder failureCode(Optional<String> failureCode) {
+            this.failureCode = failureCode;
+            return this;
+        }
+
+        public Builder failureCode(String failureCode) {
+            this.failureCode = Optional.ofNullable(failureCode);
             return this;
         }
 
@@ -793,6 +969,12 @@ public final class HarboractivityapiHarborActivityMetadata {
 
         public HarboractivityapiHarborActivityMetadata build() {
             return new HarboractivityapiHarborActivityMetadata(
+                    actionEnabled,
+                    actionFieldIds,
+                    actionId,
+                    actionLookupFieldId,
+                    actionLookupFieldIds,
+                    actionRequestId,
                     attemptNumber,
                     category,
                     clientName,
@@ -804,6 +986,7 @@ public final class HarboractivityapiHarborActivityMetadata {
                     errorCategory,
                     executionDurationMs,
                     externalRunId,
+                    failureCode,
                     fieldCount,
                     hasNextPage,
                     label,

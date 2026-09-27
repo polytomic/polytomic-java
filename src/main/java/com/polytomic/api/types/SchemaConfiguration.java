@@ -38,6 +38,8 @@ public final class SchemaConfiguration {
 
     private final Optional<String> trackingField;
 
+    private final Optional<String> userOutputName;
+
     private final Map<String, Object> additionalProperties;
 
     private SchemaConfiguration(
@@ -49,6 +51,7 @@ public final class SchemaConfiguration {
             Optional<String> id,
             Optional<String> partitionKey,
             Optional<String> trackingField,
+            Optional<String> userOutputName,
             Map<String, Object> additionalProperties) {
         this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.disableDataCutoff = disableDataCutoff;
@@ -58,6 +61,7 @@ public final class SchemaConfiguration {
         this.id = id;
         this.partitionKey = partitionKey;
         this.trackingField = trackingField;
+        this.userOutputName = userOutputName;
         this.additionalProperties = additionalProperties;
     }
 
@@ -107,6 +111,14 @@ public final class SchemaConfiguration {
         return trackingField;
     }
 
+    /**
+     * @return User-specified override for the destination object name. Omit to keep the current value; send an empty string to clear it.
+     */
+    @JsonProperty("user_output_name")
+    public Optional<String> getUserOutputName() {
+        return userOutputName;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -126,7 +138,8 @@ public final class SchemaConfiguration {
                 && filters.equals(other.filters)
                 && id.equals(other.id)
                 && partitionKey.equals(other.partitionKey)
-                && trackingField.equals(other.trackingField);
+                && trackingField.equals(other.trackingField)
+                && userOutputName.equals(other.userOutputName);
     }
 
     @java.lang.Override
@@ -139,7 +152,8 @@ public final class SchemaConfiguration {
                 this.filters,
                 this.id,
                 this.partitionKey,
-                this.trackingField);
+                this.trackingField,
+                this.userOutputName);
     }
 
     @java.lang.Override
@@ -169,6 +183,8 @@ public final class SchemaConfiguration {
 
         private Optional<String> trackingField = Optional.empty();
 
+        private Optional<String> userOutputName = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -183,6 +199,7 @@ public final class SchemaConfiguration {
             id(other.getId());
             partitionKey(other.getPartitionKey());
             trackingField(other.getTrackingField());
+            userOutputName(other.getUserOutputName());
             return this;
         }
 
@@ -280,6 +297,20 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>User-specified override for the destination object name. Omit to keep the current value; send an empty string to clear it.</p>
+         */
+        @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
+        public Builder userOutputName(Optional<String> userOutputName) {
+            this.userOutputName = userOutputName;
+            return this;
+        }
+
+        public Builder userOutputName(String userOutputName) {
+            this.userOutputName = Optional.ofNullable(userOutputName);
+            return this;
+        }
+
         public SchemaConfiguration build() {
             return new SchemaConfiguration(
                     dataCutoffTimestamp,
@@ -290,6 +321,7 @@ public final class SchemaConfiguration {
                     id,
                     partitionKey,
                     trackingField,
+                    userOutputName,
                     additionalProperties);
         }
 

@@ -6,6 +6,8 @@ package com.polytomic.api.resources.harbors;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.core.Suppliers;
+import com.polytomic.api.resources.harbors.actions.ActionsClient;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborRequest;
@@ -70,15 +72,19 @@ import com.polytomic.api.types.RegisterHarborSessionEnvelope;
 import com.polytomic.api.types.ResolveHarborSourceMappingsEnvelope;
 import com.polytomic.api.types.RevokedHarborKeyEnvelope;
 import com.polytomic.api.types.UnassignedHarborUserEnvelope;
+import java.util.function.Supplier;
 
 public class HarborsClient {
     protected final ClientOptions clientOptions;
 
     private final RawHarborsClient rawClient;
 
+    protected final Supplier<ActionsClient> actionsClient;
+
     public HarborsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.rawClient = new RawHarborsClient(clientOptions);
+        this.actionsClient = Suppliers.memoize(() -> new ActionsClient(clientOptions));
     }
 
     /**
@@ -1949,5 +1955,9 @@ public class HarborsClient {
     public UnassignedHarborUserEnvelope unassignUser(
             String harborId, String userId, IdempotentRequestOptions requestOptions) {
         return this.rawClient.unassignUser(harborId, userId, requestOptions).body();
+    }
+
+    public ActionsClient actions() {
+        return this.actionsClient.get();
     }
 }

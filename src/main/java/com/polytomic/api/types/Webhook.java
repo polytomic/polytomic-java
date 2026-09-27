@@ -25,6 +25,10 @@ public final class Webhook {
 
     private final Optional<Boolean> disabled;
 
+    private final Optional<OffsetDateTime> disabledAt;
+
+    private final Optional<String> disabledReason;
+
     private final Optional<String> endpoint;
 
     private final Optional<String> id;
@@ -38,6 +42,8 @@ public final class Webhook {
     private Webhook(
             Optional<OffsetDateTime> createdAt,
             Optional<Boolean> disabled,
+            Optional<OffsetDateTime> disabledAt,
+            Optional<String> disabledReason,
             Optional<String> endpoint,
             Optional<String> id,
             Optional<String> organizationId,
@@ -45,6 +51,8 @@ public final class Webhook {
             Map<String, Object> additionalProperties) {
         this.createdAt = createdAt;
         this.disabled = disabled;
+        this.disabledAt = disabledAt;
+        this.disabledReason = disabledReason;
         this.endpoint = endpoint;
         this.id = id;
         this.organizationId = organizationId;
@@ -60,6 +68,16 @@ public final class Webhook {
     @JsonProperty("disabled")
     public Optional<Boolean> getDisabled() {
         return disabled;
+    }
+
+    @JsonProperty("disabled_at")
+    public Optional<OffsetDateTime> getDisabledAt() {
+        return disabledAt;
+    }
+
+    @JsonProperty("disabled_reason")
+    public Optional<String> getDisabledReason() {
+        return disabledReason;
     }
 
     @JsonProperty("endpoint")
@@ -96,6 +114,8 @@ public final class Webhook {
     private boolean equalTo(Webhook other) {
         return createdAt.equals(other.createdAt)
                 && disabled.equals(other.disabled)
+                && disabledAt.equals(other.disabledAt)
+                && disabledReason.equals(other.disabledReason)
                 && endpoint.equals(other.endpoint)
                 && id.equals(other.id)
                 && organizationId.equals(other.organizationId)
@@ -104,7 +124,15 @@ public final class Webhook {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.createdAt, this.disabled, this.endpoint, this.id, this.organizationId, this.secret);
+        return Objects.hash(
+                this.createdAt,
+                this.disabled,
+                this.disabledAt,
+                this.disabledReason,
+                this.endpoint,
+                this.id,
+                this.organizationId,
+                this.secret);
     }
 
     @java.lang.Override
@@ -122,6 +150,10 @@ public final class Webhook {
 
         private Optional<Boolean> disabled = Optional.empty();
 
+        private Optional<OffsetDateTime> disabledAt = Optional.empty();
+
+        private Optional<String> disabledReason = Optional.empty();
+
         private Optional<String> endpoint = Optional.empty();
 
         private Optional<String> id = Optional.empty();
@@ -138,6 +170,8 @@ public final class Webhook {
         public Builder from(Webhook other) {
             createdAt(other.getCreatedAt());
             disabled(other.getDisabled());
+            disabledAt(other.getDisabledAt());
+            disabledReason(other.getDisabledReason());
             endpoint(other.getEndpoint());
             id(other.getId());
             organizationId(other.getOrganizationId());
@@ -164,6 +198,28 @@ public final class Webhook {
 
         public Builder disabled(Boolean disabled) {
             this.disabled = Optional.ofNullable(disabled);
+            return this;
+        }
+
+        @JsonSetter(value = "disabled_at", nulls = Nulls.SKIP)
+        public Builder disabledAt(Optional<OffsetDateTime> disabledAt) {
+            this.disabledAt = disabledAt;
+            return this;
+        }
+
+        public Builder disabledAt(OffsetDateTime disabledAt) {
+            this.disabledAt = Optional.ofNullable(disabledAt);
+            return this;
+        }
+
+        @JsonSetter(value = "disabled_reason", nulls = Nulls.SKIP)
+        public Builder disabledReason(Optional<String> disabledReason) {
+            this.disabledReason = disabledReason;
+            return this;
+        }
+
+        public Builder disabledReason(String disabledReason) {
+            this.disabledReason = Optional.ofNullable(disabledReason);
             return this;
         }
 
@@ -212,7 +268,16 @@ public final class Webhook {
         }
 
         public Webhook build() {
-            return new Webhook(createdAt, disabled, endpoint, id, organizationId, secret, additionalProperties);
+            return new Webhook(
+                    createdAt,
+                    disabled,
+                    disabledAt,
+                    disabledReason,
+                    endpoint,
+                    id,
+                    organizationId,
+                    secret,
+                    additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

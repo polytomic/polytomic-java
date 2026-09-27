@@ -40,6 +40,8 @@ public final class ConnectionResponseSchema {
 
     private final Optional<List<String>> policies;
 
+    private final Optional<ConnectionResponseSchemaRateLimit> rateLimit;
+
     private final Optional<Boolean> saved;
 
     private final Optional<String> status;
@@ -64,6 +66,7 @@ public final class ConnectionResponseSchema {
             Optional<String> organizationId,
             Optional<String> parentConnectionId,
             Optional<List<String>> policies,
+            Optional<ConnectionResponseSchemaRateLimit> rateLimit,
             Optional<Boolean> saved,
             Optional<String> status,
             Optional<String> statusError,
@@ -80,6 +83,7 @@ public final class ConnectionResponseSchema {
         this.organizationId = organizationId;
         this.parentConnectionId = parentConnectionId;
         this.policies = policies;
+        this.rateLimit = rateLimit;
         this.saved = saved;
         this.status = status;
         this.statusError = statusError;
@@ -140,6 +144,14 @@ public final class ConnectionResponseSchema {
         return policies;
     }
 
+    /**
+     * @return Observed connection-wide rate limiting, independent of connection health. Null when any required lookup is unavailable. Shared connections combine their own marker with their root connection's marker.
+     */
+    @JsonProperty("rate_limit")
+    public Optional<ConnectionResponseSchemaRateLimit> getRateLimit() {
+        return rateLimit;
+    }
+
     @JsonProperty("saved")
     public Optional<Boolean> getSaved() {
         return saved;
@@ -191,6 +203,7 @@ public final class ConnectionResponseSchema {
                 && organizationId.equals(other.organizationId)
                 && parentConnectionId.equals(other.parentConnectionId)
                 && policies.equals(other.policies)
+                && rateLimit.equals(other.rateLimit)
                 && saved.equals(other.saved)
                 && status.equals(other.status)
                 && statusError.equals(other.statusError)
@@ -211,6 +224,7 @@ public final class ConnectionResponseSchema {
                 this.organizationId,
                 this.parentConnectionId,
                 this.policies,
+                this.rateLimit,
                 this.saved,
                 this.status,
                 this.statusError,
@@ -248,6 +262,8 @@ public final class ConnectionResponseSchema {
 
         private Optional<List<String>> policies = Optional.empty();
 
+        private Optional<ConnectionResponseSchemaRateLimit> rateLimit = Optional.empty();
+
         private Optional<Boolean> saved = Optional.empty();
 
         private Optional<String> status = Optional.empty();
@@ -275,6 +291,7 @@ public final class ConnectionResponseSchema {
             organizationId(other.getOrganizationId());
             parentConnectionId(other.getParentConnectionId());
             policies(other.getPolicies());
+            rateLimit(other.getRateLimit());
             saved(other.getSaved());
             status(other.getStatus());
             statusError(other.getStatusError());
@@ -389,6 +406,20 @@ public final class ConnectionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Observed connection-wide rate limiting, independent of connection health. Null when any required lookup is unavailable. Shared connections combine their own marker with their root connection's marker.</p>
+         */
+        @JsonSetter(value = "rate_limit", nulls = Nulls.SKIP)
+        public Builder rateLimit(Optional<ConnectionResponseSchemaRateLimit> rateLimit) {
+            this.rateLimit = rateLimit;
+            return this;
+        }
+
+        public Builder rateLimit(ConnectionResponseSchemaRateLimit rateLimit) {
+            this.rateLimit = Optional.ofNullable(rateLimit);
+            return this;
+        }
+
         @JsonSetter(value = "saved", nulls = Nulls.SKIP)
         public Builder saved(Optional<Boolean> saved) {
             this.saved = saved;
@@ -466,6 +497,7 @@ public final class ConnectionResponseSchema {
                     organizationId,
                     parentConnectionId,
                     policies,
+                    rateLimit,
                     saved,
                     status,
                     statusError,

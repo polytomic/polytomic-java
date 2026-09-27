@@ -16,6 +16,7 @@ import com.polytomic.api.resources.jobs.JobsClient;
 import com.polytomic.api.resources.models.ModelsClient;
 import com.polytomic.api.resources.modelsync.ModelSyncClient;
 import com.polytomic.api.resources.notifications.NotificationsClient;
+import com.polytomic.api.resources.operations.OperationsClient;
 import com.polytomic.api.resources.organization.OrganizationClient;
 import com.polytomic.api.resources.permissions.PermissionsClient;
 import com.polytomic.api.resources.queryrunner.QueryRunnerClient;
@@ -53,6 +54,8 @@ public class Polytomic {
 
     protected final Supplier<NotificationsClient> notificationsClient;
 
+    protected final Supplier<OperationsClient> operationsClient;
+
     protected final Supplier<OrganizationClient> organizationClient;
 
     protected final Supplier<ActivityClient> activityClient;
@@ -81,6 +84,7 @@ public class Polytomic {
         this.jobsClient = Suppliers.memoize(() -> new JobsClient(clientOptions));
         this.identityClient = Suppliers.memoize(() -> new IdentityClient(clientOptions));
         this.notificationsClient = Suppliers.memoize(() -> new NotificationsClient(clientOptions));
+        this.operationsClient = Suppliers.memoize(() -> new OperationsClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new OrganizationClient(clientOptions));
         this.activityClient = Suppliers.memoize(() -> new ActivityClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new UsersClient(clientOptions));
@@ -136,6 +140,10 @@ public class Polytomic {
 
     public NotificationsClient notifications() {
         return this.notificationsClient.get();
+    }
+
+    public OperationsClient operations() {
+        return this.operationsClient.get();
     }
 
     public OrganizationClient organization() {

@@ -16,6 +16,7 @@ import com.polytomic.api.resources.jobs.AsyncJobsClient;
 import com.polytomic.api.resources.models.AsyncModelsClient;
 import com.polytomic.api.resources.modelsync.AsyncModelSyncClient;
 import com.polytomic.api.resources.notifications.AsyncNotificationsClient;
+import com.polytomic.api.resources.operations.AsyncOperationsClient;
 import com.polytomic.api.resources.organization.AsyncOrganizationClient;
 import com.polytomic.api.resources.permissions.AsyncPermissionsClient;
 import com.polytomic.api.resources.queryrunner.AsyncQueryRunnerClient;
@@ -53,6 +54,8 @@ public class AsyncPolytomic {
 
     protected final Supplier<AsyncNotificationsClient> notificationsClient;
 
+    protected final Supplier<AsyncOperationsClient> operationsClient;
+
     protected final Supplier<AsyncOrganizationClient> organizationClient;
 
     protected final Supplier<AsyncActivityClient> activityClient;
@@ -81,6 +84,7 @@ public class AsyncPolytomic {
         this.jobsClient = Suppliers.memoize(() -> new AsyncJobsClient(clientOptions));
         this.identityClient = Suppliers.memoize(() -> new AsyncIdentityClient(clientOptions));
         this.notificationsClient = Suppliers.memoize(() -> new AsyncNotificationsClient(clientOptions));
+        this.operationsClient = Suppliers.memoize(() -> new AsyncOperationsClient(clientOptions));
         this.organizationClient = Suppliers.memoize(() -> new AsyncOrganizationClient(clientOptions));
         this.activityClient = Suppliers.memoize(() -> new AsyncActivityClient(clientOptions));
         this.usersClient = Suppliers.memoize(() -> new AsyncUsersClient(clientOptions));
@@ -136,6 +140,10 @@ public class AsyncPolytomic {
 
     public AsyncNotificationsClient notifications() {
         return this.notificationsClient.get();
+    }
+
+    public AsyncOperationsClient operations() {
+        return this.operationsClient.get();
     }
 
     public AsyncOrganizationClient organization() {

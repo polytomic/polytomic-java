@@ -6,6 +6,8 @@ package com.polytomic.api.resources.harbors;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
+import com.polytomic.api.core.Suppliers;
+import com.polytomic.api.resources.harbors.actions.AsyncActionsClient;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.CreateHarborRequest;
@@ -71,15 +73,19 @@ import com.polytomic.api.types.ResolveHarborSourceMappingsEnvelope;
 import com.polytomic.api.types.RevokedHarborKeyEnvelope;
 import com.polytomic.api.types.UnassignedHarborUserEnvelope;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class AsyncHarborsClient {
     protected final ClientOptions clientOptions;
 
     private final AsyncRawHarborsClient rawClient;
 
+    protected final Supplier<AsyncActionsClient> actionsClient;
+
     public AsyncHarborsClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
         this.rawClient = new AsyncRawHarborsClient(clientOptions);
+        this.actionsClient = Suppliers.memoize(() -> new AsyncActionsClient(clientOptions));
     }
 
     /**
@@ -1971,5 +1977,9 @@ public class AsyncHarborsClient {
     public CompletableFuture<UnassignedHarborUserEnvelope> unassignUser(
             String harborId, String userId, IdempotentRequestOptions requestOptions) {
         return this.rawClient.unassignUser(harborId, userId, requestOptions).thenApply(response -> response.body());
+    }
+
+    public AsyncActionsClient actions() {
+        return this.actionsClient.get();
     }
 }

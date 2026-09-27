@@ -27,7 +27,7 @@ public class AsyncTemporaryCredentialsClient {
     }
 
     /**
-     * Issues a non-renewable credential with a bounded lifetime for a user or Agent Data profile.
+     * Issues a non-renewable credential with a bounded lifetime for a user or Harbor.
      * <p>The response contains the credential secret once. Store it securely and send it
      * as a Bearer token in the <code>Authorization</code> header.</p>
      * <p>Set <code>subject.type</code> to <code>user</code> to issue a credential for your authenticated user.
@@ -37,15 +37,15 @@ public class AsyncTemporaryCredentialsClient {
      * read-only caller can issue only read-only credentials.</p>
      * <p>Partner callers must provide both <code>organization_id</code> and <code>user_id</code>. The target
      * must be an active user in an organization owned by the partner. User subjects
-     * must be application users; Agent Data portal-only users continue to use profile
+     * must be application users; Harbor-only users continue to use Harbor
      * credentials.</p>
      * <p>User credentials resolve the subject's current permissions on every request.
      * Permission changes take effect immediately, and deleting the user invalidates
      * the credential.</p>
-     * <p>Set <code>subject.type</code> to <code>profile</code> and provide the Agent Data profile ID. The
-     * credential uses the profile's current connection access on every request;
-     * changes take effect immediately, and deleting the profile invalidates the
-     * credential.</p>
+     * <p>Set <code>subject.type</code> to <code>harbor</code> and provide the Harbor ID in <code>harbor_id</code>. The
+     * credential uses the Harbor's current connection access on every request;
+     * changes take effect immediately. Missing and deleted Harbors cannot be
+     * targeted.</p>
      * <p>A temporary credential stops authenticating at <code>expires_at</code>. It cannot be
      * refreshed, extended, or used to create another temporary credential. Create a
      * new credential with a durable authorized credential when you need a later
@@ -66,7 +66,7 @@ public class AsyncTemporaryCredentialsClient {
     }
 
     /**
-     * Issues a non-renewable credential with a bounded lifetime for a user or Agent Data profile.
+     * Issues a non-renewable credential with a bounded lifetime for a user or Harbor.
      * <p>The response contains the credential secret once. Store it securely and send it
      * as a Bearer token in the <code>Authorization</code> header.</p>
      * <p>Set <code>subject.type</code> to <code>user</code> to issue a credential for your authenticated user.
@@ -76,15 +76,15 @@ public class AsyncTemporaryCredentialsClient {
      * read-only caller can issue only read-only credentials.</p>
      * <p>Partner callers must provide both <code>organization_id</code> and <code>user_id</code>. The target
      * must be an active user in an organization owned by the partner. User subjects
-     * must be application users; Agent Data portal-only users continue to use profile
+     * must be application users; Harbor-only users continue to use Harbor
      * credentials.</p>
      * <p>User credentials resolve the subject's current permissions on every request.
      * Permission changes take effect immediately, and deleting the user invalidates
      * the credential.</p>
-     * <p>Set <code>subject.type</code> to <code>profile</code> and provide the Agent Data profile ID. The
-     * credential uses the profile's current connection access on every request;
-     * changes take effect immediately, and deleting the profile invalidates the
-     * credential.</p>
+     * <p>Set <code>subject.type</code> to <code>harbor</code> and provide the Harbor ID in <code>harbor_id</code>. The
+     * credential uses the Harbor's current connection access on every request;
+     * changes take effect immediately. Missing and deleted Harbors cannot be
+     * targeted.</p>
      * <p>A temporary credential stops authenticating at <code>expires_at</code>. It cannot be
      * refreshed, extended, or used to create another temporary credential. Create a
      * new credential with a durable authorized credential when you need a later

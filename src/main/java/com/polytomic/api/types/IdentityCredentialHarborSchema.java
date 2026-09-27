@@ -20,6 +20,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = IdentityCredentialHarborSchema.Builder.class)
 public final class IdentityCredentialHarborSchema {
+    private final Optional<Boolean> actionsEnabled;
+
     private final Optional<String> description;
 
     private final Optional<String> id;
@@ -31,16 +33,26 @@ public final class IdentityCredentialHarborSchema {
     private final Map<String, Object> additionalProperties;
 
     private IdentityCredentialHarborSchema(
+            Optional<Boolean> actionsEnabled,
             Optional<String> description,
             Optional<String> id,
             Optional<String> mcpServerUrl,
             Optional<String> name,
             Map<String, Object> additionalProperties) {
+        this.actionsEnabled = actionsEnabled;
         this.description = description;
         this.id = id;
         this.mcpServerUrl = mcpServerUrl;
         this.name = name;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Whether the organization has the Harbor actions feature enabled. Controls action tool visibility in new MCP sessions; does not grant permission or indicate that an action is configured.
+     */
+    @JsonProperty("actions_enabled")
+    public Optional<Boolean> getActionsEnabled() {
+        return actionsEnabled;
     }
 
     /**
@@ -87,7 +99,8 @@ public final class IdentityCredentialHarborSchema {
     }
 
     private boolean equalTo(IdentityCredentialHarborSchema other) {
-        return description.equals(other.description)
+        return actionsEnabled.equals(other.actionsEnabled)
+                && description.equals(other.description)
                 && id.equals(other.id)
                 && mcpServerUrl.equals(other.mcpServerUrl)
                 && name.equals(other.name);
@@ -95,7 +108,7 @@ public final class IdentityCredentialHarborSchema {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.description, this.id, this.mcpServerUrl, this.name);
+        return Objects.hash(this.actionsEnabled, this.description, this.id, this.mcpServerUrl, this.name);
     }
 
     @java.lang.Override
@@ -109,6 +122,8 @@ public final class IdentityCredentialHarborSchema {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Boolean> actionsEnabled = Optional.empty();
+
         private Optional<String> description = Optional.empty();
 
         private Optional<String> id = Optional.empty();
@@ -123,10 +138,25 @@ public final class IdentityCredentialHarborSchema {
         private Builder() {}
 
         public Builder from(IdentityCredentialHarborSchema other) {
+            actionsEnabled(other.getActionsEnabled());
             description(other.getDescription());
             id(other.getId());
             mcpServerUrl(other.getMcpServerUrl());
             name(other.getName());
+            return this;
+        }
+
+        /**
+         * <p>Whether the organization has the Harbor actions feature enabled. Controls action tool visibility in new MCP sessions; does not grant permission or indicate that an action is configured.</p>
+         */
+        @JsonSetter(value = "actions_enabled", nulls = Nulls.SKIP)
+        public Builder actionsEnabled(Optional<Boolean> actionsEnabled) {
+            this.actionsEnabled = actionsEnabled;
+            return this;
+        }
+
+        public Builder actionsEnabled(Boolean actionsEnabled) {
+            this.actionsEnabled = Optional.ofNullable(actionsEnabled);
             return this;
         }
 
@@ -187,7 +217,8 @@ public final class IdentityCredentialHarborSchema {
         }
 
         public IdentityCredentialHarborSchema build() {
-            return new IdentityCredentialHarborSchema(description, id, mcpServerUrl, name, additionalProperties);
+            return new IdentityCredentialHarborSchema(
+                    actionsEnabled, description, id, mcpServerUrl, name, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

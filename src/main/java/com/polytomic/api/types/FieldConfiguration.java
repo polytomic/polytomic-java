@@ -26,16 +26,20 @@ public final class FieldConfiguration {
 
     private final Optional<Boolean> obfuscate;
 
+    private final Optional<String> userOutputName;
+
     private final Map<String, Object> additionalProperties;
 
     private FieldConfiguration(
             Optional<Boolean> enabled,
             Optional<String> id,
             Optional<Boolean> obfuscate,
+            Optional<String> userOutputName,
             Map<String, Object> additionalProperties) {
         this.enabled = enabled;
         this.id = id;
         this.obfuscate = obfuscate;
+        this.userOutputName = userOutputName;
         this.additionalProperties = additionalProperties;
     }
 
@@ -60,6 +64,14 @@ public final class FieldConfiguration {
         return obfuscate;
     }
 
+    /**
+     * @return User-specified override for the destination field name. Omit to keep the current value; send an empty string to clear it.
+     */
+    @JsonProperty("user_output_name")
+    public Optional<String> getUserOutputName() {
+        return userOutputName;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -72,12 +84,15 @@ public final class FieldConfiguration {
     }
 
     private boolean equalTo(FieldConfiguration other) {
-        return enabled.equals(other.enabled) && id.equals(other.id) && obfuscate.equals(other.obfuscate);
+        return enabled.equals(other.enabled)
+                && id.equals(other.id)
+                && obfuscate.equals(other.obfuscate)
+                && userOutputName.equals(other.userOutputName);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.enabled, this.id, this.obfuscate);
+        return Objects.hash(this.enabled, this.id, this.obfuscate, this.userOutputName);
     }
 
     @java.lang.Override
@@ -97,6 +112,8 @@ public final class FieldConfiguration {
 
         private Optional<Boolean> obfuscate = Optional.empty();
 
+        private Optional<String> userOutputName = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -106,6 +123,7 @@ public final class FieldConfiguration {
             enabled(other.getEnabled());
             id(other.getId());
             obfuscate(other.getObfuscate());
+            userOutputName(other.getUserOutputName());
             return this;
         }
 
@@ -148,8 +166,22 @@ public final class FieldConfiguration {
             return this;
         }
 
+        /**
+         * <p>User-specified override for the destination field name. Omit to keep the current value; send an empty string to clear it.</p>
+         */
+        @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
+        public Builder userOutputName(Optional<String> userOutputName) {
+            this.userOutputName = userOutputName;
+            return this;
+        }
+
+        public Builder userOutputName(String userOutputName) {
+            this.userOutputName = Optional.ofNullable(userOutputName);
+            return this;
+        }
+
         public FieldConfiguration build() {
-            return new FieldConfiguration(enabled, id, obfuscate, additionalProperties);
+            return new FieldConfiguration(enabled, id, obfuscate, userOutputName, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

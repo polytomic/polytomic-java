@@ -21,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = TemporaryCredentialSubject.Builder.class)
 public final class TemporaryCredentialSubject {
+    private final Optional<String> harborId;
+
     private final Optional<TemporaryCredentialSubjectMode> mode;
 
     private final Optional<String> organizationId;
-
-    private final Optional<String> profileId;
 
     private final TemporaryCredentialSubjectType type;
 
@@ -34,22 +34,30 @@ public final class TemporaryCredentialSubject {
     private final Map<String, Object> additionalProperties;
 
     private TemporaryCredentialSubject(
+            Optional<String> harborId,
             Optional<TemporaryCredentialSubjectMode> mode,
             Optional<String> organizationId,
-            Optional<String> profileId,
             TemporaryCredentialSubjectType type,
             Optional<String> userId,
             Map<String, Object> additionalProperties) {
+        this.harborId = harborId;
         this.mode = mode;
         this.organizationId = organizationId;
-        this.profileId = profileId;
         this.type = type;
         this.userId = userId;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Authority mode for a user credential. Defaults to user. Profile subjects do not accept this field.
+     * @return Target Harbor for a Harbor credential.
+     */
+    @JsonProperty("harbor_id")
+    public Optional<String> getHarborId() {
+        return harborId;
+    }
+
+    /**
+     * @return Authority mode for a user credential. Defaults to user. Harbor subjects do not accept this field.
      */
     @JsonProperty("mode")
     public Optional<TemporaryCredentialSubjectMode> getMode() {
@@ -65,15 +73,7 @@ public final class TemporaryCredentialSubject {
     }
 
     /**
-     * @return Target Agent Data profile for a profile credential.
-     */
-    @JsonProperty("profile_id")
-    public Optional<String> getProfileId() {
-        return profileId;
-    }
-
-    /**
-     * @return Authority subject type. Use user for current user authority or profile for an Agent Data profile.
+     * @return Authority subject type. Use user for current user authority or harbor for a Harbor.
      */
     @JsonProperty("type")
     public TemporaryCredentialSubjectType getType() {
@@ -100,16 +100,16 @@ public final class TemporaryCredentialSubject {
     }
 
     private boolean equalTo(TemporaryCredentialSubject other) {
-        return mode.equals(other.mode)
+        return harborId.equals(other.harborId)
+                && mode.equals(other.mode)
                 && organizationId.equals(other.organizationId)
-                && profileId.equals(other.profileId)
                 && type.equals(other.type)
                 && userId.equals(other.userId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.mode, this.organizationId, this.profileId, this.type, this.userId);
+        return Objects.hash(this.harborId, this.mode, this.organizationId, this.type, this.userId);
     }
 
     @java.lang.Override
@@ -123,7 +123,7 @@ public final class TemporaryCredentialSubject {
 
     public interface TypeStage {
         /**
-         * <p>Authority subject type. Use user for current user authority or profile for an Agent Data profile.</p>
+         * <p>Authority subject type. Use user for current user authority or harbor for a Harbor.</p>
          */
         _FinalStage type(@NotNull TemporaryCredentialSubjectType type);
 
@@ -138,7 +138,14 @@ public final class TemporaryCredentialSubject {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Authority mode for a user credential. Defaults to user. Profile subjects do not accept this field.</p>
+         * <p>Target Harbor for a Harbor credential.</p>
+         */
+        _FinalStage harborId(Optional<String> harborId);
+
+        _FinalStage harborId(String harborId);
+
+        /**
+         * <p>Authority mode for a user credential. Defaults to user. Harbor subjects do not accept this field.</p>
          */
         _FinalStage mode(Optional<TemporaryCredentialSubjectMode> mode);
 
@@ -150,13 +157,6 @@ public final class TemporaryCredentialSubject {
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
-
-        /**
-         * <p>Target Agent Data profile for a profile credential.</p>
-         */
-        _FinalStage profileId(Optional<String> profileId);
-
-        _FinalStage profileId(String profileId);
 
         /**
          * <p>Target user for broker-issued user credentials. Omit for user self-issuance.</p>
@@ -172,11 +172,11 @@ public final class TemporaryCredentialSubject {
 
         private Optional<String> userId = Optional.empty();
 
-        private Optional<String> profileId = Optional.empty();
-
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<TemporaryCredentialSubjectMode> mode = Optional.empty();
+
+        private Optional<String> harborId = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -185,16 +185,16 @@ public final class TemporaryCredentialSubject {
 
         @java.lang.Override
         public Builder from(TemporaryCredentialSubject other) {
+            harborId(other.getHarborId());
             mode(other.getMode());
             organizationId(other.getOrganizationId());
-            profileId(other.getProfileId());
             type(other.getType());
             userId(other.getUserId());
             return this;
         }
 
         /**
-         * <p>Authority subject type. Use user for current user authority or profile for an Agent Data profile.</p>
+         * <p>Authority subject type. Use user for current user authority or harbor for a Harbor.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -225,26 +225,6 @@ public final class TemporaryCredentialSubject {
         }
 
         /**
-         * <p>Target Agent Data profile for a profile credential.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        public _FinalStage profileId(String profileId) {
-            this.profileId = Optional.ofNullable(profileId);
-            return this;
-        }
-
-        /**
-         * <p>Target Agent Data profile for a profile credential.</p>
-         */
-        @java.lang.Override
-        @JsonSetter(value = "profile_id", nulls = Nulls.SKIP)
-        public _FinalStage profileId(Optional<String> profileId) {
-            this.profileId = profileId;
-            return this;
-        }
-
-        /**
          * <p>Target organization for broker-issued credentials. Omit when the caller's organization determines the target.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
@@ -265,7 +245,7 @@ public final class TemporaryCredentialSubject {
         }
 
         /**
-         * <p>Authority mode for a user credential. Defaults to user. Profile subjects do not accept this field.</p>
+         * <p>Authority mode for a user credential. Defaults to user. Harbor subjects do not accept this field.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -275,7 +255,7 @@ public final class TemporaryCredentialSubject {
         }
 
         /**
-         * <p>Authority mode for a user credential. Defaults to user. Profile subjects do not accept this field.</p>
+         * <p>Authority mode for a user credential. Defaults to user. Harbor subjects do not accept this field.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
@@ -284,9 +264,29 @@ public final class TemporaryCredentialSubject {
             return this;
         }
 
+        /**
+         * <p>Target Harbor for a Harbor credential.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage harborId(String harborId) {
+            this.harborId = Optional.ofNullable(harborId);
+            return this;
+        }
+
+        /**
+         * <p>Target Harbor for a Harbor credential.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "harbor_id", nulls = Nulls.SKIP)
+        public _FinalStage harborId(Optional<String> harborId) {
+            this.harborId = harborId;
+            return this;
+        }
+
         @java.lang.Override
         public TemporaryCredentialSubject build() {
-            return new TemporaryCredentialSubject(mode, organizationId, profileId, type, userId, additionalProperties);
+            return new TemporaryCredentialSubject(harborId, mode, organizationId, type, userId, additionalProperties);
         }
 
         @java.lang.Override
