@@ -35,6 +35,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsPromoteContextDraftRe
 import com.polytomic.api.resources.harbors.requests.InviteHarborUserRequest;
 import com.polytomic.api.resources.harbors.requests.RegisterHarborSessionRequest;
 import com.polytomic.api.resources.harbors.requests.ResolveHarborSourceMappingsRequest;
+import com.polytomic.api.resources.harbors.requests.RunHarborQueryRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborSavedQueryDraftRequest;
@@ -71,6 +72,7 @@ import com.polytomic.api.types.HarborUserListEnvelope;
 import com.polytomic.api.types.RegisterHarborSessionEnvelope;
 import com.polytomic.api.types.ResolveHarborSourceMappingsEnvelope;
 import com.polytomic.api.types.RevokedHarborKeyEnvelope;
+import com.polytomic.api.types.RunQueryEnvelope;
 import com.polytomic.api.types.UnassignedHarborUserEnvelope;
 import java.util.function.Supplier;
 
@@ -1039,6 +1041,41 @@ public class HarborsClient {
      */
     public RevokedHarborKeyEnvelope deleteKey(String harborId, String keyId, IdempotentRequestOptions requestOptions) {
         return this.rawClient.deleteKey(harborId, keyId, requestOptions).body();
+    }
+
+    /**
+     * Submits a query against the Harbor backing connection for asynchronous execution.
+     * <p>Use a scoped credential bound to this Harbor. The query runs only against the
+     * Harbor's backing connection; you cannot select another connection on this route.
+     * Send a unique <code>X-Polytomic-Activity-Request-ID</code> UUID with each submission. The
+     * <code>X-Polytomic-Harbor-Session</code> header is optional; if you send one, it must be
+     * valid for this Harbor.</p>
+     * <p>The response contains a query ID and an initial <code>created</code> status. Poll
+     * <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> with that ID
+     * until the status is <code>done</code>, <code>failed</code>, or <code>unknown</code>. Follow the result endpoint's
+     * pagination links for additional rows. Results are temporary; check <code>expires</code>
+     * on the completed query.</p>
+     */
+    public RunQueryEnvelope runQuery(String harborId, RunHarborQueryRequest request) {
+        return this.rawClient.runQuery(harborId, request).body();
+    }
+
+    /**
+     * Submits a query against the Harbor backing connection for asynchronous execution.
+     * <p>Use a scoped credential bound to this Harbor. The query runs only against the
+     * Harbor's backing connection; you cannot select another connection on this route.
+     * Send a unique <code>X-Polytomic-Activity-Request-ID</code> UUID with each submission. The
+     * <code>X-Polytomic-Harbor-Session</code> header is optional; if you send one, it must be
+     * valid for this Harbor.</p>
+     * <p>The response contains a query ID and an initial <code>created</code> status. Poll
+     * <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> with that ID
+     * until the status is <code>done</code>, <code>failed</code>, or <code>unknown</code>. Follow the result endpoint's
+     * pagination links for additional rows. Results are temporary; check <code>expires</code>
+     * on the completed query.</p>
+     */
+    public RunQueryEnvelope runQuery(
+            String harborId, RunHarborQueryRequest request, IdempotentRequestOptions requestOptions) {
+        return this.rawClient.runQuery(harborId, request, requestOptions).body();
     }
 
     /**

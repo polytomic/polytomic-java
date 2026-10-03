@@ -11,15 +11,19 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
+import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
+import com.polytomic.api.errors.BadRequestError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.errors.UnprocessableEntityError;
 import com.polytomic.api.resources.webhooks.requests.CreateWebhooksSchema;
 import com.polytomic.api.resources.webhooks.requests.UpdateWebhooksSchema;
+import com.polytomic.api.resources.webhooks.requests.WebhooksListDeliveriesRequest;
 import com.polytomic.api.types.ApiError;
+import com.polytomic.api.types.WebhookDeliveriesEnvelope;
 import com.polytomic.api.types.WebhookEnvelope;
 import com.polytomic.api.types.WebhookListEnvelope;
 import java.io.IOException;
@@ -449,6 +453,140 @@ public class RawWebhooksClient {
                 switch (response.code()) {
                     case 404:
                         throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 500:
+                        throw new InternalServerError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                }
+            } catch (JsonProcessingException ignored) {
+                // unable to map error response, throwing generic error
+            }
+            Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+            throw new PolytomicApiException(
+                    "Error with status code " + response.code(), response.code(), errorBody, response);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to deserialize response: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PolytomicException("Network error executing HTTP request", e);
+        }
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public PolytomicHttpResponse<WebhookDeliveriesEnvelope> listDeliveries(String id) {
+        return listDeliveries(id, WebhooksListDeliveriesRequest.builder().build());
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public PolytomicHttpResponse<WebhookDeliveriesEnvelope> listDeliveries(String id, RequestOptions requestOptions) {
+        return listDeliveries(id, WebhooksListDeliveriesRequest.builder().build(), requestOptions);
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public PolytomicHttpResponse<WebhookDeliveriesEnvelope> listDeliveries(
+            String id, WebhooksListDeliveriesRequest request) {
+        return listDeliveries(id, request, null);
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public PolytomicHttpResponse<WebhookDeliveriesEnvelope> listDeliveries(
+            String id, WebhooksListDeliveriesRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/webhooks")
+                .addPathSegment(id)
+                .addPathSegments("deliveries");
+        if (request.getSuccess().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "success", request.getSuccess().get(), false);
+        }
+        if (request.getEventId().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "event_id", request.getEventId().get(), false);
+        }
+        if (request.getStart().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "start", request.getStart().get(), false);
+        }
+        if (request.getEnd().isPresent()) {
+            QueryStringMapper.addQueryParameter(httpUrl, "end", request.getEnd().get(), false);
+        }
+        if (request.getPageToken().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_token", request.getPageToken().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        try (Response response = client.newCall(okhttpRequest).execute()) {
+            ResponseBody responseBody = response.body();
+            String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+            if (response.isSuccessful()) {
+                return new PolytomicHttpResponse<>(
+                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, WebhookDeliveriesEnvelope.class),
+                        response);
+            }
+            try {
+                switch (response.code()) {
+                    case 400:
+                        throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 401:
+                        throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 404:
+                        throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 422:
+                        throw new UnprocessableEntityError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(

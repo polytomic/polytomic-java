@@ -34,6 +34,8 @@ public final class UpdateBulkSchema {
 
     private final Optional<List<BulkFilter>> filters;
 
+    private final Optional<Boolean> historyEnabled;
+
     private final Optional<String> partitionKey;
 
     private final Optional<String> trackingField;
@@ -48,6 +50,7 @@ public final class UpdateBulkSchema {
             Optional<Boolean> enabled,
             Optional<List<UpdateBulkField>> fields,
             Optional<List<BulkFilter>> filters,
+            Optional<Boolean> historyEnabled,
             Optional<String> partitionKey,
             Optional<String> trackingField,
             Optional<String> userOutputName,
@@ -57,6 +60,7 @@ public final class UpdateBulkSchema {
         this.enabled = enabled;
         this.fields = fields;
         this.filters = filters;
+        this.historyEnabled = historyEnabled;
         this.partitionKey = partitionKey;
         this.trackingField = trackingField;
         this.userOutputName = userOutputName;
@@ -104,6 +108,14 @@ public final class UpdateBulkSchema {
     }
 
     /**
+     * @return Whether a companion history table is maintained beside this schema's output. Requires a replicate-mode sync to a destination reporting supports_history_mode. Omit to keep the current value.
+     */
+    @JsonProperty("history_enabled")
+    public Optional<Boolean> getHistoryEnabled() {
+        return historyEnabled;
+    }
+
+    /**
      * @return Source field used to partition rows when writing to the destination.
      */
     @JsonProperty("partition_key")
@@ -141,6 +153,7 @@ public final class UpdateBulkSchema {
                 && enabled.equals(other.enabled)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
+                && historyEnabled.equals(other.historyEnabled)
                 && partitionKey.equals(other.partitionKey)
                 && trackingField.equals(other.trackingField)
                 && userOutputName.equals(other.userOutputName);
@@ -154,6 +167,7 @@ public final class UpdateBulkSchema {
                 this.enabled,
                 this.fields,
                 this.filters,
+                this.historyEnabled,
                 this.partitionKey,
                 this.trackingField,
                 this.userOutputName);
@@ -180,6 +194,8 @@ public final class UpdateBulkSchema {
 
         private Optional<List<BulkFilter>> filters = Optional.empty();
 
+        private Optional<Boolean> historyEnabled = Optional.empty();
+
         private Optional<String> partitionKey = Optional.empty();
 
         private Optional<String> trackingField = Optional.empty();
@@ -197,6 +213,7 @@ public final class UpdateBulkSchema {
             enabled(other.getEnabled());
             fields(other.getFields());
             filters(other.getFilters());
+            historyEnabled(other.getHistoryEnabled());
             partitionKey(other.getPartitionKey());
             trackingField(other.getTrackingField());
             userOutputName(other.getUserOutputName());
@@ -274,6 +291,20 @@ public final class UpdateBulkSchema {
         }
 
         /**
+         * <p>Whether a companion history table is maintained beside this schema's output. Requires a replicate-mode sync to a destination reporting supports_history_mode. Omit to keep the current value.</p>
+         */
+        @JsonSetter(value = "history_enabled", nulls = Nulls.SKIP)
+        public Builder historyEnabled(Optional<Boolean> historyEnabled) {
+            this.historyEnabled = historyEnabled;
+            return this;
+        }
+
+        public Builder historyEnabled(Boolean historyEnabled) {
+            this.historyEnabled = Optional.ofNullable(historyEnabled);
+            return this;
+        }
+
+        /**
          * <p>Source field used to partition rows when writing to the destination.</p>
          */
         @JsonSetter(value = "partition_key", nulls = Nulls.SKIP)
@@ -319,6 +350,7 @@ public final class UpdateBulkSchema {
                     enabled,
                     fields,
                     filters,
+                    historyEnabled,
                     partitionKey,
                     trackingField,
                     userOutputName,

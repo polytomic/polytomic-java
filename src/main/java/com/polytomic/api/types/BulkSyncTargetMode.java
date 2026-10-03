@@ -8,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum BulkSyncTargetMode {
     SNAPSHOT("snapshot"),
 
-    REPLICATE("replicate");
+    REPLICATE("replicate"),
+
+    APPEND("append");
 
     private final String value;
 

@@ -11,6 +11,7 @@ import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
+import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.types.ApiError;
@@ -94,6 +95,9 @@ public class RawIdentityClient {
                 switch (response.code()) {
                     case 401:
                         throw new UnauthorizedError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(

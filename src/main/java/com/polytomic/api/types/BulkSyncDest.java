@@ -27,16 +27,20 @@ public final class BulkSyncDest {
 
     private final Optional<List<BulkResyncMode>> supportedResyncModes;
 
+    private final Optional<Boolean> supportsHistoryMode;
+
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncDest(
             Optional<Map<String, Object>> configuration,
             Optional<List<SupportedBulkMode>> modes,
             Optional<List<BulkResyncMode>> supportedResyncModes,
+            Optional<Boolean> supportsHistoryMode,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
         this.modes = modes;
         this.supportedResyncModes = supportedResyncModes;
+        this.supportsHistoryMode = supportsHistoryMode;
         this.additionalProperties = additionalProperties;
     }
 
@@ -58,6 +62,14 @@ public final class BulkSyncDest {
         return supportedResyncModes;
     }
 
+    /**
+     * @return True if this destination can maintain a companion history table per schema (history_enabled) in replicate mode.
+     */
+    @JsonProperty("supports_history_mode")
+    public Optional<Boolean> getSupportsHistoryMode() {
+        return supportsHistoryMode;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -72,12 +84,13 @@ public final class BulkSyncDest {
     private boolean equalTo(BulkSyncDest other) {
         return configuration.equals(other.configuration)
                 && modes.equals(other.modes)
-                && supportedResyncModes.equals(other.supportedResyncModes);
+                && supportedResyncModes.equals(other.supportedResyncModes)
+                && supportsHistoryMode.equals(other.supportsHistoryMode);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.configuration, this.modes, this.supportedResyncModes);
+        return Objects.hash(this.configuration, this.modes, this.supportedResyncModes, this.supportsHistoryMode);
     }
 
     @java.lang.Override
@@ -97,6 +110,8 @@ public final class BulkSyncDest {
 
         private Optional<List<BulkResyncMode>> supportedResyncModes = Optional.empty();
 
+        private Optional<Boolean> supportsHistoryMode = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -106,6 +121,7 @@ public final class BulkSyncDest {
             configuration(other.getConfiguration());
             modes(other.getModes());
             supportedResyncModes(other.getSupportedResyncModes());
+            supportsHistoryMode(other.getSupportsHistoryMode());
             return this;
         }
 
@@ -145,8 +161,23 @@ public final class BulkSyncDest {
             return this;
         }
 
+        /**
+         * <p>True if this destination can maintain a companion history table per schema (history_enabled) in replicate mode.</p>
+         */
+        @JsonSetter(value = "supports_history_mode", nulls = Nulls.SKIP)
+        public Builder supportsHistoryMode(Optional<Boolean> supportsHistoryMode) {
+            this.supportsHistoryMode = supportsHistoryMode;
+            return this;
+        }
+
+        public Builder supportsHistoryMode(Boolean supportsHistoryMode) {
+            this.supportsHistoryMode = Optional.ofNullable(supportsHistoryMode);
+            return this;
+        }
+
         public BulkSyncDest build() {
-            return new BulkSyncDest(configuration, modes, supportedResyncModes, additionalProperties);
+            return new BulkSyncDest(
+                    configuration, modes, supportedResyncModes, supportsHistoryMode, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

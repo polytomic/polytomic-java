@@ -32,6 +32,8 @@ public final class SchemaConfiguration {
 
     private final Optional<List<BulkFilter>> filters;
 
+    private final Optional<Boolean> historyEnabled;
+
     private final Optional<String> id;
 
     private final Optional<String> partitionKey;
@@ -48,6 +50,7 @@ public final class SchemaConfiguration {
             Optional<Boolean> enabled,
             Optional<List<SchemaConfigurationFieldsItem>> fields,
             Optional<List<BulkFilter>> filters,
+            Optional<Boolean> historyEnabled,
             Optional<String> id,
             Optional<String> partitionKey,
             Optional<String> trackingField,
@@ -58,6 +61,7 @@ public final class SchemaConfiguration {
         this.enabled = enabled;
         this.fields = fields;
         this.filters = filters;
+        this.historyEnabled = historyEnabled;
         this.id = id;
         this.partitionKey = partitionKey;
         this.trackingField = trackingField;
@@ -94,6 +98,14 @@ public final class SchemaConfiguration {
     @JsonProperty("filters")
     public Optional<List<BulkFilter>> getFilters() {
         return filters;
+    }
+
+    /**
+     * @return Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs. Requires a replicate-mode sync to a destination reporting supports_history_mode. Omit to keep the current value.
+     */
+    @JsonProperty("history_enabled")
+    public Optional<Boolean> getHistoryEnabled() {
+        return historyEnabled;
     }
 
     @JsonProperty("id")
@@ -136,6 +148,7 @@ public final class SchemaConfiguration {
                 && enabled.equals(other.enabled)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
+                && historyEnabled.equals(other.historyEnabled)
                 && id.equals(other.id)
                 && partitionKey.equals(other.partitionKey)
                 && trackingField.equals(other.trackingField)
@@ -150,6 +163,7 @@ public final class SchemaConfiguration {
                 this.enabled,
                 this.fields,
                 this.filters,
+                this.historyEnabled,
                 this.id,
                 this.partitionKey,
                 this.trackingField,
@@ -177,6 +191,8 @@ public final class SchemaConfiguration {
 
         private Optional<List<BulkFilter>> filters = Optional.empty();
 
+        private Optional<Boolean> historyEnabled = Optional.empty();
+
         private Optional<String> id = Optional.empty();
 
         private Optional<String> partitionKey = Optional.empty();
@@ -196,6 +212,7 @@ public final class SchemaConfiguration {
             enabled(other.getEnabled());
             fields(other.getFields());
             filters(other.getFilters());
+            historyEnabled(other.getHistoryEnabled());
             id(other.getId());
             partitionKey(other.getPartitionKey());
             trackingField(other.getTrackingField());
@@ -264,6 +281,20 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs. Requires a replicate-mode sync to a destination reporting supports_history_mode. Omit to keep the current value.</p>
+         */
+        @JsonSetter(value = "history_enabled", nulls = Nulls.SKIP)
+        public Builder historyEnabled(Optional<Boolean> historyEnabled) {
+            this.historyEnabled = historyEnabled;
+            return this;
+        }
+
+        public Builder historyEnabled(Boolean historyEnabled) {
+            this.historyEnabled = Optional.ofNullable(historyEnabled);
+            return this;
+        }
+
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -318,6 +349,7 @@ public final class SchemaConfiguration {
                     enabled,
                     fields,
                     filters,
+                    historyEnabled,
                     id,
                     partitionKey,
                     trackingField,

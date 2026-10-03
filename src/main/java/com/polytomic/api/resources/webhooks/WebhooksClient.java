@@ -8,6 +8,8 @@ import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.webhooks.requests.CreateWebhooksSchema;
 import com.polytomic.api.resources.webhooks.requests.UpdateWebhooksSchema;
+import com.polytomic.api.resources.webhooks.requests.WebhooksListDeliveriesRequest;
+import com.polytomic.api.types.WebhookDeliveriesEnvelope;
 import com.polytomic.api.types.WebhookEnvelope;
 import com.polytomic.api.types.WebhookListEnvelope;
 
@@ -172,6 +174,55 @@ public class WebhooksClient {
      */
     public void delete(String id, IdempotentRequestOptions requestOptions) {
         this.rawClient.delete(id, requestOptions).body();
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public WebhookDeliveriesEnvelope listDeliveries(String id) {
+        return this.rawClient.listDeliveries(id).body();
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public WebhookDeliveriesEnvelope listDeliveries(String id, RequestOptions requestOptions) {
+        return this.rawClient.listDeliveries(id, requestOptions).body();
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public WebhookDeliveriesEnvelope listDeliveries(String id, WebhooksListDeliveriesRequest request) {
+        return this.rawClient.listDeliveries(id, request).body();
+    }
+
+    /**
+     * Lists delivery attempts for a webhook, newest first.
+     * <p>Use <code>success</code>, <code>event_id</code>, <code>start</code>, and <code>end</code> to narrow the results.
+     * Results are ordered by attempt time, newest first. Pass the returned
+     * <code>next_page_token</code> as <code>page_token</code> to fetch the next page. An empty token means
+     * there are no more results. Response bodies contain content returned by your
+     * webhook endpoint. Attempts are listed only while their event is retained.</p>
+     */
+    public WebhookDeliveriesEnvelope listDeliveries(
+            String id, WebhooksListDeliveriesRequest request, RequestOptions requestOptions) {
+        return this.rawClient.listDeliveries(id, request, requestOptions).body();
     }
 
     /**

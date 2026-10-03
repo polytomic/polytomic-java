@@ -23,9 +23,13 @@ import java.util.Optional;
 public final class BulkSchemaListItem {
     private final Optional<OffsetDateTime> dataCutoffTimestamp;
 
+    private final Optional<String> destinationHistoryOutputName;
+
     private final Optional<Boolean> disableDataCutoff;
 
     private final Optional<Boolean> enabled;
+
+    private final Optional<Boolean> historyEnabled;
 
     private final Optional<String> id;
 
@@ -41,8 +45,10 @@ public final class BulkSchemaListItem {
 
     private BulkSchemaListItem(
             Optional<OffsetDateTime> dataCutoffTimestamp,
+            Optional<String> destinationHistoryOutputName,
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
+            Optional<Boolean> historyEnabled,
             Optional<String> id,
             Optional<String> outputName,
             Optional<String> partitionKey,
@@ -50,8 +56,10 @@ public final class BulkSchemaListItem {
             Optional<String> userOutputName,
             Map<String, Object> additionalProperties) {
         this.dataCutoffTimestamp = dataCutoffTimestamp;
+        this.destinationHistoryOutputName = destinationHistoryOutputName;
         this.disableDataCutoff = disableDataCutoff;
         this.enabled = enabled;
+        this.historyEnabled = historyEnabled;
         this.id = id;
         this.outputName = outputName;
         this.partitionKey = partitionKey;
@@ -69,6 +77,14 @@ public final class BulkSchemaListItem {
     }
 
     /**
+     * @return Name of the companion history table. Present only when history is enabled on a destination that supports it.
+     */
+    @JsonProperty("destination_history_output_name")
+    public Optional<String> getDestinationHistoryOutputName() {
+        return destinationHistoryOutputName;
+    }
+
+    /**
      * @return When true, the sync ignores any configured data_cutoff_timestamp and syncs the full history of this schema.
      */
     @JsonProperty("disable_data_cutoff")
@@ -82,6 +98,14 @@ public final class BulkSchemaListItem {
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
+    }
+
+    /**
+     * @return Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs.
+     */
+    @JsonProperty("history_enabled")
+    public Optional<Boolean> getHistoryEnabled() {
+        return historyEnabled;
     }
 
     /**
@@ -137,8 +161,10 @@ public final class BulkSchemaListItem {
 
     private boolean equalTo(BulkSchemaListItem other) {
         return dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
+                && destinationHistoryOutputName.equals(other.destinationHistoryOutputName)
                 && disableDataCutoff.equals(other.disableDataCutoff)
                 && enabled.equals(other.enabled)
+                && historyEnabled.equals(other.historyEnabled)
                 && id.equals(other.id)
                 && outputName.equals(other.outputName)
                 && partitionKey.equals(other.partitionKey)
@@ -150,8 +176,10 @@ public final class BulkSchemaListItem {
     public int hashCode() {
         return Objects.hash(
                 this.dataCutoffTimestamp,
+                this.destinationHistoryOutputName,
                 this.disableDataCutoff,
                 this.enabled,
+                this.historyEnabled,
                 this.id,
                 this.outputName,
                 this.partitionKey,
@@ -172,9 +200,13 @@ public final class BulkSchemaListItem {
     public static final class Builder {
         private Optional<OffsetDateTime> dataCutoffTimestamp = Optional.empty();
 
+        private Optional<String> destinationHistoryOutputName = Optional.empty();
+
         private Optional<Boolean> disableDataCutoff = Optional.empty();
 
         private Optional<Boolean> enabled = Optional.empty();
+
+        private Optional<Boolean> historyEnabled = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -193,8 +225,10 @@ public final class BulkSchemaListItem {
 
         public Builder from(BulkSchemaListItem other) {
             dataCutoffTimestamp(other.getDataCutoffTimestamp());
+            destinationHistoryOutputName(other.getDestinationHistoryOutputName());
             disableDataCutoff(other.getDisableDataCutoff());
             enabled(other.getEnabled());
+            historyEnabled(other.getHistoryEnabled());
             id(other.getId());
             outputName(other.getOutputName());
             partitionKey(other.getPartitionKey());
@@ -214,6 +248,20 @@ public final class BulkSchemaListItem {
 
         public Builder dataCutoffTimestamp(OffsetDateTime dataCutoffTimestamp) {
             this.dataCutoffTimestamp = Optional.ofNullable(dataCutoffTimestamp);
+            return this;
+        }
+
+        /**
+         * <p>Name of the companion history table. Present only when history is enabled on a destination that supports it.</p>
+         */
+        @JsonSetter(value = "destination_history_output_name", nulls = Nulls.SKIP)
+        public Builder destinationHistoryOutputName(Optional<String> destinationHistoryOutputName) {
+            this.destinationHistoryOutputName = destinationHistoryOutputName;
+            return this;
+        }
+
+        public Builder destinationHistoryOutputName(String destinationHistoryOutputName) {
+            this.destinationHistoryOutputName = Optional.ofNullable(destinationHistoryOutputName);
             return this;
         }
 
@@ -242,6 +290,20 @@ public final class BulkSchemaListItem {
 
         public Builder enabled(Boolean enabled) {
             this.enabled = Optional.ofNullable(enabled);
+            return this;
+        }
+
+        /**
+         * <p>Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs.</p>
+         */
+        @JsonSetter(value = "history_enabled", nulls = Nulls.SKIP)
+        public Builder historyEnabled(Optional<Boolean> historyEnabled) {
+            this.historyEnabled = historyEnabled;
+            return this;
+        }
+
+        public Builder historyEnabled(Boolean historyEnabled) {
+            this.historyEnabled = Optional.ofNullable(historyEnabled);
             return this;
         }
 
@@ -318,8 +380,10 @@ public final class BulkSchemaListItem {
         public BulkSchemaListItem build() {
             return new BulkSchemaListItem(
                     dataCutoffTimestamp,
+                    destinationHistoryOutputName,
                     disableDataCutoff,
                     enabled,
+                    historyEnabled,
                     id,
                     outputName,
                     partitionKey,

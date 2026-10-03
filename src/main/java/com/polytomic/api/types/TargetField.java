@@ -51,6 +51,8 @@ public final class TargetField {
 
     private final Optional<Boolean> updateable;
 
+    private final Optional<List<PickValue>> values;
+
     private final Map<String, Object> additionalProperties;
 
     private TargetField(
@@ -69,6 +71,7 @@ public final class TargetField {
             Optional<Boolean> supportsIdentity,
             Optional<String> type,
             Optional<Boolean> updateable,
+            Optional<List<PickValue>> values,
             Map<String, Object> additionalProperties) {
         this.association = association;
         this.createable = createable;
@@ -85,6 +88,7 @@ public final class TargetField {
         this.supportsIdentity = supportsIdentity;
         this.type = type;
         this.updateable = updateable;
+        this.values = values;
         this.additionalProperties = additionalProperties;
     }
 
@@ -208,6 +212,14 @@ public final class TargetField {
         return updateable;
     }
 
+    /**
+     * @return Stored field options as value and label pairs. Use value when configuring mappings. Omitted when no options are available; enumeration fields may still omit options.
+     */
+    @JsonProperty("values")
+    public Optional<List<PickValue>> getValues() {
+        return values;
+    }
+
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -234,7 +246,8 @@ public final class TargetField {
                 && sourceType.equals(other.sourceType)
                 && supportsIdentity.equals(other.supportsIdentity)
                 && type.equals(other.type)
-                && updateable.equals(other.updateable);
+                && updateable.equals(other.updateable)
+                && values.equals(other.values);
     }
 
     @java.lang.Override
@@ -254,7 +267,8 @@ public final class TargetField {
                 this.sourceType,
                 this.supportsIdentity,
                 this.type,
-                this.updateable);
+                this.updateable,
+                this.values);
     }
 
     @java.lang.Override
@@ -298,6 +312,8 @@ public final class TargetField {
 
         private Optional<Boolean> updateable = Optional.empty();
 
+        private Optional<List<PickValue>> values = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -319,6 +335,7 @@ public final class TargetField {
             supportsIdentity(other.getSupportsIdentity());
             type(other.getType());
             updateable(other.getUpdateable());
+            values(other.getValues());
             return this;
         }
 
@@ -532,6 +549,20 @@ public final class TargetField {
             return this;
         }
 
+        /**
+         * <p>Stored field options as value and label pairs. Use value when configuring mappings. Omitted when no options are available; enumeration fields may still omit options.</p>
+         */
+        @JsonSetter(value = "values", nulls = Nulls.SKIP)
+        public Builder values(Optional<List<PickValue>> values) {
+            this.values = values;
+            return this;
+        }
+
+        public Builder values(List<PickValue> values) {
+            this.values = Optional.ofNullable(values);
+            return this;
+        }
+
         public TargetField build() {
             return new TargetField(
                     association,
@@ -549,6 +580,7 @@ public final class TargetField {
                     supportsIdentity,
                     type,
                     updateable,
+                    values,
                     additionalProperties);
         }
 

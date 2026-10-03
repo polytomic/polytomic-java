@@ -34,9 +34,11 @@ public class AsyncQueryRunnerClient {
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
      * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
-     * <p>Only the user who created the query can fetch its results later. Query results
-     * are stored temporarily and may expire; use the <code>expires</code> field from the result
-     * endpoint to understand how long they will remain available.</p>
+     * <p>A Harbor-bound scoped credential can submit freeform SQL only against its
+     * Harbor's backing connection, even if its profile allows other connections.
+     * Other credentials retain their existing connection access. Query results are
+     * stored temporarily and may expire; use the <code>expires</code> field from the result
+     * endpoint to understand how long they remain available.</p>
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(String connectionId) {
         return this.rawClient.runQuery(connectionId).thenApply(response -> response.body());
@@ -47,9 +49,11 @@ public class AsyncQueryRunnerClient {
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
      * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
-     * <p>Only the user who created the query can fetch its results later. Query results
-     * are stored temporarily and may expire; use the <code>expires</code> field from the result
-     * endpoint to understand how long they will remain available.</p>
+     * <p>A Harbor-bound scoped credential can submit freeform SQL only against its
+     * Harbor's backing connection, even if its profile allows other connections.
+     * Other credentials retain their existing connection access. Query results are
+     * stored temporarily and may expire; use the <code>expires</code> field from the result
+     * endpoint to understand how long they remain available.</p>
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(String connectionId, IdempotentRequestOptions requestOptions) {
         return this.rawClient.runQuery(connectionId, requestOptions).thenApply(response -> response.body());
@@ -60,9 +64,11 @@ public class AsyncQueryRunnerClient {
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
      * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
-     * <p>Only the user who created the query can fetch its results later. Query results
-     * are stored temporarily and may expire; use the <code>expires</code> field from the result
-     * endpoint to understand how long they will remain available.</p>
+     * <p>A Harbor-bound scoped credential can submit freeform SQL only against its
+     * Harbor's backing connection, even if its profile allows other connections.
+     * Other credentials retain their existing connection access. Query results are
+     * stored temporarily and may expire; use the <code>expires</code> field from the result
+     * endpoint to understand how long they remain available.</p>
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(String connectionId, RunQueryRequest request) {
         return this.rawClient.runQuery(connectionId, request).thenApply(response -> response.body());
@@ -73,9 +79,11 @@ public class AsyncQueryRunnerClient {
      * <p>This endpoint returns immediately with a query task ID. It does not wait for
      * the query to finish. Poll <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> until <code>status</code>
      * reaches <code>done</code>, <code>failed</code>, or <code>unknown</code>. These statuses are terminal.</p>
-     * <p>Only the user who created the query can fetch its results later. Query results
-     * are stored temporarily and may expire; use the <code>expires</code> field from the result
-     * endpoint to understand how long they will remain available.</p>
+     * <p>A Harbor-bound scoped credential can submit freeform SQL only against its
+     * Harbor's backing connection, even if its profile allows other connections.
+     * Other credentials retain their existing connection access. Query results are
+     * stored temporarily and may expire; use the <code>expires</code> field from the result
+     * endpoint to understand how long they remain available.</p>
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(
             String connectionId, RunQueryRequest request, IdempotentRequestOptions requestOptions) {

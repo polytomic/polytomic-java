@@ -20,16 +20,31 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = PickValue.Builder.class)
 public final class PickValue {
+    private final Optional<Map<String, String>> dependsOn;
+
     private final Optional<String> label;
 
     private final Optional<String> value;
 
     private final Map<String, Object> additionalProperties;
 
-    private PickValue(Optional<String> label, Optional<String> value, Map<String, Object> additionalProperties) {
+    private PickValue(
+            Optional<Map<String, String>> dependsOn,
+            Optional<String> label,
+            Optional<String> value,
+            Map<String, Object> additionalProperties) {
+        this.dependsOn = dependsOn;
         this.label = label;
         this.value = value;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Field IDs and internal values required for this option to apply. All entries must match. Omitted for independent options.
+     */
+    @JsonProperty("depends_on")
+    public Optional<Map<String, String>> getDependsOn() {
+        return dependsOn;
     }
 
     @JsonProperty("label")
@@ -54,12 +69,12 @@ public final class PickValue {
     }
 
     private boolean equalTo(PickValue other) {
-        return label.equals(other.label) && value.equals(other.value);
+        return dependsOn.equals(other.dependsOn) && label.equals(other.label) && value.equals(other.value);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.label, this.value);
+        return Objects.hash(this.dependsOn, this.label, this.value);
     }
 
     @java.lang.Override
@@ -73,6 +88,8 @@ public final class PickValue {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Map<String, String>> dependsOn = Optional.empty();
+
         private Optional<String> label = Optional.empty();
 
         private Optional<String> value = Optional.empty();
@@ -83,8 +100,23 @@ public final class PickValue {
         private Builder() {}
 
         public Builder from(PickValue other) {
+            dependsOn(other.getDependsOn());
             label(other.getLabel());
             value(other.getValue());
+            return this;
+        }
+
+        /**
+         * <p>Field IDs and internal values required for this option to apply. All entries must match. Omitted for independent options.</p>
+         */
+        @JsonSetter(value = "depends_on", nulls = Nulls.SKIP)
+        public Builder dependsOn(Optional<Map<String, String>> dependsOn) {
+            this.dependsOn = dependsOn;
+            return this;
+        }
+
+        public Builder dependsOn(Map<String, String> dependsOn) {
+            this.dependsOn = Optional.ofNullable(dependsOn);
             return this;
         }
 
@@ -111,7 +143,7 @@ public final class PickValue {
         }
 
         public PickValue build() {
-            return new PickValue(label, value, additionalProperties);
+            return new PickValue(dependsOn, label, value, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

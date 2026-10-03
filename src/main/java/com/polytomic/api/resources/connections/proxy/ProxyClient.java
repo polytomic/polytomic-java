@@ -41,6 +41,10 @@ public class ProxyClient {
      * size and rate limits.</p>
      * <h2>Important behavior</h2>
      * <ul>
+     * <li>For connections that expose more than one API (listed in <code>apis</code> in the proxy
+     * info response), set <code>request.api</code> to the name of the API to call. Requests
+     * without <code>request.api</code> go to the default API. <code>request.api</code> is rejected for
+     * connections that expose a single API.</li>
      * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
      * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
      * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
@@ -48,6 +52,9 @@ public class ProxyClient {
      * <li>The proxy strips a fixed set of request and response headers for safety.</li>
      * <li>Response bodies larger than the configured maximum are truncated, and
      * <code>truncated</code> is set to <code>true</code>.</li>
+     * <li>A <code>429</code> means Polytomic's proxy rate limit was reached, or the connection's
+     * upstream quota, which the proxy shares with the connection's syncs, is
+     * exhausted.</li>
      * </ul>
      * <p>To run a <code>GET</code> request asynchronously, set <code>async</code> to <code>true</code>. The initial
      * response returns <code>status: 202</code>, <code>jobId</code>, <code>jobStatus</code>, and <code>jobUrl</code>. Poll
@@ -75,6 +82,10 @@ public class ProxyClient {
      * size and rate limits.</p>
      * <h2>Important behavior</h2>
      * <ul>
+     * <li>For connections that expose more than one API (listed in <code>apis</code> in the proxy
+     * info response), set <code>request.api</code> to the name of the API to call. Requests
+     * without <code>request.api</code> go to the default API. <code>request.api</code> is rejected for
+     * connections that expose a single API.</li>
      * <li><code>request.path</code> must be relative and start with <code>/</code>.</li>
      * <li>Use either <code>request.query</code> or <code>request.rawQuery</code>, not both.</li>
      * <li>Caller-supplied headers are merged with inherited headers, but inherited auth
@@ -82,6 +93,9 @@ public class ProxyClient {
      * <li>The proxy strips a fixed set of request and response headers for safety.</li>
      * <li>Response bodies larger than the configured maximum are truncated, and
      * <code>truncated</code> is set to <code>true</code>.</li>
+     * <li>A <code>429</code> means Polytomic's proxy rate limit was reached, or the connection's
+     * upstream quota, which the proxy shares with the connection's syncs, is
+     * exhausted.</li>
      * </ul>
      * <p>To run a <code>GET</code> request asynchronously, set <code>async</code> to <code>true</code>. The initial
      * response returns <code>status: 202</code>, <code>jobId</code>, <code>jobStatus</code>, and <code>jobUrl</code>. Poll
@@ -110,6 +124,11 @@ public class ProxyClient {
      * <li>allowed HTTP methods and body shapes</li>
      * <li>timeout, rate-limit, and payload-size limits</li>
      * </ul>
+     * <p>Some connections reach more than one upstream API, each with its own base URL
+     * and quota. For these, the response includes <code>apis</code>: one entry per API with its
+     * <code>name</code>, <code>description</code>, whether it is the <code>default</code>, and its own
+     * <code>inheritedBase</code>. The top-level <code>inheritedBase</code> describes the default API.
+     * Connections with a single API omit <code>apis</code>.</p>
      * <p>Sensitive inherited header and query values are redacted in the response. The
      * contract is still useful for discovering which keys are fixed by the
      * connection, even though their raw values are not exposed.</p>
@@ -130,6 +149,11 @@ public class ProxyClient {
      * <li>allowed HTTP methods and body shapes</li>
      * <li>timeout, rate-limit, and payload-size limits</li>
      * </ul>
+     * <p>Some connections reach more than one upstream API, each with its own base URL
+     * and quota. For these, the response includes <code>apis</code>: one entry per API with its
+     * <code>name</code>, <code>description</code>, whether it is the <code>default</code>, and its own
+     * <code>inheritedBase</code>. The top-level <code>inheritedBase</code> describes the default API.
+     * Connections with a single API omit <code>apis</code>.</p>
      * <p>Sensitive inherited header and query values are redacted in the response. The
      * contract is still useful for discovering which keys are fixed by the
      * connection, even though their raw values are not exposed.</p>

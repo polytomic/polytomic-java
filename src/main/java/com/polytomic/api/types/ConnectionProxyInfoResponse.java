@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,6 +21,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionProxyInfoResponse.Builder.class)
 public final class ConnectionProxyInfoResponse {
+    private final Optional<List<ConnectionProxyApi>> apis;
+
     private final Optional<String> backendType;
 
     private final Optional<String> connectionId;
@@ -35,6 +38,7 @@ public final class ConnectionProxyInfoResponse {
     private final Map<String, Object> additionalProperties;
 
     private ConnectionProxyInfoResponse(
+            Optional<List<ConnectionProxyApi>> apis,
             Optional<String> backendType,
             Optional<String> connectionId,
             Optional<ConnectionProxyInheritedBase> inheritedBase,
@@ -42,6 +46,7 @@ public final class ConnectionProxyInfoResponse {
             Optional<ConnectionProxyContract> requestContract,
             Optional<ConnectionProxyStats> stats,
             Map<String, Object> additionalProperties) {
+        this.apis = apis;
         this.backendType = backendType;
         this.connectionId = connectionId;
         this.inheritedBase = inheritedBase;
@@ -49,6 +54,14 @@ public final class ConnectionProxyInfoResponse {
         this.requestContract = requestContract;
         this.stats = stats;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Upstream APIs this connection exposes through the proxy, when there is more than one. Select one by passing its name as request.api; requests without request.api use the default.
+     */
+    @JsonProperty("apis")
+    public Optional<List<ConnectionProxyApi>> getApis() {
+        return apis;
     }
 
     /**
@@ -99,7 +112,8 @@ public final class ConnectionProxyInfoResponse {
     }
 
     private boolean equalTo(ConnectionProxyInfoResponse other) {
-        return backendType.equals(other.backendType)
+        return apis.equals(other.apis)
+                && backendType.equals(other.backendType)
                 && connectionId.equals(other.connectionId)
                 && inheritedBase.equals(other.inheritedBase)
                 && mergeRules.equals(other.mergeRules)
@@ -110,6 +124,7 @@ public final class ConnectionProxyInfoResponse {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.apis,
                 this.backendType,
                 this.connectionId,
                 this.inheritedBase,
@@ -129,6 +144,8 @@ public final class ConnectionProxyInfoResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<List<ConnectionProxyApi>> apis = Optional.empty();
+
         private Optional<String> backendType = Optional.empty();
 
         private Optional<String> connectionId = Optional.empty();
@@ -147,12 +164,27 @@ public final class ConnectionProxyInfoResponse {
         private Builder() {}
 
         public Builder from(ConnectionProxyInfoResponse other) {
+            apis(other.getApis());
             backendType(other.getBackendType());
             connectionId(other.getConnectionId());
             inheritedBase(other.getInheritedBase());
             mergeRules(other.getMergeRules());
             requestContract(other.getRequestContract());
             stats(other.getStats());
+            return this;
+        }
+
+        /**
+         * <p>Upstream APIs this connection exposes through the proxy, when there is more than one. Select one by passing its name as request.api; requests without request.api use the default.</p>
+         */
+        @JsonSetter(value = "apis", nulls = Nulls.SKIP)
+        public Builder apis(Optional<List<ConnectionProxyApi>> apis) {
+            this.apis = apis;
+            return this;
+        }
+
+        public Builder apis(List<ConnectionProxyApi> apis) {
+            this.apis = Optional.ofNullable(apis);
             return this;
         }
 
@@ -230,7 +262,14 @@ public final class ConnectionProxyInfoResponse {
 
         public ConnectionProxyInfoResponse build() {
             return new ConnectionProxyInfoResponse(
-                    backendType, connectionId, inheritedBase, mergeRules, requestContract, stats, additionalProperties);
+                    apis,
+                    backendType,
+                    connectionId,
+                    inheritedBase,
+                    mergeRules,
+                    requestContract,
+                    stats,
+                    additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

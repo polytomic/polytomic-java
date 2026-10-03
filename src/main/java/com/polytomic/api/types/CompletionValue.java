@@ -20,6 +20,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = CompletionValue.Builder.class)
 public final class CompletionValue {
+    private final Optional<Map<String, String>> dependsOn;
+
     private final Optional<String> label;
 
     private final Optional<String> path;
@@ -29,14 +31,21 @@ public final class CompletionValue {
     private final Map<String, Object> additionalProperties;
 
     private CompletionValue(
+            Optional<Map<String, String>> dependsOn,
             Optional<String> label,
             Optional<String> path,
             Optional<Object> value,
             Map<String, Object> additionalProperties) {
+        this.dependsOn = dependsOn;
         this.label = label;
         this.path = path;
         this.value = value;
         this.additionalProperties = additionalProperties;
+    }
+
+    @JsonProperty("depends_on")
+    public Optional<Map<String, String>> getDependsOn() {
+        return dependsOn;
     }
 
     @JsonProperty("label")
@@ -66,12 +75,15 @@ public final class CompletionValue {
     }
 
     private boolean equalTo(CompletionValue other) {
-        return label.equals(other.label) && path.equals(other.path) && value.equals(other.value);
+        return dependsOn.equals(other.dependsOn)
+                && label.equals(other.label)
+                && path.equals(other.path)
+                && value.equals(other.value);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.label, this.path, this.value);
+        return Objects.hash(this.dependsOn, this.label, this.path, this.value);
     }
 
     @java.lang.Override
@@ -85,6 +97,8 @@ public final class CompletionValue {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Map<String, String>> dependsOn = Optional.empty();
+
         private Optional<String> label = Optional.empty();
 
         private Optional<String> path = Optional.empty();
@@ -97,9 +111,21 @@ public final class CompletionValue {
         private Builder() {}
 
         public Builder from(CompletionValue other) {
+            dependsOn(other.getDependsOn());
             label(other.getLabel());
             path(other.getPath());
             value(other.getValue());
+            return this;
+        }
+
+        @JsonSetter(value = "depends_on", nulls = Nulls.SKIP)
+        public Builder dependsOn(Optional<Map<String, String>> dependsOn) {
+            this.dependsOn = dependsOn;
+            return this;
+        }
+
+        public Builder dependsOn(Map<String, String> dependsOn) {
+            this.dependsOn = Optional.ofNullable(dependsOn);
             return this;
         }
 
@@ -137,7 +163,7 @@ public final class CompletionValue {
         }
 
         public CompletionValue build() {
-            return new CompletionValue(label, path, value, additionalProperties);
+            return new CompletionValue(dependsOn, label, path, value, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

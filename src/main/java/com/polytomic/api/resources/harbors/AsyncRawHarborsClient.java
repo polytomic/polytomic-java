@@ -48,6 +48,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsPromoteContextDraftRe
 import com.polytomic.api.resources.harbors.requests.InviteHarborUserRequest;
 import com.polytomic.api.resources.harbors.requests.RegisterHarborSessionRequest;
 import com.polytomic.api.resources.harbors.requests.ResolveHarborSourceMappingsRequest;
+import com.polytomic.api.resources.harbors.requests.RunHarborQueryRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborSavedQueryDraftRequest;
@@ -85,6 +86,7 @@ import com.polytomic.api.types.HarborUserListEnvelope;
 import com.polytomic.api.types.RegisterHarborSessionEnvelope;
 import com.polytomic.api.types.ResolveHarborSourceMappingsEnvelope;
 import com.polytomic.api.types.RevokedHarborKeyEnvelope;
+import com.polytomic.api.types.RunQueryEnvelope;
 import com.polytomic.api.types.UnassignedHarborUserEnvelope;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -3412,6 +3414,154 @@ public class AsyncRawHarborsClient {
                                 return;
                             case 500:
                                 future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Submits a query against the Harbor backing connection for asynchronous execution.
+     * <p>Use a scoped credential bound to this Harbor. The query runs only against the
+     * Harbor's backing connection; you cannot select another connection on this route.
+     * Send a unique <code>X-Polytomic-Activity-Request-ID</code> UUID with each submission. The
+     * <code>X-Polytomic-Harbor-Session</code> header is optional; if you send one, it must be
+     * valid for this Harbor.</p>
+     * <p>The response contains a query ID and an initial <code>created</code> status. Poll
+     * <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> with that ID
+     * until the status is <code>done</code>, <code>failed</code>, or <code>unknown</code>. Follow the result endpoint's
+     * pagination links for additional rows. Results are temporary; check <code>expires</code>
+     * on the completed query.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> runQuery(
+            String harborId, RunHarborQueryRequest request) {
+        return runQuery(harborId, request, null);
+    }
+
+    /**
+     * Submits a query against the Harbor backing connection for asynchronous execution.
+     * <p>Use a scoped credential bound to this Harbor. The query runs only against the
+     * Harbor's backing connection; you cannot select another connection on this route.
+     * Send a unique <code>X-Polytomic-Activity-Request-ID</code> UUID with each submission. The
+     * <code>X-Polytomic-Harbor-Session</code> header is optional; if you send one, it must be
+     * valid for this Harbor.</p>
+     * <p>The response contains a query ID and an initial <code>created</code> status. Poll
+     * <a href="../../../../api-reference/query-runner/get-query"><code>GET /api/queries/{id}</code></a> with that ID
+     * until the status is <code>done</code>, <code>failed</code>, or <code>unknown</code>. Follow the result endpoint's
+     * pagination links for additional rows. Results are temporary; check <code>expires</code>
+     * on the completed query.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> runQuery(
+            String harborId, RunHarborQueryRequest request, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("query");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("POST", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json");
+        if (request.getPolytomicHarborSession().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Harbor-Session",
+                    request.getPolytomicHarborSession().get());
+        }
+        if (request.getPolytomicActivityRequestId().isPresent()) {
+            _requestBuilder.addHeader(
+                    "X-Polytomic-Activity-Request-ID",
+                    request.getPolytomicActivityRequestId().get());
+        }
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, RunQueryEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;

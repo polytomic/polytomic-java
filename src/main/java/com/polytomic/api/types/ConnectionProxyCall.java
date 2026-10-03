@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectionProxyCall.Builder.class)
 public final class ConnectionProxyCall {
+    private final Optional<String> api;
+
     private final Optional<Object> body;
 
     private final Optional<Map<String, String>> headers;
@@ -36,6 +38,7 @@ public final class ConnectionProxyCall {
     private final Map<String, Object> additionalProperties;
 
     private ConnectionProxyCall(
+            Optional<String> api,
             Optional<Object> body,
             Optional<Map<String, String>> headers,
             String method,
@@ -43,6 +46,7 @@ public final class ConnectionProxyCall {
             Optional<Map<String, Object>> query,
             Optional<String> rawQuery,
             Map<String, Object> additionalProperties) {
+        this.api = api;
         this.body = body;
         this.headers = headers;
         this.method = method;
@@ -53,7 +57,15 @@ public final class ConnectionProxyCall {
     }
 
     /**
-     * @return Request body. May be a string, a JSON object, or null.
+     * @return Name of the upstream API to call, for connections that expose more than one (see apis in the proxy info response). Defaults to the connection's default API.
+     */
+    @JsonProperty("api")
+    public Optional<String> getApi() {
+        return api;
+    }
+
+    /**
+     * @return Request body. May be a string, a JSON object, a JSON array, or null.
      */
     @JsonProperty("body")
     public Optional<Object> getBody() {
@@ -112,7 +124,8 @@ public final class ConnectionProxyCall {
     }
 
     private boolean equalTo(ConnectionProxyCall other) {
-        return body.equals(other.body)
+        return api.equals(other.api)
+                && body.equals(other.body)
                 && headers.equals(other.headers)
                 && method.equals(other.method)
                 && path.equals(other.path)
@@ -122,7 +135,7 @@ public final class ConnectionProxyCall {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.body, this.headers, this.method, this.path, this.query, this.rawQuery);
+        return Objects.hash(this.api, this.body, this.headers, this.method, this.path, this.query, this.rawQuery);
     }
 
     @java.lang.Override
@@ -158,7 +171,14 @@ public final class ConnectionProxyCall {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Request body. May be a string, a JSON object, or null.</p>
+         * <p>Name of the upstream API to call, for connections that expose more than one (see apis in the proxy info response). Defaults to the connection's default API.</p>
+         */
+        _FinalStage api(Optional<String> api);
+
+        _FinalStage api(String api);
+
+        /**
+         * <p>Request body. May be a string, a JSON object, a JSON array, or null.</p>
          */
         _FinalStage body(Optional<Object> body);
 
@@ -200,6 +220,8 @@ public final class ConnectionProxyCall {
 
         private Optional<Object> body = Optional.empty();
 
+        private Optional<String> api = Optional.empty();
+
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -207,6 +229,7 @@ public final class ConnectionProxyCall {
 
         @java.lang.Override
         public Builder from(ConnectionProxyCall other) {
+            api(other.getApi());
             body(other.getBody());
             headers(other.getHeaders());
             method(other.getMethod());
@@ -299,7 +322,7 @@ public final class ConnectionProxyCall {
         }
 
         /**
-         * <p>Request body. May be a string, a JSON object, or null.</p>
+         * <p>Request body. May be a string, a JSON object, a JSON array, or null.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -309,7 +332,7 @@ public final class ConnectionProxyCall {
         }
 
         /**
-         * <p>Request body. May be a string, a JSON object, or null.</p>
+         * <p>Request body. May be a string, a JSON object, a JSON array, or null.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "body", nulls = Nulls.SKIP)
@@ -318,9 +341,29 @@ public final class ConnectionProxyCall {
             return this;
         }
 
+        /**
+         * <p>Name of the upstream API to call, for connections that expose more than one (see apis in the proxy info response). Defaults to the connection's default API.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage api(String api) {
+            this.api = Optional.ofNullable(api);
+            return this;
+        }
+
+        /**
+         * <p>Name of the upstream API to call, for connections that expose more than one (see apis in the proxy info response). Defaults to the connection's default API.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "api", nulls = Nulls.SKIP)
+        public _FinalStage api(Optional<String> api) {
+            this.api = api;
+            return this;
+        }
+
         @java.lang.Override
         public ConnectionProxyCall build() {
-            return new ConnectionProxyCall(body, headers, method, path, query, rawQuery, additionalProperties);
+            return new ConnectionProxyCall(api, body, headers, method, path, query, rawQuery, additionalProperties);
         }
 
         @java.lang.Override
