@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,12 +20,12 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ModelSyncGetSourceFieldsRequest.Builder.class)
 public final class ModelSyncGetSourceFieldsRequest {
-    private final Optional<Map<String, Optional<List<String>>>> params;
+    private final Optional<Map<String, Optional<String>>> params;
 
     private final Map<String, Object> additionalProperties;
 
     private ModelSyncGetSourceFieldsRequest(
-            Optional<Map<String, Optional<List<String>>>> params, Map<String, Object> additionalProperties) {
+            Optional<Map<String, Optional<String>>> params, Map<String, Object> additionalProperties) {
         this.params = params;
         this.additionalProperties = additionalProperties;
     }
@@ -35,7 +34,7 @@ public final class ModelSyncGetSourceFieldsRequest {
      * @return Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for.
      */
     @JsonProperty("params")
-    public Optional<Map<String, Optional<List<String>>>> getParams() {
+    public Optional<Map<String, Optional<String>>> getParams() {
         return params;
     }
 
@@ -70,7 +69,7 @@ public final class ModelSyncGetSourceFieldsRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<Map<String, Optional<List<String>>>> params = Optional.empty();
+        private Optional<Map<String, Optional<String>>> params = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -86,12 +85,12 @@ public final class ModelSyncGetSourceFieldsRequest {
          * <p>Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for.</p>
          */
         @JsonSetter(value = "params", nulls = Nulls.SKIP)
-        public Builder params(Optional<Map<String, Optional<List<String>>>> params) {
+        public Builder params(Optional<Map<String, Optional<String>>> params) {
             this.params = params;
             return this;
         }
 
-        public Builder params(Map<String, Optional<List<String>>> params) {
+        public Builder params(Map<String, Optional<String>> params) {
             this.params = Optional.ofNullable(params);
             return this;
         }

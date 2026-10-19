@@ -34,6 +34,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsGetContextDraftReques
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextVersionRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetSavedQueryRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsListActionConfigurationSchemasRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedConnectionsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedSchemasRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListContextDraftsRequest;
@@ -45,6 +46,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueriesReque
 import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueryDraftsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListUsersRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsPromoteContextDraftRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsRemoveActionConfigurationRequest;
 import com.polytomic.api.resources.harbors.requests.InviteHarborUserRequest;
 import com.polytomic.api.resources.harbors.requests.RegisterHarborSessionRequest;
 import com.polytomic.api.resources.harbors.requests.ResolveHarborSourceMappingsRequest;
@@ -52,6 +54,7 @@ import com.polytomic.api.resources.harbors.requests.RunHarborQueryRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborSavedQueryDraftRequest;
+import com.polytomic.api.resources.harbors.requests.SetHarborActionConfigurationRequest;
 import com.polytomic.api.resources.harbors.requests.UpdateHarborRequest;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.CloseHarborSessionEnvelope;
@@ -62,6 +65,10 @@ import com.polytomic.api.types.DeletedHarborEnvelope;
 import com.polytomic.api.types.DeletedHarborSavedQueryDraftEnvelope;
 import com.polytomic.api.types.DeletedHarborSavedQueryEnvelope;
 import com.polytomic.api.types.ExecuteHarborSavedQueryEnvelope;
+import com.polytomic.api.types.HarborActionConfigurationEnvelope;
+import com.polytomic.api.types.HarborActionConfigurationOperationsEnvelope;
+import com.polytomic.api.types.HarborActionConfigurationSchemasEnvelope;
+import com.polytomic.api.types.HarborActionSourceConnectionsEnvelope;
 import com.polytomic.api.types.HarborConnectionListEnvelope;
 import com.polytomic.api.types.HarborConnectionSchemaEnvelope;
 import com.polytomic.api.types.HarborContextDraftEnvelope;
@@ -1241,6 +1248,1070 @@ public class AsyncRawHarborsClient {
                                 return;
                             case 500:
                                 future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Returns configured action grants and revisions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission.</p>
+     * <p>This response includes grants for Connections that no longer populate the
+     * Harbor. You can remove those stale grants without reattaching the Connection.
+     * Reading configuration does not require the Harbor Actions entitlement.</p>
+     * <p>Use each Connection's <code>revision</code> as <code>expected_revision</code> when replacing or
+     * removing its grants. Configuration responses contain metadata only, not provider
+     * credentials or record values.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> getActionConfiguration(
+            String harborId) {
+        return getActionConfiguration(harborId, null);
+    }
+
+    /**
+     * Returns configured action grants and revisions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission.</p>
+     * <p>This response includes grants for Connections that no longer populate the
+     * Harbor. You can remove those stale grants without reattaching the Connection.
+     * Reading configuration does not require the Harbor Actions entitlement.</p>
+     * <p>Use each Connection's <code>revision</code> as <code>expected_revision</code> when replacing or
+     * removing its grants. Configuration responses contain metadata only, not provider
+     * credentials or record values.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> getActionConfiguration(
+            String harborId, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("action-configuration");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, HarborActionConfigurationEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Disables all configured actions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <blockquote>
+     * <p>🚧 Disable all actions</p>
+     * <p>This removes every configured action grant from the Harbor, including grants
+     * for detached Connections. There is no per-Connection revision check.</p>
+     * </blockquote>
+     * <p>The response contains the empty configuration. This request does not delete
+     * Connections, syncs, or provider records.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> disableActionConfiguration(
+            String harborId) {
+        return disableActionConfiguration(harborId, null);
+    }
+
+    /**
+     * Disables all configured actions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <blockquote>
+     * <p>🚧 Disable all actions</p>
+     * <p>This removes every configured action grant from the Harbor, including grants
+     * for detached Connections. There is no per-Connection revision check.</p>
+     * </blockquote>
+     * <p>The response contains the empty configuration. This request does not delete
+     * Connections, syncs, or provider records.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> disableActionConfiguration(
+            String harborId, IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("action-configuration");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, HarborActionConfigurationEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Lists action-capable source Connections that populate a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission. Discovery does
+     * not require the Harbor Actions entitlement.</p>
+     * <p>A Connection is eligible when it supports actions and is a source of a
+     * non-deleted Bulk Sync or Model Sync targeting the Harbor's backing Connection.
+     * Only saved, non-shared Connections in your Organization that you can query are
+     * included. Disabled syncs still establish source membership.</p>
+     * <p>Discover schemas and operations before choosing the grants to configure.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionSourceConnectionsEnvelope>> listActionSourceConnections(
+            String harborId) {
+        return listActionSourceConnections(harborId, null);
+    }
+
+    /**
+     * Lists action-capable source Connections that populate a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission. Discovery does
+     * not require the Harbor Actions entitlement.</p>
+     * <p>A Connection is eligible when it supports actions and is a source of a
+     * non-deleted Bulk Sync or Model Sync targeting the Harbor's backing Connection.
+     * Only saved, non-shared Connections in your Organization that you can query are
+     * included. Disabled syncs still establish source membership.</p>
+     * <p>Discover schemas and operations before choosing the grants to configure.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionSourceConnectionsEnvelope>> listActionSourceConnections(
+            String harborId, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("action-configuration")
+                .addPathSegments("connections");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<HarborActionSourceConnectionsEnvelope>> future =
+                new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, HarborActionSourceConnectionsEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> setActionConfiguration(
+            String harborId, String connectionId) {
+        return setActionConfiguration(
+                harborId,
+                connectionId,
+                SetHarborActionConfigurationRequest.builder().build());
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> setActionConfiguration(
+            String harborId, String connectionId, IdempotentRequestOptions requestOptions) {
+        return setActionConfiguration(
+                harborId,
+                connectionId,
+                SetHarborActionConfigurationRequest.builder().build(),
+                requestOptions);
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> setActionConfiguration(
+            String harborId, String connectionId, SetHarborActionConfigurationRequest request) {
+        return setActionConfiguration(harborId, connectionId, request, null);
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> setActionConfiguration(
+            String harborId,
+            String connectionId,
+            SetHarborActionConfigurationRequest request,
+            IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("action-configuration/connections")
+                .addPathSegment(connectionId);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        RequestBody body;
+        try {
+            body = RequestBody.create(
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new PolytomicException("Failed to serialize request", e);
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("PUT", body)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, HarborActionConfigurationEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Removes a Connection's action grants from a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <p>Supply the current <code>expected_revision</code> as a query parameter. A stale revision
+     * returns <code>409 Conflict</code>; read configuration again before retrying.</p>
+     * <p>You can remove grants after the Connection stops populating the Harbor, or after
+     * the Connection is deleted. The response contains the remaining configured action
+     * Connections. This request does not delete the Connection or provider records.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> removeActionConfiguration(
+            String harborId, String connectionId, HarborsRemoveActionConfigurationRequest request) {
+        return removeActionConfiguration(harborId, connectionId, request, null);
+    }
+
+    /**
+     * Removes a Connection's action grants from a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <p>Supply the current <code>expected_revision</code> as a query parameter. A stale revision
+     * returns <code>409 Conflict</code>; read configuration again before retrying.</p>
+     * <p>You can remove grants after the Connection stops populating the Harbor, or after
+     * the Connection is deleted. The response contains the remaining configured action
+     * Connections. This request does not delete the Connection or provider records.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> removeActionConfiguration(
+            String harborId,
+            String connectionId,
+            HarborsRemoveActionConfigurationRequest request,
+            IdempotentRequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("action-configuration/connections")
+                .addPathSegment(connectionId);
+        QueryStringMapper.addQueryParameter(httpUrl, "expected_revision", request.getExpectedRevision(), false);
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("DELETE", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, HarborActionConfigurationEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationSchemasEnvelope>>
+            listActionConfigurationSchemas(String harborId, String connectionId) {
+        return listActionConfigurationSchemas(
+                harborId,
+                connectionId,
+                HarborsListActionConfigurationSchemasRequest.builder().build());
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationSchemasEnvelope>>
+            listActionConfigurationSchemas(String harborId, String connectionId, RequestOptions requestOptions) {
+        return listActionConfigurationSchemas(
+                harborId,
+                connectionId,
+                HarborsListActionConfigurationSchemasRequest.builder().build(),
+                requestOptions);
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationSchemasEnvelope>>
+            listActionConfigurationSchemas(
+                    String harborId, String connectionId, HarborsListActionConfigurationSchemasRequest request) {
+        return listActionConfigurationSchemas(harborId, connectionId, request, null);
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationSchemasEnvelope>>
+            listActionConfigurationSchemas(
+                    String harborId,
+                    String connectionId,
+                    HarborsListActionConfigurationSchemasRequest request,
+                    RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("action-configuration/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("schemas");
+        if (request.getSearch().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "search", request.getSearch().get(), false);
+        }
+        if (request.getLimit().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (request.getPageToken().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "page_token", request.getPageToken().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationSchemasEnvelope>> future =
+                new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, HarborActionConfigurationSchemasEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
+    }
+
+    /**
+     * Lists operations and configurable fields for an eligible Harbor action schema.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This request returns operation metadata,
+     * not provider records, and does not execute an action.</p>
+     * <p>For a mutating operation, choose input field IDs. For a read-only operation,
+     * choose output field IDs and at least one lookup field ID. Required input fields
+     * must be included in the grant.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationOperationsEnvelope>>
+            listActionConfigurationOperations(String harborId, String connectionId, String schemaId) {
+        return listActionConfigurationOperations(harborId, connectionId, schemaId, null);
+    }
+
+    /**
+     * Lists operations and configurable fields for an eligible Harbor action schema.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This request returns operation metadata,
+     * not provider records, and does not execute an action.</p>
+     * <p>For a mutating operation, choose input field IDs. For a read-only operation,
+     * choose output field IDs and at least one lookup field ID. Required input fields
+     * must be included in the grant.</p>
+     */
+    public CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationOperationsEnvelope>>
+            listActionConfigurationOperations(
+                    String harborId, String connectionId, String schemaId, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/harbors")
+                .addPathSegment(harborId)
+                .addPathSegments("action-configuration/connections")
+                .addPathSegment(connectionId)
+                .addPathSegments("schemas")
+                .addPathSegment(schemaId)
+                .addPathSegments("operations");
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request okhttpRequest = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationOperationsEnvelope>> future =
+                new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(
+                                        responseBodyString, HarborActionConfigurationOperationsEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 422:
+                                future.completeExceptionally(new UnprocessableEntityError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 503:
+                                future.completeExceptionally(new ServiceUnavailableError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;

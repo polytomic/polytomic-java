@@ -92,7 +92,7 @@ public final class EntityResponse {
     }
 
     /**
-     * @return Resolved entity type. One of: organization, user, connection, model, sync, sync_execution, bulk_sync, bulk_sync_execution, harbor, harbor_context.
+     * @return Resolved entity type. One of: organization, user, connection, model, model_sync, model_sync_execution, bulk_sync, bulk_sync_execution, harbor, harbor_context.
      */
     @JsonProperty("type")
     public Optional<String> getType() {
@@ -234,7 +234,7 @@ public final class EntityResponse {
         }
 
         /**
-         * <p>Resolved entity type. One of: organization, user, connection, model, sync, sync_execution, bulk_sync, bulk_sync_execution, harbor, harbor_context.</p>
+         * <p>Resolved entity type. One of: organization, user, connection, model, model_sync, model_sync_execution, bulk_sync, bulk_sync_execution, harbor, harbor_context.</p>
          */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {

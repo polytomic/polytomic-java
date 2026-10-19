@@ -21,6 +21,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsGetContextDraftReques
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetContextVersionRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsGetSavedQueryRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsListActionConfigurationSchemasRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedConnectionsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListAuthorizedSchemasRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListContextDraftsRequest;
@@ -32,6 +33,7 @@ import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueriesReque
 import com.polytomic.api.resources.harbors.requests.HarborsListSavedQueryDraftsRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsListUsersRequest;
 import com.polytomic.api.resources.harbors.requests.HarborsPromoteContextDraftRequest;
+import com.polytomic.api.resources.harbors.requests.HarborsRemoveActionConfigurationRequest;
 import com.polytomic.api.resources.harbors.requests.InviteHarborUserRequest;
 import com.polytomic.api.resources.harbors.requests.RegisterHarborSessionRequest;
 import com.polytomic.api.resources.harbors.requests.ResolveHarborSourceMappingsRequest;
@@ -39,6 +41,7 @@ import com.polytomic.api.resources.harbors.requests.RunHarborQueryRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextDraftRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborContextRequest;
 import com.polytomic.api.resources.harbors.requests.SaveHarborSavedQueryDraftRequest;
+import com.polytomic.api.resources.harbors.requests.SetHarborActionConfigurationRequest;
 import com.polytomic.api.resources.harbors.requests.UpdateHarborRequest;
 import com.polytomic.api.types.CloseHarborSessionEnvelope;
 import com.polytomic.api.types.CreateHarborEnvelope;
@@ -48,6 +51,10 @@ import com.polytomic.api.types.DeletedHarborEnvelope;
 import com.polytomic.api.types.DeletedHarborSavedQueryDraftEnvelope;
 import com.polytomic.api.types.DeletedHarborSavedQueryEnvelope;
 import com.polytomic.api.types.ExecuteHarborSavedQueryEnvelope;
+import com.polytomic.api.types.HarborActionConfigurationEnvelope;
+import com.polytomic.api.types.HarborActionConfigurationOperationsEnvelope;
+import com.polytomic.api.types.HarborActionConfigurationSchemasEnvelope;
+import com.polytomic.api.types.HarborActionSourceConnectionsEnvelope;
 import com.polytomic.api.types.HarborConnectionListEnvelope;
 import com.polytomic.api.types.HarborConnectionSchemaEnvelope;
 import com.polytomic.api.types.HarborContextDraftEnvelope;
@@ -386,6 +393,378 @@ public class AsyncHarborsClient {
      */
     public CompletableFuture<DeletedHarborEnvelope> delete(String harborId, IdempotentRequestOptions requestOptions) {
         return this.rawClient.delete(harborId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns configured action grants and revisions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission.</p>
+     * <p>This response includes grants for Connections that no longer populate the
+     * Harbor. You can remove those stale grants without reattaching the Connection.
+     * Reading configuration does not require the Harbor Actions entitlement.</p>
+     * <p>Use each Connection's <code>revision</code> as <code>expected_revision</code> when replacing or
+     * removing its grants. Configuration responses contain metadata only, not provider
+     * credentials or record values.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> getActionConfiguration(String harborId) {
+        return this.rawClient.getActionConfiguration(harborId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Returns configured action grants and revisions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission.</p>
+     * <p>This response includes grants for Connections that no longer populate the
+     * Harbor. You can remove those stale grants without reattaching the Connection.
+     * Reading configuration does not require the Harbor Actions entitlement.</p>
+     * <p>Use each Connection's <code>revision</code> as <code>expected_revision</code> when replacing or
+     * removing its grants. Configuration responses contain metadata only, not provider
+     * credentials or record values.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> getActionConfiguration(
+            String harborId, RequestOptions requestOptions) {
+        return this.rawClient.getActionConfiguration(harborId, requestOptions).thenApply(response -> response.body());
+    }
+
+    /**
+     * Disables all configured actions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <blockquote>
+     * <p>🚧 Disable all actions</p>
+     * <p>This removes every configured action grant from the Harbor, including grants
+     * for detached Connections. There is no per-Connection revision check.</p>
+     * </blockquote>
+     * <p>The response contains the empty configuration. This request does not delete
+     * Connections, syncs, or provider records.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> disableActionConfiguration(String harborId) {
+        return this.rawClient.disableActionConfiguration(harborId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Disables all configured actions for a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <blockquote>
+     * <p>🚧 Disable all actions</p>
+     * <p>This removes every configured action grant from the Harbor, including grants
+     * for detached Connections. There is no per-Connection revision check.</p>
+     * </blockquote>
+     * <p>The response contains the empty configuration. This request does not delete
+     * Connections, syncs, or provider records.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> disableActionConfiguration(
+            String harborId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .disableActionConfiguration(harborId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists action-capable source Connections that populate a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission. Discovery does
+     * not require the Harbor Actions entitlement.</p>
+     * <p>A Connection is eligible when it supports actions and is a source of a
+     * non-deleted Bulk Sync or Model Sync targeting the Harbor's backing Connection.
+     * Only saved, non-shared Connections in your Organization that you can query are
+     * included. Disabled syncs still establish source membership.</p>
+     * <p>Discover schemas and operations before choosing the grants to configure.</p>
+     */
+    public CompletableFuture<HarborActionSourceConnectionsEnvelope> listActionSourceConnections(String harborId) {
+        return this.rawClient.listActionSourceConnections(harborId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists action-capable source Connections that populate a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a writable API credential, not a Harbor profile credential. Read-only keys
+     * are denied because this endpoint requires Harbor edit permission. Discovery does
+     * not require the Harbor Actions entitlement.</p>
+     * <p>A Connection is eligible when it supports actions and is a source of a
+     * non-deleted Bulk Sync or Model Sync targeting the Harbor's backing Connection.
+     * Only saved, non-shared Connections in your Organization that you can query are
+     * included. Disabled syncs still establish source membership.</p>
+     * <p>Discover schemas and operations before choosing the grants to configure.</p>
+     */
+    public CompletableFuture<HarborActionSourceConnectionsEnvelope> listActionSourceConnections(
+            String harborId, RequestOptions requestOptions) {
+        return this.rawClient
+                .listActionSourceConnections(harborId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> setActionConfiguration(
+            String harborId, String connectionId) {
+        return this.rawClient.setActionConfiguration(harborId, connectionId).thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> setActionConfiguration(
+            String harborId, String connectionId, IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .setActionConfiguration(harborId, connectionId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> setActionConfiguration(
+            String harborId, String connectionId, SetHarborActionConfigurationRequest request) {
+        return this.rawClient
+                .setActionConfiguration(harborId, connectionId, request)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Creates or replaces action grants for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit both the
+     * Harbor and the source Connection. Use a normal writable API credential, not a
+     * Harbor profile credential. Your Organization must have the Harbor Actions
+     * entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This requirement applies to new grants
+     * and replacements, even when you only remove fields from an existing grant.</p>
+     * <p>Submit the complete grant set for this Connection. Omit <code>expected_revision</code> to
+     * create it, or supply the current revision to replace it. A missing, stale, or
+     * unexpected revision returns <code>409 Conflict</code>; read configuration again before
+     * retrying. Successful replacement creates a new revision.</p>
+     * <p>For mutating operations, <code>field_ids</code> selects input fields and
+     * <code>lookup_field_ids</code> must be omitted. For read-only operations, <code>field_ids</code>
+     * selects output fields and <code>lookup_field_ids</code> selects allowed lookup fields.
+     * Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+     * remove the Connection's grants instead.</p>
+     * <p>This request changes permissions only. It does not execute provider actions.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> setActionConfiguration(
+            String harborId,
+            String connectionId,
+            SetHarborActionConfigurationRequest request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .setActionConfiguration(harborId, connectionId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Removes a Connection's action grants from a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <p>Supply the current <code>expected_revision</code> as a query parameter. A stale revision
+     * returns <code>409 Conflict</code>; read configuration again before retrying.</p>
+     * <p>You can remove grants after the Connection stops populating the Harbor, or after
+     * the Connection is deleted. The response contains the remaining configured action
+     * Connections. This request does not delete the Connection or provider records.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> removeActionConfiguration(
+            String harborId, String connectionId, HarborsRemoveActionConfigurationRequest request) {
+        return this.rawClient
+                .removeActionConfiguration(harborId, connectionId, request)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Removes a Connection's action grants from a Harbor.
+     * <p>You must be an Organization administrator with permission to edit the Harbor.
+     * Use a normal writable API credential, not a Harbor profile credential. Your
+     * Organization must have the Harbor Actions entitlement.</p>
+     * <p>Supply the current <code>expected_revision</code> as a query parameter. A stale revision
+     * returns <code>409 Conflict</code>; read configuration again before retrying.</p>
+     * <p>You can remove grants after the Connection stops populating the Harbor, or after
+     * the Connection is deleted. The response contains the remaining configured action
+     * Connections. This request does not delete the Connection or provider records.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationEnvelope> removeActionConfiguration(
+            String harborId,
+            String connectionId,
+            HarborsRemoveActionConfigurationRequest request,
+            IdempotentRequestOptions requestOptions) {
+        return this.rawClient
+                .removeActionConfiguration(harborId, connectionId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationSchemasEnvelope> listActionConfigurationSchemas(
+            String harborId, String connectionId) {
+        return this.rawClient
+                .listActionConfigurationSchemas(harborId, connectionId)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationSchemasEnvelope> listActionConfigurationSchemas(
+            String harborId, String connectionId, RequestOptions requestOptions) {
+        return this.rawClient
+                .listActionConfigurationSchemas(harborId, connectionId, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationSchemasEnvelope> listActionConfigurationSchemas(
+            String harborId, String connectionId, HarborsListActionConfigurationSchemasRequest request) {
+        return this.rawClient
+                .listActionConfigurationSchemas(harborId, connectionId, request)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists available action schemas for an eligible Harbor source Connection.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. The response lists action schemas, not
+     * records. Use the next page token with the same search filter to continue.</p>
+     * <p>Operation IDs in the catalog are hints. Operation discovery returns the current
+     * configurable fields for a schema.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationSchemasEnvelope> listActionConfigurationSchemas(
+            String harborId,
+            String connectionId,
+            HarborsListActionConfigurationSchemasRequest request,
+            RequestOptions requestOptions) {
+        return this.rawClient
+                .listActionConfigurationSchemas(harborId, connectionId, request, requestOptions)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists operations and configurable fields for an eligible Harbor action schema.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This request returns operation metadata,
+     * not provider records, and does not execute an action.</p>
+     * <p>For a mutating operation, choose input field IDs. For a read-only operation,
+     * choose output field IDs and at least one lookup field ID. Required input fields
+     * must be included in the grant.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationOperationsEnvelope> listActionConfigurationOperations(
+            String harborId, String connectionId, String schemaId) {
+        return this.rawClient
+                .listActionConfigurationOperations(harborId, connectionId, schemaId)
+                .thenApply(response -> response.body());
+    }
+
+    /**
+     * Lists operations and configurable fields for an eligible Harbor action schema.
+     * <p>You must be an Organization administrator with permission to edit the Harbor
+     * and query the source Connection. Use a writable API credential, not a Harbor
+     * profile credential. Read-only keys are denied because this endpoint requires
+     * Harbor edit permission. Discovery does not require the Harbor Actions entitlement.</p>
+     * <p>The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+     * Sync targeting its backing Connection. This request returns operation metadata,
+     * not provider records, and does not execute an action.</p>
+     * <p>For a mutating operation, choose input field IDs. For a read-only operation,
+     * choose output field IDs and at least one lookup field ID. Required input fields
+     * must be included in the grant.</p>
+     */
+    public CompletableFuture<HarborActionConfigurationOperationsEnvelope> listActionConfigurationOperations(
+            String harborId, String connectionId, String schemaId, RequestOptions requestOptions) {
+        return this.rawClient
+                .listActionConfigurationOperations(harborId, connectionId, schemaId, requestOptions)
+                .thenApply(response -> response.body());
     }
 
     /**

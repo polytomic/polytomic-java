@@ -289,7 +289,7 @@ public class AsyncSchemasClient {
     }
 
     /**
-     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * Requests cancellation of any running executions for a specific schema on a bulk sync. A schema whose only running work is a backfill returns a conflict.
      * <p>Cancellation is asynchronous. A successful response means the cancellation
      * signal for this schema has been queued; the schema's in-flight work continues
      * until the signal is processed. Poll
@@ -302,7 +302,7 @@ public class AsyncSchemasClient {
     }
 
     /**
-     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * Requests cancellation of any running executions for a specific schema on a bulk sync. A schema whose only running work is a backfill returns a conflict.
      * <p>Cancellation is asynchronous. A successful response means the cancellation
      * signal for this schema has been queued; the schema's in-flight work continues
      * until the signal is processed. Poll

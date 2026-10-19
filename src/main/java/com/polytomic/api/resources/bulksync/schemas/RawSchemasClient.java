@@ -15,6 +15,7 @@ import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
 import com.polytomic.api.errors.BadRequestError;
+import com.polytomic.api.errors.ConflictError;
 import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
@@ -548,7 +549,7 @@ public class RawSchemasClient {
     }
 
     /**
-     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * Requests cancellation of any running executions for a specific schema on a bulk sync. A schema whose only running work is a backfill returns a conflict.
      * <p>Cancellation is asynchronous. A successful response means the cancellation
      * signal for this schema has been queued; the schema's in-flight work continues
      * until the signal is processed. Poll
@@ -561,7 +562,7 @@ public class RawSchemasClient {
     }
 
     /**
-     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * Requests cancellation of any running executions for a specific schema on a bulk sync. A schema whose only running work is a backfill returns a conflict.
      * <p>Cancellation is asynchronous. A successful response means the cancellation
      * signal for this schema has been queued; the schema's in-flight work continues
      * until the signal is processed. Poll
@@ -617,6 +618,9 @@ public class RawSchemasClient {
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 404:
                         throw new NotFoundError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 409:
+                        throw new ConflictError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(

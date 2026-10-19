@@ -98,6 +98,9 @@ public final class CreateModelRequest {
         return enricher;
     }
 
+    /**
+     * @return Technical/source field names to publish in the model. Use source names, not model-field UUIDs or display labels. For example, use dealname rather than Deal Name. Omit or pass an empty array to publish all standard source fields.
+     */
     @JsonProperty("fields")
     public Optional<List<String>> getFields() {
         return fields;
@@ -221,6 +224,9 @@ public final class CreateModelRequest {
 
         _FinalStage enricher(Enrichment enricher);
 
+        /**
+         * <p>Technical/source field names to publish in the model. Use source names, not model-field UUIDs or display labels. For example, use dealname rather than Deal Name. Omit or pass an empty array to publish all standard source fields.</p>
+         */
         _FinalStage fields(Optional<List<String>> fields);
 
         _FinalStage fields(List<String> fields);
@@ -390,12 +396,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Technical/source field names to publish in the model. Use source names, not model-field UUIDs or display labels. For example, use dealname rather than Deal Name. Omit or pass an empty array to publish all standard source fields.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage fields(List<String> fields) {
             this.fields = Optional.ofNullable(fields);
             return this;
         }
 
+        /**
+         * <p>Technical/source field names to publish in the model. Use source names, not model-field UUIDs or display labels. For example, use dealname rather than Deal Name. Omit or pass an empty array to publish all standard source fields.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public _FinalStage fields(Optional<List<String>> fields) {

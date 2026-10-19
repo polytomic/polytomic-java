@@ -15,6 +15,7 @@ import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
 import com.polytomic.api.errors.BadRequestError;
+import com.polytomic.api.errors.ConflictError;
 import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
@@ -634,7 +635,7 @@ public class AsyncRawSchemasClient {
     }
 
     /**
-     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * Requests cancellation of any running executions for a specific schema on a bulk sync. A schema whose only running work is a backfill returns a conflict.
      * <p>Cancellation is asynchronous. A successful response means the cancellation
      * signal for this schema has been queued; the schema's in-flight work continues
      * until the signal is processed. Poll
@@ -647,7 +648,7 @@ public class AsyncRawSchemasClient {
     }
 
     /**
-     * Requests cancellation of any running executions for a specific schema on a bulk sync.
+     * Requests cancellation of any running executions for a specific schema on a bulk sync. A schema whose only running work is a backfill returns a conflict.
      * <p>Cancellation is asynchronous. A successful response means the cancellation
      * signal for this schema has been queued; the schema's in-flight work continues
      * until the signal is processed. Poll
@@ -710,6 +711,11 @@ public class AsyncRawSchemasClient {
                                 return;
                             case 404:
                                 future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 409:
+                                future.completeExceptionally(new ConflictError(
                                         ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
                                         response));
                                 return;

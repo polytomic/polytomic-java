@@ -26,7 +26,9 @@ public enum BulkExecutionStatus {
 
     ERRORS("errors"),
 
-    INTERRUPTED("interrupted");
+    INTERRUPTED("interrupted"),
+
+    COMPLETED_WITH_CANCELLATIONS("completed_with_cancellations");
 
     private final String value;
 

@@ -9,14 +9,18 @@ import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
+import com.polytomic.api.core.QueryStringMapper;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
+import com.polytomic.api.errors.BadRequestError;
 import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.UnauthorizedError;
+import com.polytomic.api.resources.entities.requests.EntitiesSearchRequest;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.EntityResponseEnvelope;
+import com.polytomic.api.types.SearchEnvelope;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import okhttp3.Call;
@@ -34,6 +38,195 @@ public class AsyncRawEntitiesClient {
 
     public AsyncRawEntitiesClient(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    /**
+     * Searches models, model fields, model syncs, bulk syncs, and connections in the caller's organization.
+     * <p>Supply a nonblank <code>search</code> term to search all five result categories. Unlike
+     * <a href="../../../api-reference/entities/get">entity lookup</a>, this endpoint does not search
+     * Organizations, users, executions, Harbors, or Harbor contexts. Model fields are
+     * searchable but have no standalone lookup endpoint.</p>
+     * <h2>Searchable resources</h2>
+     * <ul>
+     * <li>Models: ID, name, and source Connection type.</li>
+     * <li>Model fields: ID, technical name, and label.</li>
+     * <li>Model Syncs: ID, name, source and target Connection types, and saved field and
+     * identity mappings. Mappings include source field names and labels, target
+     * field IDs, and available target field names.</li>
+     * <li>Bulk Syncs: ID, name, source and target Connection names and types, and enabled
+     * schema IDs, display names, and configured output names. Disabled schemas are
+     * excluded; enabled schemas remain searchable when the sync is inactive.</li>
+     * <li>Connections: ID and name.</li>
+     * </ul>
+     * <p>Search uses cached metadata and does not refresh schemas. Names absent from
+     * that metadata are not searchable. Bulk Sync fields, execution state,
+     * expressions, filters, and constant values are not searched.</p>
+     * <h2>Matching and evidence</h2>
+     * <p>Matching is case-insensitive and uses word prefixes, not fuzzy matching. Every
+     * query word must match somewhere within a result. Spaces and punctuation split
+     * words: <code>other emails</code> matches <code>other_emails</code>, but <code>mail</code> does not match <code>email</code>.
+     * Some Model Sync source-type matches require a leading <code>~</code>.</p>
+     * <p>Each resource appears once. Its <code>matches</code> explain which attributes matched and
+     * which query terms contributed. Mapping and schema attributes carry their
+     * respective <code>mapping</code> or <code>schema</code> context; resource metadata has neither. A name
+     * or Connection type match alone does not establish mapping or schema use.
+     * Results include canonical <code>links</code>, not complete configurations or schema lists.</p>
+     * <h2>Limits and completeness</h2>
+     * <p>Results are ordered by category, then name or field label, then ID, not by
+     * relevance. <code>limit</code> defaults to 50 and accepts 1–100. It limits resource hits,
+     * not match evidence. When <code>metadata.truncated</code> is <code>true</code>, narrow your search or
+     * increase the limit. There is no cursor pagination.</p>
+     * <blockquote>
+     * <p>⚠️ Incomplete model-field coverage</p>
+     * <p>Above 40,000 published model fields, <code>metadata.model_fields_complete</code> is
+     * <code>false</code>: standalone field results cover a subset, not every published field.
+     * Model Sync mapping search is unaffected. Incomplete or truncated results
+     * cannot establish that no other matches exist.</p>
+     * </blockquote>
+     */
+    public CompletableFuture<PolytomicHttpResponse<SearchEnvelope>> search(EntitiesSearchRequest request) {
+        return search(request, null);
+    }
+
+    /**
+     * Searches models, model fields, model syncs, bulk syncs, and connections in the caller's organization.
+     * <p>Supply a nonblank <code>search</code> term to search all five result categories. Unlike
+     * <a href="../../../api-reference/entities/get">entity lookup</a>, this endpoint does not search
+     * Organizations, users, executions, Harbors, or Harbor contexts. Model fields are
+     * searchable but have no standalone lookup endpoint.</p>
+     * <h2>Searchable resources</h2>
+     * <ul>
+     * <li>Models: ID, name, and source Connection type.</li>
+     * <li>Model fields: ID, technical name, and label.</li>
+     * <li>Model Syncs: ID, name, source and target Connection types, and saved field and
+     * identity mappings. Mappings include source field names and labels, target
+     * field IDs, and available target field names.</li>
+     * <li>Bulk Syncs: ID, name, source and target Connection names and types, and enabled
+     * schema IDs, display names, and configured output names. Disabled schemas are
+     * excluded; enabled schemas remain searchable when the sync is inactive.</li>
+     * <li>Connections: ID and name.</li>
+     * </ul>
+     * <p>Search uses cached metadata and does not refresh schemas. Names absent from
+     * that metadata are not searchable. Bulk Sync fields, execution state,
+     * expressions, filters, and constant values are not searched.</p>
+     * <h2>Matching and evidence</h2>
+     * <p>Matching is case-insensitive and uses word prefixes, not fuzzy matching. Every
+     * query word must match somewhere within a result. Spaces and punctuation split
+     * words: <code>other emails</code> matches <code>other_emails</code>, but <code>mail</code> does not match <code>email</code>.
+     * Some Model Sync source-type matches require a leading <code>~</code>.</p>
+     * <p>Each resource appears once. Its <code>matches</code> explain which attributes matched and
+     * which query terms contributed. Mapping and schema attributes carry their
+     * respective <code>mapping</code> or <code>schema</code> context; resource metadata has neither. A name
+     * or Connection type match alone does not establish mapping or schema use.
+     * Results include canonical <code>links</code>, not complete configurations or schema lists.</p>
+     * <h2>Limits and completeness</h2>
+     * <p>Results are ordered by category, then name or field label, then ID, not by
+     * relevance. <code>limit</code> defaults to 50 and accepts 1–100. It limits resource hits,
+     * not match evidence. When <code>metadata.truncated</code> is <code>true</code>, narrow your search or
+     * increase the limit. There is no cursor pagination.</p>
+     * <blockquote>
+     * <p>⚠️ Incomplete model-field coverage</p>
+     * <p>Above 40,000 published model fields, <code>metadata.model_fields_complete</code> is
+     * <code>false</code>: standalone field results cover a subset, not every published field.
+     * Model Sync mapping search is unaffected. Incomplete or truncated results
+     * cannot establish that no other matches exist.</p>
+     * </blockquote>
+     */
+    public CompletableFuture<PolytomicHttpResponse<SearchEnvelope>> search(
+            EntitiesSearchRequest request, RequestOptions requestOptions) {
+        HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
+                .newBuilder()
+                .addPathSegments("api/entities/search");
+        QueryStringMapper.addQueryParameter(httpUrl, "search", request.getSearch(), false);
+        if (request.getLimit().isPresent()) {
+            QueryStringMapper.addQueryParameter(
+                    httpUrl, "limit", request.getLimit().get(), false);
+        }
+        if (requestOptions != null) {
+            requestOptions.getQueryParameters().forEach((_key, _value) -> {
+                httpUrl.addQueryParameter(_key, _value);
+            });
+        }
+        Request.Builder _requestBuilder = new Request.Builder()
+                .url(httpUrl.build())
+                .method("GET", null)
+                .headers(Headers.of(clientOptions.headers(requestOptions)))
+                .addHeader("Accept", "application/json");
+        Request okhttpRequest = _requestBuilder.build();
+        OkHttpClient client = clientOptions.httpClient();
+        if (requestOptions != null && requestOptions.getTimeout().isPresent()) {
+            client = clientOptions.httpClientWithTimeout(requestOptions);
+        }
+        if (requestOptions != null && requestOptions.getMaxRetries().isPresent()) {
+            okhttpRequest = okhttpRequest
+                    .newBuilder()
+                    .tag(
+                            RetryInterceptor.MaxRetriesOverride.class,
+                            new RetryInterceptor.MaxRetriesOverride(
+                                    requestOptions.getMaxRetries().get()))
+                    .build();
+        }
+        CompletableFuture<PolytomicHttpResponse<SearchEnvelope>> future = new CompletableFuture<>();
+        client.newCall(okhttpRequest).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (ResponseBody responseBody = response.body()) {
+                    String responseBodyString = responseBody != null ? responseBody.string() : "{}";
+                    if (response.isSuccessful()) {
+                        future.complete(new PolytomicHttpResponse<>(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, SearchEnvelope.class),
+                                response));
+                        return;
+                    }
+                    try {
+                        switch (response.code()) {
+                            case 400:
+                                future.completeExceptionally(new BadRequestError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 401:
+                                future.completeExceptionally(new UnauthorizedError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 403:
+                                future.completeExceptionally(new ForbiddenError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 404:
+                                future.completeExceptionally(new NotFoundError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                            case 500:
+                                future.completeExceptionally(new InternalServerError(
+                                        ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class),
+                                        response));
+                                return;
+                        }
+                    } catch (JsonProcessingException ignored) {
+                        // unable to map error response, throwing generic error
+                    }
+                    Object errorBody = ObjectMappers.parseErrorBody(responseBodyString);
+                    future.completeExceptionally(new PolytomicApiException(
+                            "Error with status code " + response.code(), response.code(), errorBody, response));
+                    return;
+                } catch (JsonProcessingException e) {
+                    future.completeExceptionally(
+                            new PolytomicException("Failed to deserialize response: " + e.getMessage(), e));
+                } catch (IOException e) {
+                    future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        return future;
     }
 
     /**
@@ -62,8 +255,8 @@ public class AsyncRawEntitiesClient {
      * <li><code>user</code></li>
      * <li><code>connection</code></li>
      * <li><code>model</code></li>
-     * <li><code>sync</code></li>
-     * <li><code>sync_execution</code></li>
+     * <li><code>model_sync</code></li>
+     * <li><code>model_sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
      * <li><code>harbor</code></li>
@@ -71,8 +264,8 @@ public class AsyncRawEntitiesClient {
      * </ul>
      * <p>Examples:</p>
      * <ul>
-     * <li>A model sync execution resolves to a <code>sync_execution</code> and includes a <code>sync</code>
-     * relationship.</li>
+     * <li>A model sync execution resolves to a <code>model_sync_execution</code> and includes a
+     * <code>sync</code> relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
      * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>
@@ -111,8 +304,8 @@ public class AsyncRawEntitiesClient {
      * <li><code>user</code></li>
      * <li><code>connection</code></li>
      * <li><code>model</code></li>
-     * <li><code>sync</code></li>
-     * <li><code>sync_execution</code></li>
+     * <li><code>model_sync</code></li>
+     * <li><code>model_sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
      * <li><code>harbor</code></li>
@@ -120,8 +313,8 @@ public class AsyncRawEntitiesClient {
      * </ul>
      * <p>Examples:</p>
      * <ul>
-     * <li>A model sync execution resolves to a <code>sync_execution</code> and includes a <code>sync</code>
-     * relationship.</li>
+     * <li>A model sync execution resolves to a <code>model_sync_execution</code> and includes a
+     * <code>sync</code> relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
      * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>
@@ -243,8 +436,8 @@ public class AsyncRawEntitiesClient {
      * <li><code>user</code></li>
      * <li><code>connection</code></li>
      * <li><code>model</code></li>
-     * <li><code>sync</code></li>
-     * <li><code>sync_execution</code></li>
+     * <li><code>model_sync</code></li>
+     * <li><code>model_sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
      * <li><code>harbor</code></li>
@@ -252,8 +445,8 @@ public class AsyncRawEntitiesClient {
      * </ul>
      * <p>Examples:</p>
      * <ul>
-     * <li>A model sync execution resolves to a <code>sync_execution</code> and includes a <code>sync</code>
-     * relationship.</li>
+     * <li>A model sync execution resolves to a <code>model_sync_execution</code> and includes a
+     * <code>sync</code> relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
      * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>
@@ -290,8 +483,8 @@ public class AsyncRawEntitiesClient {
      * <li><code>user</code></li>
      * <li><code>connection</code></li>
      * <li><code>model</code></li>
-     * <li><code>sync</code></li>
-     * <li><code>sync_execution</code></li>
+     * <li><code>model_sync</code></li>
+     * <li><code>model_sync_execution</code></li>
      * <li><code>bulk_sync</code></li>
      * <li><code>bulk_sync_execution</code></li>
      * <li><code>harbor</code></li>
@@ -299,8 +492,8 @@ public class AsyncRawEntitiesClient {
      * </ul>
      * <p>Examples:</p>
      * <ul>
-     * <li>A model sync execution resolves to a <code>sync_execution</code> and includes a <code>sync</code>
-     * relationship.</li>
+     * <li>A model sync execution resolves to a <code>model_sync_execution</code> and includes a
+     * <code>sync</code> relationship.</li>
      * <li>A bulk sync execution resolves to a <code>bulk_sync_execution</code>, includes a
      * <code>bulk_sync</code> relationship, and may include <code>context.schema_ids</code>.</li>
      * <li>A Harbor context resolves to a <code>harbor_context</code> and includes a <code>harbor</code>

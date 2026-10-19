@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,6 +22,8 @@ import java.util.Optional;
 @JsonDeserialize(builder = SyncDestinationProperties.Builder.class)
 public final class SyncDestinationProperties {
     private final Optional<Boolean> doesNotReportOperationCounts;
+
+    private final Optional<List<String>> identityLogics;
 
     private final Optional<Boolean> mappingsNotRequired;
 
@@ -54,6 +57,7 @@ public final class SyncDestinationProperties {
 
     private SyncDestinationProperties(
             Optional<Boolean> doesNotReportOperationCounts,
+            Optional<List<String>> identityLogics,
             Optional<Boolean> mappingsNotRequired,
             Optional<String> newTargetLabel,
             Optional<Boolean> optionalTargetMappings,
@@ -70,6 +74,7 @@ public final class SyncDestinationProperties {
             Optional<Boolean> useFieldNamesAsLabels,
             Map<String, Object> additionalProperties) {
         this.doesNotReportOperationCounts = doesNotReportOperationCounts;
+        this.identityLogics = identityLogics;
         this.mappingsNotRequired = mappingsNotRequired;
         this.newTargetLabel = newTargetLabel;
         this.optionalTargetMappings = optionalTargetMappings;
@@ -93,6 +98,14 @@ public final class SyncDestinationProperties {
     @JsonProperty("does_not_report_operation_counts")
     public Optional<Boolean> getDoesNotReportOperationCounts() {
         return doesNotReportOperationCounts;
+    }
+
+    /**
+     * @return How this destination can combine more than one identity mapping: 'priority', 'and', or both. Every combination is supported when empty.
+     */
+    @JsonProperty("identity_logics")
+    public Optional<List<String>> getIdentityLogics() {
+        return identityLogics;
     }
 
     /**
@@ -220,6 +233,7 @@ public final class SyncDestinationProperties {
 
     private boolean equalTo(SyncDestinationProperties other) {
         return doesNotReportOperationCounts.equals(other.doesNotReportOperationCounts)
+                && identityLogics.equals(other.identityLogics)
                 && mappingsNotRequired.equals(other.mappingsNotRequired)
                 && newTargetLabel.equals(other.newTargetLabel)
                 && optionalTargetMappings.equals(other.optionalTargetMappings)
@@ -240,6 +254,7 @@ public final class SyncDestinationProperties {
     public int hashCode() {
         return Objects.hash(
                 this.doesNotReportOperationCounts,
+                this.identityLogics,
                 this.mappingsNotRequired,
                 this.newTargetLabel,
                 this.optionalTargetMappings,
@@ -268,6 +283,8 @@ public final class SyncDestinationProperties {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
         private Optional<Boolean> doesNotReportOperationCounts = Optional.empty();
+
+        private Optional<List<String>> identityLogics = Optional.empty();
 
         private Optional<Boolean> mappingsNotRequired = Optional.empty();
 
@@ -304,6 +321,7 @@ public final class SyncDestinationProperties {
 
         public Builder from(SyncDestinationProperties other) {
             doesNotReportOperationCounts(other.getDoesNotReportOperationCounts());
+            identityLogics(other.getIdentityLogics());
             mappingsNotRequired(other.getMappingsNotRequired());
             newTargetLabel(other.getNewTargetLabel());
             optionalTargetMappings(other.getOptionalTargetMappings());
@@ -332,6 +350,20 @@ public final class SyncDestinationProperties {
 
         public Builder doesNotReportOperationCounts(Boolean doesNotReportOperationCounts) {
             this.doesNotReportOperationCounts = Optional.ofNullable(doesNotReportOperationCounts);
+            return this;
+        }
+
+        /**
+         * <p>How this destination can combine more than one identity mapping: 'priority', 'and', or both. Every combination is supported when empty.</p>
+         */
+        @JsonSetter(value = "identity_logics", nulls = Nulls.SKIP)
+        public Builder identityLogics(Optional<List<String>> identityLogics) {
+            this.identityLogics = identityLogics;
+            return this;
+        }
+
+        public Builder identityLogics(List<String> identityLogics) {
+            this.identityLogics = Optional.ofNullable(identityLogics);
             return this;
         }
 
@@ -534,6 +566,7 @@ public final class SyncDestinationProperties {
         public SyncDestinationProperties build() {
             return new SyncDestinationProperties(
                     doesNotReportOperationCounts,
+                    identityLogics,
                     mappingsNotRequired,
                     newTargetLabel,
                     optionalTargetMappings,

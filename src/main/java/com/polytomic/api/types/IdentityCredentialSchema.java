@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +22,8 @@ import java.util.Optional;
 @JsonDeserialize(builder = IdentityCredentialSchema.Builder.class)
 public final class IdentityCredentialSchema {
     private final Optional<IdentityCredentialApiKeyProfileSchema> apiKeyProfile;
+
+    private final Optional<OffsetDateTime> expiresAt;
 
     private final Optional<IdentityCredentialHarborSchema> harbor;
 
@@ -36,6 +39,7 @@ public final class IdentityCredentialSchema {
 
     private IdentityCredentialSchema(
             Optional<IdentityCredentialApiKeyProfileSchema> apiKeyProfile,
+            Optional<OffsetDateTime> expiresAt,
             Optional<IdentityCredentialHarborSchema> harbor,
             Optional<String> method,
             Optional<String> mode,
@@ -43,6 +47,7 @@ public final class IdentityCredentialSchema {
             Optional<String> oauthResource,
             Map<String, Object> additionalProperties) {
         this.apiKeyProfile = apiKeyProfile;
+        this.expiresAt = expiresAt;
         this.harbor = harbor;
         this.method = method;
         this.mode = mode;
@@ -54,6 +59,14 @@ public final class IdentityCredentialSchema {
     @JsonProperty("api_key_profile")
     public Optional<IdentityCredentialApiKeyProfileSchema> getApiKeyProfile() {
         return apiKeyProfile;
+    }
+
+    /**
+     * @return Provider expiry of a temporary API key.
+     */
+    @JsonProperty("expires_at")
+    public Optional<OffsetDateTime> getExpiresAt() {
+        return expiresAt;
     }
 
     @JsonProperty("harbor")
@@ -106,6 +119,7 @@ public final class IdentityCredentialSchema {
 
     private boolean equalTo(IdentityCredentialSchema other) {
         return apiKeyProfile.equals(other.apiKeyProfile)
+                && expiresAt.equals(other.expiresAt)
                 && harbor.equals(other.harbor)
                 && method.equals(other.method)
                 && mode.equals(other.mode)
@@ -116,7 +130,13 @@ public final class IdentityCredentialSchema {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
-                this.apiKeyProfile, this.harbor, this.method, this.mode, this.oauthClientId, this.oauthResource);
+                this.apiKeyProfile,
+                this.expiresAt,
+                this.harbor,
+                this.method,
+                this.mode,
+                this.oauthClientId,
+                this.oauthResource);
     }
 
     @java.lang.Override
@@ -131,6 +151,8 @@ public final class IdentityCredentialSchema {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
         private Optional<IdentityCredentialApiKeyProfileSchema> apiKeyProfile = Optional.empty();
+
+        private Optional<OffsetDateTime> expiresAt = Optional.empty();
 
         private Optional<IdentityCredentialHarborSchema> harbor = Optional.empty();
 
@@ -149,6 +171,7 @@ public final class IdentityCredentialSchema {
 
         public Builder from(IdentityCredentialSchema other) {
             apiKeyProfile(other.getApiKeyProfile());
+            expiresAt(other.getExpiresAt());
             harbor(other.getHarbor());
             method(other.getMethod());
             mode(other.getMode());
@@ -165,6 +188,20 @@ public final class IdentityCredentialSchema {
 
         public Builder apiKeyProfile(IdentityCredentialApiKeyProfileSchema apiKeyProfile) {
             this.apiKeyProfile = Optional.ofNullable(apiKeyProfile);
+            return this;
+        }
+
+        /**
+         * <p>Provider expiry of a temporary API key.</p>
+         */
+        @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
+        public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
+            this.expiresAt = expiresAt;
+            return this;
+        }
+
+        public Builder expiresAt(OffsetDateTime expiresAt) {
+            this.expiresAt = Optional.ofNullable(expiresAt);
             return this;
         }
 
@@ -237,7 +274,7 @@ public final class IdentityCredentialSchema {
 
         public IdentityCredentialSchema build() {
             return new IdentityCredentialSchema(
-                    apiKeyProfile, harbor, method, mode, oauthClientId, oauthResource, additionalProperties);
+                    apiKeyProfile, expiresAt, harbor, method, mode, oauthClientId, oauthResource, additionalProperties);
         }
 
         public Builder additionalProperty(String key, Object value) {

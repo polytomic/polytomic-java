@@ -111,6 +111,25 @@ public class ModelSyncClient {
      * </blockquote>
      * <p>The available source configuration parameters are described by
      * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     * <h2>Query parameter format</h2>
+     * <p>Send each source setting as a bracketed key with a single string value. For
+     * example, a source configured with <code>stream_id: &quot;deals&quot;</code> uses
+     * <code>params[stream_id]=deals</code>.</p>
+     * <p>With Polytomic MCP, pass the bracketed key directly in <code>query</code>:</p>
+     * <pre><code class="language-javascript">async () =&gt; {
+     *   return polytomic.request({
+     *     method: &quot;GET&quot;,
+     *     path: &quot;/api/connections/&lt;connection_id&gt;/modelsync/source/fields&quot;,
+     *     query: {&quot;params[stream_id]&quot;: &quot;deals&quot;}
+     *   });
+     * }
+     * </code></pre>
+     * <blockquote>
+     * <p>⚠️ Send one value per setting</p>
+     * <p>Each setting uses only the first value if you repeat its query key. An empty
+     * array suffix, such as <code>params[stream_id][]=deals</code>, is rejected with
+     * <code>400 Bad Request</code>. Use <code>params[stream_id]=deals</code> instead.</p>
+     * </blockquote>
      */
     public ModelFieldResponse getSourceFields(String id) {
         return this.rawClient.getSourceFields(id).body();
@@ -128,6 +147,25 @@ public class ModelSyncClient {
      * </blockquote>
      * <p>The available source configuration parameters are described by
      * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     * <h2>Query parameter format</h2>
+     * <p>Send each source setting as a bracketed key with a single string value. For
+     * example, a source configured with <code>stream_id: &quot;deals&quot;</code> uses
+     * <code>params[stream_id]=deals</code>.</p>
+     * <p>With Polytomic MCP, pass the bracketed key directly in <code>query</code>:</p>
+     * <pre><code class="language-javascript">async () =&gt; {
+     *   return polytomic.request({
+     *     method: &quot;GET&quot;,
+     *     path: &quot;/api/connections/&lt;connection_id&gt;/modelsync/source/fields&quot;,
+     *     query: {&quot;params[stream_id]&quot;: &quot;deals&quot;}
+     *   });
+     * }
+     * </code></pre>
+     * <blockquote>
+     * <p>⚠️ Send one value per setting</p>
+     * <p>Each setting uses only the first value if you repeat its query key. An empty
+     * array suffix, such as <code>params[stream_id][]=deals</code>, is rejected with
+     * <code>400 Bad Request</code>. Use <code>params[stream_id]=deals</code> instead.</p>
+     * </blockquote>
      */
     public ModelFieldResponse getSourceFields(String id, RequestOptions requestOptions) {
         return this.rawClient.getSourceFields(id, requestOptions).body();
@@ -145,6 +183,25 @@ public class ModelSyncClient {
      * </blockquote>
      * <p>The available source configuration parameters are described by
      * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     * <h2>Query parameter format</h2>
+     * <p>Send each source setting as a bracketed key with a single string value. For
+     * example, a source configured with <code>stream_id: &quot;deals&quot;</code> uses
+     * <code>params[stream_id]=deals</code>.</p>
+     * <p>With Polytomic MCP, pass the bracketed key directly in <code>query</code>:</p>
+     * <pre><code class="language-javascript">async () =&gt; {
+     *   return polytomic.request({
+     *     method: &quot;GET&quot;,
+     *     path: &quot;/api/connections/&lt;connection_id&gt;/modelsync/source/fields&quot;,
+     *     query: {&quot;params[stream_id]&quot;: &quot;deals&quot;}
+     *   });
+     * }
+     * </code></pre>
+     * <blockquote>
+     * <p>⚠️ Send one value per setting</p>
+     * <p>Each setting uses only the first value if you repeat its query key. An empty
+     * array suffix, such as <code>params[stream_id][]=deals</code>, is rejected with
+     * <code>400 Bad Request</code>. Use <code>params[stream_id]=deals</code> instead.</p>
+     * </blockquote>
      */
     public ModelFieldResponse getSourceFields(String id, ModelSyncGetSourceFieldsRequest request) {
         return this.rawClient.getSourceFields(id, request).body();
@@ -162,6 +219,25 @@ public class ModelSyncClient {
      * </blockquote>
      * <p>The available source configuration parameters are described by
      * <a href="../../../../../../api-reference/model-sync/get-source"><code>GET /api/connections/{id}/modelsync/source</code></a>.</p>
+     * <h2>Query parameter format</h2>
+     * <p>Send each source setting as a bracketed key with a single string value. For
+     * example, a source configured with <code>stream_id: &quot;deals&quot;</code> uses
+     * <code>params[stream_id]=deals</code>.</p>
+     * <p>With Polytomic MCP, pass the bracketed key directly in <code>query</code>:</p>
+     * <pre><code class="language-javascript">async () =&gt; {
+     *   return polytomic.request({
+     *     method: &quot;GET&quot;,
+     *     path: &quot;/api/connections/&lt;connection_id&gt;/modelsync/source/fields&quot;,
+     *     query: {&quot;params[stream_id]&quot;: &quot;deals&quot;}
+     *   });
+     * }
+     * </code></pre>
+     * <blockquote>
+     * <p>⚠️ Send one value per setting</p>
+     * <p>Each setting uses only the first value if you repeat its query key. An empty
+     * array suffix, such as <code>params[stream_id][]=deals</code>, is rejected with
+     * <code>400 Bad Request</code>. Use <code>params[stream_id]=deals</code> instead.</p>
+     * </blockquote>
      */
     public ModelFieldResponse getSourceFields(
             String id, ModelSyncGetSourceFieldsRequest request, RequestOptions requestOptions) {
