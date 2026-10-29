@@ -66,7 +66,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return Business definition and usage notes.
+     * @return Business definition and usage notes
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -74,7 +74,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return Expected ordered result-column names.
+     * @return Expected ordered result-column names
      */
     @JsonProperty("expected_columns")
     public Optional<List<String>> getExpectedColumns() {
@@ -82,7 +82,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return Stable saved-query identifier.
+     * @return Stable saved-query identifier
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -90,7 +90,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return Human-readable saved-query name.
+     * @return Human-readable saved-query name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -98,7 +98,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return Human-readable owner label.
+     * @return Human-readable owner label
      */
     @JsonProperty("owner")
     public Optional<String> getOwner() {
@@ -106,7 +106,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return When this version was published.
+     * @return When this version was published
      */
     @JsonProperty("published_at")
     public Optional<OffsetDateTime> getPublishedAt() {
@@ -114,7 +114,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return Immutable identifier of this exact published definition.
+     * @return Immutable identifier of this exact published definition
      */
     @JsonProperty("revision_id")
     public Optional<String> getRevisionId() {
@@ -122,7 +122,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return When this version's draft was last updated before publication.
+     * @return When this version's draft was last updated before publication
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
@@ -130,7 +130,7 @@ public final class HarborSavedQueryMetadataResponse {
     }
 
     /**
-     * @return Current published version number.
+     * @return Current published version number
      */
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
@@ -203,7 +203,6 @@ public final class HarborSavedQueryMetadataResponse {
 
         private Optional<Integer> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -222,7 +221,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>Business definition and usage notes.</p>
+         * <p>Business definition and usage notes</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -236,7 +235,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>Expected ordered result-column names.</p>
+         * <p>Expected ordered result-column names</p>
          */
         @JsonSetter(value = "expected_columns", nulls = Nulls.SKIP)
         public Builder expectedColumns(Optional<List<String>> expectedColumns) {
@@ -250,7 +249,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>Stable saved-query identifier.</p>
+         * <p>Stable saved-query identifier</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -264,7 +263,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>Human-readable saved-query name.</p>
+         * <p>Human-readable saved-query name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -278,7 +277,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>Human-readable owner label.</p>
+         * <p>Human-readable owner label</p>
          */
         @JsonSetter(value = "owner", nulls = Nulls.SKIP)
         public Builder owner(Optional<String> owner) {
@@ -292,7 +291,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>When this version was published.</p>
+         * <p>When this version was published</p>
          */
         @JsonSetter(value = "published_at", nulls = Nulls.SKIP)
         public Builder publishedAt(Optional<OffsetDateTime> publishedAt) {
@@ -306,7 +305,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>Immutable identifier of this exact published definition.</p>
+         * <p>Immutable identifier of this exact published definition</p>
          */
         @JsonSetter(value = "revision_id", nulls = Nulls.SKIP)
         public Builder revisionId(Optional<String> revisionId) {
@@ -320,7 +319,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>When this version's draft was last updated before publication.</p>
+         * <p>When this version's draft was last updated before publication</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -334,7 +333,7 @@ public final class HarborSavedQueryMetadataResponse {
         }
 
         /**
-         * <p>Current published version number.</p>
+         * <p>Current published version number</p>
          */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
@@ -359,6 +358,22 @@ public final class HarborSavedQueryMetadataResponse {
                     updatedAt,
                     version,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("expected_columns")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("owner")
+                    || key.equalsIgnoreCase("published_at")
+                    || key.equalsIgnoreCase("revision_id")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

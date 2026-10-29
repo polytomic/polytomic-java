@@ -29,6 +29,9 @@ public final class BulkSyncGetRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Deprecated; has no effect
+     */
     @JsonProperty("refresh_schemas")
     public Optional<Boolean> getRefreshSchemas() {
         return refreshSchemas;
@@ -67,7 +70,6 @@ public final class BulkSyncGetRequest {
     public static final class Builder {
         private Optional<Boolean> refreshSchemas = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class BulkSyncGetRequest {
             return this;
         }
 
+        /**
+         * <p>Deprecated; has no effect</p>
+         */
         @JsonSetter(value = "refresh_schemas", nulls = Nulls.SKIP)
         public Builder refreshSchemas(Optional<Boolean> refreshSchemas) {
             this.refreshSchemas = refreshSchemas;
@@ -90,6 +95,14 @@ public final class BulkSyncGetRequest {
 
         public BulkSyncGetRequest build() {
             return new BulkSyncGetRequest(refreshSchemas, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("refresh_schemas")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

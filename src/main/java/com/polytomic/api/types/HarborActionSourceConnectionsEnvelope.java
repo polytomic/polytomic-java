@@ -31,6 +31,9 @@ public final class HarborActionSourceConnectionsEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Connections eligible for action configuration
+     */
     @JsonProperty("data")
     public Optional<List<HarborActionSourceConnectionResponse>> getData() {
         return data;
@@ -70,7 +73,6 @@ public final class HarborActionSourceConnectionsEnvelope {
     public static final class Builder {
         private Optional<List<HarborActionSourceConnectionResponse>> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -80,6 +82,9 @@ public final class HarborActionSourceConnectionsEnvelope {
             return this;
         }
 
+        /**
+         * <p>Connections eligible for action configuration</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<HarborActionSourceConnectionResponse>> data) {
             this.data = data;
@@ -93,6 +98,14 @@ public final class HarborActionSourceConnectionsEnvelope {
 
         public HarborActionSourceConnectionsEnvelope build() {
             return new HarborActionSourceConnectionsEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

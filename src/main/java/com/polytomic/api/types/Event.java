@@ -49,20 +49,23 @@ public final class Event {
     }
 
     /**
-     * @return Timestamp the event was emitted.
+     * @return Timestamp the event was emitted
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Event payload. Shape depends on the event type.
+     */
     @JsonProperty("event")
     public Optional<EventPayload> getEvent() {
         return event;
     }
 
     /**
-     * @return Unique identifier of the event.
+     * @return Unique identifier of the event
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -70,7 +73,7 @@ public final class Event {
     }
 
     /**
-     * @return Organization the event belongs to.
+     * @return Organization the event belongs to
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -78,7 +81,7 @@ public final class Event {
     }
 
     /**
-     * @return Event type identifier.
+     * @return Event type identifier
      */
     @JsonProperty("type")
     public Optional<String> getType() {
@@ -130,7 +133,6 @@ public final class Event {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -145,7 +147,7 @@ public final class Event {
         }
 
         /**
-         * <p>Timestamp the event was emitted.</p>
+         * <p>Timestamp the event was emitted</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -158,6 +160,9 @@ public final class Event {
             return this;
         }
 
+        /**
+         * <p>Event payload. Shape depends on the event type.</p>
+         */
         @JsonSetter(value = "event", nulls = Nulls.SKIP)
         public Builder event(Optional<EventPayload> event) {
             this.event = event;
@@ -170,7 +175,7 @@ public final class Event {
         }
 
         /**
-         * <p>Unique identifier of the event.</p>
+         * <p>Unique identifier of the event</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -184,7 +189,7 @@ public final class Event {
         }
 
         /**
-         * <p>Organization the event belongs to.</p>
+         * <p>Organization the event belongs to</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -198,7 +203,7 @@ public final class Event {
         }
 
         /**
-         * <p>Event type identifier.</p>
+         * <p>Event type identifier</p>
          */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
@@ -213,6 +218,18 @@ public final class Event {
 
         public Event build() {
             return new Event(createdAt, event, id, organizationId, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("event")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

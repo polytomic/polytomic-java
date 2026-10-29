@@ -29,7 +29,7 @@ public final class HarborsRemoveActionConfigurationRequest {
     }
 
     /**
-     * @return Current revision of the Connection's action grants.
+     * @return Current revision of the Connection's action grants
      */
     @JsonProperty("expected_revision")
     public String getExpectedRevision() {
@@ -68,7 +68,7 @@ public final class HarborsRemoveActionConfigurationRequest {
 
     public interface ExpectedRevisionStage {
         /**
-         * <p>Current revision of the Connection's action grants.</p>
+         * <p>Current revision of the Connection's action grants</p>
          */
         _FinalStage expectedRevision(@NotNull String expectedRevision);
 
@@ -87,7 +87,6 @@ public final class HarborsRemoveActionConfigurationRequest {
     public static final class Builder implements ExpectedRevisionStage, _FinalStage {
         private String expectedRevision;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -99,7 +98,7 @@ public final class HarborsRemoveActionConfigurationRequest {
         }
 
         /**
-         * <p>Current revision of the Connection's action grants.</p>
+         * <p>Current revision of the Connection's action grants</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -112,6 +111,14 @@ public final class HarborsRemoveActionConfigurationRequest {
         @java.lang.Override
         public HarborsRemoveActionConfigurationRequest build() {
             return new HarborsRemoveActionConfigurationRequest(expectedRevision, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("expected_revision")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

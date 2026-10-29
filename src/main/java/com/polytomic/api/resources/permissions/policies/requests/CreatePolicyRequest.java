@@ -47,6 +47,9 @@ public final class CreatePolicyRequest {
         return name;
     }
 
+    /**
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
@@ -101,6 +104,9 @@ public final class CreatePolicyRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
@@ -118,7 +124,6 @@ public final class CreatePolicyRequest {
 
         private Optional<String> organizationId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -151,12 +156,19 @@ public final class CreatePolicyRequest {
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -167,6 +179,16 @@ public final class CreatePolicyRequest {
         @java.lang.Override
         public CreatePolicyRequest build() {
             return new CreatePolicyRequest(name, organizationId, policyActions, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policy_actions")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

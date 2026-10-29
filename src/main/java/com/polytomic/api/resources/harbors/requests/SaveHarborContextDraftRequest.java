@@ -53,18 +53,24 @@ public final class SaveHarborContextDraftRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
     /**
-     * @return Optional note stored with the draft and copied to the published version on promotion.
+     * @return Optional note stored with the draft and copied to the published version on promotion
      */
     @JsonProperty("change_note")
     public Optional<String> getChangeNote() {
@@ -158,16 +164,22 @@ public final class SaveHarborContextDraftRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession);
 
         _FinalStage polytomicHarborSession(String polytomicHarborSession);
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId);
 
         _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId);
 
         /**
-         * <p>Optional note stored with the draft and copied to the published version on promotion.</p>
+         * <p>Optional note stored with the draft and copied to the published version on promotion</p>
          */
         _FinalStage changeNote(Optional<String> changeNote);
 
@@ -195,7 +207,6 @@ public final class SaveHarborContextDraftRequest {
 
         private Optional<String> polytomicHarborSession = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -254,7 +265,7 @@ public final class SaveHarborContextDraftRequest {
         }
 
         /**
-         * <p>Optional note stored with the draft and copied to the published version on promotion.</p>
+         * <p>Optional note stored with the draft and copied to the published version on promotion</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -264,7 +275,7 @@ public final class SaveHarborContextDraftRequest {
         }
 
         /**
-         * <p>Optional note stored with the draft and copied to the published version on promotion.</p>
+         * <p>Optional note stored with the draft and copied to the published version on promotion</p>
          */
         @java.lang.Override
         @JsonSetter(value = "change_note", nulls = Nulls.SKIP)
@@ -273,24 +284,38 @@ public final class SaveHarborContextDraftRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId) {
             this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(String polytomicHarborSession) {
             this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
@@ -307,6 +332,17 @@ public final class SaveHarborContextDraftRequest {
                     description,
                     title,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("change_note")
+                    || key.equalsIgnoreCase("content")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("title")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

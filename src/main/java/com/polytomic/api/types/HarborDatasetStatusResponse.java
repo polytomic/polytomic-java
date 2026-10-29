@@ -41,7 +41,7 @@ public final class HarborDatasetStatusResponse {
     }
 
     /**
-     * @return Latest raw execution error associated with the dataset, when present.
+     * @return Latest raw execution error associated with the dataset, when present
      */
     @JsonProperty("error")
     public Optional<String> getError() {
@@ -57,7 +57,7 @@ public final class HarborDatasetStatusResponse {
     }
 
     /**
-     * @return Raw status of the latest Polytomic execution that selected this dataset.
+     * @return Raw status of the latest Polytomic execution that selected this dataset
      */
     @JsonProperty("latest_status")
     public Optional<String> getLatestStatus() {
@@ -103,7 +103,6 @@ public final class HarborDatasetStatusResponse {
 
         private Optional<String> latestStatus = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -116,7 +115,7 @@ public final class HarborDatasetStatusResponse {
         }
 
         /**
-         * <p>Latest raw execution error associated with the dataset, when present.</p>
+         * <p>Latest raw execution error associated with the dataset, when present</p>
          */
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public Builder error(Optional<String> error) {
@@ -144,7 +143,7 @@ public final class HarborDatasetStatusResponse {
         }
 
         /**
-         * <p>Raw status of the latest Polytomic execution that selected this dataset.</p>
+         * <p>Raw status of the latest Polytomic execution that selected this dataset</p>
          */
         @JsonSetter(value = "latest_status", nulls = Nulls.SKIP)
         public Builder latestStatus(Optional<String> latestStatus) {
@@ -159,6 +158,16 @@ public final class HarborDatasetStatusResponse {
 
         public HarborDatasetStatusResponse build() {
             return new HarborDatasetStatusResponse(error, lastSuccessAt, latestStatus, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("error")
+                    || key.equalsIgnoreCase("last_success_at")
+                    || key.equalsIgnoreCase("latest_status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

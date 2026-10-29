@@ -59,6 +59,9 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
         return parameters;
     }
 
+    /**
+     * @return Has no effect on the values returned.
+     */
     @JsonProperty("query")
     public Optional<String> getQuery() {
         return query;
@@ -118,6 +121,9 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
 
         _FinalStage parameters(Map<String, Object> parameters);
 
+        /**
+         * <p>Has no effect on the values returned.</p>
+         */
         _FinalStage query(Optional<String> query);
 
         _FinalStage query(String query);
@@ -133,7 +139,6 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
 
         private Optional<String> connectionId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -154,12 +159,19 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Has no effect on the values returned.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage query(String query) {
             this.query = Optional.ofNullable(query);
             return this;
         }
 
+        /**
+         * <p>Has no effect on the values returned.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "query", nulls = Nulls.SKIP)
         public _FinalStage query(Optional<String> query) {
@@ -197,6 +209,17 @@ public final class GetConnectionTypeParameterValuesRequestSchema {
         public GetConnectionTypeParameterValuesRequestSchema build() {
             return new GetConnectionTypeParameterValuesRequestSchema(
                     connectionId, field, parameters, query, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("field")
+                    || key.equalsIgnoreCase("parameters")
+                    || key.equalsIgnoreCase("query")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

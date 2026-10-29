@@ -4,10 +4,12 @@
 package com.polytomic.api.resources.bulksync.schemas;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -108,7 +110,7 @@ public class RawSchemasClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("schemas");
         if (request.getFilters().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -172,7 +174,14 @@ public class RawSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -192,7 +201,14 @@ public class RawSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -213,7 +229,14 @@ public class RawSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -233,7 +256,14 @@ public class RawSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -246,7 +276,7 @@ public class RawSchemasClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("schemas");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -256,7 +286,9 @@ public class RawSchemasClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -344,9 +376,9 @@ public class RawSchemasClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId);
+                .addPathSegment(PathSegments.validate(schemaId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -404,7 +436,9 @@ public class RawSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -424,7 +458,9 @@ public class RawSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -445,7 +481,9 @@ public class RawSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -465,7 +503,9 @@ public class RawSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -478,9 +518,9 @@ public class RawSchemasClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId);
+                .addPathSegment(PathSegments.validate(schemaId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -489,7 +529,9 @@ public class RawSchemasClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -575,9 +617,9 @@ public class RawSchemasClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId)
+                .addPathSegment(PathSegments.validate(schemaId))
                 .addPathSegments("cancel");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -586,7 +628,11 @@ public class RawSchemasClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();

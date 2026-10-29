@@ -60,41 +60,65 @@ public final class BulkSyncIngestionStatus {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether change ingestion is enabled for the sync
+     */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
     }
 
+    /**
+     * @return Source change-stream position that ingestion is catching up to
+     */
     @JsonProperty("highwater_mark")
     public Optional<String> getHighwaterMark() {
         return highwaterMark;
     }
 
+    /**
+     * @return Whether ingestion is currently running
+     */
     @JsonProperty("is_running")
     public Optional<Boolean> getIsRunning() {
         return isRunning;
     }
 
+    /**
+     * @return Source change-stream position that ingestion has reached
+     */
     @JsonProperty("position")
     public Optional<String> getPosition() {
         return position;
     }
 
+    /**
+     * @return Source time of the change at position, or of the next pending change while a backlog waits
+     */
     @JsonProperty("position_time")
     public Optional<OffsetDateTime> getPositionTime() {
         return positionTime;
     }
 
+    /**
+     * @return Health of ingestion
+     */
     @JsonProperty("status")
     public Optional<IngestionStatusLevel> getStatus() {
         return status;
     }
 
+    /**
+     * @return Ingestion error or warning detail
+     */
     @JsonProperty("status_message")
     public Optional<String> getStatusMessage() {
         return statusMessage;
     }
 
+    /**
+     * @return When the ingestion status was last updated
+     */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
@@ -162,7 +186,6 @@ public final class BulkSyncIngestionStatus {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -179,6 +202,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>Whether change ingestion is enabled for the sync</p>
+         */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
             this.enabled = enabled;
@@ -190,6 +216,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>Source change-stream position that ingestion is catching up to</p>
+         */
         @JsonSetter(value = "highwater_mark", nulls = Nulls.SKIP)
         public Builder highwaterMark(Optional<String> highwaterMark) {
             this.highwaterMark = highwaterMark;
@@ -201,6 +230,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>Whether ingestion is currently running</p>
+         */
         @JsonSetter(value = "is_running", nulls = Nulls.SKIP)
         public Builder isRunning(Optional<Boolean> isRunning) {
             this.isRunning = isRunning;
@@ -212,6 +244,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>Source change-stream position that ingestion has reached</p>
+         */
         @JsonSetter(value = "position", nulls = Nulls.SKIP)
         public Builder position(Optional<String> position) {
             this.position = position;
@@ -223,6 +258,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>Source time of the change at position, or of the next pending change while a backlog waits</p>
+         */
         @JsonSetter(value = "position_time", nulls = Nulls.SKIP)
         public Builder positionTime(Optional<OffsetDateTime> positionTime) {
             this.positionTime = positionTime;
@@ -234,6 +272,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>Health of ingestion</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<IngestionStatusLevel> status) {
             this.status = status;
@@ -245,6 +286,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>Ingestion error or warning detail</p>
+         */
         @JsonSetter(value = "status_message", nulls = Nulls.SKIP)
         public Builder statusMessage(Optional<String> statusMessage) {
             this.statusMessage = statusMessage;
@@ -256,6 +300,9 @@ public final class BulkSyncIngestionStatus {
             return this;
         }
 
+        /**
+         * <p>When the ingestion status was last updated</p>
+         */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
             this.updatedAt = updatedAt;
@@ -278,6 +325,21 @@ public final class BulkSyncIngestionStatus {
                     statusMessage,
                     updatedAt,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("highwater_mark")
+                    || key.equalsIgnoreCase("is_running")
+                    || key.equalsIgnoreCase("position")
+                    || key.equalsIgnoreCase("position_time")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("status_message")
+                    || key.equalsIgnoreCase("updated_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

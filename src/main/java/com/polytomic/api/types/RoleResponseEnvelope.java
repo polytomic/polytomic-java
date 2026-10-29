@@ -67,7 +67,6 @@ public final class RoleResponseEnvelope {
     public static final class Builder {
         private Optional<RoleResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -90,6 +89,14 @@ public final class RoleResponseEnvelope {
 
         public RoleResponseEnvelope build() {
             return new RoleResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

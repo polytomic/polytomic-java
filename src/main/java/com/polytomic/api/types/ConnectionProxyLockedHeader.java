@@ -40,7 +40,7 @@ public final class ConnectionProxyLockedHeader {
     }
 
     /**
-     * @return Header name.
+     * @return Header name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -48,7 +48,7 @@ public final class ConnectionProxyLockedHeader {
     }
 
     /**
-     * @return True when the header value was redacted before returning it.
+     * @return True when the header value was redacted before returning it
      */
     @JsonProperty("redacted")
     public Optional<Boolean> getRedacted() {
@@ -100,7 +100,6 @@ public final class ConnectionProxyLockedHeader {
 
         private Optional<String> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -113,7 +112,7 @@ public final class ConnectionProxyLockedHeader {
         }
 
         /**
-         * <p>Header name.</p>
+         * <p>Header name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -127,7 +126,7 @@ public final class ConnectionProxyLockedHeader {
         }
 
         /**
-         * <p>True when the header value was redacted before returning it.</p>
+         * <p>True when the header value was redacted before returning it</p>
          */
         @JsonSetter(value = "redacted", nulls = Nulls.SKIP)
         public Builder redacted(Optional<Boolean> redacted) {
@@ -156,6 +155,14 @@ public final class ConnectionProxyLockedHeader {
 
         public ConnectionProxyLockedHeader build() {
             return new ConnectionProxyLockedHeader(name, redacted, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name") || key.equalsIgnoreCase("redacted") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

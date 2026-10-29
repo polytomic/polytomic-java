@@ -91,7 +91,6 @@ public final class ConnectionParameterValue {
 
         private Optional<Object> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -138,6 +137,14 @@ public final class ConnectionParameterValue {
 
         public ConnectionParameterValue build() {
             return new ConnectionParameterValue(label, path, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("label") || key.equalsIgnoreCase("path") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

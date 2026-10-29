@@ -30,6 +30,9 @@ public final class BulkSyncListEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Bulk syncs matching the filters
+     */
     @JsonProperty("data")
     public Optional<List<BulkSyncResponse>> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class BulkSyncListEnvelope {
     public static final class Builder {
         private Optional<List<BulkSyncResponse>> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class BulkSyncListEnvelope {
             return this;
         }
 
+        /**
+         * <p>Bulk syncs matching the filters</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<BulkSyncResponse>> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class BulkSyncListEnvelope {
 
         public BulkSyncListEnvelope build() {
             return new BulkSyncListEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

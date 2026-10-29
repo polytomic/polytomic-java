@@ -85,52 +85,73 @@ public final class HarborActionExecutionResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Connection ID of the action
+     */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
     }
 
     /**
-     * @return Original credential attribution, including when another credential submits a duplicate.
+     * @return Original credential attribution, including when another credential submits a duplicate
      */
     @JsonProperty("credential_id")
     public Optional<String> getCredentialId() {
         return credentialId;
     }
 
+    /**
+     * @return When an unfinished execution becomes unknown
+     */
     @JsonProperty("deadline_at")
     public Optional<OffsetDateTime> getDeadlineAt() {
         return deadlineAt;
     }
 
+    /**
+     * @return Action execution ID
+     */
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
         return executionId;
     }
 
+    /**
+     * @return Category of a failed or unknown outcome
+     */
     @JsonProperty("failure_category")
     public Optional<String> getFailureCategory() {
         return failureCategory;
     }
 
     /**
-     * @return Submitted field names only, never their values.
+     * @return Submitted field names only, never their values
      */
     @JsonProperty("field_ids")
     public Optional<List<String>> getFieldIds() {
         return fieldIds;
     }
 
+    /**
+     * @return When the execution reached its final status
+     */
     @JsonProperty("finished_at")
     public Optional<OffsetDateTime> getFinishedAt() {
         return finishedAt;
     }
 
+    /**
+     * @return Lookup field ID used to find the target record
+     */
     @JsonProperty("lookup_field_id")
     public Optional<String> getLookupFieldId() {
         return lookupFieldId;
     }
 
+    /**
+     * @return Operation ID of the action
+     */
     @JsonProperty("operation_id")
     public Optional<String> getOperationId() {
         return operationId;
@@ -144,21 +165,33 @@ public final class HarborActionExecutionResponse {
         return recoveryRequired;
     }
 
+    /**
+     * @return Schema ID of the action
+     */
     @JsonProperty("schema_id")
     public Optional<String> getSchemaId() {
         return schemaId;
     }
 
+    /**
+     * @return When the execution started
+     */
     @JsonProperty("started_at")
     public Optional<OffsetDateTime> getStartedAt() {
         return startedAt;
     }
 
+    /**
+     * @return Current execution status
+     */
     @JsonProperty("status")
     public Optional<HarborActionExecutionResponseStatus> getStatus() {
         return status;
     }
 
+    /**
+     * @return API path for reading this execution receipt
+     */
     @JsonProperty("status_path")
     public Optional<String> getStatusPath() {
         return statusPath;
@@ -250,7 +283,6 @@ public final class HarborActionExecutionResponse {
 
         private Optional<String> statusPath = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -273,6 +305,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the action</p>
+         */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
             this.connectionId = connectionId;
@@ -285,7 +320,7 @@ public final class HarborActionExecutionResponse {
         }
 
         /**
-         * <p>Original credential attribution, including when another credential submits a duplicate.</p>
+         * <p>Original credential attribution, including when another credential submits a duplicate</p>
          */
         @JsonSetter(value = "credential_id", nulls = Nulls.SKIP)
         public Builder credentialId(Optional<String> credentialId) {
@@ -298,6 +333,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>When an unfinished execution becomes unknown</p>
+         */
         @JsonSetter(value = "deadline_at", nulls = Nulls.SKIP)
         public Builder deadlineAt(Optional<OffsetDateTime> deadlineAt) {
             this.deadlineAt = deadlineAt;
@@ -309,6 +347,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>Action execution ID</p>
+         */
         @JsonSetter(value = "execution_id", nulls = Nulls.SKIP)
         public Builder executionId(Optional<String> executionId) {
             this.executionId = executionId;
@@ -320,6 +361,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>Category of a failed or unknown outcome</p>
+         */
         @JsonSetter(value = "failure_category", nulls = Nulls.SKIP)
         public Builder failureCategory(Optional<String> failureCategory) {
             this.failureCategory = failureCategory;
@@ -332,7 +376,7 @@ public final class HarborActionExecutionResponse {
         }
 
         /**
-         * <p>Submitted field names only, never their values.</p>
+         * <p>Submitted field names only, never their values</p>
          */
         @JsonSetter(value = "field_ids", nulls = Nulls.SKIP)
         public Builder fieldIds(Optional<List<String>> fieldIds) {
@@ -345,6 +389,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>When the execution reached its final status</p>
+         */
         @JsonSetter(value = "finished_at", nulls = Nulls.SKIP)
         public Builder finishedAt(Optional<OffsetDateTime> finishedAt) {
             this.finishedAt = finishedAt;
@@ -356,6 +403,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>Lookup field ID used to find the target record</p>
+         */
         @JsonSetter(value = "lookup_field_id", nulls = Nulls.SKIP)
         public Builder lookupFieldId(Optional<String> lookupFieldId) {
             this.lookupFieldId = lookupFieldId;
@@ -367,6 +417,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>Operation ID of the action</p>
+         */
         @JsonSetter(value = "operation_id", nulls = Nulls.SKIP)
         public Builder operationId(Optional<String> operationId) {
             this.operationId = operationId;
@@ -392,6 +445,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>Schema ID of the action</p>
+         */
         @JsonSetter(value = "schema_id", nulls = Nulls.SKIP)
         public Builder schemaId(Optional<String> schemaId) {
             this.schemaId = schemaId;
@@ -403,6 +459,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>When the execution started</p>
+         */
         @JsonSetter(value = "started_at", nulls = Nulls.SKIP)
         public Builder startedAt(Optional<OffsetDateTime> startedAt) {
             this.startedAt = startedAt;
@@ -414,6 +473,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>Current execution status</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<HarborActionExecutionResponseStatus> status) {
             this.status = status;
@@ -425,6 +487,9 @@ public final class HarborActionExecutionResponse {
             return this;
         }
 
+        /**
+         * <p>API path for reading this execution receipt</p>
+         */
         @JsonSetter(value = "status_path", nulls = Nulls.SKIP)
         public Builder statusPath(Optional<String> statusPath) {
             this.statusPath = statusPath;
@@ -453,6 +518,27 @@ public final class HarborActionExecutionResponse {
                     status,
                     statusPath,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("credential_id")
+                    || key.equalsIgnoreCase("deadline_at")
+                    || key.equalsIgnoreCase("execution_id")
+                    || key.equalsIgnoreCase("failure_category")
+                    || key.equalsIgnoreCase("field_ids")
+                    || key.equalsIgnoreCase("finished_at")
+                    || key.equalsIgnoreCase("lookup_field_id")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("recovery_required")
+                    || key.equalsIgnoreCase("schema_id")
+                    || key.equalsIgnoreCase("started_at")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("status_path")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

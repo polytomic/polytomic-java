@@ -48,7 +48,7 @@ public final class HarborsListActionConfigurationSchemasRequest {
     }
 
     /**
-     * @return Maximum number of schemas to return.
+     * @return Maximum number of schemas to return
      */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
@@ -56,7 +56,7 @@ public final class HarborsListActionConfigurationSchemasRequest {
     }
 
     /**
-     * @return Opaque cursor returned by the previous request.
+     * @return Opaque cursor returned by the previous request
      */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
@@ -101,7 +101,6 @@ public final class HarborsListActionConfigurationSchemasRequest {
 
         private Optional<String> pageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -128,7 +127,7 @@ public final class HarborsListActionConfigurationSchemasRequest {
         }
 
         /**
-         * <p>Maximum number of schemas to return.</p>
+         * <p>Maximum number of schemas to return</p>
          */
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public Builder limit(Optional<Integer> limit) {
@@ -142,7 +141,7 @@ public final class HarborsListActionConfigurationSchemasRequest {
         }
 
         /**
-         * <p>Opaque cursor returned by the previous request.</p>
+         * <p>Opaque cursor returned by the previous request</p>
          */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
@@ -157,6 +156,14 @@ public final class HarborsListActionConfigurationSchemasRequest {
 
         public HarborsListActionConfigurationSchemasRequest build() {
             return new HarborsListActionConfigurationSchemasRequest(search, limit, pageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("search") || key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

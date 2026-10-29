@@ -49,28 +49,40 @@ public final class ConnectionSearchHit {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Connection ID
+     */
     @JsonProperty("connection_id")
     public String getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Connection name
+     */
     @JsonProperty("connection_name")
     public String getConnectionName() {
         return connectionName;
     }
 
+    /**
+     * @return Connection type
+     */
     @JsonProperty("connection_type")
     public String getConnectionType() {
         return connectionType;
     }
 
+    /**
+     * @return API path of the connection
+     */
     @JsonProperty("links")
     public SearchResultLinks getLinks() {
         return links;
     }
 
     /**
-     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata.
+     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata
      */
     @JsonProperty("matches")
     public Optional<List<SearchMatch>> getMatches() {
@@ -111,20 +123,32 @@ public final class ConnectionSearchHit {
     }
 
     public interface ConnectionIdStage {
+        /**
+         * <p>Connection ID</p>
+         */
         ConnectionNameStage connectionId(@NotNull String connectionId);
 
         Builder from(ConnectionSearchHit other);
     }
 
     public interface ConnectionNameStage {
+        /**
+         * <p>Connection name</p>
+         */
         ConnectionTypeStage connectionName(@NotNull String connectionName);
     }
 
     public interface ConnectionTypeStage {
+        /**
+         * <p>Connection type</p>
+         */
         LinksStage connectionType(@NotNull String connectionType);
     }
 
     public interface LinksStage {
+        /**
+         * <p>API path of the connection</p>
+         */
         _FinalStage links(@NotNull SearchResultLinks links);
     }
 
@@ -136,7 +160,7 @@ public final class ConnectionSearchHit {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         _FinalStage matches(Optional<List<SearchMatch>> matches);
 
@@ -156,7 +180,6 @@ public final class ConnectionSearchHit {
 
         private Optional<List<SearchMatch>> matches = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -171,6 +194,10 @@ public final class ConnectionSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connection ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_id")
         public ConnectionNameStage connectionId(@NotNull String connectionId) {
@@ -178,6 +205,10 @@ public final class ConnectionSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connection name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_name")
         public ConnectionTypeStage connectionName(@NotNull String connectionName) {
@@ -185,6 +216,10 @@ public final class ConnectionSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connection type</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_type")
         public LinksStage connectionType(@NotNull String connectionType) {
@@ -192,6 +227,10 @@ public final class ConnectionSearchHit {
             return this;
         }
 
+        /**
+         * <p>API path of the connection</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("links")
         public _FinalStage links(@NotNull SearchResultLinks links) {
@@ -200,7 +239,7 @@ public final class ConnectionSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -210,7 +249,7 @@ public final class ConnectionSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         @java.lang.Override
         @JsonSetter(value = "matches", nulls = Nulls.SKIP)
@@ -223,6 +262,18 @@ public final class ConnectionSearchHit {
         public ConnectionSearchHit build() {
             return new ConnectionSearchHit(
                     connectionId, connectionName, connectionType, links, matches, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("connection_name")
+                    || key.equalsIgnoreCase("connection_type")
+                    || key.equalsIgnoreCase("links")
+                    || key.equalsIgnoreCase("matches")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

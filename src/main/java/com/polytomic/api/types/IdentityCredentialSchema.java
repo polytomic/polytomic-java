@@ -56,26 +56,32 @@ public final class IdentityCredentialSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Profile metadata and capabilities for profile-backed API keys
+     */
     @JsonProperty("api_key_profile")
     public Optional<IdentityCredentialApiKeyProfileSchema> getApiKeyProfile() {
         return apiKeyProfile;
     }
 
     /**
-     * @return Provider expiry of a temporary API key.
+     * @return Provider expiry of a temporary API key
      */
     @JsonProperty("expires_at")
     public Optional<OffsetDateTime> getExpiresAt() {
         return expiresAt;
     }
 
+    /**
+     * @return Authoritative Harbor identity for credentials backed by a Harbor-owned profile
+     */
     @JsonProperty("harbor")
     public Optional<IdentityCredentialHarborSchema> getHarbor() {
         return harbor;
     }
 
     /**
-     * @return Authentication method used for the request.
+     * @return Authentication method used for the request
      */
     @JsonProperty("method")
     public Optional<String> getMethod() {
@@ -83,7 +89,7 @@ public final class IdentityCredentialSchema {
     }
 
     /**
-     * @return API key mode applied to the credential when available.
+     * @return API key mode applied to the credential when available
      */
     @JsonProperty("mode")
     public Optional<String> getMode() {
@@ -91,7 +97,7 @@ public final class IdentityCredentialSchema {
     }
 
     /**
-     * @return OAuth client ID for OAuth-issued API keys.
+     * @return OAuth client ID for OAuth-issued API keys
      */
     @JsonProperty("oauth_client_id")
     public Optional<String> getOauthClientId() {
@@ -99,7 +105,7 @@ public final class IdentityCredentialSchema {
     }
 
     /**
-     * @return Protected resource URL this OAuth-issued credential is bound to.
+     * @return Protected resource URL this OAuth-issued credential is bound to
      */
     @JsonProperty("oauth_resource")
     public Optional<String> getOauthResource() {
@@ -164,7 +170,6 @@ public final class IdentityCredentialSchema {
 
         private Optional<String> oauthResource = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -180,6 +185,9 @@ public final class IdentityCredentialSchema {
             return this;
         }
 
+        /**
+         * <p>Profile metadata and capabilities for profile-backed API keys</p>
+         */
         @JsonSetter(value = "api_key_profile", nulls = Nulls.SKIP)
         public Builder apiKeyProfile(Optional<IdentityCredentialApiKeyProfileSchema> apiKeyProfile) {
             this.apiKeyProfile = apiKeyProfile;
@@ -192,7 +200,7 @@ public final class IdentityCredentialSchema {
         }
 
         /**
-         * <p>Provider expiry of a temporary API key.</p>
+         * <p>Provider expiry of a temporary API key</p>
          */
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
@@ -205,6 +213,9 @@ public final class IdentityCredentialSchema {
             return this;
         }
 
+        /**
+         * <p>Authoritative Harbor identity for credentials backed by a Harbor-owned profile</p>
+         */
         @JsonSetter(value = "harbor", nulls = Nulls.SKIP)
         public Builder harbor(Optional<IdentityCredentialHarborSchema> harbor) {
             this.harbor = harbor;
@@ -217,7 +228,7 @@ public final class IdentityCredentialSchema {
         }
 
         /**
-         * <p>Authentication method used for the request.</p>
+         * <p>Authentication method used for the request</p>
          */
         @JsonSetter(value = "method", nulls = Nulls.SKIP)
         public Builder method(Optional<String> method) {
@@ -231,7 +242,7 @@ public final class IdentityCredentialSchema {
         }
 
         /**
-         * <p>API key mode applied to the credential when available.</p>
+         * <p>API key mode applied to the credential when available</p>
          */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public Builder mode(Optional<String> mode) {
@@ -245,7 +256,7 @@ public final class IdentityCredentialSchema {
         }
 
         /**
-         * <p>OAuth client ID for OAuth-issued API keys.</p>
+         * <p>OAuth client ID for OAuth-issued API keys</p>
          */
         @JsonSetter(value = "oauth_client_id", nulls = Nulls.SKIP)
         public Builder oauthClientId(Optional<String> oauthClientId) {
@@ -259,7 +270,7 @@ public final class IdentityCredentialSchema {
         }
 
         /**
-         * <p>Protected resource URL this OAuth-issued credential is bound to.</p>
+         * <p>Protected resource URL this OAuth-issued credential is bound to</p>
          */
         @JsonSetter(value = "oauth_resource", nulls = Nulls.SKIP)
         public Builder oauthResource(Optional<String> oauthResource) {
@@ -275,6 +286,20 @@ public final class IdentityCredentialSchema {
         public IdentityCredentialSchema build() {
             return new IdentityCredentialSchema(
                     apiKeyProfile, expiresAt, harbor, method, mode, oauthClientId, oauthResource, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("api_key_profile")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("harbor")
+                    || key.equalsIgnoreCase("method")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("oauth_client_id")
+                    || key.equalsIgnoreCase("oauth_resource")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.operations;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.operations.requests.SearchOperationsRequest;
 import com.polytomic.api.types.OperationSearchAvailabilityEnvelope;
@@ -64,7 +65,14 @@ public class AsyncOperationsClient {
      * and permissions still apply.</p>
      */
     public CompletableFuture<SearchOperationsEnvelope> search(SearchOperationsRequest request) {
-        return this.rawClient.search(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SearchOperationsEnvelope>> rawFuture = this.rawClient.search(request);
+        CompletableFuture<SearchOperationsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -104,7 +112,15 @@ public class AsyncOperationsClient {
      */
     public CompletableFuture<SearchOperationsEnvelope> search(
             SearchOperationsRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.search(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SearchOperationsEnvelope>> rawFuture =
+                this.rawClient.search(request, requestOptions);
+        CompletableFuture<SearchOperationsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -126,7 +142,16 @@ public class AsyncOperationsClient {
      * cannot check the question budgets, the endpoint returns <code>503</code>.</p>
      */
     public CompletableFuture<OperationSearchAvailabilityEnvelope> getSearchAvailability() {
-        return this.rawClient.getSearchAvailability().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OperationSearchAvailabilityEnvelope>> rawFuture =
+                this.rawClient.getSearchAvailability();
+        CompletableFuture<OperationSearchAvailabilityEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -148,6 +173,15 @@ public class AsyncOperationsClient {
      * cannot check the question budgets, the endpoint returns <code>503</code>.</p>
      */
     public CompletableFuture<OperationSearchAvailabilityEnvelope> getSearchAvailability(RequestOptions requestOptions) {
-        return this.rawClient.getSearchAvailability(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OperationSearchAvailabilityEnvelope>> rawFuture =
+                this.rawClient.getSearchAvailability(requestOptions);
+        CompletableFuture<OperationSearchAvailabilityEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

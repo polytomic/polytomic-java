@@ -53,7 +53,7 @@ public final class OverrideField {
     }
 
     /**
-     * @return Value written to the target field for every record.
+     * @return Value written to the target field for every record
      */
     @JsonProperty("override_value")
     public String getOverrideValue() {
@@ -69,7 +69,7 @@ public final class OverrideField {
     }
 
     /**
-     * @return Target field ID the value will be written to.
+     * @return Target field ID the value will be written to
      */
     @JsonProperty("target")
     public String getTarget() {
@@ -110,7 +110,7 @@ public final class OverrideField {
 
     public interface OverrideValueStage {
         /**
-         * <p>Value written to the target field for every record.</p>
+         * <p>Value written to the target field for every record</p>
          */
         TargetStage overrideValue(@NotNull String overrideValue);
 
@@ -119,7 +119,7 @@ public final class OverrideField {
 
     public interface TargetStage {
         /**
-         * <p>Target field ID the value will be written to.</p>
+         * <p>Target field ID the value will be written to</p>
          */
         _FinalStage target(@NotNull String target);
     }
@@ -156,7 +156,6 @@ public final class OverrideField {
 
         private Optional<Boolean> new_ = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -171,7 +170,7 @@ public final class OverrideField {
         }
 
         /**
-         * <p>Value written to the target field for every record.</p>
+         * <p>Value written to the target field for every record</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -182,7 +181,7 @@ public final class OverrideField {
         }
 
         /**
-         * <p>Target field ID the value will be written to.</p>
+         * <p>Target field ID the value will be written to</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -235,6 +234,17 @@ public final class OverrideField {
         @java.lang.Override
         public OverrideField build() {
             return new OverrideField(new_, overrideValue, syncMode, target, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("new")
+                    || key.equalsIgnoreCase("override_value")
+                    || key.equalsIgnoreCase("sync_mode")
+                    || key.equalsIgnoreCase("target")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

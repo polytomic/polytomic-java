@@ -43,6 +43,9 @@ public final class BulkSyncSourceCapabilities {
         return supportsNamespaces;
     }
 
+    /**
+     * @return Whether the source supports a tracking field for detecting changes between sync runs
+     */
     @JsonProperty("supports_tracking_fields")
     public Optional<Boolean> getSupportsTrackingFields() {
         return supportsTrackingFields;
@@ -84,7 +87,6 @@ public final class BulkSyncSourceCapabilities {
 
         private Optional<Boolean> supportsTrackingFields = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -109,6 +111,9 @@ public final class BulkSyncSourceCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether the source supports a tracking field for detecting changes between sync runs</p>
+         */
         @JsonSetter(value = "supports_tracking_fields", nulls = Nulls.SKIP)
         public Builder supportsTrackingFields(Optional<Boolean> supportsTrackingFields) {
             this.supportsTrackingFields = supportsTrackingFields;
@@ -122,6 +127,14 @@ public final class BulkSyncSourceCapabilities {
 
         public BulkSyncSourceCapabilities build() {
             return new BulkSyncSourceCapabilities(supportsNamespaces, supportsTrackingFields, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("supports_namespaces") || key.equalsIgnoreCase("supports_tracking_fields")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

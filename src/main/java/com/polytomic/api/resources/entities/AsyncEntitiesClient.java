@@ -4,6 +4,7 @@
 package com.polytomic.api.resources.entities;
 
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.entities.requests.EntitiesSearchRequest;
 import com.polytomic.api.types.EntityResponseEnvelope;
@@ -72,7 +73,14 @@ public class AsyncEntitiesClient {
      * </blockquote>
      */
     public CompletableFuture<SearchEnvelope> search(EntitiesSearchRequest request) {
-        return this.rawClient.search(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SearchEnvelope>> rawFuture = this.rawClient.search(request);
+        CompletableFuture<SearchEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -120,7 +128,15 @@ public class AsyncEntitiesClient {
      * </blockquote>
      */
     public CompletableFuture<SearchEnvelope> search(EntitiesSearchRequest request, RequestOptions requestOptions) {
-        return this.rawClient.search(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SearchEnvelope>> rawFuture =
+                this.rawClient.search(request, requestOptions);
+        CompletableFuture<SearchEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -169,7 +185,14 @@ public class AsyncEntitiesClient {
      * organization, the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<EntityResponseEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EntityResponseEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<EntityResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -218,7 +241,15 @@ public class AsyncEntitiesClient {
      * organization, the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<EntityResponseEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EntityResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<EntityResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -265,7 +296,14 @@ public class AsyncEntitiesClient {
      * <p>If the UUID does not exist, the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<EntityResponseEnvelope> getForPartner(String id) {
-        return this.rawClient.getForPartner(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EntityResponseEnvelope>> rawFuture = this.rawClient.getForPartner(id);
+        CompletableFuture<EntityResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -312,6 +350,14 @@ public class AsyncEntitiesClient {
      * <p>If the UUID does not exist, the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<EntityResponseEnvelope> getForPartner(String id, RequestOptions requestOptions) {
-        return this.rawClient.getForPartner(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EntityResponseEnvelope>> rawFuture =
+                this.rawClient.getForPartner(id, requestOptions);
+        CompletableFuture<EntityResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

@@ -21,6 +21,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = EventingSyncCompletedEvent.Builder.class)
 public final class EventingSyncCompletedEvent {
+    private final Optional<Long> deletedCount;
+
     private final Optional<List<String>> deletedRecords;
 
     private final Optional<Long> errorCount;
@@ -66,6 +68,7 @@ public final class EventingSyncCompletedEvent {
     private final Map<String, Object> additionalProperties;
 
     private EventingSyncCompletedEvent(
+            Optional<Long> deletedCount,
             Optional<List<String>> deletedRecords,
             Optional<Long> errorCount,
             Optional<List<String>> erroredRecords,
@@ -88,6 +91,7 @@ public final class EventingSyncCompletedEvent {
             Optional<Long> warningCount,
             Optional<List<String>> warnings,
             Map<String, Object> additionalProperties) {
+        this.deletedCount = deletedCount;
         this.deletedRecords = deletedRecords;
         this.errorCount = errorCount;
         this.erroredRecords = erroredRecords;
@@ -112,109 +116,177 @@ public final class EventingSyncCompletedEvent {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Number of records deleted
+     */
+    @JsonProperty("deleted_count")
+    public Optional<Long> getDeletedCount() {
+        return deletedCount;
+    }
+
+    /**
+     * @return URLs of the record log files for deleted records
+     */
     @JsonProperty("deleted_records")
     public Optional<List<String>> getDeletedRecords() {
         return deletedRecords;
     }
 
+    /**
+     * @return Number of record errors
+     */
     @JsonProperty("error_count")
     public Optional<Long> getErrorCount() {
         return errorCount;
     }
 
+    /**
+     * @return URLs of the record log files for records with errors
+     */
     @JsonProperty("errored_records")
     public Optional<List<String>> getErroredRecords() {
         return erroredRecords;
     }
 
+    /**
+     * @return Execution ID
+     */
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
         return executionId;
     }
 
+    /**
+     * @return Number of records inserted
+     */
     @JsonProperty("inserted_count")
     public Optional<Long> getInsertedCount() {
         return insertedCount;
     }
 
+    /**
+     * @return URLs of the record log files for inserted records
+     */
     @JsonProperty("inserted_records")
     public Optional<List<String>> getInsertedRecords() {
         return insertedRecords;
     }
 
     /**
-     * @return Endpoint returning the index of record logs produced by this execution.
+     * @return Endpoint returning the index of record logs produced by this execution
      */
     @JsonProperty("logs_url")
     public Optional<String> getLogsUrl() {
         return logsUrl;
     }
 
+    /**
+     * @return Organization ID
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Number of records processed by the execution
+     */
     @JsonProperty("record_count")
     public Optional<Long> getRecordCount() {
         return recordCount;
     }
 
+    /**
+     * @return Schedule that started the execution
+     */
     @JsonProperty("schedule")
     public Optional<EventingSyncSchedule> getSchedule() {
         return schedule;
     }
 
+    /**
+     * @return Final status of the execution
+     */
     @JsonProperty("status")
     public Optional<UtilExecutionStatus> getStatus() {
         return status;
     }
 
+    /**
+     * @return Model sync ID
+     */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;
     }
 
+    /**
+     * @return Name of the model sync
+     */
     @JsonProperty("sync_name")
     public Optional<String> getSyncName() {
         return syncName;
     }
 
+    /**
+     * @return Destination connection ID
+     */
     @JsonProperty("target_connection_id")
     public Optional<String> getTargetConnectionId() {
         return targetConnectionId;
     }
 
+    /**
+     * @return URLs of the record log files for all records
+     */
     @JsonProperty("total_records")
     public Optional<List<String>> getTotalRecords() {
         return totalRecords;
     }
 
+    /**
+     * @return What started the execution
+     */
     @JsonProperty("trigger")
     public Optional<String> getTrigger() {
         return trigger;
     }
 
+    /**
+     * @return Number of records updated
+     */
     @JsonProperty("updated_count")
     public Optional<Long> getUpdatedCount() {
         return updatedCount;
     }
 
+    /**
+     * @return URLs of the record log files for updated records
+     */
     @JsonProperty("updated_records")
     public Optional<List<String>> getUpdatedRecords() {
         return updatedRecords;
     }
 
+    /**
+     * @return Number of records upserted
+     */
     @JsonProperty("upserted_count")
     public Optional<Long> getUpsertedCount() {
         return upsertedCount;
     }
 
+    /**
+     * @return Number of record warnings
+     */
     @JsonProperty("warning_count")
     public Optional<Long> getWarningCount() {
         return warningCount;
     }
 
+    /**
+     * @return URLs of the record log files for records with warnings
+     */
     @JsonProperty("warnings")
     public Optional<List<String>> getWarnings() {
         return warnings;
@@ -232,7 +304,8 @@ public final class EventingSyncCompletedEvent {
     }
 
     private boolean equalTo(EventingSyncCompletedEvent other) {
-        return deletedRecords.equals(other.deletedRecords)
+        return deletedCount.equals(other.deletedCount)
+                && deletedRecords.equals(other.deletedRecords)
                 && errorCount.equals(other.errorCount)
                 && erroredRecords.equals(other.erroredRecords)
                 && executionId.equals(other.executionId)
@@ -258,6 +331,7 @@ public final class EventingSyncCompletedEvent {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.deletedCount,
                 this.deletedRecords,
                 this.errorCount,
                 this.erroredRecords,
@@ -292,6 +366,8 @@ public final class EventingSyncCompletedEvent {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
+        private Optional<Long> deletedCount = Optional.empty();
+
         private Optional<List<String>> deletedRecords = Optional.empty();
 
         private Optional<Long> errorCount = Optional.empty();
@@ -334,12 +410,12 @@ public final class EventingSyncCompletedEvent {
 
         private Optional<List<String>> warnings = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
         public Builder from(EventingSyncCompletedEvent other) {
+            deletedCount(other.getDeletedCount());
             deletedRecords(other.getDeletedRecords());
             errorCount(other.getErrorCount());
             erroredRecords(other.getErroredRecords());
@@ -364,6 +440,23 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Number of records deleted</p>
+         */
+        @JsonSetter(value = "deleted_count", nulls = Nulls.SKIP)
+        public Builder deletedCount(Optional<Long> deletedCount) {
+            this.deletedCount = deletedCount;
+            return this;
+        }
+
+        public Builder deletedCount(Long deletedCount) {
+            this.deletedCount = Optional.ofNullable(deletedCount);
+            return this;
+        }
+
+        /**
+         * <p>URLs of the record log files for deleted records</p>
+         */
         @JsonSetter(value = "deleted_records", nulls = Nulls.SKIP)
         public Builder deletedRecords(Optional<List<String>> deletedRecords) {
             this.deletedRecords = deletedRecords;
@@ -375,6 +468,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Number of record errors</p>
+         */
         @JsonSetter(value = "error_count", nulls = Nulls.SKIP)
         public Builder errorCount(Optional<Long> errorCount) {
             this.errorCount = errorCount;
@@ -386,6 +482,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>URLs of the record log files for records with errors</p>
+         */
         @JsonSetter(value = "errored_records", nulls = Nulls.SKIP)
         public Builder erroredRecords(Optional<List<String>> erroredRecords) {
             this.erroredRecords = erroredRecords;
@@ -397,6 +496,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Execution ID</p>
+         */
         @JsonSetter(value = "execution_id", nulls = Nulls.SKIP)
         public Builder executionId(Optional<String> executionId) {
             this.executionId = executionId;
@@ -408,6 +510,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Number of records inserted</p>
+         */
         @JsonSetter(value = "inserted_count", nulls = Nulls.SKIP)
         public Builder insertedCount(Optional<Long> insertedCount) {
             this.insertedCount = insertedCount;
@@ -419,6 +524,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>URLs of the record log files for inserted records</p>
+         */
         @JsonSetter(value = "inserted_records", nulls = Nulls.SKIP)
         public Builder insertedRecords(Optional<List<String>> insertedRecords) {
             this.insertedRecords = insertedRecords;
@@ -431,7 +539,7 @@ public final class EventingSyncCompletedEvent {
         }
 
         /**
-         * <p>Endpoint returning the index of record logs produced by this execution.</p>
+         * <p>Endpoint returning the index of record logs produced by this execution</p>
          */
         @JsonSetter(value = "logs_url", nulls = Nulls.SKIP)
         public Builder logsUrl(Optional<String> logsUrl) {
@@ -444,6 +552,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Organization ID</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -455,6 +566,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Number of records processed by the execution</p>
+         */
         @JsonSetter(value = "record_count", nulls = Nulls.SKIP)
         public Builder recordCount(Optional<Long> recordCount) {
             this.recordCount = recordCount;
@@ -466,6 +580,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Schedule that started the execution</p>
+         */
         @JsonSetter(value = "schedule", nulls = Nulls.SKIP)
         public Builder schedule(Optional<EventingSyncSchedule> schedule) {
             this.schedule = schedule;
@@ -477,6 +594,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Final status of the execution</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<UtilExecutionStatus> status) {
             this.status = status;
@@ -488,6 +608,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Model sync ID</p>
+         */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
             this.syncId = syncId;
@@ -499,6 +622,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Name of the model sync</p>
+         */
         @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
         public Builder syncName(Optional<String> syncName) {
             this.syncName = syncName;
@@ -510,6 +636,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Destination connection ID</p>
+         */
         @JsonSetter(value = "target_connection_id", nulls = Nulls.SKIP)
         public Builder targetConnectionId(Optional<String> targetConnectionId) {
             this.targetConnectionId = targetConnectionId;
@@ -521,6 +650,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>URLs of the record log files for all records</p>
+         */
         @JsonSetter(value = "total_records", nulls = Nulls.SKIP)
         public Builder totalRecords(Optional<List<String>> totalRecords) {
             this.totalRecords = totalRecords;
@@ -532,6 +664,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>What started the execution</p>
+         */
         @JsonSetter(value = "trigger", nulls = Nulls.SKIP)
         public Builder trigger(Optional<String> trigger) {
             this.trigger = trigger;
@@ -543,6 +678,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Number of records updated</p>
+         */
         @JsonSetter(value = "updated_count", nulls = Nulls.SKIP)
         public Builder updatedCount(Optional<Long> updatedCount) {
             this.updatedCount = updatedCount;
@@ -554,6 +692,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>URLs of the record log files for updated records</p>
+         */
         @JsonSetter(value = "updated_records", nulls = Nulls.SKIP)
         public Builder updatedRecords(Optional<List<String>> updatedRecords) {
             this.updatedRecords = updatedRecords;
@@ -565,6 +706,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Number of records upserted</p>
+         */
         @JsonSetter(value = "upserted_count", nulls = Nulls.SKIP)
         public Builder upsertedCount(Optional<Long> upsertedCount) {
             this.upsertedCount = upsertedCount;
@@ -576,6 +720,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>Number of record warnings</p>
+         */
         @JsonSetter(value = "warning_count", nulls = Nulls.SKIP)
         public Builder warningCount(Optional<Long> warningCount) {
             this.warningCount = warningCount;
@@ -587,6 +734,9 @@ public final class EventingSyncCompletedEvent {
             return this;
         }
 
+        /**
+         * <p>URLs of the record log files for records with warnings</p>
+         */
         @JsonSetter(value = "warnings", nulls = Nulls.SKIP)
         public Builder warnings(Optional<List<String>> warnings) {
             this.warnings = warnings;
@@ -600,6 +750,7 @@ public final class EventingSyncCompletedEvent {
 
         public EventingSyncCompletedEvent build() {
             return new EventingSyncCompletedEvent(
+                    deletedCount,
                     deletedRecords,
                     errorCount,
                     erroredRecords,
@@ -622,6 +773,35 @@ public final class EventingSyncCompletedEvent {
                     warningCount,
                     warnings,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("deleted_count")
+                    || key.equalsIgnoreCase("deleted_records")
+                    || key.equalsIgnoreCase("error_count")
+                    || key.equalsIgnoreCase("errored_records")
+                    || key.equalsIgnoreCase("execution_id")
+                    || key.equalsIgnoreCase("inserted_count")
+                    || key.equalsIgnoreCase("inserted_records")
+                    || key.equalsIgnoreCase("logs_url")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("record_count")
+                    || key.equalsIgnoreCase("schedule")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("sync_id")
+                    || key.equalsIgnoreCase("sync_name")
+                    || key.equalsIgnoreCase("target_connection_id")
+                    || key.equalsIgnoreCase("total_records")
+                    || key.equalsIgnoreCase("trigger")
+                    || key.equalsIgnoreCase("updated_count")
+                    || key.equalsIgnoreCase("updated_records")
+                    || key.equalsIgnoreCase("upserted_count")
+                    || key.equalsIgnoreCase("warning_count")
+                    || key.equalsIgnoreCase("warnings")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

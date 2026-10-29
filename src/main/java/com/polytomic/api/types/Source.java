@@ -31,11 +31,17 @@ public final class Source {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Source field name on the model
+     */
     @JsonProperty("field")
     public String getField() {
         return field;
     }
 
+    /**
+     * @return Model ID of the field's model
+     */
     @JsonProperty("model_id")
     public String getModelId() {
         return modelId;
@@ -71,12 +77,18 @@ public final class Source {
     }
 
     public interface FieldStage {
+        /**
+         * <p>Source field name on the model</p>
+         */
         ModelIdStage field(@NotNull String field);
 
         Builder from(Source other);
     }
 
     public interface ModelIdStage {
+        /**
+         * <p>Model ID of the field's model</p>
+         */
         _FinalStage modelId(@NotNull String modelId);
     }
 
@@ -94,7 +106,6 @@ public final class Source {
 
         private String modelId;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -106,6 +117,10 @@ public final class Source {
             return this;
         }
 
+        /**
+         * <p>Source field name on the model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("field")
         public ModelIdStage field(@NotNull String field) {
@@ -113,6 +128,10 @@ public final class Source {
             return this;
         }
 
+        /**
+         * <p>Model ID of the field's model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_id")
         public _FinalStage modelId(@NotNull String modelId) {
@@ -123,6 +142,14 @@ public final class Source {
         @java.lang.Override
         public Source build() {
             return new Source(field, modelId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field") || key.equalsIgnoreCase("model_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

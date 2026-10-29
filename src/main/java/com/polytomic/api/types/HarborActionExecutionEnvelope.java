@@ -30,6 +30,9 @@ public final class HarborActionExecutionEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The execution receipt
+     */
     @JsonProperty("data")
     public Optional<HarborActionExecutionResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class HarborActionExecutionEnvelope {
     public static final class Builder {
         private Optional<HarborActionExecutionResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class HarborActionExecutionEnvelope {
             return this;
         }
 
+        /**
+         * <p>The execution receipt</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<HarborActionExecutionResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class HarborActionExecutionEnvelope {
 
         public HarborActionExecutionEnvelope build() {
             return new HarborActionExecutionEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -49,7 +49,7 @@ public final class TemporaryCredentialSubject {
     }
 
     /**
-     * @return Target Harbor for a Harbor credential.
+     * @return Target Harbor for a Harbor credential
      */
     @JsonProperty("harbor_id")
     public Optional<String> getHarborId() {
@@ -138,7 +138,7 @@ public final class TemporaryCredentialSubject {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Target Harbor for a Harbor credential.</p>
+         * <p>Target Harbor for a Harbor credential</p>
          */
         _FinalStage harborId(Optional<String> harborId);
 
@@ -178,7 +178,6 @@ public final class TemporaryCredentialSubject {
 
         private Optional<String> harborId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -265,7 +264,7 @@ public final class TemporaryCredentialSubject {
         }
 
         /**
-         * <p>Target Harbor for a Harbor credential.</p>
+         * <p>Target Harbor for a Harbor credential</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -275,7 +274,7 @@ public final class TemporaryCredentialSubject {
         }
 
         /**
-         * <p>Target Harbor for a Harbor credential.</p>
+         * <p>Target Harbor for a Harbor credential</p>
          */
         @java.lang.Override
         @JsonSetter(value = "harbor_id", nulls = Nulls.SKIP)
@@ -287,6 +286,18 @@ public final class TemporaryCredentialSubject {
         @java.lang.Override
         public TemporaryCredentialSubject build() {
             return new TemporaryCredentialSubject(harborId, mode, organizationId, type, userId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("harbor_id")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("user_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -44,21 +44,33 @@ public final class BulkSyncStatusResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Execution in progress, if any
+     */
     @JsonProperty("current_execution")
     public Optional<BulkSyncExecution> getCurrentExecution() {
         return currentExecution;
     }
 
+    /**
+     * @return Change ingestion status, present when the sync consumes ingested changes
+     */
     @JsonProperty("ingestion_status")
     public Optional<BulkSyncIngestionStatus> getIngestionStatus() {
         return ingestionStatus;
     }
 
+    /**
+     * @return Most recent finished execution
+     */
     @JsonProperty("last_execution")
     public Optional<BulkSyncExecution> getLastExecution() {
         return lastExecution;
     }
 
+    /**
+     * @return When the sync is next scheduled to run
+     */
     @JsonProperty("next_execution_time")
     public Optional<OffsetDateTime> getNextExecutionTime() {
         return nextExecutionTime;
@@ -106,7 +118,6 @@ public final class BulkSyncStatusResponse {
 
         private Optional<OffsetDateTime> nextExecutionTime = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -119,6 +130,9 @@ public final class BulkSyncStatusResponse {
             return this;
         }
 
+        /**
+         * <p>Execution in progress, if any</p>
+         */
         @JsonSetter(value = "current_execution", nulls = Nulls.SKIP)
         public Builder currentExecution(Optional<BulkSyncExecution> currentExecution) {
             this.currentExecution = currentExecution;
@@ -130,6 +144,9 @@ public final class BulkSyncStatusResponse {
             return this;
         }
 
+        /**
+         * <p>Change ingestion status, present when the sync consumes ingested changes</p>
+         */
         @JsonSetter(value = "ingestion_status", nulls = Nulls.SKIP)
         public Builder ingestionStatus(Optional<BulkSyncIngestionStatus> ingestionStatus) {
             this.ingestionStatus = ingestionStatus;
@@ -141,6 +158,9 @@ public final class BulkSyncStatusResponse {
             return this;
         }
 
+        /**
+         * <p>Most recent finished execution</p>
+         */
         @JsonSetter(value = "last_execution", nulls = Nulls.SKIP)
         public Builder lastExecution(Optional<BulkSyncExecution> lastExecution) {
             this.lastExecution = lastExecution;
@@ -152,6 +172,9 @@ public final class BulkSyncStatusResponse {
             return this;
         }
 
+        /**
+         * <p>When the sync is next scheduled to run</p>
+         */
         @JsonSetter(value = "next_execution_time", nulls = Nulls.SKIP)
         public Builder nextExecutionTime(Optional<OffsetDateTime> nextExecutionTime) {
             this.nextExecutionTime = nextExecutionTime;
@@ -166,6 +189,17 @@ public final class BulkSyncStatusResponse {
         public BulkSyncStatusResponse build() {
             return new BulkSyncStatusResponse(
                     currentExecution, ingestionStatus, lastExecution, nextExecutionTime, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("current_execution")
+                    || key.equalsIgnoreCase("ingestion_status")
+                    || key.equalsIgnoreCase("last_execution")
+                    || key.equalsIgnoreCase("next_execution_time")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -51,31 +51,49 @@ public final class EventingSyncCanceledEvent {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Execution ID
+     */
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
         return executionId;
     }
 
+    /**
+     * @return Organization ID
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Status of the execution
+     */
     @JsonProperty("status")
     public Optional<UtilExecutionStatus> getStatus() {
         return status;
     }
 
+    /**
+     * @return Model sync ID
+     */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;
     }
 
+    /**
+     * @return Name of the model sync
+     */
     @JsonProperty("sync_name")
     public Optional<String> getSyncName() {
         return syncName;
     }
 
+    /**
+     * @return Destination connection ID
+     */
     @JsonProperty("target_connection_id")
     public Optional<String> getTargetConnectionId() {
         return targetConnectionId;
@@ -135,7 +153,6 @@ public final class EventingSyncCanceledEvent {
 
         private Optional<String> targetConnectionId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -150,6 +167,9 @@ public final class EventingSyncCanceledEvent {
             return this;
         }
 
+        /**
+         * <p>Execution ID</p>
+         */
         @JsonSetter(value = "execution_id", nulls = Nulls.SKIP)
         public Builder executionId(Optional<String> executionId) {
             this.executionId = executionId;
@@ -161,6 +181,9 @@ public final class EventingSyncCanceledEvent {
             return this;
         }
 
+        /**
+         * <p>Organization ID</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -172,6 +195,9 @@ public final class EventingSyncCanceledEvent {
             return this;
         }
 
+        /**
+         * <p>Status of the execution</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<UtilExecutionStatus> status) {
             this.status = status;
@@ -183,6 +209,9 @@ public final class EventingSyncCanceledEvent {
             return this;
         }
 
+        /**
+         * <p>Model sync ID</p>
+         */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
             this.syncId = syncId;
@@ -194,6 +223,9 @@ public final class EventingSyncCanceledEvent {
             return this;
         }
 
+        /**
+         * <p>Name of the model sync</p>
+         */
         @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
         public Builder syncName(Optional<String> syncName) {
             this.syncName = syncName;
@@ -205,6 +237,9 @@ public final class EventingSyncCanceledEvent {
             return this;
         }
 
+        /**
+         * <p>Destination connection ID</p>
+         */
         @JsonSetter(value = "target_connection_id", nulls = Nulls.SKIP)
         public Builder targetConnectionId(Optional<String> targetConnectionId) {
             this.targetConnectionId = targetConnectionId;
@@ -219,6 +254,19 @@ public final class EventingSyncCanceledEvent {
         public EventingSyncCanceledEvent build() {
             return new EventingSyncCanceledEvent(
                     executionId, organizationId, status, syncId, syncName, targetConnectionId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("execution_id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("sync_id")
+                    || key.equalsIgnoreCase("sync_name")
+                    || key.equalsIgnoreCase("target_connection_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -41,7 +41,7 @@ public final class HarborActionSchemaResponse {
     }
 
     /**
-     * @return Stable action schema ID.
+     * @return Stable action schema ID
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -49,7 +49,7 @@ public final class HarborActionSchemaResponse {
     }
 
     /**
-     * @return Action schema name.
+     * @return Action schema name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -101,7 +101,6 @@ public final class HarborActionSchemaResponse {
 
         private Optional<List<String>> operations = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -114,7 +113,7 @@ public final class HarborActionSchemaResponse {
         }
 
         /**
-         * <p>Stable action schema ID.</p>
+         * <p>Stable action schema ID</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -128,7 +127,7 @@ public final class HarborActionSchemaResponse {
         }
 
         /**
-         * <p>Action schema name.</p>
+         * <p>Action schema name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -157,6 +156,14 @@ public final class HarborActionSchemaResponse {
 
         public HarborActionSchemaResponse build() {
             return new HarborActionSchemaResponse(id, name, operations, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id") || key.equalsIgnoreCase("name") || key.equalsIgnoreCase("operations")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

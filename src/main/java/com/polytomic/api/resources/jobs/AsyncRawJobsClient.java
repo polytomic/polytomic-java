@@ -6,6 +6,7 @@ package com.polytomic.api.resources.jobs;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -64,8 +65,8 @@ public class AsyncRawJobsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/jobs")
-                .addPathSegment(type)
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(type))
+                .addPathSegment(PathSegments.validate(id));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -91,7 +92,8 @@ public class AsyncRawJobsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<JobResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -138,6 +140,11 @@ public class AsyncRawJobsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;

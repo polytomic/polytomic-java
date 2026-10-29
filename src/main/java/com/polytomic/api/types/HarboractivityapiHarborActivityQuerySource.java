@@ -44,21 +44,33 @@ public final class HarboractivityapiHarborActivityQuerySource {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Query source: saved_query, ad_hoc, or unknown when the submission is no longer retained
+     */
     @JsonProperty("kind")
     public Optional<String> getKind() {
         return kind;
     }
 
+    /**
+     * @return Saved query that was submitted, when kind is saved_query
+     */
     @JsonProperty("saved_query")
     public Optional<HarboractivityapiHarborActivitySavedQuerySource> getSavedQuery() {
         return savedQuery;
     }
 
+    /**
+     * @return ID of the query.submitted event
+     */
     @JsonProperty("submission_event_id")
     public Optional<String> getSubmissionEventId() {
         return submissionEventId;
     }
 
+    /**
+     * @return When the query was submitted
+     */
     @JsonProperty("submitted_at")
     public Optional<OffsetDateTime> getSubmittedAt() {
         return submittedAt;
@@ -107,7 +119,6 @@ public final class HarboractivityapiHarborActivityQuerySource {
 
         private Optional<OffsetDateTime> submittedAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -120,6 +131,9 @@ public final class HarboractivityapiHarborActivityQuerySource {
             return this;
         }
 
+        /**
+         * <p>Query source: saved_query, ad_hoc, or unknown when the submission is no longer retained</p>
+         */
         @JsonSetter(value = "kind", nulls = Nulls.SKIP)
         public Builder kind(Optional<String> kind) {
             this.kind = kind;
@@ -131,6 +145,9 @@ public final class HarboractivityapiHarborActivityQuerySource {
             return this;
         }
 
+        /**
+         * <p>Saved query that was submitted, when kind is saved_query</p>
+         */
         @JsonSetter(value = "saved_query", nulls = Nulls.SKIP)
         public Builder savedQuery(Optional<HarboractivityapiHarborActivitySavedQuerySource> savedQuery) {
             this.savedQuery = savedQuery;
@@ -142,6 +159,9 @@ public final class HarboractivityapiHarborActivityQuerySource {
             return this;
         }
 
+        /**
+         * <p>ID of the query.submitted event</p>
+         */
         @JsonSetter(value = "submission_event_id", nulls = Nulls.SKIP)
         public Builder submissionEventId(Optional<String> submissionEventId) {
             this.submissionEventId = submissionEventId;
@@ -153,6 +173,9 @@ public final class HarboractivityapiHarborActivityQuerySource {
             return this;
         }
 
+        /**
+         * <p>When the query was submitted</p>
+         */
         @JsonSetter(value = "submitted_at", nulls = Nulls.SKIP)
         public Builder submittedAt(Optional<OffsetDateTime> submittedAt) {
             this.submittedAt = submittedAt;
@@ -167,6 +190,17 @@ public final class HarboractivityapiHarborActivityQuerySource {
         public HarboractivityapiHarborActivityQuerySource build() {
             return new HarboractivityapiHarborActivityQuerySource(
                     kind, savedQuery, submissionEventId, submittedAt, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("kind")
+                    || key.equalsIgnoreCase("saved_query")
+                    || key.equalsIgnoreCase("submission_event_id")
+                    || key.equalsIgnoreCase("submitted_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

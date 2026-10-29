@@ -72,7 +72,6 @@ public final class UpdateBulkSyncSchemasRequest {
     public static final class Builder {
         private Optional<List<BulkSchema>> schemas = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -98,6 +97,14 @@ public final class UpdateBulkSyncSchemasRequest {
 
         public UpdateBulkSyncSchemasRequest build() {
             return new UpdateBulkSyncSchemasRequest(schemas, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("schemas")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

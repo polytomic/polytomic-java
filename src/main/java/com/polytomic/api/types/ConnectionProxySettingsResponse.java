@@ -48,7 +48,7 @@ public final class ConnectionProxySettingsResponse {
     }
 
     /**
-     * @return Connection backend identifier (e.g. hubspot, salesforce).
+     * @return Connection backend identifier (e.g. hubspot, salesforce)
      */
     @JsonProperty("backendType")
     public Optional<String> getBackendType() {
@@ -56,7 +56,7 @@ public final class ConnectionProxySettingsResponse {
     }
 
     /**
-     * @return Unique identifier of the requested connection.
+     * @return Unique identifier of the requested connection
      */
     @JsonProperty("connectionId")
     public Optional<String> getConnectionId() {
@@ -64,7 +64,7 @@ public final class ConnectionProxySettingsResponse {
     }
 
     /**
-     * @return True when the connection can currently be used through the Connection Proxy API.
+     * @return True when the connection can currently be used through the Connection Proxy API
      */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
@@ -80,7 +80,7 @@ public final class ConnectionProxySettingsResponse {
     }
 
     /**
-     * @return True when the connection backend supports the Connection Proxy API.
+     * @return True when the connection backend supports the Connection Proxy API
      */
     @JsonProperty("supported")
     public Optional<Boolean> getSupported() {
@@ -132,7 +132,6 @@ public final class ConnectionProxySettingsResponse {
 
         private Optional<Boolean> supported = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -147,7 +146,7 @@ public final class ConnectionProxySettingsResponse {
         }
 
         /**
-         * <p>Connection backend identifier (e.g. hubspot, salesforce).</p>
+         * <p>Connection backend identifier (e.g. hubspot, salesforce)</p>
          */
         @JsonSetter(value = "backendType", nulls = Nulls.SKIP)
         public Builder backendType(Optional<String> backendType) {
@@ -161,7 +160,7 @@ public final class ConnectionProxySettingsResponse {
         }
 
         /**
-         * <p>Unique identifier of the requested connection.</p>
+         * <p>Unique identifier of the requested connection</p>
          */
         @JsonSetter(value = "connectionId", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
@@ -175,7 +174,7 @@ public final class ConnectionProxySettingsResponse {
         }
 
         /**
-         * <p>True when the connection can currently be used through the Connection Proxy API.</p>
+         * <p>True when the connection can currently be used through the Connection Proxy API</p>
          */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
@@ -203,7 +202,7 @@ public final class ConnectionProxySettingsResponse {
         }
 
         /**
-         * <p>True when the connection backend supports the Connection Proxy API.</p>
+         * <p>True when the connection backend supports the Connection Proxy API</p>
          */
         @JsonSetter(value = "supported", nulls = Nulls.SKIP)
         public Builder supported(Optional<Boolean> supported) {
@@ -219,6 +218,18 @@ public final class ConnectionProxySettingsResponse {
         public ConnectionProxySettingsResponse build() {
             return new ConnectionProxySettingsResponse(
                     backendType, connectionId, enabled, parentConnectionId, supported, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("backendType")
+                    || key.equalsIgnoreCase("connectionId")
+                    || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("parentConnectionId")
+                    || key.equalsIgnoreCase("supported")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

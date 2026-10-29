@@ -45,26 +45,41 @@ public final class BackendConnectionCapabilities {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether the connection type can be a sync destination
+     */
     @JsonProperty("destination")
     public boolean getDestination() {
         return destination;
     }
 
+    /**
+     * @return Whether the connection type can enrich models
+     */
     @JsonProperty("enrichment")
     public boolean getEnrichment() {
         return enrichment;
     }
 
+    /**
+     * @return Whether the connection type can receive sync event logs
+     */
     @JsonProperty("logging")
     public boolean getLogging() {
         return logging;
     }
 
+    /**
+     * @return Whether the connection type can schedule syncs
+     */
     @JsonProperty("orchestration")
     public boolean getOrchestration() {
         return orchestration;
     }
 
+    /**
+     * @return Whether the connection type can be a sync source
+     */
     @JsonProperty("source")
     public boolean getSource() {
         return source;
@@ -104,24 +119,39 @@ public final class BackendConnectionCapabilities {
     }
 
     public interface DestinationStage {
+        /**
+         * <p>Whether the connection type can be a sync destination</p>
+         */
         EnrichmentStage destination(boolean destination);
 
         Builder from(BackendConnectionCapabilities other);
     }
 
     public interface EnrichmentStage {
+        /**
+         * <p>Whether the connection type can enrich models</p>
+         */
         LoggingStage enrichment(boolean enrichment);
     }
 
     public interface LoggingStage {
+        /**
+         * <p>Whether the connection type can receive sync event logs</p>
+         */
         OrchestrationStage logging(boolean logging);
     }
 
     public interface OrchestrationStage {
+        /**
+         * <p>Whether the connection type can schedule syncs</p>
+         */
         SourceStage orchestration(boolean orchestration);
     }
 
     public interface SourceStage {
+        /**
+         * <p>Whether the connection type can be a sync source</p>
+         */
         _FinalStage source(boolean source);
     }
 
@@ -146,7 +176,6 @@ public final class BackendConnectionCapabilities {
 
         private boolean source;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -161,6 +190,10 @@ public final class BackendConnectionCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether the connection type can be a sync destination</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("destination")
         public EnrichmentStage destination(boolean destination) {
@@ -168,6 +201,10 @@ public final class BackendConnectionCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether the connection type can enrich models</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("enrichment")
         public LoggingStage enrichment(boolean enrichment) {
@@ -175,6 +212,10 @@ public final class BackendConnectionCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether the connection type can receive sync event logs</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("logging")
         public OrchestrationStage logging(boolean logging) {
@@ -182,6 +223,10 @@ public final class BackendConnectionCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether the connection type can schedule syncs</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("orchestration")
         public SourceStage orchestration(boolean orchestration) {
@@ -189,6 +234,10 @@ public final class BackendConnectionCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether the connection type can be a sync source</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("source")
         public _FinalStage source(boolean source) {
@@ -200,6 +249,18 @@ public final class BackendConnectionCapabilities {
         public BackendConnectionCapabilities build() {
             return new BackendConnectionCapabilities(
                     destination, enrichment, logging, orchestration, source, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("destination")
+                    || key.equalsIgnoreCase("enrichment")
+                    || key.equalsIgnoreCase("logging")
+                    || key.equalsIgnoreCase("orchestration")
+                    || key.equalsIgnoreCase("source")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

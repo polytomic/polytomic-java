@@ -59,7 +59,7 @@ public final class SaveHarborSavedQueryDraftRequest {
     }
 
     /**
-     * @return Optional note copied to the immutable published version.
+     * @return Optional note copied to the immutable published version
      */
     @JsonProperty("change_note")
     public Optional<String> getChangeNote() {
@@ -91,7 +91,7 @@ public final class SaveHarborSavedQueryDraftRequest {
     }
 
     /**
-     * @return Typed scalar parameter declarations.
+     * @return Typed scalar parameter declarations
      */
     @JsonProperty("parameters")
     public Optional<List<HarborSavedQueryParameter>> getParameters() {
@@ -99,7 +99,7 @@ public final class SaveHarborSavedQueryDraftRequest {
     }
 
     /**
-     * @return DuckDB SQL template using {{name}} references for bound parameters.
+     * @return DuckDB SQL template using {{name}} references for bound parameters
      */
     @JsonProperty("sql_template")
     public String getSqlTemplate() {
@@ -107,7 +107,7 @@ public final class SaveHarborSavedQueryDraftRequest {
     }
 
     /**
-     * @return Author-supplied JSON scalar values used only to validate this draft.
+     * @return Author-supplied JSON scalar values used only to validate this draft
      */
     @JsonProperty("validation_values")
     public Optional<Map<String, Object>> getValidationValues() {
@@ -167,7 +167,7 @@ public final class SaveHarborSavedQueryDraftRequest {
 
     public interface SqlTemplateStage {
         /**
-         * <p>DuckDB SQL template using {{name}} references for bound parameters.</p>
+         * <p>DuckDB SQL template using {{name}} references for bound parameters</p>
          */
         _FinalStage sqlTemplate(@NotNull String sqlTemplate);
     }
@@ -180,7 +180,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Optional note copied to the immutable published version.</p>
+         * <p>Optional note copied to the immutable published version</p>
          */
         _FinalStage changeNote(Optional<String> changeNote);
 
@@ -201,14 +201,14 @@ public final class SaveHarborSavedQueryDraftRequest {
         _FinalStage owner(String owner);
 
         /**
-         * <p>Typed scalar parameter declarations.</p>
+         * <p>Typed scalar parameter declarations</p>
          */
         _FinalStage parameters(Optional<List<HarborSavedQueryParameter>> parameters);
 
         _FinalStage parameters(List<HarborSavedQueryParameter> parameters);
 
         /**
-         * <p>Author-supplied JSON scalar values used only to validate this draft.</p>
+         * <p>Author-supplied JSON scalar values used only to validate this draft</p>
          */
         _FinalStage validationValues(Optional<Map<String, Object>> validationValues);
 
@@ -231,7 +231,6 @@ public final class SaveHarborSavedQueryDraftRequest {
 
         private Optional<String> changeNote = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -260,7 +259,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         }
 
         /**
-         * <p>DuckDB SQL template using {{name}} references for bound parameters.</p>
+         * <p>DuckDB SQL template using {{name}} references for bound parameters</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -271,7 +270,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         }
 
         /**
-         * <p>Author-supplied JSON scalar values used only to validate this draft.</p>
+         * <p>Author-supplied JSON scalar values used only to validate this draft</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -281,7 +280,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         }
 
         /**
-         * <p>Author-supplied JSON scalar values used only to validate this draft.</p>
+         * <p>Author-supplied JSON scalar values used only to validate this draft</p>
          */
         @java.lang.Override
         @JsonSetter(value = "validation_values", nulls = Nulls.SKIP)
@@ -291,7 +290,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         }
 
         /**
-         * <p>Typed scalar parameter declarations.</p>
+         * <p>Typed scalar parameter declarations</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -301,7 +300,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         }
 
         /**
-         * <p>Typed scalar parameter declarations.</p>
+         * <p>Typed scalar parameter declarations</p>
          */
         @java.lang.Override
         @JsonSetter(value = "parameters", nulls = Nulls.SKIP)
@@ -351,7 +350,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         }
 
         /**
-         * <p>Optional note copied to the immutable published version.</p>
+         * <p>Optional note copied to the immutable published version</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -361,7 +360,7 @@ public final class SaveHarborSavedQueryDraftRequest {
         }
 
         /**
-         * <p>Optional note copied to the immutable published version.</p>
+         * <p>Optional note copied to the immutable published version</p>
          */
         @java.lang.Override
         @JsonSetter(value = "change_note", nulls = Nulls.SKIP)
@@ -381,6 +380,20 @@ public final class SaveHarborSavedQueryDraftRequest {
                     sqlTemplate,
                     validationValues,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("change_note")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("owner")
+                    || key.equalsIgnoreCase("parameters")
+                    || key.equalsIgnoreCase("sql_template")
+                    || key.equalsIgnoreCase("validation_values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

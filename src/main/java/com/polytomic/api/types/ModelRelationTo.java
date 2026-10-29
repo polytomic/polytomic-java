@@ -33,11 +33,17 @@ public final class ModelRelationTo {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Source field name on the related model
+     */
     @JsonProperty("field")
     public Optional<String> getField() {
         return field;
     }
 
+    /**
+     * @return Model ID of the related model
+     */
     @JsonProperty("model_id")
     public Optional<String> getModelId() {
         return modelId;
@@ -78,7 +84,6 @@ public final class ModelRelationTo {
 
         private Optional<String> modelId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -89,6 +94,9 @@ public final class ModelRelationTo {
             return this;
         }
 
+        /**
+         * <p>Source field name on the related model</p>
+         */
         @JsonSetter(value = "field", nulls = Nulls.SKIP)
         public Builder field(Optional<String> field) {
             this.field = field;
@@ -100,6 +108,9 @@ public final class ModelRelationTo {
             return this;
         }
 
+        /**
+         * <p>Model ID of the related model</p>
+         */
         @JsonSetter(value = "model_id", nulls = Nulls.SKIP)
         public Builder modelId(Optional<String> modelId) {
             this.modelId = modelId;
@@ -113,6 +124,14 @@ public final class ModelRelationTo {
 
         public ModelRelationTo build() {
             return new ModelRelationTo(field, modelId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field") || key.equalsIgnoreCase("model_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

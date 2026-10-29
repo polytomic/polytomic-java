@@ -103,7 +103,14 @@ public class SchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -123,7 +130,14 @@ public class SchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -143,7 +157,14 @@ public class SchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -163,7 +184,14 @@ public class SchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -212,7 +240,9 @@ public class SchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -232,7 +262,9 @@ public class SchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -252,7 +284,9 @@ public class SchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -272,7 +306,9 @@ public class SchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint

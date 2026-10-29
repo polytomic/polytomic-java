@@ -35,11 +35,17 @@ public final class ExportSyncLogsEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The exported log archive, with an empty url while the export job runs
+     */
     @JsonProperty("data")
     public Optional<ExportSyncLogsResponse> getData() {
         return data;
     }
 
+    /**
+     * @return Export job to poll, present while the log archive is being prepared
+     */
     @JsonProperty("job")
     public Optional<JobResponse> getJob() {
         return job;
@@ -80,7 +86,6 @@ public final class ExportSyncLogsEnvelope {
 
         private Optional<JobResponse> job = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -91,6 +96,9 @@ public final class ExportSyncLogsEnvelope {
             return this;
         }
 
+        /**
+         * <p>The exported log archive, with an empty url while the export job runs</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ExportSyncLogsResponse> data) {
             this.data = data;
@@ -102,6 +110,9 @@ public final class ExportSyncLogsEnvelope {
             return this;
         }
 
+        /**
+         * <p>Export job to poll, present while the log archive is being prepared</p>
+         */
         @JsonSetter(value = "job", nulls = Nulls.SKIP)
         public Builder job(Optional<JobResponse> job) {
             this.job = job;
@@ -115,6 +126,14 @@ public final class ExportSyncLogsEnvelope {
 
         public ExportSyncLogsEnvelope build() {
             return new ExportSyncLogsEnvelope(data, job, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("job")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

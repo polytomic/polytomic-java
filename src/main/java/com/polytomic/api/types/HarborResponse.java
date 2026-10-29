@@ -69,7 +69,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return Connection that provides the Harbor's queryable data store.
+     * @return Connection that provides the Harbor's queryable data store
      */
     @JsonProperty("backing_connection_id")
     public Optional<String> getBackingConnectionId() {
@@ -77,7 +77,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return How the Harbor's queryable data store is provided.
+     * @return How the Harbor's queryable data store is provided
      */
     @JsonProperty("backing_mode")
     public Optional<String> getBackingMode() {
@@ -85,7 +85,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return When the Harbor was created.
+     * @return When the Harbor was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -93,7 +93,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return Short description of the Harbor.
+     * @return Short description of the Harbor
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -101,7 +101,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return Unique identifier of the Harbor.
+     * @return Unique identifier of the Harbor
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -109,7 +109,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return MCP server URL for the Harbor.
+     * @return MCP server URL for the Harbor
      */
     @JsonProperty("mcp_server_url")
     public Optional<String> getMcpServerUrl() {
@@ -117,7 +117,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return Human-readable Harbor name.
+     * @return Human-readable Harbor name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -125,7 +125,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return Organization that owns the Harbor.
+     * @return Organization that owns the Harbor
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -141,7 +141,7 @@ public final class HarborResponse {
     }
 
     /**
-     * @return When the Harbor was last updated.
+     * @return When the Harbor was last updated
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
@@ -218,7 +218,6 @@ public final class HarborResponse {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -238,7 +237,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>Connection that provides the Harbor's queryable data store.</p>
+         * <p>Connection that provides the Harbor's queryable data store</p>
          */
         @JsonSetter(value = "backing_connection_id", nulls = Nulls.SKIP)
         public Builder backingConnectionId(Optional<String> backingConnectionId) {
@@ -252,7 +251,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>How the Harbor's queryable data store is provided.</p>
+         * <p>How the Harbor's queryable data store is provided</p>
          */
         @JsonSetter(value = "backing_mode", nulls = Nulls.SKIP)
         public Builder backingMode(Optional<String> backingMode) {
@@ -266,7 +265,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>When the Harbor was created.</p>
+         * <p>When the Harbor was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -280,7 +279,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>Short description of the Harbor.</p>
+         * <p>Short description of the Harbor</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -294,7 +293,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>Unique identifier of the Harbor.</p>
+         * <p>Unique identifier of the Harbor</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -308,7 +307,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>MCP server URL for the Harbor.</p>
+         * <p>MCP server URL for the Harbor</p>
          */
         @JsonSetter(value = "mcp_server_url", nulls = Nulls.SKIP)
         public Builder mcpServerUrl(Optional<String> mcpServerUrl) {
@@ -322,7 +321,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>Human-readable Harbor name.</p>
+         * <p>Human-readable Harbor name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -336,7 +335,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>Organization that owns the Harbor.</p>
+         * <p>Organization that owns the Harbor</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -364,7 +363,7 @@ public final class HarborResponse {
         }
 
         /**
-         * <p>When the Harbor was last updated.</p>
+         * <p>When the Harbor was last updated</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -390,6 +389,23 @@ public final class HarborResponse {
                     status,
                     updatedAt,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("backing_connection_id")
+                    || key.equalsIgnoreCase("backing_mode")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("mcp_server_url")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("updated_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

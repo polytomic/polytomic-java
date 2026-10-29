@@ -53,7 +53,7 @@ public final class HarborSavedQueryParameter {
     }
 
     /**
-     * @return Template parameter name referenced as {{start_date}}.
+     * @return Template parameter name referenced as {{start_date}}
      */
     @JsonProperty("name")
     public String getName() {
@@ -61,7 +61,7 @@ public final class HarborSavedQueryParameter {
     }
 
     /**
-     * @return When true, rejects explicit null during validation and execution and allows omission only when default_value is present.
+     * @return When true, rejects explicit null during validation and execution and allows omission only when default_value is present
      */
     @JsonProperty("required")
     public Optional<Boolean> getRequired() {
@@ -69,7 +69,7 @@ public final class HarborSavedQueryParameter {
     }
 
     /**
-     * @return Scalar parameter type.
+     * @return Scalar parameter type
      */
     @JsonProperty("type")
     public HarborSavedQueryParameterType getType() {
@@ -110,7 +110,7 @@ public final class HarborSavedQueryParameter {
 
     public interface NameStage {
         /**
-         * <p>Template parameter name referenced as {{start_date}}.</p>
+         * <p>Template parameter name referenced as {{start_date}}</p>
          */
         TypeStage name(@NotNull String name);
 
@@ -119,7 +119,7 @@ public final class HarborSavedQueryParameter {
 
     public interface TypeStage {
         /**
-         * <p>Scalar parameter type.</p>
+         * <p>Scalar parameter type</p>
          */
         _FinalStage type(@NotNull HarborSavedQueryParameterType type);
     }
@@ -139,7 +139,7 @@ public final class HarborSavedQueryParameter {
         _FinalStage defaultValue(Object defaultValue);
 
         /**
-         * <p>When true, rejects explicit null during validation and execution and allows omission only when default_value is present.</p>
+         * <p>When true, rejects explicit null during validation and execution and allows omission only when default_value is present</p>
          */
         _FinalStage required(Optional<Boolean> required);
 
@@ -156,7 +156,6 @@ public final class HarborSavedQueryParameter {
 
         private Optional<Object> defaultValue = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -171,7 +170,7 @@ public final class HarborSavedQueryParameter {
         }
 
         /**
-         * <p>Template parameter name referenced as {{start_date}}.</p>
+         * <p>Template parameter name referenced as {{start_date}}</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -182,7 +181,7 @@ public final class HarborSavedQueryParameter {
         }
 
         /**
-         * <p>Scalar parameter type.</p>
+         * <p>Scalar parameter type</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -193,7 +192,7 @@ public final class HarborSavedQueryParameter {
         }
 
         /**
-         * <p>When true, rejects explicit null during validation and execution and allows omission only when default_value is present.</p>
+         * <p>When true, rejects explicit null during validation and execution and allows omission only when default_value is present</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -203,7 +202,7 @@ public final class HarborSavedQueryParameter {
         }
 
         /**
-         * <p>When true, rejects explicit null during validation and execution and allows omission only when default_value is present.</p>
+         * <p>When true, rejects explicit null during validation and execution and allows omission only when default_value is present</p>
          */
         @java.lang.Override
         @JsonSetter(value = "required", nulls = Nulls.SKIP)
@@ -235,6 +234,17 @@ public final class HarborSavedQueryParameter {
         @java.lang.Override
         public HarborSavedQueryParameter build() {
             return new HarborSavedQueryParameter(defaultValue, name, required, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("default_value")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("required")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

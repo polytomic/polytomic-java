@@ -5,6 +5,7 @@ package com.polytomic.api.resources.models;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.models.requests.EnrichmentInputFieldsRequest;
 import com.polytomic.api.resources.models.requests.ModelsCreateRequest;
@@ -54,7 +55,15 @@ public class AsyncModelsClient {
      * <code>enrichment</code> block when creating or updating a model sync.</p>
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getEnrichmentSource(String id) {
-        return this.rawClient.getEnrichmentSource(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture =
+                this.rawClient.getEnrichmentSource(id);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -72,7 +81,15 @@ public class AsyncModelsClient {
      * <code>enrichment</code> block when creating or updating a model sync.</p>
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getEnrichmentSource(String id, RequestOptions requestOptions) {
-        return this.rawClient.getEnrichmentSource(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture =
+                this.rawClient.getEnrichmentSource(id, requestOptions);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -91,7 +108,15 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getEnrichmentSource(
             String id, ModelsGetEnrichmentSourceRequest request) {
-        return this.rawClient.getEnrichmentSource(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture =
+                this.rawClient.getEnrichmentSource(id, request);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -110,7 +135,15 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getEnrichmentSource(
             String id, ModelsGetEnrichmentSourceRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getEnrichmentSource(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture =
+                this.rawClient.getEnrichmentSource(id, request, requestOptions);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -122,7 +155,16 @@ public class AsyncModelsClient {
      * expected inputs.</p>
      */
     public CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> post(String connectionId) {
-        return this.rawClient.post(connectionId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetEnrichmentInputFieldsResponseEnvelope>> rawFuture =
+                this.rawClient.post(connectionId);
+        CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -135,7 +177,16 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> post(
             String connectionId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.post(connectionId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetEnrichmentInputFieldsResponseEnvelope>> rawFuture =
+                this.rawClient.post(connectionId, requestOptions);
+        CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -148,7 +199,16 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> post(
             String connectionId, EnrichmentInputFieldsRequest request) {
-        return this.rawClient.post(connectionId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetEnrichmentInputFieldsResponseEnvelope>> rawFuture =
+                this.rawClient.post(connectionId, request);
+        CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -161,53 +221,100 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> post(
             String connectionId, EnrichmentInputFieldsRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.post(connectionId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetEnrichmentInputFieldsResponseEnvelope>> rawFuture =
+                this.rawClient.post(connectionId, request, requestOptions);
+        CompletableFuture<GetEnrichmentInputFieldsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> preview(CreateModelRequest body) {
-        return this.rawClient.preview(body).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture = this.rawClient.preview(body);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> preview(
             CreateModelRequest body, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.preview(body, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture =
+                this.rawClient.preview(body, requestOptions);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> preview(ModelsPreviewRequest request) {
-        return this.rawClient.preview(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture = this.rawClient.preview(request);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> preview(
             ModelsPreviewRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.preview(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture =
+                this.rawClient.preview(request, requestOptions);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -220,7 +327,14 @@ public class AsyncModelsClient {
      * non-positive values fall back to the same default.</p>
      */
     public CompletableFuture<ModelListResponseEnvelope> list() {
-        return this.rawClient.list().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelListResponseEnvelope>> rawFuture = this.rawClient.list();
+        CompletableFuture<ModelListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -233,7 +347,15 @@ public class AsyncModelsClient {
      * non-positive values fall back to the same default.</p>
      */
     public CompletableFuture<ModelListResponseEnvelope> list(RequestOptions requestOptions) {
-        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelListResponseEnvelope>> rawFuture =
+                this.rawClient.list(requestOptions);
+        CompletableFuture<ModelListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -246,7 +368,14 @@ public class AsyncModelsClient {
      * whether a connection type supports use as a source.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> create(CreateModelRequest body) {
-        return this.rawClient.create(body).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture = this.rawClient.create(body);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -260,7 +389,15 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<ModelResponseEnvelope> create(
             CreateModelRequest body, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(body, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture =
+                this.rawClient.create(body, requestOptions);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -273,7 +410,14 @@ public class AsyncModelsClient {
      * whether a connection type supports use as a source.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> create(ModelsCreateRequest request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture = this.rawClient.create(request);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -287,7 +431,15 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<ModelResponseEnvelope> create(
             ModelsCreateRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -297,7 +449,14 @@ public class AsyncModelsClient {
      * changes, use <a href="../../../api-reference/models/sample"><code>GET /api/models/{id}/sample</code></a>.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -307,7 +466,15 @@ public class AsyncModelsClient {
      * changes, use <a href="../../../api-reference/models/sample"><code>GET /api/models/{id}/sample</code></a>.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -317,7 +484,14 @@ public class AsyncModelsClient {
      * changes, use <a href="../../../api-reference/models/sample"><code>GET /api/models/{id}/sample</code></a>.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> get(String id, ModelsGetRequest request) {
-        return this.rawClient.get(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture = this.rawClient.get(id, request);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -328,14 +502,23 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<ModelResponseEnvelope> get(
             String id, ModelsGetRequest request, RequestOptions requestOptions) {
-        return this.rawClient.get(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, request, requestOptions);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates a model's configuration.
      * <p>Updating a model is a <strong>full replacement</strong> of its configuration. Every field in
      * the request body is written to the model; any field you omit is cleared or reset
-     * to its default value.</p>
+     * to its default value. An empty or omitted <code>policies</code> list leaves the model's
+     * current policies unchanged.</p>
      * <p>To make a partial change, fetch the current model with
      * <a href="../../../api-reference/models/get"><code>GET /api/models/{id}</code></a>, modify the fields you want to change, and send
      * the complete object back in the update request.</p>
@@ -343,14 +526,22 @@ public class AsyncModelsClient {
      * next sync execution that uses this model.</p>
      */
     public CompletableFuture<ModelResponseEnvelope> update(String id, UpdateModelRequest request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture = this.rawClient.update(id, request);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates a model's configuration.
      * <p>Updating a model is a <strong>full replacement</strong> of its configuration. Every field in
      * the request body is written to the model; any field you omit is cleared or reset
-     * to its default value.</p>
+     * to its default value. An empty or omitted <code>policies</code> list leaves the model's
+     * current policies unchanged.</p>
      * <p>To make a partial change, fetch the current model with
      * <a href="../../../api-reference/models/get"><code>GET /api/models/{id}</code></a>, modify the fields you want to change, and send
      * the complete object back in the update request.</p>
@@ -359,7 +550,15 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<ModelResponseEnvelope> update(
             String id, UpdateModelRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<ModelResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -370,7 +569,14 @@ public class AsyncModelsClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id) {
-        return this.rawClient.delete(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -381,7 +587,14 @@ public class AsyncModelsClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -392,7 +605,14 @@ public class AsyncModelsClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id, ModelsDeleteRequest request) {
-        return this.rawClient.delete(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -404,7 +624,14 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<Void> delete(
             String id, ModelsDeleteRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -414,7 +641,14 @@ public class AsyncModelsClient {
      * work runs as a background job.</p>
      */
     public CompletableFuture<ModelSampleResponseEnvelope> sample(String id) {
-        return this.rawClient.sample(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSampleResponseEnvelope>> rawFuture = this.rawClient.sample(id);
+        CompletableFuture<ModelSampleResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -424,7 +658,15 @@ public class AsyncModelsClient {
      * work runs as a background job.</p>
      */
     public CompletableFuture<ModelSampleResponseEnvelope> sample(String id, RequestOptions requestOptions) {
-        return this.rawClient.sample(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSampleResponseEnvelope>> rawFuture =
+                this.rawClient.sample(id, requestOptions);
+        CompletableFuture<ModelSampleResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -434,7 +676,15 @@ public class AsyncModelsClient {
      * work runs as a background job.</p>
      */
     public CompletableFuture<ModelSampleResponseEnvelope> sample(String id, ModelsSampleRequest request) {
-        return this.rawClient.sample(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSampleResponseEnvelope>> rawFuture =
+                this.rawClient.sample(id, request);
+        CompletableFuture<ModelSampleResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -445,6 +695,14 @@ public class AsyncModelsClient {
      */
     public CompletableFuture<ModelSampleResponseEnvelope> sample(
             String id, ModelsSampleRequest request, RequestOptions requestOptions) {
-        return this.rawClient.sample(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSampleResponseEnvelope>> rawFuture =
+                this.rawClient.sample(id, request, requestOptions);
+        CompletableFuture<ModelSampleResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

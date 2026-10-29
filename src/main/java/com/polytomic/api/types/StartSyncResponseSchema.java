@@ -40,6 +40,9 @@ public final class StartSyncResponseSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return When the execution was created
+     */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
@@ -53,6 +56,9 @@ public final class StartSyncResponseSchema {
         return id;
     }
 
+    /**
+     * @return Status of the new execution
+     */
     @JsonProperty("status")
     public Optional<UtilExecutionStatus> getStatus() {
         return status;
@@ -95,7 +101,6 @@ public final class StartSyncResponseSchema {
 
         private Optional<UtilExecutionStatus> status = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -107,6 +112,9 @@ public final class StartSyncResponseSchema {
             return this;
         }
 
+        /**
+         * <p>When the execution was created</p>
+         */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
             this.createdAt = createdAt;
@@ -132,6 +140,9 @@ public final class StartSyncResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Status of the new execution</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<UtilExecutionStatus> status) {
             this.status = status;
@@ -145,6 +156,14 @@ public final class StartSyncResponseSchema {
 
         public StartSyncResponseSchema build() {
             return new StartSyncResponseSchema(createdAt, id, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at") || key.equalsIgnoreCase("id") || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

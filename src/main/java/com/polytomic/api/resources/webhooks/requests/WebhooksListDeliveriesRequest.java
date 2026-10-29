@@ -56,6 +56,9 @@ public final class WebhooksListDeliveriesRequest {
         return success;
     }
 
+    /**
+     * @return Return only attempts to deliver this event.
+     */
     @JsonProperty("event_id")
     public Optional<String> getEventId() {
         return eventId;
@@ -78,7 +81,7 @@ public final class WebhooksListDeliveriesRequest {
     }
 
     /**
-     * @return Token from the previous page.
+     * @return Token from the previous page
      */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
@@ -130,7 +133,6 @@ public final class WebhooksListDeliveriesRequest {
 
         private Optional<String> pageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -158,6 +160,9 @@ public final class WebhooksListDeliveriesRequest {
             return this;
         }
 
+        /**
+         * <p>Return only attempts to deliver this event.</p>
+         */
         @JsonSetter(value = "event_id", nulls = Nulls.SKIP)
         public Builder eventId(Optional<String> eventId) {
             this.eventId = eventId;
@@ -198,7 +203,7 @@ public final class WebhooksListDeliveriesRequest {
         }
 
         /**
-         * <p>Token from the previous page.</p>
+         * <p>Token from the previous page</p>
          */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
@@ -213,6 +218,18 @@ public final class WebhooksListDeliveriesRequest {
 
         public WebhooksListDeliveriesRequest build() {
             return new WebhooksListDeliveriesRequest(success, eventId, start, end, pageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("success")
+                    || key.equalsIgnoreCase("event_id")
+                    || key.equalsIgnoreCase("start")
+                    || key.equalsIgnoreCase("end")
+                    || key.equalsIgnoreCase("page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

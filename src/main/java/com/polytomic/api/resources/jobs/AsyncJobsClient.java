@@ -4,6 +4,7 @@
 package com.polytomic.api.resources.jobs;
 
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.types.JobResponseEnvelope;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +37,14 @@ public class AsyncJobsClient {
      * <code>type</code> returns <code>400</code>.</p>
      */
     public CompletableFuture<JobResponseEnvelope> get(String type, String id) {
-        return this.rawClient.get(type, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<JobResponseEnvelope>> rawFuture = this.rawClient.get(type, id);
+        CompletableFuture<JobResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -50,6 +58,14 @@ public class AsyncJobsClient {
      * <code>type</code> returns <code>400</code>.</p>
      */
     public CompletableFuture<JobResponseEnvelope> get(String type, String id, RequestOptions requestOptions) {
-        return this.rawClient.get(type, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<JobResponseEnvelope>> rawFuture =
+                this.rawClient.get(type, id, requestOptions);
+        CompletableFuture<JobResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

@@ -32,11 +32,17 @@ public final class ActionLookup {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Field ID to look the record up by
+     */
     @JsonProperty("field_id")
     public Optional<String> getFieldId() {
         return fieldId;
     }
 
+    /**
+     * @return Value the field must equal
+     */
     @JsonProperty("value")
     public Optional<Object> getValue() {
         return value;
@@ -77,7 +83,6 @@ public final class ActionLookup {
 
         private Optional<Object> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -88,6 +93,9 @@ public final class ActionLookup {
             return this;
         }
 
+        /**
+         * <p>Field ID to look the record up by</p>
+         */
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
         public Builder fieldId(Optional<String> fieldId) {
             this.fieldId = fieldId;
@@ -99,6 +107,9 @@ public final class ActionLookup {
             return this;
         }
 
+        /**
+         * <p>Value the field must equal</p>
+         */
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public Builder value(Optional<Object> value) {
             this.value = value;
@@ -112,6 +123,14 @@ public final class ActionLookup {
 
         public ActionLookup build() {
             return new ActionLookup(fieldId, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field_id") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -40,16 +40,25 @@ public final class BulkSyncSource {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Bulk sync features the source supports
+     */
     @JsonProperty("capabilities")
     public Optional<BulkSyncSourceCapabilities> getCapabilities() {
         return capabilities;
     }
 
+    /**
+     * @return Options accepted in a bulk sync's source_configuration, keyed by option name
+     */
     @JsonProperty("configuration")
     public Optional<Object> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Schemas available on the connection
+     */
     @JsonProperty("schemas")
     public Optional<List<Schema>> getSchemas() {
         return schemas;
@@ -94,7 +103,6 @@ public final class BulkSyncSource {
 
         private Optional<List<Schema>> schemas = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -106,6 +114,9 @@ public final class BulkSyncSource {
             return this;
         }
 
+        /**
+         * <p>Bulk sync features the source supports</p>
+         */
         @JsonSetter(value = "capabilities", nulls = Nulls.SKIP)
         public Builder capabilities(Optional<BulkSyncSourceCapabilities> capabilities) {
             this.capabilities = capabilities;
@@ -117,6 +128,9 @@ public final class BulkSyncSource {
             return this;
         }
 
+        /**
+         * <p>Options accepted in a bulk sync's source_configuration, keyed by option name</p>
+         */
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public Builder configuration(Optional<Object> configuration) {
             this.configuration = configuration;
@@ -128,6 +142,9 @@ public final class BulkSyncSource {
             return this;
         }
 
+        /**
+         * <p>Schemas available on the connection</p>
+         */
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public Builder schemas(Optional<List<Schema>> schemas) {
             this.schemas = schemas;
@@ -141,6 +158,16 @@ public final class BulkSyncSource {
 
         public BulkSyncSource build() {
             return new BulkSyncSource(capabilities, configuration, schemas, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("capabilities")
+                    || key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("schemas")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

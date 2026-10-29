@@ -30,6 +30,9 @@ public final class BulkSyncErrorHandlingEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Error handling settings for the bulk sync
+     */
     @JsonProperty("data")
     public Optional<BulkSyncErrorHandling> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class BulkSyncErrorHandlingEnvelope {
     public static final class Builder {
         private Optional<BulkSyncErrorHandling> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class BulkSyncErrorHandlingEnvelope {
             return this;
         }
 
+        /**
+         * <p>Error handling settings for the bulk sync</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<BulkSyncErrorHandling> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class BulkSyncErrorHandlingEnvelope {
 
         public BulkSyncErrorHandlingEnvelope build() {
             return new BulkSyncErrorHandlingEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

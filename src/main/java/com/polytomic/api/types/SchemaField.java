@@ -76,31 +76,40 @@ public final class SchemaField {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Reference this field holds to records in other schemas
+     */
     @JsonProperty("association")
     public Optional<SchemaAssociation> getAssociation() {
         return association;
     }
 
+    /**
+     * @return Schema field ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
     /**
-     * @return Whether this field is part of the schema's primary key, including any user override.
+     * @return Whether this field is part of the schema's primary key, including any user override
      */
     @JsonProperty("is_primary_key")
     public Optional<Boolean> getIsPrimaryKey() {
         return isPrimaryKey;
     }
 
+    /**
+     * @return Display name of the field
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
     /**
-     * @return JSONPath used to extract the field from each source record; only meaningful for document-style backends.
+     * @return JSONPath used to extract the field from each source record; only meaningful for document-style backends
      */
     @JsonProperty("path")
     public Optional<String> getPath() {
@@ -108,7 +117,7 @@ public final class SchemaField {
     }
 
     /**
-     * @return The user-set primary key status for this field, which takes precedence over source_primary_key; omitted when no override is set.
+     * @return The user-set primary key status for this field, which takes precedence over source_primary_key; omitted when no override is set
      */
     @JsonProperty("primary_key_override")
     public Optional<Boolean> getPrimaryKeyOverride() {
@@ -116,7 +125,7 @@ public final class SchemaField {
     }
 
     /**
-     * @return The type of the field from the remote system.
+     * @return The type of the field from the remote system
      */
     @JsonProperty("remote_type")
     public Optional<String> getRemoteType() {
@@ -124,31 +133,40 @@ public final class SchemaField {
     }
 
     /**
-     * @return Whether the source system reports this field as part of the schema's primary key.
+     * @return Whether the source system reports this field as part of the schema's primary key
      */
     @JsonProperty("source_primary_key")
     public Optional<Boolean> getSourcePrimaryKey() {
         return sourcePrimaryKey;
     }
 
+    /**
+     * @return The type classification for the field
+     */
     @JsonProperty("type")
     public Optional<UtilFieldType> getType() {
         return type;
     }
 
+    /**
+     * @return The type specification for the field
+     */
     @JsonProperty("type_spec")
     public Optional<TypesType> getTypeSpec() {
         return typeSpec;
     }
 
     /**
-     * @return True when the field's effective definition came from a user override.
+     * @return True when the field's effective definition came from a user override
      */
     @JsonProperty("user_managed")
     public Optional<Boolean> getUserManaged() {
         return userManaged;
     }
 
+    /**
+     * @return Allowed values for the field
+     */
     @JsonProperty("values")
     public Optional<List<PickValue>> getValues() {
         return values;
@@ -232,7 +250,6 @@ public final class SchemaField {
 
         private Optional<List<PickValue>> values = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -253,6 +270,9 @@ public final class SchemaField {
             return this;
         }
 
+        /**
+         * <p>Reference this field holds to records in other schemas</p>
+         */
         @JsonSetter(value = "association", nulls = Nulls.SKIP)
         public Builder association(Optional<SchemaAssociation> association) {
             this.association = association;
@@ -264,6 +284,9 @@ public final class SchemaField {
             return this;
         }
 
+        /**
+         * <p>Schema field ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -276,7 +299,7 @@ public final class SchemaField {
         }
 
         /**
-         * <p>Whether this field is part of the schema's primary key, including any user override.</p>
+         * <p>Whether this field is part of the schema's primary key, including any user override</p>
          */
         @JsonSetter(value = "is_primary_key", nulls = Nulls.SKIP)
         public Builder isPrimaryKey(Optional<Boolean> isPrimaryKey) {
@@ -289,6 +312,9 @@ public final class SchemaField {
             return this;
         }
 
+        /**
+         * <p>Display name of the field</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -301,7 +327,7 @@ public final class SchemaField {
         }
 
         /**
-         * <p>JSONPath used to extract the field from each source record; only meaningful for document-style backends.</p>
+         * <p>JSONPath used to extract the field from each source record; only meaningful for document-style backends</p>
          */
         @JsonSetter(value = "path", nulls = Nulls.SKIP)
         public Builder path(Optional<String> path) {
@@ -315,7 +341,7 @@ public final class SchemaField {
         }
 
         /**
-         * <p>The user-set primary key status for this field, which takes precedence over source_primary_key; omitted when no override is set.</p>
+         * <p>The user-set primary key status for this field, which takes precedence over source_primary_key; omitted when no override is set</p>
          */
         @JsonSetter(value = "primary_key_override", nulls = Nulls.SKIP)
         public Builder primaryKeyOverride(Optional<Boolean> primaryKeyOverride) {
@@ -329,7 +355,7 @@ public final class SchemaField {
         }
 
         /**
-         * <p>The type of the field from the remote system.</p>
+         * <p>The type of the field from the remote system</p>
          */
         @JsonSetter(value = "remote_type", nulls = Nulls.SKIP)
         public Builder remoteType(Optional<String> remoteType) {
@@ -343,7 +369,7 @@ public final class SchemaField {
         }
 
         /**
-         * <p>Whether the source system reports this field as part of the schema's primary key.</p>
+         * <p>Whether the source system reports this field as part of the schema's primary key</p>
          */
         @JsonSetter(value = "source_primary_key", nulls = Nulls.SKIP)
         public Builder sourcePrimaryKey(Optional<Boolean> sourcePrimaryKey) {
@@ -356,6 +382,9 @@ public final class SchemaField {
             return this;
         }
 
+        /**
+         * <p>The type classification for the field</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<UtilFieldType> type) {
             this.type = type;
@@ -367,6 +396,9 @@ public final class SchemaField {
             return this;
         }
 
+        /**
+         * <p>The type specification for the field</p>
+         */
         @JsonSetter(value = "type_spec", nulls = Nulls.SKIP)
         public Builder typeSpec(Optional<TypesType> typeSpec) {
             this.typeSpec = typeSpec;
@@ -379,7 +411,7 @@ public final class SchemaField {
         }
 
         /**
-         * <p>True when the field's effective definition came from a user override.</p>
+         * <p>True when the field's effective definition came from a user override</p>
          */
         @JsonSetter(value = "user_managed", nulls = Nulls.SKIP)
         public Builder userManaged(Optional<Boolean> userManaged) {
@@ -392,6 +424,9 @@ public final class SchemaField {
             return this;
         }
 
+        /**
+         * <p>Allowed values for the field</p>
+         */
         @JsonSetter(value = "values", nulls = Nulls.SKIP)
         public Builder values(Optional<List<PickValue>> values) {
             this.values = values;
@@ -418,6 +453,25 @@ public final class SchemaField {
                     userManaged,
                     values,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("association")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("is_primary_key")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("path")
+                    || key.equalsIgnoreCase("primary_key_override")
+                    || key.equalsIgnoreCase("remote_type")
+                    || key.equalsIgnoreCase("source_primary_key")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("type_spec")
+                    || key.equalsIgnoreCase("user_managed")
+                    || key.equalsIgnoreCase("values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

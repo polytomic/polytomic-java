@@ -53,7 +53,7 @@ public final class UpdateOrganizationRequestSchema {
     }
 
     /**
-     * @return OIDC client ID issued by the identity provider.
+     * @return OIDC client ID issued by the identity provider
      */
     @JsonProperty("client_id")
     public Optional<String> getClientId() {
@@ -69,7 +69,7 @@ public final class UpdateOrganizationRequestSchema {
     }
 
     /**
-     * @return OIDC issuer URL for organizations using OpenID Connect single sign-on.
+     * @return OIDC issuer URL for organizations using OpenID Connect single sign-on
      */
     @JsonProperty("issuer")
     public Optional<String> getIssuer() {
@@ -85,7 +85,7 @@ public final class UpdateOrganizationRequestSchema {
     }
 
     /**
-     * @return Email domain used to match users to this organization during SSO sign-in.
+     * @return Email domain used to match users to this organization during SSO sign-in
      */
     @JsonProperty("sso_domain")
     public Optional<String> getSsoDomain() {
@@ -93,7 +93,7 @@ public final class UpdateOrganizationRequestSchema {
     }
 
     /**
-     * @return WorkOS organization identifier linking this organization to its SAML/SSO configuration.
+     * @return WorkOS organization identifier linking this organization to its SAML/SSO configuration
      */
     @JsonProperty("sso_org_id")
     public Optional<String> getSsoOrgId() {
@@ -151,7 +151,7 @@ public final class UpdateOrganizationRequestSchema {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>OIDC client ID issued by the identity provider.</p>
+         * <p>OIDC client ID issued by the identity provider</p>
          */
         _FinalStage clientId(Optional<String> clientId);
 
@@ -165,21 +165,21 @@ public final class UpdateOrganizationRequestSchema {
         _FinalStage clientSecret(String clientSecret);
 
         /**
-         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on</p>
          */
         _FinalStage issuer(Optional<String> issuer);
 
         _FinalStage issuer(String issuer);
 
         /**
-         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         * <p>Email domain used to match users to this organization during SSO sign-in</p>
          */
         _FinalStage ssoDomain(Optional<String> ssoDomain);
 
         _FinalStage ssoDomain(String ssoDomain);
 
         /**
-         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration</p>
          */
         _FinalStage ssoOrgId(Optional<String> ssoOrgId);
 
@@ -200,7 +200,6 @@ public final class UpdateOrganizationRequestSchema {
 
         private Optional<String> clientId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -228,7 +227,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -238,7 +237,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration</p>
          */
         @java.lang.Override
         @JsonSetter(value = "sso_org_id", nulls = Nulls.SKIP)
@@ -248,7 +247,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         * <p>Email domain used to match users to this organization during SSO sign-in</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -258,7 +257,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         * <p>Email domain used to match users to this organization during SSO sign-in</p>
          */
         @java.lang.Override
         @JsonSetter(value = "sso_domain", nulls = Nulls.SKIP)
@@ -268,7 +267,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -278,7 +277,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on</p>
          */
         @java.lang.Override
         @JsonSetter(value = "issuer", nulls = Nulls.SKIP)
@@ -308,7 +307,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>OIDC client ID issued by the identity provider.</p>
+         * <p>OIDC client ID issued by the identity provider</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -318,7 +317,7 @@ public final class UpdateOrganizationRequestSchema {
         }
 
         /**
-         * <p>OIDC client ID issued by the identity provider.</p>
+         * <p>OIDC client ID issued by the identity provider</p>
          */
         @java.lang.Override
         @JsonSetter(value = "client_id", nulls = Nulls.SKIP)
@@ -331,6 +330,19 @@ public final class UpdateOrganizationRequestSchema {
         public UpdateOrganizationRequestSchema build() {
             return new UpdateOrganizationRequestSchema(
                     clientId, clientSecret, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("client_id")
+                    || key.equalsIgnoreCase("client_secret")
+                    || key.equalsIgnoreCase("issuer")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("sso_domain")
+                    || key.equalsIgnoreCase("sso_org_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

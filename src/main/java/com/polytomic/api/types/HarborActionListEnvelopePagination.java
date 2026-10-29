@@ -30,6 +30,9 @@ public final class HarborActionListEnvelopePagination {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Token for the next page
+     */
     @JsonProperty("next_page_token")
     public Optional<String> getNextPageToken() {
         return nextPageToken;
@@ -69,7 +72,6 @@ public final class HarborActionListEnvelopePagination {
     public static final class Builder {
         private Optional<String> nextPageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -79,6 +81,9 @@ public final class HarborActionListEnvelopePagination {
             return this;
         }
 
+        /**
+         * <p>Token for the next page</p>
+         */
         @JsonSetter(value = "next_page_token", nulls = Nulls.SKIP)
         public Builder nextPageToken(Optional<String> nextPageToken) {
             this.nextPageToken = nextPageToken;
@@ -92,6 +97,14 @@ public final class HarborActionListEnvelopePagination {
 
         public HarborActionListEnvelopePagination build() {
             return new HarborActionListEnvelopePagination(nextPageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("next_page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

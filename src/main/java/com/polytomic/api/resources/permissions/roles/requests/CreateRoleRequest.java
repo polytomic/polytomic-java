@@ -38,6 +38,9 @@ public final class CreateRoleRequest {
         return name;
     }
 
+    /**
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
@@ -85,6 +88,9 @@ public final class CreateRoleRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
@@ -96,7 +102,6 @@ public final class CreateRoleRequest {
 
         private Optional<String> organizationId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -115,12 +120,19 @@ public final class CreateRoleRequest {
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -131,6 +143,14 @@ public final class CreateRoleRequest {
         @java.lang.Override
         public CreateRoleRequest build() {
             return new CreateRoleRequest(name, organizationId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("name") || key.equalsIgnoreCase("organization_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

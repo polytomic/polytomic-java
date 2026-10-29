@@ -47,26 +47,41 @@ public final class BulkField {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether this field is synced. Primary-key fields are always enabled while their schema is enabled, and a false value for them is ignored.
+     */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
     }
 
+    /**
+     * @return Source field ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Whether the field's values are written to the destination as SHA-256 hashes
+     */
     @JsonProperty("obfuscated")
     public Optional<Boolean> getObfuscated() {
         return obfuscated;
     }
 
+    /**
+     * @return Name of the field at the destination. This value is computed and ignored on input; set user_output_name to rename the field.
+     */
     @JsonProperty("output_name")
     public Optional<String> getOutputName() {
         return outputName;
     }
 
+    /**
+     * @return User-specified override for the field's destination name
+     */
     @JsonProperty("user_output_name")
     public Optional<String> getUserOutputName() {
         return userOutputName;
@@ -117,7 +132,6 @@ public final class BulkField {
 
         private Optional<String> userOutputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -131,6 +145,9 @@ public final class BulkField {
             return this;
         }
 
+        /**
+         * <p>Whether this field is synced. Primary-key fields are always enabled while their schema is enabled, and a false value for them is ignored.</p>
+         */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
             this.enabled = enabled;
@@ -142,6 +159,9 @@ public final class BulkField {
             return this;
         }
 
+        /**
+         * <p>Source field ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -153,6 +173,9 @@ public final class BulkField {
             return this;
         }
 
+        /**
+         * <p>Whether the field's values are written to the destination as SHA-256 hashes</p>
+         */
         @JsonSetter(value = "obfuscated", nulls = Nulls.SKIP)
         public Builder obfuscated(Optional<Boolean> obfuscated) {
             this.obfuscated = obfuscated;
@@ -164,6 +187,9 @@ public final class BulkField {
             return this;
         }
 
+        /**
+         * <p>Name of the field at the destination. This value is computed and ignored on input; set user_output_name to rename the field.</p>
+         */
         @JsonSetter(value = "output_name", nulls = Nulls.SKIP)
         public Builder outputName(Optional<String> outputName) {
             this.outputName = outputName;
@@ -175,6 +201,9 @@ public final class BulkField {
             return this;
         }
 
+        /**
+         * <p>User-specified override for the field's destination name</p>
+         */
         @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
         public Builder userOutputName(Optional<String> userOutputName) {
             this.userOutputName = userOutputName;
@@ -188,6 +217,18 @@ public final class BulkField {
 
         public BulkField build() {
             return new BulkField(enabled, id, obfuscated, outputName, userOutputName, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("obfuscated")
+                    || key.equalsIgnoreCase("output_name")
+                    || key.equalsIgnoreCase("user_output_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

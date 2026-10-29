@@ -30,6 +30,9 @@ public final class DeletedHarborContextEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The deleted context document
+     */
     @JsonProperty("data")
     public Optional<DeletedHarborContextEnvelopeData> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class DeletedHarborContextEnvelope {
     public static final class Builder {
         private Optional<DeletedHarborContextEnvelopeData> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class DeletedHarborContextEnvelope {
             return this;
         }
 
+        /**
+         * <p>The deleted context document</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<DeletedHarborContextEnvelopeData> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class DeletedHarborContextEnvelope {
 
         public DeletedHarborContextEnvelope build() {
             return new DeletedHarborContextEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

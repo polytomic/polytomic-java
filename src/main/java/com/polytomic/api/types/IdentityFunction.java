@@ -41,7 +41,7 @@ public final class IdentityFunction {
     }
 
     /**
-     * @return Human-readable label for the identity function.
+     * @return Human-readable label for the identity function
      */
     @JsonProperty("label")
     public Optional<String> getLabel() {
@@ -83,7 +83,6 @@ public final class IdentityFunction {
 
         private Optional<String> label = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -109,7 +108,7 @@ public final class IdentityFunction {
         }
 
         /**
-         * <p>Human-readable label for the identity function.</p>
+         * <p>Human-readable label for the identity function</p>
          */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
@@ -124,6 +123,14 @@ public final class IdentityFunction {
 
         public IdentityFunction build() {
             return new IdentityFunction(id, label, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id") || key.equalsIgnoreCase("label")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

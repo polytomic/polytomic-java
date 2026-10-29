@@ -162,7 +162,6 @@ public final class Webhook {
 
         private Optional<String> secret = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -278,6 +277,21 @@ public final class Webhook {
                     organizationId,
                     secret,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("disabled")
+                    || key.equalsIgnoreCase("disabled_at")
+                    || key.equalsIgnoreCase("disabled_reason")
+                    || key.equalsIgnoreCase("endpoint")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("secret")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -36,11 +36,17 @@ public final class TargetObjectsResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Target objects available on the connection
+     */
     @JsonProperty("data")
     public Optional<List<TargetObject>> getData() {
         return data;
     }
 
+    /**
+     * @return The target creation properties
+     */
     @JsonProperty("target_creation")
     public Optional<TargetCreator> getTargetCreation() {
         return targetCreation;
@@ -81,7 +87,6 @@ public final class TargetObjectsResponseEnvelope {
 
         private Optional<TargetCreator> targetCreation = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class TargetObjectsResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Target objects available on the connection</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<TargetObject>> data) {
             this.data = data;
@@ -103,6 +111,9 @@ public final class TargetObjectsResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The target creation properties</p>
+         */
         @JsonSetter(value = "target_creation", nulls = Nulls.SKIP)
         public Builder targetCreation(Optional<TargetCreator> targetCreation) {
             this.targetCreation = targetCreation;
@@ -116,6 +127,14 @@ public final class TargetObjectsResponseEnvelope {
 
         public TargetObjectsResponseEnvelope build() {
             return new TargetObjectsResponseEnvelope(data, targetCreation, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("target_creation")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

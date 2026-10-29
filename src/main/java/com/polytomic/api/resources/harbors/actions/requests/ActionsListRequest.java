@@ -48,11 +48,17 @@ public final class ActionsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
@@ -74,6 +80,9 @@ public final class ActionsListRequest {
         return pageToken;
     }
 
+    /**
+     * @return Maximum number of actions to return
+     */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;
@@ -125,7 +134,6 @@ public final class ActionsListRequest {
 
         private Optional<Integer> limit = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -139,6 +147,9 @@ public final class ActionsListRequest {
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
             return this;
@@ -149,6 +160,9 @@ public final class ActionsListRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -187,6 +201,9 @@ public final class ActionsListRequest {
             return this;
         }
 
+        /**
+         * <p>Maximum number of actions to return</p>
+         */
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public Builder limit(Optional<Integer> limit) {
             this.limit = limit;
@@ -201,6 +218,14 @@ public final class ActionsListRequest {
         public ActionsListRequest build() {
             return new ActionsListRequest(
                     polytomicHarborSession, polytomicActivityRequestId, search, pageToken, limit, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("search") || key.equalsIgnoreCase("page_token") || key.equalsIgnoreCase("limit")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

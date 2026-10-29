@@ -52,7 +52,7 @@ public final class EntityResponse {
     }
 
     /**
-     * @return Canonical REST path for the resolved resource, suitable for fetching it directly.
+     * @return Canonical REST path for the resolved resource, suitable for fetching it directly
      */
     @JsonProperty("canonical_path")
     public Optional<String> getCanonicalPath() {
@@ -60,7 +60,7 @@ public final class EntityResponse {
     }
 
     /**
-     * @return Lightweight additional context about the resolved entity, such as bulk sync schema_ids.
+     * @return Lightweight additional context about the resolved entity, such as bulk sync schema_ids
      */
     @JsonProperty("context")
     public Optional<Map<String, Object>> getContext() {
@@ -68,7 +68,7 @@ public final class EntityResponse {
     }
 
     /**
-     * @return UUID that was resolved.
+     * @return UUID that was resolved
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -148,7 +148,6 @@ public final class EntityResponse {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -164,7 +163,7 @@ public final class EntityResponse {
         }
 
         /**
-         * <p>Canonical REST path for the resolved resource, suitable for fetching it directly.</p>
+         * <p>Canonical REST path for the resolved resource, suitable for fetching it directly</p>
          */
         @JsonSetter(value = "canonical_path", nulls = Nulls.SKIP)
         public Builder canonicalPath(Optional<String> canonicalPath) {
@@ -178,7 +177,7 @@ public final class EntityResponse {
         }
 
         /**
-         * <p>Lightweight additional context about the resolved entity, such as bulk sync schema_ids.</p>
+         * <p>Lightweight additional context about the resolved entity, such as bulk sync schema_ids</p>
          */
         @JsonSetter(value = "context", nulls = Nulls.SKIP)
         public Builder context(Optional<Map<String, Object>> context) {
@@ -192,7 +191,7 @@ public final class EntityResponse {
         }
 
         /**
-         * <p>UUID that was resolved.</p>
+         * <p>UUID that was resolved</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -250,6 +249,19 @@ public final class EntityResponse {
         public EntityResponse build() {
             return new EntityResponse(
                     canonicalPath, context, id, organizationId, relationships, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("canonical_path")
+                    || key.equalsIgnoreCase("context")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("relationships")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

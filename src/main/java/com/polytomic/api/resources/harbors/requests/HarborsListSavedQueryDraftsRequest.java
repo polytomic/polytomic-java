@@ -34,7 +34,7 @@ public final class HarborsListSavedQueryDraftsRequest {
     }
 
     /**
-     * @return Maximum number of saved-query drafts to return.
+     * @return Maximum number of saved-query drafts to return
      */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
@@ -42,7 +42,7 @@ public final class HarborsListSavedQueryDraftsRequest {
     }
 
     /**
-     * @return Opaque pagination cursor returned by the previous request.
+     * @return Opaque pagination cursor returned by the previous request
      */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
@@ -85,7 +85,6 @@ public final class HarborsListSavedQueryDraftsRequest {
 
         private Optional<String> pageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -97,7 +96,7 @@ public final class HarborsListSavedQueryDraftsRequest {
         }
 
         /**
-         * <p>Maximum number of saved-query drafts to return.</p>
+         * <p>Maximum number of saved-query drafts to return</p>
          */
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public Builder limit(Optional<Integer> limit) {
@@ -111,7 +110,7 @@ public final class HarborsListSavedQueryDraftsRequest {
         }
 
         /**
-         * <p>Opaque pagination cursor returned by the previous request.</p>
+         * <p>Opaque pagination cursor returned by the previous request</p>
          */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
@@ -126,6 +125,14 @@ public final class HarborsListSavedQueryDraftsRequest {
 
         public HarborsListSavedQueryDraftsRequest build() {
             return new HarborsListSavedQueryDraftsRequest(limit, pageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -77,7 +77,7 @@ public final class CreateConnectionResponseSchema {
     }
 
     /**
-     * @return Code to enter in order to complete connection authentication.
+     * @return Code to enter in order to complete connection authentication
      */
     @JsonProperty("auth_code")
     public Optional<String> getAuthCode() {
@@ -85,7 +85,7 @@ public final class CreateConnectionResponseSchema {
     }
 
     /**
-     * @return URL to visit to complete connection authentication.
+     * @return URL to visit to complete connection authentication
      */
     @JsonProperty("auth_url")
     public Optional<String> getAuthUrl() {
@@ -98,7 +98,7 @@ public final class CreateConnectionResponseSchema {
     }
 
     /**
-     * @return Interval for connection health checking.
+     * @return Interval for connection health checking
      */
     @JsonProperty("healthcheck_interval")
     public Optional<String> getHealthcheckInterval() {
@@ -223,7 +223,6 @@ public final class CreateConnectionResponseSchema {
 
         private Optional<ConnectionTypeSchema> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -245,7 +244,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         /**
-         * <p>Code to enter in order to complete connection authentication.</p>
+         * <p>Code to enter in order to complete connection authentication</p>
          */
         @JsonSetter(value = "auth_code", nulls = Nulls.SKIP)
         public Builder authCode(Optional<String> authCode) {
@@ -259,7 +258,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         /**
-         * <p>URL to visit to complete connection authentication.</p>
+         * <p>URL to visit to complete connection authentication</p>
          */
         @JsonSetter(value = "auth_url", nulls = Nulls.SKIP)
         public Builder authUrl(Optional<String> authUrl) {
@@ -284,7 +283,7 @@ public final class CreateConnectionResponseSchema {
         }
 
         /**
-         * <p>Interval for connection health checking.</p>
+         * <p>Interval for connection health checking</p>
          */
         @JsonSetter(value = "healthcheck_interval", nulls = Nulls.SKIP)
         public Builder healthcheckInterval(Optional<String> healthcheckInterval) {
@@ -400,6 +399,25 @@ public final class CreateConnectionResponseSchema {
                     statusError,
                     type,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("auth_code")
+                    || key.equalsIgnoreCase("auth_url")
+                    || key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("healthcheck_interval")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("saved")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("status_error")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

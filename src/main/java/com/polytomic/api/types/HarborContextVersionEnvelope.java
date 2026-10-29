@@ -30,6 +30,9 @@ public final class HarborContextVersionEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The context version
+     */
     @JsonProperty("data")
     public Optional<HarborContextVersionResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class HarborContextVersionEnvelope {
     public static final class Builder {
         private Optional<HarborContextVersionResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class HarborContextVersionEnvelope {
             return this;
         }
 
+        /**
+         * <p>The context version</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<HarborContextVersionResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class HarborContextVersionEnvelope {
 
         public HarborContextVersionEnvelope build() {
             return new HarborContextVersionEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

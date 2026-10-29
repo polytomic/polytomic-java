@@ -30,7 +30,7 @@ public final class ConnectCardRequest {
 
     private final Optional<String> organizationId;
 
-    private final String redirectUrl;
+    private final Optional<String> redirectUrl;
 
     private final Optional<Integer> ttl;
 
@@ -47,7 +47,7 @@ public final class ConnectCardRequest {
             Optional<Boolean> dark,
             String name,
             Optional<String> organizationId,
-            String redirectUrl,
+            Optional<String> redirectUrl,
             Optional<Integer> ttl,
             Optional<String> type,
             Optional<Boolean> useOrganizationName,
@@ -66,7 +66,7 @@ public final class ConnectCardRequest {
     }
 
     /**
-     * @return The id of an existing connection to update.
+     * @return The id of an existing connection to update
      */
     @JsonProperty("connection")
     public Optional<String> getConnection() {
@@ -74,7 +74,7 @@ public final class ConnectCardRequest {
     }
 
     /**
-     * @return Whether to use the dark theme for the Connect modal.
+     * @return Whether to use the dark theme for the Connect modal
      */
     @JsonProperty("dark")
     public Optional<Boolean> getDark() {
@@ -89,16 +89,19 @@ public final class ConnectCardRequest {
         return name;
     }
 
+    /**
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
     /**
-     * @return URL to redirect to after connection is created.
+     * @return URL to redirect to after the hosted Connect flow finishes. Required for hosted Connect; omit it to mint a session for the embedded form (@polytomic/connect-react).
      */
     @JsonProperty("redirect_url")
-    public String getRedirectUrl() {
+    public Optional<String> getRedirectUrl() {
         return redirectUrl;
     }
 
@@ -111,7 +114,7 @@ public final class ConnectCardRequest {
     }
 
     /**
-     * @return Connection type to create.
+     * @return Connection type to create
      */
     @JsonProperty("type")
     public Optional<String> getType() {
@@ -184,16 +187,9 @@ public final class ConnectCardRequest {
         /**
          * <p>Name of the new connection. Must be unique per organization.</p>
          */
-        RedirectUrlStage name(@NotNull String name);
+        _FinalStage name(@NotNull String name);
 
         Builder from(ConnectCardRequest other);
-    }
-
-    public interface RedirectUrlStage {
-        /**
-         * <p>URL to redirect to after connection is created.</p>
-         */
-        _FinalStage redirectUrl(@NotNull String redirectUrl);
     }
 
     public interface _FinalStage {
@@ -204,22 +200,32 @@ public final class ConnectCardRequest {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>The id of an existing connection to update.</p>
+         * <p>The id of an existing connection to update</p>
          */
         _FinalStage connection(Optional<String> connection);
 
         _FinalStage connection(String connection);
 
         /**
-         * <p>Whether to use the dark theme for the Connect modal.</p>
+         * <p>Whether to use the dark theme for the Connect modal</p>
          */
         _FinalStage dark(Optional<Boolean> dark);
 
         _FinalStage dark(Boolean dark);
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
+
+        /**
+         * <p>URL to redirect to after the hosted Connect flow finishes. Required for hosted Connect; omit it to mint a session for the embedded form (@polytomic/connect-react).</p>
+         */
+        _FinalStage redirectUrl(Optional<String> redirectUrl);
+
+        _FinalStage redirectUrl(String redirectUrl);
 
         /**
          * <p>Connect session lifetime in seconds. Defaults to 300 and cannot exceed 604800.</p>
@@ -229,7 +235,7 @@ public final class ConnectCardRequest {
         _FinalStage ttl(Integer ttl);
 
         /**
-         * <p>Connection type to create.</p>
+         * <p>Connection type to create</p>
          */
         _FinalStage type(Optional<String> type);
 
@@ -251,10 +257,8 @@ public final class ConnectCardRequest {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements NameStage, RedirectUrlStage, _FinalStage {
+    public static final class Builder implements NameStage, _FinalStage {
         private String name;
-
-        private String redirectUrl;
 
         private Optional<List<String>> whitelist = Optional.empty();
 
@@ -264,13 +268,14 @@ public final class ConnectCardRequest {
 
         private Optional<Integer> ttl = Optional.empty();
 
+        private Optional<String> redirectUrl = Optional.empty();
+
         private Optional<String> organizationId = Optional.empty();
 
         private Optional<Boolean> dark = Optional.empty();
 
         private Optional<String> connection = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -295,19 +300,8 @@ public final class ConnectCardRequest {
          */
         @java.lang.Override
         @JsonSetter("name")
-        public RedirectUrlStage name(@NotNull String name) {
+        public _FinalStage name(@NotNull String name) {
             this.name = name;
-            return this;
-        }
-
-        /**
-         * <p>URL to redirect to after connection is created.</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
-        @java.lang.Override
-        @JsonSetter("redirect_url")
-        public _FinalStage redirectUrl(@NotNull String redirectUrl) {
-            this.redirectUrl = redirectUrl;
             return this;
         }
 
@@ -352,7 +346,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>Connection type to create.</p>
+         * <p>Connection type to create</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -362,7 +356,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>Connection type to create.</p>
+         * <p>Connection type to create</p>
          */
         @java.lang.Override
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
@@ -391,12 +385,39 @@ public final class ConnectCardRequest {
             return this;
         }
 
+        /**
+         * <p>URL to redirect to after the hosted Connect flow finishes. Required for hosted Connect; omit it to mint a session for the embedded form (@polytomic/connect-react).</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage redirectUrl(String redirectUrl) {
+            this.redirectUrl = Optional.ofNullable(redirectUrl);
+            return this;
+        }
+
+        /**
+         * <p>URL to redirect to after the hosted Connect flow finishes. Required for hosted Connect; omit it to mint a session for the embedded form (@polytomic/connect-react).</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "redirect_url", nulls = Nulls.SKIP)
+        public _FinalStage redirectUrl(Optional<String> redirectUrl) {
+            this.redirectUrl = redirectUrl;
+            return this;
+        }
+
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -405,7 +426,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>Whether to use the dark theme for the Connect modal.</p>
+         * <p>Whether to use the dark theme for the Connect modal</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -415,7 +436,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>Whether to use the dark theme for the Connect modal.</p>
+         * <p>Whether to use the dark theme for the Connect modal</p>
          */
         @java.lang.Override
         @JsonSetter(value = "dark", nulls = Nulls.SKIP)
@@ -425,7 +446,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>The id of an existing connection to update.</p>
+         * <p>The id of an existing connection to update</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -435,7 +456,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>The id of an existing connection to update.</p>
+         * <p>The id of an existing connection to update</p>
          */
         @java.lang.Override
         @JsonSetter(value = "connection", nulls = Nulls.SKIP)
@@ -457,6 +478,22 @@ public final class ConnectCardRequest {
                     useOrganizationName,
                     whitelist,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection")
+                    || key.equalsIgnoreCase("dark")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("redirect_url")
+                    || key.equalsIgnoreCase("ttl")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("use_organization_name")
+                    || key.equalsIgnoreCase("whitelist")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

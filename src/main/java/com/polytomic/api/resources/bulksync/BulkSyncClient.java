@@ -9,6 +9,7 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.errorhandling.ErrorHandlingClient;
 import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
+import com.polytomic.api.resources.bulksync.requests.ActivateBulkSyncInput;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
@@ -19,7 +20,6 @@ import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.schedules.SchedulesClient;
 import com.polytomic.api.resources.bulksync.schemas.SchemasClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.BulkSyncDestEnvelope;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
 import com.polytomic.api.types.BulkSyncListEnvelope;
@@ -268,7 +268,8 @@ public class BulkSyncClient {
      * Updates an existing bulk sync's top-level configuration.
      * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
      * configuration. Every field in the request body is written to the sync; any
-     * field you omit is cleared or reset to its default value.</p>
+     * field you omit is cleared or reset to its default value. An empty or omitted
+     * <code>policies</code> list leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
      * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
@@ -307,7 +308,8 @@ public class BulkSyncClient {
      * Updates an existing bulk sync's top-level configuration.
      * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
      * configuration. Every field in the request body is written to the sync; any
-     * field you omit is cleared or reset to its default value.</p>
+     * field you omit is cleared or reset to its default value. An empty or omitted
+     * <code>policies</code> list leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
      * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
@@ -407,7 +409,7 @@ public class BulkSyncClient {
      * <a href="../../../../../api-reference/bulk-sync/cancel"><code>POST /api/bulk/syncs/{id}/cancel</code></a>.</p>
      * </blockquote>
      */
-    public ActivateSyncEnvelope activate(String id, ActivateSyncInput request) {
+    public ActivateSyncEnvelope activate(String id, ActivateBulkSyncInput request) {
         return this.rawClient.activate(id, request).body();
     }
 
@@ -424,7 +426,7 @@ public class BulkSyncClient {
      * </blockquote>
      */
     public ActivateSyncEnvelope activate(
-            String id, ActivateSyncInput request, IdempotentRequestOptions requestOptions) {
+            String id, ActivateBulkSyncInput request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.activate(id, request, requestOptions).body();
     }
 

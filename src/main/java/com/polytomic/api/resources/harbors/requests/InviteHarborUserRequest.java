@@ -29,7 +29,7 @@ public final class InviteHarborUserRequest {
     }
 
     /**
-     * @return Email address used to invite the Harbor-only user.
+     * @return Email address used to invite the Harbor-only user
      */
     @JsonProperty("email")
     public String getEmail() {
@@ -67,7 +67,7 @@ public final class InviteHarborUserRequest {
 
     public interface EmailStage {
         /**
-         * <p>Email address used to invite the Harbor-only user.</p>
+         * <p>Email address used to invite the Harbor-only user</p>
          */
         _FinalStage email(@NotNull String email);
 
@@ -86,7 +86,6 @@ public final class InviteHarborUserRequest {
     public static final class Builder implements EmailStage, _FinalStage {
         private String email;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -98,7 +97,7 @@ public final class InviteHarborUserRequest {
         }
 
         /**
-         * <p>Email address used to invite the Harbor-only user.</p>
+         * <p>Email address used to invite the Harbor-only user</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -111,6 +110,14 @@ public final class InviteHarborUserRequest {
         @java.lang.Override
         public InviteHarborUserRequest build() {
             return new InviteHarborUserRequest(email, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("email")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

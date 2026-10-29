@@ -30,6 +30,9 @@ public final class RecordLoggingSettingsEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The organization record logging settings
+     */
     @JsonProperty("data")
     public Optional<RecordLoggingSettingsResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class RecordLoggingSettingsEnvelope {
     public static final class Builder {
         private Optional<RecordLoggingSettingsResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class RecordLoggingSettingsEnvelope {
             return this;
         }
 
+        /**
+         * <p>The organization record logging settings</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<RecordLoggingSettingsResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class RecordLoggingSettingsEnvelope {
 
         public RecordLoggingSettingsEnvelope build() {
             return new RecordLoggingSettingsEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

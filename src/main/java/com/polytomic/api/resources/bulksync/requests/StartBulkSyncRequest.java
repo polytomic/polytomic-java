@@ -46,11 +46,17 @@ public final class StartBulkSyncRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Selective fetch mode. Controls whether the execution runs a full fetch, only incremental fields, or only non-incremental fields.
+     */
     @JsonProperty("fetch_mode")
     public Optional<BulkFetchMode> getFetchMode() {
         return fetchMode;
     }
 
+    /**
+     * @return Controls how the destination is handled during a resync. Valid values: refetch (retain destination data), resync (truncate destination data), rebuild (drop and recreate destination tables).
+     */
     @JsonProperty("resync_mode")
     public Optional<BulkResyncMode> getResyncMode() {
         return resyncMode;
@@ -114,7 +120,6 @@ public final class StartBulkSyncRequest {
 
         private Optional<Boolean> test = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -127,6 +132,9 @@ public final class StartBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Selective fetch mode. Controls whether the execution runs a full fetch, only incremental fields, or only non-incremental fields.</p>
+         */
         @JsonSetter(value = "fetch_mode", nulls = Nulls.SKIP)
         public Builder fetchMode(Optional<BulkFetchMode> fetchMode) {
             this.fetchMode = fetchMode;
@@ -138,6 +146,9 @@ public final class StartBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Controls how the destination is handled during a resync. Valid values: refetch (retain destination data), resync (truncate destination data), rebuild (drop and recreate destination tables).</p>
+         */
         @JsonSetter(value = "resync_mode", nulls = Nulls.SKIP)
         public Builder resyncMode(Optional<BulkResyncMode> resyncMode) {
             this.resyncMode = resyncMode;
@@ -179,6 +190,17 @@ public final class StartBulkSyncRequest {
 
         public StartBulkSyncRequest build() {
             return new StartBulkSyncRequest(fetchMode, resyncMode, schemas, test, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("fetch_mode")
+                    || key.equalsIgnoreCase("resync_mode")
+                    || key.equalsIgnoreCase("schemas")
+                    || key.equalsIgnoreCase("test")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -38,7 +38,7 @@ public final class HarboractivityapiHarborActivityEvent {
 
     private final Optional<HarboractivityapiHarborActivityIdentitySnapshot> credential;
 
-    private final Optional<String> eventType;
+    private final Optional<HarboractivityEventType> eventType;
 
     private final Optional<String> harborId;
 
@@ -52,11 +52,11 @@ public final class HarboractivityapiHarborActivityEvent {
 
     private final Optional<String> operationId;
 
-    private final Optional<String> outcome;
+    private final Optional<HarboractivityOutcome> outcome;
 
     private final Optional<HarboractivityapiHarborActivityIdentitySnapshot> profile;
 
-    private final Optional<String> provenance;
+    private final Optional<HarboractivityProvenance> provenance;
 
     private final Optional<HarboractivityapiHarborActivityQuerySource> querySource;
 
@@ -77,16 +77,16 @@ public final class HarboractivityapiHarborActivityEvent {
             Optional<String> contextId,
             Optional<String> contextRevisionId,
             Optional<HarboractivityapiHarborActivityIdentitySnapshot> credential,
-            Optional<String> eventType,
+            Optional<HarboractivityEventType> eventType,
             Optional<String> harborId,
             Optional<String> id,
             Optional<List<HarboractivityapiHarborActivityEvent>> lifecycleEvents,
             Optional<HarboractivityapiHarborActivityMetadata> metadata,
             Optional<OffsetDateTime> occurredAt,
             Optional<String> operationId,
-            Optional<String> outcome,
+            Optional<HarboractivityOutcome> outcome,
             Optional<HarboractivityapiHarborActivityIdentitySnapshot> profile,
-            Optional<String> provenance,
+            Optional<HarboractivityProvenance> provenance,
             Optional<HarboractivityapiHarborActivityQuerySource> querySource,
             Optional<OffsetDateTime> recordedAt,
             Optional<String> sessionId,
@@ -117,56 +117,89 @@ public final class HarboractivityapiHarborActivityEvent {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Actor that performed the operation
+     */
     @JsonProperty("actor")
     public Optional<HarboractivityapiHarborActivityActorSnapshot> getActor() {
         return actor;
     }
 
+    /**
+     * @return Query attempt ID
+     */
     @JsonProperty("attempt_id")
     public Optional<String> getAttemptId() {
         return attemptId;
     }
 
+    /**
+     * @return MCP-observed client name of the event's session
+     */
     @JsonProperty("client_name")
     public Optional<String> getClientName() {
         return clientName;
     }
 
+    /**
+     * @return MCP-observed client version of the event's session
+     */
     @JsonProperty("client_version")
     public Optional<String> getClientVersion() {
         return clientVersion;
     }
 
+    /**
+     * @return Connection ID involved in the event
+     */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Context document ID involved in the event
+     */
     @JsonProperty("context_id")
     public Optional<String> getContextId() {
         return contextId;
     }
 
+    /**
+     * @return Context revision ID involved in the event
+     */
     @JsonProperty("context_revision_id")
     public Optional<String> getContextRevisionId() {
         return contextRevisionId;
     }
 
+    /**
+     * @return Harbor credential associated with the event
+     */
     @JsonProperty("credential")
     public Optional<HarboractivityapiHarborActivityIdentitySnapshot> getCredential() {
         return credential;
     }
 
+    /**
+     * @return Type of operation the event records
+     */
     @JsonProperty("event_type")
-    public Optional<String> getEventType() {
+    public Optional<HarboractivityEventType> getEventType() {
         return eventType;
     }
 
+    /**
+     * @return Harbor ID of the event
+     */
     @JsonProperty("harbor_id")
     public Optional<String> getHarborId() {
         return harborId;
     }
 
+    /**
+     * @return Activity event ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
@@ -177,51 +210,81 @@ public final class HarboractivityapiHarborActivityEvent {
         return lifecycleEvents;
     }
 
+    /**
+     * @return Event-specific details
+     */
     @JsonProperty("metadata")
     public Optional<HarboractivityapiHarborActivityMetadata> getMetadata() {
         return metadata;
     }
 
+    /**
+     * @return When the operation occurred
+     */
     @JsonProperty("occurred_at")
     public Optional<OffsetDateTime> getOccurredAt() {
         return occurredAt;
     }
 
+    /**
+     * @return Operation ID shared by the events of one query or action
+     */
     @JsonProperty("operation_id")
     public Optional<String> getOperationId() {
         return operationId;
     }
 
+    /**
+     * @return Outcome of the operation: succeeded, failed, denied, or unknown
+     */
     @JsonProperty("outcome")
-    public Optional<String> getOutcome() {
+    public Optional<HarboractivityOutcome> getOutcome() {
         return outcome;
     }
 
+    /**
+     * @return Harbor profile associated with the event
+     */
     @JsonProperty("profile")
     public Optional<HarboractivityapiHarborActivityIdentitySnapshot> getProfile() {
         return profile;
     }
 
+    /**
+     * @return How the event was attested: server_observed, service_attested, or client_asserted
+     */
     @JsonProperty("provenance")
-    public Optional<String> getProvenance() {
+    public Optional<HarboractivityProvenance> getProvenance() {
         return provenance;
     }
 
+    /**
+     * @return Source of the query, for query events
+     */
     @JsonProperty("query_source")
     public Optional<HarboractivityapiHarborActivityQuerySource> getQuerySource() {
         return querySource;
     }
 
+    /**
+     * @return When Polytomic recorded the event
+     */
     @JsonProperty("recorded_at")
     public Optional<OffsetDateTime> getRecordedAt() {
         return recordedAt;
     }
 
+    /**
+     * @return Harbor session ID of the event
+     */
     @JsonProperty("session_id")
     public Optional<String> getSessionId() {
         return sessionId;
     }
 
+    /**
+     * @return Resources involved in the event
+     */
     @JsonProperty("targets")
     public Optional<List<HarboractivityapiHarborActivityTarget>> getTargets() {
         return targets;
@@ -318,7 +381,7 @@ public final class HarboractivityapiHarborActivityEvent {
 
         private Optional<HarboractivityapiHarborActivityIdentitySnapshot> credential = Optional.empty();
 
-        private Optional<String> eventType = Optional.empty();
+        private Optional<HarboractivityEventType> eventType = Optional.empty();
 
         private Optional<String> harborId = Optional.empty();
 
@@ -332,11 +395,11 @@ public final class HarboractivityapiHarborActivityEvent {
 
         private Optional<String> operationId = Optional.empty();
 
-        private Optional<String> outcome = Optional.empty();
+        private Optional<HarboractivityOutcome> outcome = Optional.empty();
 
         private Optional<HarboractivityapiHarborActivityIdentitySnapshot> profile = Optional.empty();
 
-        private Optional<String> provenance = Optional.empty();
+        private Optional<HarboractivityProvenance> provenance = Optional.empty();
 
         private Optional<HarboractivityapiHarborActivityQuerySource> querySource = Optional.empty();
 
@@ -346,7 +409,6 @@ public final class HarboractivityapiHarborActivityEvent {
 
         private Optional<List<HarboractivityapiHarborActivityTarget>> targets = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -377,6 +439,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Actor that performed the operation</p>
+         */
         @JsonSetter(value = "actor", nulls = Nulls.SKIP)
         public Builder actor(Optional<HarboractivityapiHarborActivityActorSnapshot> actor) {
             this.actor = actor;
@@ -388,6 +453,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Query attempt ID</p>
+         */
         @JsonSetter(value = "attempt_id", nulls = Nulls.SKIP)
         public Builder attemptId(Optional<String> attemptId) {
             this.attemptId = attemptId;
@@ -399,6 +467,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>MCP-observed client name of the event's session</p>
+         */
         @JsonSetter(value = "client_name", nulls = Nulls.SKIP)
         public Builder clientName(Optional<String> clientName) {
             this.clientName = clientName;
@@ -410,6 +481,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>MCP-observed client version of the event's session</p>
+         */
         @JsonSetter(value = "client_version", nulls = Nulls.SKIP)
         public Builder clientVersion(Optional<String> clientVersion) {
             this.clientVersion = clientVersion;
@@ -421,6 +495,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Connection ID involved in the event</p>
+         */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
             this.connectionId = connectionId;
@@ -432,6 +509,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Context document ID involved in the event</p>
+         */
         @JsonSetter(value = "context_id", nulls = Nulls.SKIP)
         public Builder contextId(Optional<String> contextId) {
             this.contextId = contextId;
@@ -443,6 +523,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Context revision ID involved in the event</p>
+         */
         @JsonSetter(value = "context_revision_id", nulls = Nulls.SKIP)
         public Builder contextRevisionId(Optional<String> contextRevisionId) {
             this.contextRevisionId = contextRevisionId;
@@ -454,6 +537,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Harbor credential associated with the event</p>
+         */
         @JsonSetter(value = "credential", nulls = Nulls.SKIP)
         public Builder credential(Optional<HarboractivityapiHarborActivityIdentitySnapshot> credential) {
             this.credential = credential;
@@ -465,17 +551,23 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Type of operation the event records</p>
+         */
         @JsonSetter(value = "event_type", nulls = Nulls.SKIP)
-        public Builder eventType(Optional<String> eventType) {
+        public Builder eventType(Optional<HarboractivityEventType> eventType) {
             this.eventType = eventType;
             return this;
         }
 
-        public Builder eventType(String eventType) {
+        public Builder eventType(HarboractivityEventType eventType) {
             this.eventType = Optional.ofNullable(eventType);
             return this;
         }
 
+        /**
+         * <p>Harbor ID of the event</p>
+         */
         @JsonSetter(value = "harbor_id", nulls = Nulls.SKIP)
         public Builder harborId(Optional<String> harborId) {
             this.harborId = harborId;
@@ -487,6 +579,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Activity event ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -509,6 +604,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Event-specific details</p>
+         */
         @JsonSetter(value = "metadata", nulls = Nulls.SKIP)
         public Builder metadata(Optional<HarboractivityapiHarborActivityMetadata> metadata) {
             this.metadata = metadata;
@@ -520,6 +618,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>When the operation occurred</p>
+         */
         @JsonSetter(value = "occurred_at", nulls = Nulls.SKIP)
         public Builder occurredAt(Optional<OffsetDateTime> occurredAt) {
             this.occurredAt = occurredAt;
@@ -531,6 +632,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Operation ID shared by the events of one query or action</p>
+         */
         @JsonSetter(value = "operation_id", nulls = Nulls.SKIP)
         public Builder operationId(Optional<String> operationId) {
             this.operationId = operationId;
@@ -542,17 +646,23 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Outcome of the operation: succeeded, failed, denied, or unknown</p>
+         */
         @JsonSetter(value = "outcome", nulls = Nulls.SKIP)
-        public Builder outcome(Optional<String> outcome) {
+        public Builder outcome(Optional<HarboractivityOutcome> outcome) {
             this.outcome = outcome;
             return this;
         }
 
-        public Builder outcome(String outcome) {
+        public Builder outcome(HarboractivityOutcome outcome) {
             this.outcome = Optional.ofNullable(outcome);
             return this;
         }
 
+        /**
+         * <p>Harbor profile associated with the event</p>
+         */
         @JsonSetter(value = "profile", nulls = Nulls.SKIP)
         public Builder profile(Optional<HarboractivityapiHarborActivityIdentitySnapshot> profile) {
             this.profile = profile;
@@ -564,17 +674,23 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>How the event was attested: server_observed, service_attested, or client_asserted</p>
+         */
         @JsonSetter(value = "provenance", nulls = Nulls.SKIP)
-        public Builder provenance(Optional<String> provenance) {
+        public Builder provenance(Optional<HarboractivityProvenance> provenance) {
             this.provenance = provenance;
             return this;
         }
 
-        public Builder provenance(String provenance) {
+        public Builder provenance(HarboractivityProvenance provenance) {
             this.provenance = Optional.ofNullable(provenance);
             return this;
         }
 
+        /**
+         * <p>Source of the query, for query events</p>
+         */
         @JsonSetter(value = "query_source", nulls = Nulls.SKIP)
         public Builder querySource(Optional<HarboractivityapiHarborActivityQuerySource> querySource) {
             this.querySource = querySource;
@@ -586,6 +702,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>When Polytomic recorded the event</p>
+         */
         @JsonSetter(value = "recorded_at", nulls = Nulls.SKIP)
         public Builder recordedAt(Optional<OffsetDateTime> recordedAt) {
             this.recordedAt = recordedAt;
@@ -597,6 +716,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Harbor session ID of the event</p>
+         */
         @JsonSetter(value = "session_id", nulls = Nulls.SKIP)
         public Builder sessionId(Optional<String> sessionId) {
             this.sessionId = sessionId;
@@ -608,6 +730,9 @@ public final class HarboractivityapiHarborActivityEvent {
             return this;
         }
 
+        /**
+         * <p>Resources involved in the event</p>
+         */
         @JsonSetter(value = "targets", nulls = Nulls.SKIP)
         public Builder targets(Optional<List<HarboractivityapiHarborActivityTarget>> targets) {
             this.targets = targets;
@@ -644,6 +769,35 @@ public final class HarboractivityapiHarborActivityEvent {
                     sessionId,
                     targets,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("actor")
+                    || key.equalsIgnoreCase("attempt_id")
+                    || key.equalsIgnoreCase("client_name")
+                    || key.equalsIgnoreCase("client_version")
+                    || key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("context_id")
+                    || key.equalsIgnoreCase("context_revision_id")
+                    || key.equalsIgnoreCase("credential")
+                    || key.equalsIgnoreCase("event_type")
+                    || key.equalsIgnoreCase("harbor_id")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("lifecycle_events")
+                    || key.equalsIgnoreCase("metadata")
+                    || key.equalsIgnoreCase("occurred_at")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("outcome")
+                    || key.equalsIgnoreCase("profile")
+                    || key.equalsIgnoreCase("provenance")
+                    || key.equalsIgnoreCase("query_source")
+                    || key.equalsIgnoreCase("recorded_at")
+                    || key.equalsIgnoreCase("session_id")
+                    || key.equalsIgnoreCase("targets")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

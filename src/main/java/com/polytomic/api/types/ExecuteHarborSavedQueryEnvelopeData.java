@@ -77,7 +77,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
     }
 
     /**
-     * @return Error message if the query failed.
+     * @return Error message if the query failed
      */
     @JsonProperty("error")
     public Optional<String> getError() {
@@ -109,7 +109,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
     }
 
     /**
-     * @return The query results, returned as an array of objects.
+     * @return The query results, returned as an array of objects
      */
     @JsonProperty("results")
     public Optional<List<Map<String, Object>>> getResults() {
@@ -117,7 +117,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
     }
 
     /**
-     * @return Immutable published revision selected while processing this request, before execution acceptance.
+     * @return Immutable published revision selected while processing this request, before execution acceptance
      */
     @JsonProperty("revision_id")
     public Optional<String> getRevisionId() {
@@ -125,20 +125,23 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
     }
 
     /**
-     * @return Stable identifier of the executed saved query.
+     * @return Stable identifier of the executed saved query
      */
     @JsonProperty("saved_query_id")
     public Optional<String> getSavedQueryId() {
         return savedQueryId;
     }
 
+    /**
+     * @return Current query status. The terminal statuses are done, failed, and unknown. Unknown means execution started but its durable terminal result was lost or expired.
+     */
     @JsonProperty("status")
     public Optional<QueryStatus> getStatus() {
         return status;
     }
 
     /**
-     * @return Published version of the selected immutable revision.
+     * @return Published version of the selected immutable revision
      */
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
@@ -216,7 +219,6 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
 
         private Optional<Integer> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -250,7 +252,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
         }
 
         /**
-         * <p>Error message if the query failed.</p>
+         * <p>Error message if the query failed</p>
          */
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public Builder error(Optional<String> error) {
@@ -306,7 +308,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
         }
 
         /**
-         * <p>The query results, returned as an array of objects.</p>
+         * <p>The query results, returned as an array of objects</p>
          */
         @JsonSetter(value = "results", nulls = Nulls.SKIP)
         public Builder results(Optional<List<Map<String, Object>>> results) {
@@ -320,7 +322,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
         }
 
         /**
-         * <p>Immutable published revision selected while processing this request, before execution acceptance.</p>
+         * <p>Immutable published revision selected while processing this request, before execution acceptance</p>
          */
         @JsonSetter(value = "revision_id", nulls = Nulls.SKIP)
         public Builder revisionId(Optional<String> revisionId) {
@@ -334,7 +336,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
         }
 
         /**
-         * <p>Stable identifier of the executed saved query.</p>
+         * <p>Stable identifier of the executed saved query</p>
          */
         @JsonSetter(value = "saved_query_id", nulls = Nulls.SKIP)
         public Builder savedQueryId(Optional<String> savedQueryId) {
@@ -347,6 +349,9 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
             return this;
         }
 
+        /**
+         * <p>Current query status. The terminal statuses are done, failed, and unknown. Unknown means execution started but its durable terminal result was lost or expired.</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<QueryStatus> status) {
             this.status = status;
@@ -359,7 +364,7 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
         }
 
         /**
-         * <p>Published version of the selected immutable revision.</p>
+         * <p>Published version of the selected immutable revision</p>
          */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
@@ -385,6 +390,23 @@ public final class ExecuteHarborSavedQueryEnvelopeData {
                     status,
                     version,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("count")
+                    || key.equalsIgnoreCase("error")
+                    || key.equalsIgnoreCase("expires")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("results")
+                    || key.equalsIgnoreCase("revision_id")
+                    || key.equalsIgnoreCase("saved_query_id")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

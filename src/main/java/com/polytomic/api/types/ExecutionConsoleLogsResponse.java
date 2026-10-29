@@ -36,11 +36,17 @@ public final class ExecutionConsoleLogsResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Console log entries on this page
+     */
     @JsonProperty("entries")
     public Optional<List<ExecutionConsoleLogEntry>> getEntries() {
         return entries;
     }
 
+    /**
+     * @return Cursor to pass as after to fetch newer entries; omitted when no entries are returned
+     */
     @JsonProperty("next_cursor")
     public Optional<String> getNextCursor() {
         return nextCursor;
@@ -81,7 +87,6 @@ public final class ExecutionConsoleLogsResponse {
 
         private Optional<String> nextCursor = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class ExecutionConsoleLogsResponse {
             return this;
         }
 
+        /**
+         * <p>Console log entries on this page</p>
+         */
         @JsonSetter(value = "entries", nulls = Nulls.SKIP)
         public Builder entries(Optional<List<ExecutionConsoleLogEntry>> entries) {
             this.entries = entries;
@@ -103,6 +111,9 @@ public final class ExecutionConsoleLogsResponse {
             return this;
         }
 
+        /**
+         * <p>Cursor to pass as after to fetch newer entries; omitted when no entries are returned</p>
+         */
         @JsonSetter(value = "next_cursor", nulls = Nulls.SKIP)
         public Builder nextCursor(Optional<String> nextCursor) {
             this.nextCursor = nextCursor;
@@ -116,6 +127,14 @@ public final class ExecutionConsoleLogsResponse {
 
         public ExecutionConsoleLogsResponse build() {
             return new ExecutionConsoleLogsResponse(entries, nextCursor, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("entries") || key.equalsIgnoreCase("next_cursor")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

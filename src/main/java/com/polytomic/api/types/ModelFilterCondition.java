@@ -45,7 +45,7 @@ public final class ModelFilterCondition {
     }
 
     /**
-     * @return Comparison this condition applies to the field's value.
+     * @return Comparison this condition applies to the field's value
      */
     @JsonProperty("function")
     public FilterFunction getFunction() {
@@ -61,7 +61,7 @@ public final class ModelFilterCondition {
     }
 
     /**
-     * @return Model field this condition tests, named the same way as a field mapping's source.
+     * @return Model field this condition tests, named the same way as a field mapping's source
      */
     @JsonProperty("source")
     public Source getSource() {
@@ -110,7 +110,7 @@ public final class ModelFilterCondition {
 
     public interface FunctionStage {
         /**
-         * <p>Comparison this condition applies to the field's value.</p>
+         * <p>Comparison this condition applies to the field's value</p>
          */
         SourceStage function(@NotNull FilterFunction function);
 
@@ -119,7 +119,7 @@ public final class ModelFilterCondition {
 
     public interface SourceStage {
         /**
-         * <p>Model field this condition tests, named the same way as a field mapping's source.</p>
+         * <p>Model field this condition tests, named the same way as a field mapping's source</p>
          */
         _FinalStage source(@NotNull Source source);
     }
@@ -156,7 +156,6 @@ public final class ModelFilterCondition {
 
         private Optional<String> label = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -171,7 +170,7 @@ public final class ModelFilterCondition {
         }
 
         /**
-         * <p>Comparison this condition applies to the field's value.</p>
+         * <p>Comparison this condition applies to the field's value</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -182,7 +181,7 @@ public final class ModelFilterCondition {
         }
 
         /**
-         * <p>Model field this condition tests, named the same way as a field mapping's source.</p>
+         * <p>Model field this condition tests, named the same way as a field mapping's source</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -235,6 +234,17 @@ public final class ModelFilterCondition {
         @java.lang.Override
         public ModelFilterCondition build() {
             return new ModelFilterCondition(function, label, source, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("function")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("source")
+                    || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

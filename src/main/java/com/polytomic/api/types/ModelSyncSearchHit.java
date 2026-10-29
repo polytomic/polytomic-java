@@ -62,44 +62,65 @@ public final class ModelSyncSearchHit {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return API paths of the model sync and its target connection
+     */
     @JsonProperty("links")
     public SearchResultLinks getLinks() {
         return links;
     }
 
     /**
-     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata.
+     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata
      */
     @JsonProperty("matches")
     public Optional<List<SearchMatch>> getMatches() {
         return matches;
     }
 
+    /**
+     * @return Connections of the models this sync maps from
+     */
     @JsonProperty("source_connections")
     public List<ModelSyncSourceConnection> getSourceConnections() {
         return sourceConnections;
     }
 
+    /**
+     * @return Model sync ID
+     */
     @JsonProperty("sync_id")
     public String getSyncId() {
         return syncId;
     }
 
+    /**
+     * @return Model sync name
+     */
     @JsonProperty("sync_name")
     public String getSyncName() {
         return syncName;
     }
 
+    /**
+     * @return Target connection ID
+     */
     @JsonProperty("target_connection_id")
     public String getTargetConnectionId() {
         return targetConnectionId;
     }
 
+    /**
+     * @return Target connection name
+     */
     @JsonProperty("target_connection_name")
     public String getTargetConnectionName() {
         return targetConnectionName;
     }
 
+    /**
+     * @return Target connection type
+     */
     @JsonProperty("target_connection_type")
     public String getTargetConnectionType() {
         return targetConnectionType;
@@ -150,28 +171,46 @@ public final class ModelSyncSearchHit {
     }
 
     public interface LinksStage {
+        /**
+         * <p>API paths of the model sync and its target connection</p>
+         */
         SyncIdStage links(@NotNull SearchResultLinks links);
 
         Builder from(ModelSyncSearchHit other);
     }
 
     public interface SyncIdStage {
+        /**
+         * <p>Model sync ID</p>
+         */
         SyncNameStage syncId(@NotNull String syncId);
     }
 
     public interface SyncNameStage {
+        /**
+         * <p>Model sync name</p>
+         */
         TargetConnectionIdStage syncName(@NotNull String syncName);
     }
 
     public interface TargetConnectionIdStage {
+        /**
+         * <p>Target connection ID</p>
+         */
         TargetConnectionNameStage targetConnectionId(@NotNull String targetConnectionId);
     }
 
     public interface TargetConnectionNameStage {
+        /**
+         * <p>Target connection name</p>
+         */
         TargetConnectionTypeStage targetConnectionName(@NotNull String targetConnectionName);
     }
 
     public interface TargetConnectionTypeStage {
+        /**
+         * <p>Target connection type</p>
+         */
         _FinalStage targetConnectionType(@NotNull String targetConnectionType);
     }
 
@@ -183,12 +222,15 @@ public final class ModelSyncSearchHit {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         _FinalStage matches(Optional<List<SearchMatch>> matches);
 
         _FinalStage matches(List<SearchMatch> matches);
 
+        /**
+         * <p>Connections of the models this sync maps from</p>
+         */
         _FinalStage sourceConnections(List<ModelSyncSourceConnection> sourceConnections);
 
         _FinalStage addSourceConnections(ModelSyncSourceConnection sourceConnections);
@@ -221,7 +263,6 @@ public final class ModelSyncSearchHit {
 
         private Optional<List<SearchMatch>> matches = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -239,6 +280,10 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>API paths of the model sync and its target connection</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("links")
         public SyncIdStage links(@NotNull SearchResultLinks links) {
@@ -246,6 +291,10 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Model sync ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("sync_id")
         public SyncNameStage syncId(@NotNull String syncId) {
@@ -253,6 +302,10 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Model sync name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("sync_name")
         public TargetConnectionIdStage syncName(@NotNull String syncName) {
@@ -260,6 +313,10 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Target connection ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target_connection_id")
         public TargetConnectionNameStage targetConnectionId(@NotNull String targetConnectionId) {
@@ -267,6 +324,10 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Target connection name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target_connection_name")
         public TargetConnectionTypeStage targetConnectionName(@NotNull String targetConnectionName) {
@@ -274,6 +335,10 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Target connection type</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target_connection_type")
         public _FinalStage targetConnectionType(@NotNull String targetConnectionType) {
@@ -281,6 +346,10 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connections of the models this sync maps from</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage addAllSourceConnections(List<ModelSyncSourceConnection> sourceConnections) {
             if (sourceConnections != null) {
@@ -289,12 +358,19 @@ public final class ModelSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connections of the models this sync maps from</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage addSourceConnections(ModelSyncSourceConnection sourceConnections) {
             this.sourceConnections.add(sourceConnections);
             return this;
         }
 
+        /**
+         * <p>Connections of the models this sync maps from</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source_connections", nulls = Nulls.SKIP)
         public _FinalStage sourceConnections(List<ModelSyncSourceConnection> sourceConnections) {
@@ -306,7 +382,7 @@ public final class ModelSyncSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -316,7 +392,7 @@ public final class ModelSyncSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         @java.lang.Override
         @JsonSetter(value = "matches", nulls = Nulls.SKIP)
@@ -337,6 +413,21 @@ public final class ModelSyncSearchHit {
                     targetConnectionName,
                     targetConnectionType,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("links")
+                    || key.equalsIgnoreCase("matches")
+                    || key.equalsIgnoreCase("source_connections")
+                    || key.equalsIgnoreCase("sync_id")
+                    || key.equalsIgnoreCase("sync_name")
+                    || key.equalsIgnoreCase("target_connection_id")
+                    || key.equalsIgnoreCase("target_connection_name")
+                    || key.equalsIgnoreCase("target_connection_type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

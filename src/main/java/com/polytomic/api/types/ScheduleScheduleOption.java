@@ -43,21 +43,33 @@ public final class ScheduleScheduleOption {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Settings form for schedules of this type
+     */
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Description of the schedule option
+     */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return Schedule frequency
+     */
     @JsonProperty("frequency")
     public Optional<ScheduleFrequency> getFrequency() {
         return frequency;
     }
 
+    /**
+     * @return Display name of the schedule option
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
@@ -105,7 +117,6 @@ public final class ScheduleScheduleOption {
 
         private Optional<String> label = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -118,6 +129,9 @@ public final class ScheduleScheduleOption {
             return this;
         }
 
+        /**
+         * <p>Settings form for schedules of this type</p>
+         */
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public Builder configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
@@ -129,6 +143,9 @@ public final class ScheduleScheduleOption {
             return this;
         }
 
+        /**
+         * <p>Description of the schedule option</p>
+         */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
             this.description = description;
@@ -140,6 +157,9 @@ public final class ScheduleScheduleOption {
             return this;
         }
 
+        /**
+         * <p>Schedule frequency</p>
+         */
         @JsonSetter(value = "frequency", nulls = Nulls.SKIP)
         public Builder frequency(Optional<ScheduleFrequency> frequency) {
             this.frequency = frequency;
@@ -151,6 +171,9 @@ public final class ScheduleScheduleOption {
             return this;
         }
 
+        /**
+         * <p>Display name of the schedule option</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -164,6 +187,17 @@ public final class ScheduleScheduleOption {
 
         public ScheduleScheduleOption build() {
             return new ScheduleScheduleOption(configuration, description, frequency, label, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("frequency")
+                    || key.equalsIgnoreCase("label")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

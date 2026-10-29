@@ -29,6 +29,9 @@ public final class HarborContextEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The context document
+     */
     @JsonProperty("data")
     public Optional<HarborContextResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class HarborContextEnvelope {
     public static final class Builder {
         private Optional<HarborContextResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class HarborContextEnvelope {
             return this;
         }
 
+        /**
+         * <p>The context document</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<HarborContextResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class HarborContextEnvelope {
 
         public HarborContextEnvelope build() {
             return new HarborContextEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

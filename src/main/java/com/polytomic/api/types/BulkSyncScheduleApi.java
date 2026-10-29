@@ -57,7 +57,7 @@ public final class BulkSyncScheduleApi {
     }
 
     /**
-     * @return Day of the month (1-31) for monthly schedules.
+     * @return Day of the month for custom and builder schedules
      */
     @JsonProperty("dayOfMonth")
     public Optional<String> getDayOfMonth() {
@@ -65,20 +65,23 @@ public final class BulkSyncScheduleApi {
     }
 
     /**
-     * @return Day of the week for weekly schedules.
+     * @return Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules
      */
     @JsonProperty("dayOfWeek")
     public Optional<String> getDayOfWeek() {
         return dayOfWeek;
     }
 
+    /**
+     * @return How often the sync runs on this schedule: manual, continuous, hourly, daily, weekly, custom, or builder
+     */
     @JsonProperty("frequency")
     public ScheduleFrequency getFrequency() {
         return frequency;
     }
 
     /**
-     * @return Hour of the day (0-23, in UTC) the schedule fires.
+     * @return Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules
      */
     @JsonProperty("hour")
     public Optional<String> getHour() {
@@ -86,7 +89,7 @@ public final class BulkSyncScheduleApi {
     }
 
     /**
-     * @return Minute of the hour (0-59) the schedule fires.
+     * @return Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules
      */
     @JsonProperty("minute")
     public Optional<String> getMinute() {
@@ -94,13 +97,16 @@ public final class BulkSyncScheduleApi {
     }
 
     /**
-     * @return Month of the year (1-12) for yearly schedules.
+     * @return Month of the year for custom and builder schedules
      */
     @JsonProperty("month")
     public Optional<String> getMonth() {
         return month;
     }
 
+    /**
+     * @return Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields
+     */
     @JsonProperty("selectiveMode")
     public Optional<BulkSelectiveMode> getSelectiveMode() {
         return selectiveMode;
@@ -149,6 +155,9 @@ public final class BulkSyncScheduleApi {
     }
 
     public interface FrequencyStage {
+        /**
+         * <p>How often the sync runs on this schedule: manual, continuous, hourly, daily, weekly, custom, or builder</p>
+         */
         _FinalStage frequency(@NotNull ScheduleFrequency frequency);
 
         Builder from(BulkSyncScheduleApi other);
@@ -162,40 +171,43 @@ public final class BulkSyncScheduleApi {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Day of the month (1-31) for monthly schedules.</p>
+         * <p>Day of the month for custom and builder schedules</p>
          */
         _FinalStage dayOfMonth(Optional<String> dayOfMonth);
 
         _FinalStage dayOfMonth(String dayOfMonth);
 
         /**
-         * <p>Day of the week for weekly schedules.</p>
+         * <p>Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules</p>
          */
         _FinalStage dayOfWeek(Optional<String> dayOfWeek);
 
         _FinalStage dayOfWeek(String dayOfWeek);
 
         /**
-         * <p>Hour of the day (0-23, in UTC) the schedule fires.</p>
+         * <p>Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules</p>
          */
         _FinalStage hour(Optional<String> hour);
 
         _FinalStage hour(String hour);
 
         /**
-         * <p>Minute of the hour (0-59) the schedule fires.</p>
+         * <p>Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules</p>
          */
         _FinalStage minute(Optional<String> minute);
 
         _FinalStage minute(String minute);
 
         /**
-         * <p>Month of the year (1-12) for yearly schedules.</p>
+         * <p>Month of the year for custom and builder schedules</p>
          */
         _FinalStage month(Optional<String> month);
 
         _FinalStage month(String month);
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         */
         _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode);
 
         _FinalStage selectiveMode(BulkSelectiveMode selectiveMode);
@@ -217,7 +229,6 @@ public final class BulkSyncScheduleApi {
 
         private Optional<String> dayOfMonth = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -234,6 +245,10 @@ public final class BulkSyncScheduleApi {
             return this;
         }
 
+        /**
+         * <p>How often the sync runs on this schedule: manual, continuous, hourly, daily, weekly, custom, or builder</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("frequency")
         public _FinalStage frequency(@NotNull ScheduleFrequency frequency) {
@@ -241,12 +256,19 @@ public final class BulkSyncScheduleApi {
             return this;
         }
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage selectiveMode(BulkSelectiveMode selectiveMode) {
             this.selectiveMode = Optional.ofNullable(selectiveMode);
             return this;
         }
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "selectiveMode", nulls = Nulls.SKIP)
         public _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode) {
@@ -255,7 +277,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Month of the year (1-12) for yearly schedules.</p>
+         * <p>Month of the year for custom and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -265,7 +287,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Month of the year (1-12) for yearly schedules.</p>
+         * <p>Month of the year for custom and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "month", nulls = Nulls.SKIP)
@@ -275,7 +297,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Minute of the hour (0-59) the schedule fires.</p>
+         * <p>Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -285,7 +307,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Minute of the hour (0-59) the schedule fires.</p>
+         * <p>Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "minute", nulls = Nulls.SKIP)
@@ -295,7 +317,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Hour of the day (0-23, in UTC) the schedule fires.</p>
+         * <p>Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -305,7 +327,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Hour of the day (0-23, in UTC) the schedule fires.</p>
+         * <p>Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "hour", nulls = Nulls.SKIP)
@@ -315,7 +337,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Day of the week for weekly schedules.</p>
+         * <p>Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -325,7 +347,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Day of the week for weekly schedules.</p>
+         * <p>Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "dayOfWeek", nulls = Nulls.SKIP)
@@ -335,7 +357,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Day of the month (1-31) for monthly schedules.</p>
+         * <p>Day of the month for custom and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -345,7 +367,7 @@ public final class BulkSyncScheduleApi {
         }
 
         /**
-         * <p>Day of the month (1-31) for monthly schedules.</p>
+         * <p>Day of the month for custom and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "dayOfMonth", nulls = Nulls.SKIP)
@@ -358,6 +380,20 @@ public final class BulkSyncScheduleApi {
         public BulkSyncScheduleApi build() {
             return new BulkSyncScheduleApi(
                     dayOfMonth, dayOfWeek, frequency, hour, minute, month, selectiveMode, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("dayOfMonth")
+                    || key.equalsIgnoreCase("dayOfWeek")
+                    || key.equalsIgnoreCase("frequency")
+                    || key.equalsIgnoreCase("hour")
+                    || key.equalsIgnoreCase("minute")
+                    || key.equalsIgnoreCase("month")
+                    || key.equalsIgnoreCase("selectiveMode")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

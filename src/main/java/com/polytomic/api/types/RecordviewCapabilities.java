@@ -67,51 +67,81 @@ public final class RecordviewCapabilities {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Connection ID
+     */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Which fields a link shows when none are selected
+     */
     @JsonProperty("default_field_policy")
     public Optional<String> getDefaultFieldPolicy() {
         return defaultFieldPolicy;
     }
 
+    /**
+     * @return Seconds until a link expires when no expiration is given
+     */
     @JsonProperty("default_ttl_seconds")
     public Optional<Integer> getDefaultTtlSeconds() {
         return defaultTtlSeconds;
     }
 
+    /**
+     * @return Primary key field that links look records up by
+     */
     @JsonProperty("lookup_key_field")
     public Optional<String> getLookupKeyField() {
         return lookupKeyField;
     }
 
+    /**
+     * @return Longest allowed link lifetime in seconds
+     */
     @JsonProperty("max_ttl_seconds")
     public Optional<Integer> getMaxTtlSeconds() {
         return maxTtlSeconds;
     }
 
+    /**
+     * @return Why record view links are unsupported for this schema
+     */
     @JsonProperty("reason")
     public Optional<String> getReason() {
         return reason;
     }
 
+    /**
+     * @return Schema ID
+     */
     @JsonProperty("schema_id")
     public Optional<String> getSchemaId() {
         return schemaId;
     }
 
+    /**
+     * @return Whether record view links can be created for this schema
+     */
     @JsonProperty("supported")
     public Optional<Boolean> getSupported() {
         return supported;
     }
 
+    /**
+     * @return Whether links refresh the record when viewed
+     */
     @JsonProperty("supports_live_refresh")
     public Optional<Boolean> getSupportsLiveRefresh() {
         return supportsLiveRefresh;
     }
 
+    /**
+     * @return Whether links show a snapshot of the record taken at creation
+     */
     @JsonProperty("supports_snapshot")
     public Optional<Boolean> getSupportsSnapshot() {
         return supportsSnapshot;
@@ -187,7 +217,6 @@ public final class RecordviewCapabilities {
 
         private Optional<Boolean> supportsSnapshot = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -206,6 +235,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Connection ID</p>
+         */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
             this.connectionId = connectionId;
@@ -217,6 +249,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Which fields a link shows when none are selected</p>
+         */
         @JsonSetter(value = "default_field_policy", nulls = Nulls.SKIP)
         public Builder defaultFieldPolicy(Optional<String> defaultFieldPolicy) {
             this.defaultFieldPolicy = defaultFieldPolicy;
@@ -228,6 +263,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Seconds until a link expires when no expiration is given</p>
+         */
         @JsonSetter(value = "default_ttl_seconds", nulls = Nulls.SKIP)
         public Builder defaultTtlSeconds(Optional<Integer> defaultTtlSeconds) {
             this.defaultTtlSeconds = defaultTtlSeconds;
@@ -239,6 +277,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Primary key field that links look records up by</p>
+         */
         @JsonSetter(value = "lookup_key_field", nulls = Nulls.SKIP)
         public Builder lookupKeyField(Optional<String> lookupKeyField) {
             this.lookupKeyField = lookupKeyField;
@@ -250,6 +291,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Longest allowed link lifetime in seconds</p>
+         */
         @JsonSetter(value = "max_ttl_seconds", nulls = Nulls.SKIP)
         public Builder maxTtlSeconds(Optional<Integer> maxTtlSeconds) {
             this.maxTtlSeconds = maxTtlSeconds;
@@ -261,6 +305,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Why record view links are unsupported for this schema</p>
+         */
         @JsonSetter(value = "reason", nulls = Nulls.SKIP)
         public Builder reason(Optional<String> reason) {
             this.reason = reason;
@@ -272,6 +319,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Schema ID</p>
+         */
         @JsonSetter(value = "schema_id", nulls = Nulls.SKIP)
         public Builder schemaId(Optional<String> schemaId) {
             this.schemaId = schemaId;
@@ -283,6 +333,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether record view links can be created for this schema</p>
+         */
         @JsonSetter(value = "supported", nulls = Nulls.SKIP)
         public Builder supported(Optional<Boolean> supported) {
             this.supported = supported;
@@ -294,6 +347,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether links refresh the record when viewed</p>
+         */
         @JsonSetter(value = "supports_live_refresh", nulls = Nulls.SKIP)
         public Builder supportsLiveRefresh(Optional<Boolean> supportsLiveRefresh) {
             this.supportsLiveRefresh = supportsLiveRefresh;
@@ -305,6 +361,9 @@ public final class RecordviewCapabilities {
             return this;
         }
 
+        /**
+         * <p>Whether links show a snapshot of the record taken at creation</p>
+         */
         @JsonSetter(value = "supports_snapshot", nulls = Nulls.SKIP)
         public Builder supportsSnapshot(Optional<Boolean> supportsSnapshot) {
             this.supportsSnapshot = supportsSnapshot;
@@ -329,6 +388,23 @@ public final class RecordviewCapabilities {
                     supportsLiveRefresh,
                     supportsSnapshot,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("default_field_policy")
+                    || key.equalsIgnoreCase("default_ttl_seconds")
+                    || key.equalsIgnoreCase("lookup_key_field")
+                    || key.equalsIgnoreCase("max_ttl_seconds")
+                    || key.equalsIgnoreCase("reason")
+                    || key.equalsIgnoreCase("schema_id")
+                    || key.equalsIgnoreCase("supported")
+                    || key.equalsIgnoreCase("supports_live_refresh")
+                    || key.equalsIgnoreCase("supports_snapshot")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

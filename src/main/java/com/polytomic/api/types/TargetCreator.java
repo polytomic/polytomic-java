@@ -37,7 +37,7 @@ public final class TargetCreator {
     }
 
     /**
-     * @return The properties that are required for target creation.
+     * @return The properties that are required for target creation
      */
     @JsonProperty("properties")
     public Optional<List<TargetPropertyValues>> getProperties() {
@@ -45,7 +45,7 @@ public final class TargetCreator {
     }
 
     /**
-     * @return True if the connection supports target creation.
+     * @return True if the connection supports target creation
      */
     @JsonProperty("supported")
     public Optional<Boolean> getSupported() {
@@ -87,7 +87,6 @@ public final class TargetCreator {
 
         private Optional<Boolean> supported = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -99,7 +98,7 @@ public final class TargetCreator {
         }
 
         /**
-         * <p>The properties that are required for target creation.</p>
+         * <p>The properties that are required for target creation</p>
          */
         @JsonSetter(value = "properties", nulls = Nulls.SKIP)
         public Builder properties(Optional<List<TargetPropertyValues>> properties) {
@@ -113,7 +112,7 @@ public final class TargetCreator {
         }
 
         /**
-         * <p>True if the connection supports target creation.</p>
+         * <p>True if the connection supports target creation</p>
          */
         @JsonSetter(value = "supported", nulls = Nulls.SKIP)
         public Builder supported(Optional<Boolean> supported) {
@@ -128,6 +127,14 @@ public final class TargetCreator {
 
         public TargetCreator build() {
             return new TargetCreator(properties, supported, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("properties") || key.equalsIgnoreCase("supported")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

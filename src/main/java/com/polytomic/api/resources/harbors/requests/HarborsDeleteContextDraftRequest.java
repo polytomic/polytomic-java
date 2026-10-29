@@ -33,11 +33,17 @@ public final class HarborsDeleteContextDraftRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
@@ -79,7 +85,6 @@ public final class HarborsDeleteContextDraftRequest {
 
         private Optional<String> polytomicActivityRequestId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -90,6 +95,9 @@ public final class HarborsDeleteContextDraftRequest {
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
             return this;
@@ -100,6 +108,9 @@ public final class HarborsDeleteContextDraftRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -113,6 +124,11 @@ public final class HarborsDeleteContextDraftRequest {
         public HarborsDeleteContextDraftRequest build() {
             return new HarborsDeleteContextDraftRequest(
                     polytomicHarborSession, polytomicActivityRequestId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

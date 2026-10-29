@@ -119,7 +119,6 @@ public final class UpdateSyncErrorHandlingRequest {
 
         private Optional<Boolean> warningNotifications = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -195,6 +194,17 @@ public final class UpdateSyncErrorHandlingRequest {
                     subscribers,
                     warningNotifications,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("auto_retry_record_errors")
+                    || key.equalsIgnoreCase("notify_on_record_errors")
+                    || key.equalsIgnoreCase("subscribers")
+                    || key.equalsIgnoreCase("warning_notifications")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

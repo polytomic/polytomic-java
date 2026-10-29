@@ -53,7 +53,7 @@ public final class ConnectionProxyStats {
     }
 
     /**
-     * @return Total backend API calls made through this connection (including non-proxy calls) over the last 24 hours.
+     * @return Total backend API calls made through this connection (including non-proxy calls) over the last 24 hours
      */
     @JsonProperty("callsLast24h")
     public Optional<Integer> getCallsLast24H() {
@@ -61,7 +61,7 @@ public final class ConnectionProxyStats {
     }
 
     /**
-     * @return Timestamp of the most recent proxy call, or null if none have occurred.
+     * @return Timestamp of the most recent proxy call, or null if none have occurred
      */
     @JsonProperty("lastProxyCallAt")
     public Optional<OffsetDateTime> getLastProxyCallAt() {
@@ -69,7 +69,7 @@ public final class ConnectionProxyStats {
     }
 
     /**
-     * @return Proxy calls that returned a 2xx status in the last 24 hours.
+     * @return Proxy calls that returned a 2xx status in the last 24 hours
      */
     @JsonProperty("proxy2xxLast24h")
     public Optional<Integer> getProxy2XxLast24H() {
@@ -77,7 +77,7 @@ public final class ConnectionProxyStats {
     }
 
     /**
-     * @return Proxy calls that returned a 4xx status in the last 24 hours.
+     * @return Proxy calls that returned a 4xx status in the last 24 hours
      */
     @JsonProperty("proxy4xxLast24h")
     public Optional<Integer> getProxy4XxLast24H() {
@@ -85,7 +85,7 @@ public final class ConnectionProxyStats {
     }
 
     /**
-     * @return Proxy calls that returned a 5xx status in the last 24 hours.
+     * @return Proxy calls that returned a 5xx status in the last 24 hours
      */
     @JsonProperty("proxy5xxLast24h")
     public Optional<Integer> getProxy5XxLast24H() {
@@ -93,7 +93,7 @@ public final class ConnectionProxyStats {
     }
 
     /**
-     * @return Proxy calls made in the last 24 hours.
+     * @return Proxy calls made in the last 24 hours
      */
     @JsonProperty("proxyCallsLast24h")
     public Optional<Integer> getProxyCallsLast24H() {
@@ -154,7 +154,6 @@ public final class ConnectionProxyStats {
 
         private Optional<Integer> proxyCallsLast24H = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -170,7 +169,7 @@ public final class ConnectionProxyStats {
         }
 
         /**
-         * <p>Total backend API calls made through this connection (including non-proxy calls) over the last 24 hours.</p>
+         * <p>Total backend API calls made through this connection (including non-proxy calls) over the last 24 hours</p>
          */
         @JsonSetter(value = "callsLast24h", nulls = Nulls.SKIP)
         public Builder callsLast24H(Optional<Integer> callsLast24H) {
@@ -184,7 +183,7 @@ public final class ConnectionProxyStats {
         }
 
         /**
-         * <p>Timestamp of the most recent proxy call, or null if none have occurred.</p>
+         * <p>Timestamp of the most recent proxy call, or null if none have occurred</p>
          */
         @JsonSetter(value = "lastProxyCallAt", nulls = Nulls.SKIP)
         public Builder lastProxyCallAt(Optional<OffsetDateTime> lastProxyCallAt) {
@@ -198,7 +197,7 @@ public final class ConnectionProxyStats {
         }
 
         /**
-         * <p>Proxy calls that returned a 2xx status in the last 24 hours.</p>
+         * <p>Proxy calls that returned a 2xx status in the last 24 hours</p>
          */
         @JsonSetter(value = "proxy2xxLast24h", nulls = Nulls.SKIP)
         public Builder proxy2XxLast24H(Optional<Integer> proxy2XxLast24H) {
@@ -212,7 +211,7 @@ public final class ConnectionProxyStats {
         }
 
         /**
-         * <p>Proxy calls that returned a 4xx status in the last 24 hours.</p>
+         * <p>Proxy calls that returned a 4xx status in the last 24 hours</p>
          */
         @JsonSetter(value = "proxy4xxLast24h", nulls = Nulls.SKIP)
         public Builder proxy4XxLast24H(Optional<Integer> proxy4XxLast24H) {
@@ -226,7 +225,7 @@ public final class ConnectionProxyStats {
         }
 
         /**
-         * <p>Proxy calls that returned a 5xx status in the last 24 hours.</p>
+         * <p>Proxy calls that returned a 5xx status in the last 24 hours</p>
          */
         @JsonSetter(value = "proxy5xxLast24h", nulls = Nulls.SKIP)
         public Builder proxy5XxLast24H(Optional<Integer> proxy5XxLast24H) {
@@ -240,7 +239,7 @@ public final class ConnectionProxyStats {
         }
 
         /**
-         * <p>Proxy calls made in the last 24 hours.</p>
+         * <p>Proxy calls made in the last 24 hours</p>
          */
         @JsonSetter(value = "proxyCallsLast24h", nulls = Nulls.SKIP)
         public Builder proxyCallsLast24H(Optional<Integer> proxyCallsLast24H) {
@@ -262,6 +261,19 @@ public final class ConnectionProxyStats {
                     proxy5XxLast24H,
                     proxyCallsLast24H,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("callsLast24h")
+                    || key.equalsIgnoreCase("lastProxyCallAt")
+                    || key.equalsIgnoreCase("proxy2xxLast24h")
+                    || key.equalsIgnoreCase("proxy4xxLast24h")
+                    || key.equalsIgnoreCase("proxy5xxLast24h")
+                    || key.equalsIgnoreCase("proxyCallsLast24h")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

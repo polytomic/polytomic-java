@@ -84,7 +84,6 @@ public final class ExecutionsGetConsoleLogsRequest {
 
         private Optional<String> after = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -125,6 +124,14 @@ public final class ExecutionsGetConsoleLogsRequest {
 
         public ExecutionsGetConsoleLogsRequest build() {
             return new ExecutionsGetConsoleLogsRequest(limit, after, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("after")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

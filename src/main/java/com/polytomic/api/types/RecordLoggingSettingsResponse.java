@@ -44,7 +44,7 @@ public final class RecordLoggingSettingsResponse {
     }
 
     /**
-     * @return Blobstorage connection receiving record log deliveries, if one is configured.
+     * @return Blobstorage connection receiving record log deliveries, if one is configured
      */
     @JsonProperty("deliveryConnectionId")
     public Optional<String> getDeliveryConnectionId() {
@@ -60,7 +60,7 @@ public final class RecordLoggingSettingsResponse {
     }
 
     /**
-     * @return Path record logs are delivered under, ahead of the organization ID, if one is set.
+     * @return Path record logs are delivered under, ahead of the organization ID, if one is set
      */
     @JsonProperty("deliveryPrefix")
     public Optional<String> getDeliveryPrefix() {
@@ -68,7 +68,7 @@ public final class RecordLoggingSettingsResponse {
     }
 
     /**
-     * @return True when record logging is enabled for the organization.
+     * @return True when record logging is enabled for the organization
      */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
@@ -117,7 +117,6 @@ public final class RecordLoggingSettingsResponse {
 
         private Optional<Boolean> enabled = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -131,7 +130,7 @@ public final class RecordLoggingSettingsResponse {
         }
 
         /**
-         * <p>Blobstorage connection receiving record log deliveries, if one is configured.</p>
+         * <p>Blobstorage connection receiving record log deliveries, if one is configured</p>
          */
         @JsonSetter(value = "deliveryConnectionId", nulls = Nulls.SKIP)
         public Builder deliveryConnectionId(Optional<String> deliveryConnectionId) {
@@ -159,7 +158,7 @@ public final class RecordLoggingSettingsResponse {
         }
 
         /**
-         * <p>Path record logs are delivered under, ahead of the organization ID, if one is set.</p>
+         * <p>Path record logs are delivered under, ahead of the organization ID, if one is set</p>
          */
         @JsonSetter(value = "deliveryPrefix", nulls = Nulls.SKIP)
         public Builder deliveryPrefix(Optional<String> deliveryPrefix) {
@@ -173,7 +172,7 @@ public final class RecordLoggingSettingsResponse {
         }
 
         /**
-         * <p>True when record logging is enabled for the organization.</p>
+         * <p>True when record logging is enabled for the organization</p>
          */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
@@ -189,6 +188,17 @@ public final class RecordLoggingSettingsResponse {
         public RecordLoggingSettingsResponse build() {
             return new RecordLoggingSettingsResponse(
                     deliveryConnectionId, deliveryConnectionName, deliveryPrefix, enabled, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("deliveryConnectionId")
+                    || key.equalsIgnoreCase("deliveryConnectionName")
+                    || key.equalsIgnoreCase("deliveryPrefix")
+                    || key.equalsIgnoreCase("enabled")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

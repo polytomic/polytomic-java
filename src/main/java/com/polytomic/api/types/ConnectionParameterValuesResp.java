@@ -81,7 +81,6 @@ public final class ConnectionParameterValuesResp {
 
         private Optional<List<ConnectionParameterValue>> values = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -116,6 +115,14 @@ public final class ConnectionParameterValuesResp {
 
         public ConnectionParameterValuesResp build() {
             return new ConnectionParameterValuesResp(allowsCreation, values, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("allows_creation") || key.equalsIgnoreCase("values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

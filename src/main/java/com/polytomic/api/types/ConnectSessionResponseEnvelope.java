@@ -30,6 +30,9 @@ public final class ConnectSessionResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The Connect session
+     */
     @JsonProperty("data")
     public Optional<ConnectSessionResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class ConnectSessionResponseEnvelope {
     public static final class Builder {
         private Optional<ConnectSessionResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class ConnectSessionResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The Connect session</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ConnectSessionResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class ConnectSessionResponseEnvelope {
 
         public ConnectSessionResponseEnvelope build() {
             return new ConnectSessionResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

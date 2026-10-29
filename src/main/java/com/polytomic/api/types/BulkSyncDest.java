@@ -44,18 +44,24 @@ public final class BulkSyncDest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Destination configuration options this connection accepts, keyed by option name
+     */
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Bulk sync modes this destination supports
+     */
     @JsonProperty("modes")
     public Optional<List<SupportedBulkMode>> getModes() {
         return modes;
     }
 
     /**
-     * @return Resync modes supported by this destination (refetch, resync, rebuild).
+     * @return Resync modes supported by this destination (refetch, resync, rebuild)
      */
     @JsonProperty("supported_resync_modes")
     public Optional<List<BulkResyncMode>> getSupportedResyncModes() {
@@ -63,7 +69,7 @@ public final class BulkSyncDest {
     }
 
     /**
-     * @return True if this destination can maintain a companion history table per schema (history_enabled) in replicate mode.
+     * @return True if this destination can maintain a companion history table per schema (history_enabled) in replicate mode
      */
     @JsonProperty("supports_history_mode")
     public Optional<Boolean> getSupportsHistoryMode() {
@@ -112,7 +118,6 @@ public final class BulkSyncDest {
 
         private Optional<Boolean> supportsHistoryMode = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -125,6 +130,9 @@ public final class BulkSyncDest {
             return this;
         }
 
+        /**
+         * <p>Destination configuration options this connection accepts, keyed by option name</p>
+         */
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public Builder configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
@@ -136,6 +144,9 @@ public final class BulkSyncDest {
             return this;
         }
 
+        /**
+         * <p>Bulk sync modes this destination supports</p>
+         */
         @JsonSetter(value = "modes", nulls = Nulls.SKIP)
         public Builder modes(Optional<List<SupportedBulkMode>> modes) {
             this.modes = modes;
@@ -148,7 +159,7 @@ public final class BulkSyncDest {
         }
 
         /**
-         * <p>Resync modes supported by this destination (refetch, resync, rebuild).</p>
+         * <p>Resync modes supported by this destination (refetch, resync, rebuild)</p>
          */
         @JsonSetter(value = "supported_resync_modes", nulls = Nulls.SKIP)
         public Builder supportedResyncModes(Optional<List<BulkResyncMode>> supportedResyncModes) {
@@ -162,7 +173,7 @@ public final class BulkSyncDest {
         }
 
         /**
-         * <p>True if this destination can maintain a companion history table per schema (history_enabled) in replicate mode.</p>
+         * <p>True if this destination can maintain a companion history table per schema (history_enabled) in replicate mode</p>
          */
         @JsonSetter(value = "supports_history_mode", nulls = Nulls.SKIP)
         public Builder supportsHistoryMode(Optional<Boolean> supportsHistoryMode) {
@@ -178,6 +189,17 @@ public final class BulkSyncDest {
         public BulkSyncDest build() {
             return new BulkSyncDest(
                     configuration, modes, supportedResyncModes, supportsHistoryMode, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("modes")
+                    || key.equalsIgnoreCase("supported_resync_modes")
+                    || key.equalsIgnoreCase("supports_history_mode")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

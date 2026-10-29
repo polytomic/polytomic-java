@@ -45,7 +45,7 @@ public final class BulkSyncErrorHandling {
     }
 
     /**
-     * @return Email addresses notified when this sync fails.
+     * @return Email addresses notified when this sync fails
      */
     @JsonProperty("subscribers")
     public Optional<List<String>> getSubscribers() {
@@ -88,7 +88,6 @@ public final class BulkSyncErrorHandling {
 
         private Optional<List<String>> subscribers = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -114,7 +113,7 @@ public final class BulkSyncErrorHandling {
         }
 
         /**
-         * <p>Email addresses notified when this sync fails.</p>
+         * <p>Email addresses notified when this sync fails</p>
          */
         @JsonSetter(value = "subscribers", nulls = Nulls.SKIP)
         public Builder subscribers(Optional<List<String>> subscribers) {
@@ -129,6 +128,14 @@ public final class BulkSyncErrorHandling {
 
         public BulkSyncErrorHandling build() {
             return new BulkSyncErrorHandling(ingestionFailureThreshold, subscribers, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("ingestion_failure_threshold") || key.equalsIgnoreCase("subscribers")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

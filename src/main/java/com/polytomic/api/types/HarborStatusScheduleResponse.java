@@ -87,7 +87,7 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return External schedule Connection ID, when configured.
+     * @return External schedule Connection ID, when configured
      */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
@@ -95,7 +95,7 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return Raw day-of-month schedule expression for an advanced schedule, when configured.
+     * @return Raw day-of-month schedule expression for an advanced schedule, when configured
      */
     @JsonProperty("day_of_month")
     public Optional<String> getDayOfMonth() {
@@ -103,20 +103,23 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return Raw day-of-week schedule expression, when configured.
+     * @return Raw day-of-week schedule expression, when configured
      */
     @JsonProperty("day_of_week")
     public Optional<String> getDayOfWeek() {
         return dayOfWeek;
     }
 
+    /**
+     * @return Raw Polytomic schedule frequency
+     */
     @JsonProperty("frequency")
     public ScheduleFrequency getFrequency() {
         return frequency;
     }
 
     /**
-     * @return Raw hour schedule expression, when configured.
+     * @return Raw hour schedule expression, when configured
      */
     @JsonProperty("hour")
     public Optional<String> getHour() {
@@ -124,7 +127,7 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return Whether this is the bulk sync's default schedule.
+     * @return Whether this is the bulk sync's default schedule
      */
     @JsonProperty("is_default")
     public Optional<Boolean> getIsDefault() {
@@ -132,7 +135,7 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return External job ID for an event-driven model sync schedule, when configured.
+     * @return External job ID for an event-driven model sync schedule, when configured
      */
     @JsonProperty("job_id")
     public Optional<Integer> getJobId() {
@@ -140,7 +143,7 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return Raw minute schedule expression, when configured.
+     * @return Raw minute schedule expression, when configured
      */
     @JsonProperty("minute")
     public Optional<String> getMinute() {
@@ -148,7 +151,7 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return Raw month schedule expression for an advanced schedule, when configured.
+     * @return Raw month schedule expression for an advanced schedule, when configured
      */
     @JsonProperty("month")
     public Optional<String> getMonth() {
@@ -164,7 +167,7 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return Whether a run-after model schedule requires the upstream execution to succeed.
+     * @return Whether a run-after model schedule requires the upstream execution to succeed
      */
     @JsonProperty("run_after_success_only")
     public Optional<Boolean> getRunAfterSuccessOnly() {
@@ -172,18 +175,24 @@ public final class HarborStatusScheduleResponse {
     }
 
     /**
-     * @return Source schema IDs explicitly selected by this bulk schedule.
+     * @return Source schema IDs explicitly selected by this bulk schedule
      */
     @JsonProperty("schemas")
     public Optional<List<String>> getSchemas() {
         return schemas;
     }
 
+    /**
+     * @return Bulk schedule field-selection mode, when the schedule applies selectively
+     */
     @JsonProperty("selective_mode")
     public Optional<BulkSelectiveMode> getSelectiveMode() {
         return selectiveMode;
     }
 
+    /**
+     * @return Bulk refresh mode selected by this schedule
+     */
     @JsonProperty("sync_mode")
     public Optional<BulkScheduleSyncMode> getSyncMode() {
         return syncMode;
@@ -246,6 +255,9 @@ public final class HarborStatusScheduleResponse {
     }
 
     public interface FrequencyStage {
+        /**
+         * <p>Raw Polytomic schedule frequency</p>
+         */
         _FinalStage frequency(@NotNull ScheduleFrequency frequency);
 
         Builder from(HarborStatusScheduleResponse other);
@@ -259,56 +271,56 @@ public final class HarborStatusScheduleResponse {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>External schedule Connection ID, when configured.</p>
+         * <p>External schedule Connection ID, when configured</p>
          */
         _FinalStage connectionId(Optional<String> connectionId);
 
         _FinalStage connectionId(String connectionId);
 
         /**
-         * <p>Raw day-of-month schedule expression for an advanced schedule, when configured.</p>
+         * <p>Raw day-of-month schedule expression for an advanced schedule, when configured</p>
          */
         _FinalStage dayOfMonth(Optional<String> dayOfMonth);
 
         _FinalStage dayOfMonth(String dayOfMonth);
 
         /**
-         * <p>Raw day-of-week schedule expression, when configured.</p>
+         * <p>Raw day-of-week schedule expression, when configured</p>
          */
         _FinalStage dayOfWeek(Optional<String> dayOfWeek);
 
         _FinalStage dayOfWeek(String dayOfWeek);
 
         /**
-         * <p>Raw hour schedule expression, when configured.</p>
+         * <p>Raw hour schedule expression, when configured</p>
          */
         _FinalStage hour(Optional<String> hour);
 
         _FinalStage hour(String hour);
 
         /**
-         * <p>Whether this is the bulk sync's default schedule.</p>
+         * <p>Whether this is the bulk sync's default schedule</p>
          */
         _FinalStage isDefault(Optional<Boolean> isDefault);
 
         _FinalStage isDefault(Boolean isDefault);
 
         /**
-         * <p>External job ID for an event-driven model sync schedule, when configured.</p>
+         * <p>External job ID for an event-driven model sync schedule, when configured</p>
          */
         _FinalStage jobId(Optional<Integer> jobId);
 
         _FinalStage jobId(Integer jobId);
 
         /**
-         * <p>Raw minute schedule expression, when configured.</p>
+         * <p>Raw minute schedule expression, when configured</p>
          */
         _FinalStage minute(Optional<String> minute);
 
         _FinalStage minute(String minute);
 
         /**
-         * <p>Raw month schedule expression for an advanced schedule, when configured.</p>
+         * <p>Raw month schedule expression for an advanced schedule, when configured</p>
          */
         _FinalStage month(Optional<String> month);
 
@@ -322,23 +334,29 @@ public final class HarborStatusScheduleResponse {
         _FinalStage nextRunAt(OffsetDateTime nextRunAt);
 
         /**
-         * <p>Whether a run-after model schedule requires the upstream execution to succeed.</p>
+         * <p>Whether a run-after model schedule requires the upstream execution to succeed</p>
          */
         _FinalStage runAfterSuccessOnly(Optional<Boolean> runAfterSuccessOnly);
 
         _FinalStage runAfterSuccessOnly(Boolean runAfterSuccessOnly);
 
         /**
-         * <p>Source schema IDs explicitly selected by this bulk schedule.</p>
+         * <p>Source schema IDs explicitly selected by this bulk schedule</p>
          */
         _FinalStage schemas(Optional<List<String>> schemas);
 
         _FinalStage schemas(List<String> schemas);
 
+        /**
+         * <p>Bulk schedule field-selection mode, when the schedule applies selectively</p>
+         */
         _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode);
 
         _FinalStage selectiveMode(BulkSelectiveMode selectiveMode);
 
+        /**
+         * <p>Bulk refresh mode selected by this schedule</p>
+         */
         _FinalStage syncMode(Optional<BulkScheduleSyncMode> syncMode);
 
         _FinalStage syncMode(BulkScheduleSyncMode syncMode);
@@ -374,7 +392,6 @@ public final class HarborStatusScheduleResponse {
 
         private Optional<String> connectionId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -398,6 +415,10 @@ public final class HarborStatusScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>Raw Polytomic schedule frequency</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("frequency")
         public _FinalStage frequency(@NotNull ScheduleFrequency frequency) {
@@ -405,12 +426,19 @@ public final class HarborStatusScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>Bulk refresh mode selected by this schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage syncMode(BulkScheduleSyncMode syncMode) {
             this.syncMode = Optional.ofNullable(syncMode);
             return this;
         }
 
+        /**
+         * <p>Bulk refresh mode selected by this schedule</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "sync_mode", nulls = Nulls.SKIP)
         public _FinalStage syncMode(Optional<BulkScheduleSyncMode> syncMode) {
@@ -418,12 +446,19 @@ public final class HarborStatusScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>Bulk schedule field-selection mode, when the schedule applies selectively</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage selectiveMode(BulkSelectiveMode selectiveMode) {
             this.selectiveMode = Optional.ofNullable(selectiveMode);
             return this;
         }
 
+        /**
+         * <p>Bulk schedule field-selection mode, when the schedule applies selectively</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "selective_mode", nulls = Nulls.SKIP)
         public _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode) {
@@ -432,7 +467,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Source schema IDs explicitly selected by this bulk schedule.</p>
+         * <p>Source schema IDs explicitly selected by this bulk schedule</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -442,7 +477,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Source schema IDs explicitly selected by this bulk schedule.</p>
+         * <p>Source schema IDs explicitly selected by this bulk schedule</p>
          */
         @java.lang.Override
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
@@ -452,7 +487,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Whether a run-after model schedule requires the upstream execution to succeed.</p>
+         * <p>Whether a run-after model schedule requires the upstream execution to succeed</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -462,7 +497,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Whether a run-after model schedule requires the upstream execution to succeed.</p>
+         * <p>Whether a run-after model schedule requires the upstream execution to succeed</p>
          */
         @java.lang.Override
         @JsonSetter(value = "run_after_success_only", nulls = Nulls.SKIP)
@@ -492,7 +527,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw month schedule expression for an advanced schedule, when configured.</p>
+         * <p>Raw month schedule expression for an advanced schedule, when configured</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -502,7 +537,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw month schedule expression for an advanced schedule, when configured.</p>
+         * <p>Raw month schedule expression for an advanced schedule, when configured</p>
          */
         @java.lang.Override
         @JsonSetter(value = "month", nulls = Nulls.SKIP)
@@ -512,7 +547,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw minute schedule expression, when configured.</p>
+         * <p>Raw minute schedule expression, when configured</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -522,7 +557,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw minute schedule expression, when configured.</p>
+         * <p>Raw minute schedule expression, when configured</p>
          */
         @java.lang.Override
         @JsonSetter(value = "minute", nulls = Nulls.SKIP)
@@ -532,7 +567,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>External job ID for an event-driven model sync schedule, when configured.</p>
+         * <p>External job ID for an event-driven model sync schedule, when configured</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -542,7 +577,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>External job ID for an event-driven model sync schedule, when configured.</p>
+         * <p>External job ID for an event-driven model sync schedule, when configured</p>
          */
         @java.lang.Override
         @JsonSetter(value = "job_id", nulls = Nulls.SKIP)
@@ -552,7 +587,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Whether this is the bulk sync's default schedule.</p>
+         * <p>Whether this is the bulk sync's default schedule</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -562,7 +597,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Whether this is the bulk sync's default schedule.</p>
+         * <p>Whether this is the bulk sync's default schedule</p>
          */
         @java.lang.Override
         @JsonSetter(value = "is_default", nulls = Nulls.SKIP)
@@ -572,7 +607,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw hour schedule expression, when configured.</p>
+         * <p>Raw hour schedule expression, when configured</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -582,7 +617,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw hour schedule expression, when configured.</p>
+         * <p>Raw hour schedule expression, when configured</p>
          */
         @java.lang.Override
         @JsonSetter(value = "hour", nulls = Nulls.SKIP)
@@ -592,7 +627,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw day-of-week schedule expression, when configured.</p>
+         * <p>Raw day-of-week schedule expression, when configured</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -602,7 +637,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw day-of-week schedule expression, when configured.</p>
+         * <p>Raw day-of-week schedule expression, when configured</p>
          */
         @java.lang.Override
         @JsonSetter(value = "day_of_week", nulls = Nulls.SKIP)
@@ -612,7 +647,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw day-of-month schedule expression for an advanced schedule, when configured.</p>
+         * <p>Raw day-of-month schedule expression for an advanced schedule, when configured</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -622,7 +657,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>Raw day-of-month schedule expression for an advanced schedule, when configured.</p>
+         * <p>Raw day-of-month schedule expression for an advanced schedule, when configured</p>
          */
         @java.lang.Override
         @JsonSetter(value = "day_of_month", nulls = Nulls.SKIP)
@@ -632,7 +667,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>External schedule Connection ID, when configured.</p>
+         * <p>External schedule Connection ID, when configured</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -642,7 +677,7 @@ public final class HarborStatusScheduleResponse {
         }
 
         /**
-         * <p>External schedule Connection ID, when configured.</p>
+         * <p>External schedule Connection ID, when configured</p>
          */
         @java.lang.Override
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
@@ -669,6 +704,27 @@ public final class HarborStatusScheduleResponse {
                     selectiveMode,
                     syncMode,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("day_of_month")
+                    || key.equalsIgnoreCase("day_of_week")
+                    || key.equalsIgnoreCase("frequency")
+                    || key.equalsIgnoreCase("hour")
+                    || key.equalsIgnoreCase("is_default")
+                    || key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("minute")
+                    || key.equalsIgnoreCase("month")
+                    || key.equalsIgnoreCase("next_run_at")
+                    || key.equalsIgnoreCase("run_after_success_only")
+                    || key.equalsIgnoreCase("schemas")
+                    || key.equalsIgnoreCase("selective_mode")
+                    || key.equalsIgnoreCase("sync_mode")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -6,6 +6,7 @@ package com.polytomic.api.resources.activity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -300,7 +301,7 @@ public class RawActivityClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organization/harbor-activity/sessions")
-                .addPathSegment(sessionId);
+                .addPathSegment(PathSegments.validate(sessionId));
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "limit", request.getLimit().get(), false);
@@ -413,7 +414,7 @@ public class RawActivityClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/organization/harbor-activity")
-                .addPathSegment(eventId);
+                .addPathSegment(PathSegments.validate(eventId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);

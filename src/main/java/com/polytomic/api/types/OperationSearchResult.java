@@ -41,7 +41,7 @@ public final class OperationSearchResult {
     }
 
     /**
-     * @return Operations ranked by probability of being the single best choice for this task; empty when no match wins.
+     * @return Operations ranked by probability of being the single best choice for this task; empty when no match wins
      */
     @JsonProperty("matches")
     public Optional<List<OperationMatch>> getMatches() {
@@ -49,7 +49,7 @@ public final class OperationSearchResult {
     }
 
     /**
-     * @return Relative probability that none of the documented operations is the best choice.
+     * @return Relative probability that none of the documented operations is the best choice
      */
     @JsonProperty("noMatchProbability")
     public Optional<Double> getNoMatchProbability() {
@@ -57,7 +57,7 @@ public final class OperationSearchResult {
     }
 
     /**
-     * @return The trimmed input task.
+     * @return The trimmed input task
      */
     @JsonProperty("query")
     public Optional<String> getQuery() {
@@ -103,7 +103,6 @@ public final class OperationSearchResult {
 
         private Optional<String> query = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -116,7 +115,7 @@ public final class OperationSearchResult {
         }
 
         /**
-         * <p>Operations ranked by probability of being the single best choice for this task; empty when no match wins.</p>
+         * <p>Operations ranked by probability of being the single best choice for this task; empty when no match wins</p>
          */
         @JsonSetter(value = "matches", nulls = Nulls.SKIP)
         public Builder matches(Optional<List<OperationMatch>> matches) {
@@ -130,7 +129,7 @@ public final class OperationSearchResult {
         }
 
         /**
-         * <p>Relative probability that none of the documented operations is the best choice.</p>
+         * <p>Relative probability that none of the documented operations is the best choice</p>
          */
         @JsonSetter(value = "noMatchProbability", nulls = Nulls.SKIP)
         public Builder noMatchProbability(Optional<Double> noMatchProbability) {
@@ -144,7 +143,7 @@ public final class OperationSearchResult {
         }
 
         /**
-         * <p>The trimmed input task.</p>
+         * <p>The trimmed input task</p>
          */
         @JsonSetter(value = "query", nulls = Nulls.SKIP)
         public Builder query(Optional<String> query) {
@@ -159,6 +158,16 @@ public final class OperationSearchResult {
 
         public OperationSearchResult build() {
             return new OperationSearchResult(matches, noMatchProbability, query, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("matches")
+                    || key.equalsIgnoreCase("noMatchProbability")
+                    || key.equalsIgnoreCase("query")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -78,21 +78,33 @@ public final class CreateModelRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return User-defined fields to add to the model alongside its source fields
+     */
     @JsonProperty("additional_fields")
     public Optional<List<ModelModelFieldRequest>> getAdditionalFields() {
         return additionalFields;
     }
 
+    /**
+     * @return Model configuration for the source connection type
+     */
     @JsonProperty("configuration")
     public Map<String, Object> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Connection ID of the model's source, which cannot be changed after the model is created
+     */
     @JsonProperty("connection_id")
     public String getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Enrichment to apply to the model
+     */
     @JsonProperty("enricher")
     public Optional<Enrichment> getEnricher() {
         return enricher;
@@ -106,36 +118,57 @@ public final class CreateModelRequest {
         return fields;
     }
 
+    /**
+     * @return Source field name of the model's unique identifier
+     */
     @JsonProperty("identifier")
     public Optional<String> getIdentifier() {
         return identifier;
     }
 
+    /**
+     * @return Deprecated; ignored
+     */
     @JsonProperty("labels")
     public Optional<List<String>> getLabels() {
         return labels;
     }
 
+    /**
+     * @return Model name
+     */
     @JsonProperty("name")
     public String getName() {
         return name;
     }
 
+    /**
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Permissions policy IDs applied to the model. On update, a non-empty list replaces the model's policies and an empty or omitted list leaves them unchanged.
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
     }
 
+    /**
+     * @return Joins from this model's fields to fields on other models
+     */
     @JsonProperty("relations")
     public Optional<List<ModelRelation>> getRelations() {
         return relations;
     }
 
+    /**
+     * @return Source field names used to detect changed records
+     */
     @JsonProperty("tracking_columns")
     public Optional<List<String>> getTrackingColumns() {
         return trackingColumns;
@@ -194,12 +227,18 @@ public final class CreateModelRequest {
     }
 
     public interface ConnectionIdStage {
+        /**
+         * <p>Connection ID of the model's source, which cannot be changed after the model is created</p>
+         */
         NameStage connectionId(@NotNull String connectionId);
 
         Builder from(CreateModelRequest other);
     }
 
     public interface NameStage {
+        /**
+         * <p>Model name</p>
+         */
         _FinalStage name(@NotNull String name);
     }
 
@@ -210,16 +249,25 @@ public final class CreateModelRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>User-defined fields to add to the model alongside its source fields</p>
+         */
         _FinalStage additionalFields(Optional<List<ModelModelFieldRequest>> additionalFields);
 
         _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields);
 
+        /**
+         * <p>Model configuration for the source connection type</p>
+         */
         _FinalStage configuration(Map<String, Object> configuration);
 
         _FinalStage putAllConfiguration(Map<String, Object> configuration);
 
         _FinalStage configuration(String key, Object value);
 
+        /**
+         * <p>Enrichment to apply to the model</p>
+         */
         _FinalStage enricher(Optional<Enrichment> enricher);
 
         _FinalStage enricher(Enrichment enricher);
@@ -231,26 +279,44 @@ public final class CreateModelRequest {
 
         _FinalStage fields(List<String> fields);
 
+        /**
+         * <p>Source field name of the model's unique identifier</p>
+         */
         _FinalStage identifier(Optional<String> identifier);
 
         _FinalStage identifier(String identifier);
 
+        /**
+         * <p>Deprecated; ignored</p>
+         */
         _FinalStage labels(Optional<List<String>> labels);
 
         _FinalStage labels(List<String> labels);
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
+        /**
+         * <p>Permissions policy IDs applied to the model. On update, a non-empty list replaces the model's policies and an empty or omitted list leaves them unchanged.</p>
+         */
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
 
+        /**
+         * <p>Joins from this model's fields to fields on other models</p>
+         */
         _FinalStage relations(Optional<List<ModelRelation>> relations);
 
         _FinalStage relations(List<ModelRelation> relations);
 
+        /**
+         * <p>Source field names used to detect changed records</p>
+         */
         _FinalStage trackingColumns(Optional<List<String>> trackingColumns);
 
         _FinalStage trackingColumns(List<String> trackingColumns);
@@ -282,7 +348,6 @@ public final class CreateModelRequest {
 
         private Optional<List<ModelModelFieldRequest>> additionalFields = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -304,6 +369,10 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the model's source, which cannot be changed after the model is created</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_id")
         public NameStage connectionId(@NotNull String connectionId) {
@@ -311,6 +380,10 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Model name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("name")
         public _FinalStage name(@NotNull String name) {
@@ -318,12 +391,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Source field names used to detect changed records</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage trackingColumns(List<String> trackingColumns) {
             this.trackingColumns = Optional.ofNullable(trackingColumns);
             return this;
         }
 
+        /**
+         * <p>Source field names used to detect changed records</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "tracking_columns", nulls = Nulls.SKIP)
         public _FinalStage trackingColumns(Optional<List<String>> trackingColumns) {
@@ -331,12 +411,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Joins from this model's fields to fields on other models</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage relations(List<ModelRelation> relations) {
             this.relations = Optional.ofNullable(relations);
             return this;
         }
 
+        /**
+         * <p>Joins from this model's fields to fields on other models</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "relations", nulls = Nulls.SKIP)
         public _FinalStage relations(Optional<List<ModelRelation>> relations) {
@@ -344,12 +431,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the model. On update, a non-empty list replaces the model's policies and an empty or omitted list leaves them unchanged.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.ofNullable(policies);
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the model. On update, a non-empty list replaces the model's policies and an empty or omitted list leaves them unchanged.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
@@ -357,12 +451,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -370,12 +471,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Deprecated; ignored</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage labels(List<String> labels) {
             this.labels = Optional.ofNullable(labels);
             return this;
         }
 
+        /**
+         * <p>Deprecated; ignored</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "labels", nulls = Nulls.SKIP)
         public _FinalStage labels(Optional<List<String>> labels) {
@@ -383,12 +491,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Source field name of the model's unique identifier</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage identifier(String identifier) {
             this.identifier = Optional.ofNullable(identifier);
             return this;
         }
 
+        /**
+         * <p>Source field name of the model's unique identifier</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "identifier", nulls = Nulls.SKIP)
         public _FinalStage identifier(Optional<String> identifier) {
@@ -416,12 +531,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Enrichment to apply to the model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage enricher(Enrichment enricher) {
             this.enricher = Optional.ofNullable(enricher);
             return this;
         }
 
+        /**
+         * <p>Enrichment to apply to the model</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "enricher", nulls = Nulls.SKIP)
         public _FinalStage enricher(Optional<Enrichment> enricher) {
@@ -429,12 +551,20 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Model configuration for the source connection type</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage configuration(String key, Object value) {
             this.configuration.put(key, value);
             return this;
         }
 
+        /**
+         * <p>Model configuration for the source connection type</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage putAllConfiguration(Map<String, Object> configuration) {
             if (configuration != null) {
@@ -443,6 +573,9 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>Model configuration for the source connection type</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Map<String, Object> configuration) {
@@ -453,12 +586,19 @@ public final class CreateModelRequest {
             return this;
         }
 
+        /**
+         * <p>User-defined fields to add to the model alongside its source fields</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage additionalFields(List<ModelModelFieldRequest> additionalFields) {
             this.additionalFields = Optional.ofNullable(additionalFields);
             return this;
         }
 
+        /**
+         * <p>User-defined fields to add to the model alongside its source fields</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "additional_fields", nulls = Nulls.SKIP)
         public _FinalStage additionalFields(Optional<List<ModelModelFieldRequest>> additionalFields) {
@@ -482,6 +622,25 @@ public final class CreateModelRequest {
                     relations,
                     trackingColumns,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("additional_fields")
+                    || key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("enricher")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("identifier")
+                    || key.equalsIgnoreCase("labels")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("relations")
+                    || key.equalsIgnoreCase("tracking_columns")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

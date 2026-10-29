@@ -36,11 +36,17 @@ public final class HarborActionPreparation {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Execution ID of the prepared action
+     */
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
         return executionId;
     }
 
+    /**
+     * @return When the prepared action expires
+     */
     @JsonProperty("expires_at")
     public Optional<OffsetDateTime> getExpiresAt() {
         return expiresAt;
@@ -81,7 +87,6 @@ public final class HarborActionPreparation {
 
         private Optional<OffsetDateTime> expiresAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class HarborActionPreparation {
             return this;
         }
 
+        /**
+         * <p>Execution ID of the prepared action</p>
+         */
         @JsonSetter(value = "execution_id", nulls = Nulls.SKIP)
         public Builder executionId(Optional<String> executionId) {
             this.executionId = executionId;
@@ -103,6 +111,9 @@ public final class HarborActionPreparation {
             return this;
         }
 
+        /**
+         * <p>When the prepared action expires</p>
+         */
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
             this.expiresAt = expiresAt;
@@ -116,6 +127,14 @@ public final class HarborActionPreparation {
 
         public HarborActionPreparation build() {
             return new HarborActionPreparation(executionId, expiresAt, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("execution_id") || key.equalsIgnoreCase("expires_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

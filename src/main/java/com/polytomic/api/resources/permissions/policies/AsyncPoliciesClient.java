@@ -5,6 +5,7 @@ package com.polytomic.api.resources.permissions.policies;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.permissions.policies.requests.CreatePolicyRequest;
 import com.polytomic.api.resources.permissions.policies.requests.UpdatePolicyRequest;
@@ -37,7 +38,14 @@ public class AsyncPoliciesClient {
      * <a href="../../../api-reference/permissions/policies/get"><code>GET /api/permissions/policies/{id}</code></a>.</p>
      */
     public CompletableFuture<ListPoliciesResponseEnvelope> list() {
-        return this.rawClient.list().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListPoliciesResponseEnvelope>> rawFuture = this.rawClient.list();
+        CompletableFuture<ListPoliciesResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -48,7 +56,15 @@ public class AsyncPoliciesClient {
      * <a href="../../../api-reference/permissions/policies/get"><code>GET /api/permissions/policies/{id}</code></a>.</p>
      */
     public CompletableFuture<ListPoliciesResponseEnvelope> list(RequestOptions requestOptions) {
-        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListPoliciesResponseEnvelope>> rawFuture =
+                this.rawClient.list(requestOptions);
+        CompletableFuture<ListPoliciesResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -59,7 +75,14 @@ public class AsyncPoliciesClient {
      * <a href="../../../api-reference/permissions/roles/create"><code>POST /api/permissions/roles</code></a>.</p>
      */
     public CompletableFuture<PolicyResponseEnvelope> create(CreatePolicyRequest request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<PolicyResponseEnvelope>> rawFuture = this.rawClient.create(request);
+        CompletableFuture<PolicyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -71,7 +94,15 @@ public class AsyncPoliciesClient {
      */
     public CompletableFuture<PolicyResponseEnvelope> create(
             CreatePolicyRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<PolicyResponseEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<PolicyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -80,7 +111,14 @@ public class AsyncPoliciesClient {
      * the resources it applies to.</p>
      */
     public CompletableFuture<PolicyResponseEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<PolicyResponseEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<PolicyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -89,7 +127,15 @@ public class AsyncPoliciesClient {
      * the resources it applies to.</p>
      */
     public CompletableFuture<PolicyResponseEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<PolicyResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<PolicyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -101,7 +147,14 @@ public class AsyncPoliciesClient {
      * and send the complete object back.</p>
      */
     public CompletableFuture<PolicyResponseEnvelope> update(String id, UpdatePolicyRequest request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<PolicyResponseEnvelope>> rawFuture = this.rawClient.update(id, request);
+        CompletableFuture<PolicyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -114,7 +167,15 @@ public class AsyncPoliciesClient {
      */
     public CompletableFuture<PolicyResponseEnvelope> update(
             String id, UpdatePolicyRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<PolicyResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<PolicyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -123,7 +184,14 @@ public class AsyncPoliciesClient {
      * is revoked immediately for all users who depended on it.</p>
      */
     public CompletableFuture<Void> delete(String id) {
-        return this.rawClient.delete(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -132,6 +200,13 @@ public class AsyncPoliciesClient {
      * is revoked immediately for all users who depended on it.</p>
      */
     public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

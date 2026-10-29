@@ -101,7 +101,6 @@ public final class ActivityGetSessionRequest {
 
         private Optional<ActivityGetSessionRequestOrder> order = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -157,6 +156,14 @@ public final class ActivityGetSessionRequest {
 
         public ActivityGetSessionRequest build() {
             return new ActivityGetSessionRequest(limit, pageToken, order, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("page_token") || key.equalsIgnoreCase("order")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

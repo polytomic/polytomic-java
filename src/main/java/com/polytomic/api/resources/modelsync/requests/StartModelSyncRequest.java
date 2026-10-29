@@ -46,26 +46,32 @@ public final class StartModelSyncRequest {
     }
 
     /**
-     * @return Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead.
+     * @return Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead. Cannot be combined with 'resync'.
      */
     @JsonProperty("identities")
     public Optional<List<String>> getIdentities() {
         return identities;
     }
 
+    /**
+     * @return Whether the execution ignores change tracking and syncs every record; on a sync that skips the initial backfill, it instead restarts change tracking from the current position without syncing existing records
+     */
     @JsonProperty("resync")
     public Optional<Boolean> getResync() {
         return resync;
     }
 
     /**
-     * @return Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities'; at most 1000 entries.
+     * @return Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities' or 'resync'; at most 1000 entries.
      */
     @JsonProperty("source_identities")
     public Optional<List<List<ModelSyncSourceIdentity>>> getSourceIdentities() {
         return sourceIdentities;
     }
 
+    /**
+     * @return Whether the execution is a test that syncs at most 5 records. Cannot be combined with 'resync'.
+     */
     @JsonProperty("test")
     public Optional<Boolean> getTest() {
         return test;
@@ -113,7 +119,6 @@ public final class StartModelSyncRequest {
 
         private Optional<Boolean> test = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -127,7 +132,7 @@ public final class StartModelSyncRequest {
         }
 
         /**
-         * <p>Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead.</p>
+         * <p>Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead. Cannot be combined with 'resync'.</p>
          */
         @JsonSetter(value = "identities", nulls = Nulls.SKIP)
         public Builder identities(Optional<List<String>> identities) {
@@ -140,6 +145,9 @@ public final class StartModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Whether the execution ignores change tracking and syncs every record; on a sync that skips the initial backfill, it instead restarts change tracking from the current position without syncing existing records</p>
+         */
         @JsonSetter(value = "resync", nulls = Nulls.SKIP)
         public Builder resync(Optional<Boolean> resync) {
             this.resync = resync;
@@ -152,7 +160,7 @@ public final class StartModelSyncRequest {
         }
 
         /**
-         * <p>Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities'; at most 1000 entries.</p>
+         * <p>Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities' or 'resync'; at most 1000 entries.</p>
          */
         @JsonSetter(value = "source_identities", nulls = Nulls.SKIP)
         public Builder sourceIdentities(Optional<List<List<ModelSyncSourceIdentity>>> sourceIdentities) {
@@ -165,6 +173,9 @@ public final class StartModelSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Whether the execution is a test that syncs at most 5 records. Cannot be combined with 'resync'.</p>
+         */
         @JsonSetter(value = "test", nulls = Nulls.SKIP)
         public Builder test(Optional<Boolean> test) {
             this.test = test;
@@ -178,6 +189,17 @@ public final class StartModelSyncRequest {
 
         public StartModelSyncRequest build() {
             return new StartModelSyncRequest(identities, resync, sourceIdentities, test, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("identities")
+                    || key.equalsIgnoreCase("resync")
+                    || key.equalsIgnoreCase("source_identities")
+                    || key.equalsIgnoreCase("test")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

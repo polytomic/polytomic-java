@@ -43,21 +43,33 @@ public final class CompletionValue {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Field IDs and values that must all match for this option to apply
+     */
     @JsonProperty("depends_on")
     public Optional<Map<String, String>> getDependsOn() {
         return dependsOn;
     }
 
+    /**
+     * @return Display label of the option
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Dot-separated position of the option in a hierarchy
+     */
     @JsonProperty("path")
     public Optional<String> getPath() {
         return path;
     }
 
+    /**
+     * @return Value to submit for this option
+     */
     @JsonProperty("value")
     public Optional<Object> getValue() {
         return value;
@@ -105,7 +117,6 @@ public final class CompletionValue {
 
         private Optional<Object> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -118,6 +129,9 @@ public final class CompletionValue {
             return this;
         }
 
+        /**
+         * <p>Field IDs and values that must all match for this option to apply</p>
+         */
         @JsonSetter(value = "depends_on", nulls = Nulls.SKIP)
         public Builder dependsOn(Optional<Map<String, String>> dependsOn) {
             this.dependsOn = dependsOn;
@@ -129,6 +143,9 @@ public final class CompletionValue {
             return this;
         }
 
+        /**
+         * <p>Display label of the option</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -140,6 +157,9 @@ public final class CompletionValue {
             return this;
         }
 
+        /**
+         * <p>Dot-separated position of the option in a hierarchy</p>
+         */
         @JsonSetter(value = "path", nulls = Nulls.SKIP)
         public Builder path(Optional<String> path) {
             this.path = path;
@@ -151,6 +171,9 @@ public final class CompletionValue {
             return this;
         }
 
+        /**
+         * <p>Value to submit for this option</p>
+         */
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public Builder value(Optional<Object> value) {
             this.value = value;
@@ -164,6 +187,17 @@ public final class CompletionValue {
 
         public CompletionValue build() {
             return new CompletionValue(dependsOn, label, path, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("depends_on")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("path")
+                    || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

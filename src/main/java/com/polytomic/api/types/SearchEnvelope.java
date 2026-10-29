@@ -36,11 +36,17 @@ public final class SearchEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Matching resources, ordered by type and name
+     */
     @JsonProperty("data")
     public Optional<List<SearchResultItem>> getData() {
         return data;
     }
 
+    /**
+     * @return Truncation and completeness details for the results
+     */
     @JsonProperty("metadata")
     public Optional<SearchResultMetadata> getMetadata() {
         return metadata;
@@ -81,7 +87,6 @@ public final class SearchEnvelope {
 
         private Optional<SearchResultMetadata> metadata = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class SearchEnvelope {
             return this;
         }
 
+        /**
+         * <p>Matching resources, ordered by type and name</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<SearchResultItem>> data) {
             this.data = data;
@@ -103,6 +111,9 @@ public final class SearchEnvelope {
             return this;
         }
 
+        /**
+         * <p>Truncation and completeness details for the results</p>
+         */
         @JsonSetter(value = "metadata", nulls = Nulls.SKIP)
         public Builder metadata(Optional<SearchResultMetadata> metadata) {
             this.metadata = metadata;
@@ -116,6 +127,14 @@ public final class SearchEnvelope {
 
         public SearchEnvelope build() {
             return new SearchEnvelope(data, metadata, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("metadata")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

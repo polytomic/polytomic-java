@@ -5,6 +5,7 @@ package com.polytomic.api.resources.organization;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.organization.requests.CreateOrganizationRequestSchema;
 import com.polytomic.api.resources.organization.requests.UpdateOrganizationRequestSchema;
@@ -42,7 +43,14 @@ public class AsyncOrganizationClient {
      * <a href="../../api-reference/organization/get"><code>GET /api/organizations/{id}</code></a> instead.</p>
      */
     public CompletableFuture<OrganizationEnvelope> getCurrent() {
-        return this.rawClient.getCurrent().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture = this.rawClient.getCurrent();
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -56,21 +64,45 @@ public class AsyncOrganizationClient {
      * <a href="../../api-reference/organization/get"><code>GET /api/organizations/{id}</code></a> instead.</p>
      */
     public CompletableFuture<OrganizationEnvelope> getCurrent(RequestOptions requestOptions) {
-        return this.rawClient.getCurrent(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture =
+                this.rawClient.getCurrent(requestOptions);
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the organization's record logging settings, including the connection record logs are delivered to.
      */
     public CompletableFuture<RecordLoggingSettingsEnvelope> getRecordLogging() {
-        return this.rawClient.getRecordLogging().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RecordLoggingSettingsEnvelope>> rawFuture =
+                this.rawClient.getRecordLogging();
+        CompletableFuture<RecordLoggingSettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the organization's record logging settings, including the connection record logs are delivered to.
      */
     public CompletableFuture<RecordLoggingSettingsEnvelope> getRecordLogging(RequestOptions requestOptions) {
-        return this.rawClient.getRecordLogging(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RecordLoggingSettingsEnvelope>> rawFuture =
+                this.rawClient.getRecordLogging(requestOptions);
+        CompletableFuture<RecordLoggingSettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -78,7 +110,15 @@ public class AsyncOrganizationClient {
      */
     public CompletableFuture<RecordLoggingSettingsEnvelope> updateRecordLogging(
             UpdateRecordLoggingSettingsRequest request) {
-        return this.rawClient.updateRecordLogging(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RecordLoggingSettingsEnvelope>> rawFuture =
+                this.rawClient.updateRecordLogging(request);
+        CompletableFuture<RecordLoggingSettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -86,7 +126,15 @@ public class AsyncOrganizationClient {
      */
     public CompletableFuture<RecordLoggingSettingsEnvelope> updateRecordLogging(
             UpdateRecordLoggingSettingsRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.updateRecordLogging(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RecordLoggingSettingsEnvelope>> rawFuture =
+                this.rawClient.updateRecordLogging(request, requestOptions);
+        CompletableFuture<RecordLoggingSettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -100,7 +148,14 @@ public class AsyncOrganizationClient {
      * <a href="../../api-reference/organization/get-current"><code>GET /api/organization</code></a> instead.</p>
      */
     public CompletableFuture<OrganizationsEnvelope> list() {
-        return this.rawClient.list().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationsEnvelope>> rawFuture = this.rawClient.list();
+        CompletableFuture<OrganizationsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -114,7 +169,14 @@ public class AsyncOrganizationClient {
      * <a href="../../api-reference/organization/get-current"><code>GET /api/organization</code></a> instead.</p>
      */
     public CompletableFuture<OrganizationsEnvelope> list(RequestOptions requestOptions) {
-        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationsEnvelope>> rawFuture = this.rawClient.list(requestOptions);
+        CompletableFuture<OrganizationsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -127,7 +189,14 @@ public class AsyncOrganizationClient {
      * <code>PUT /api/organizations/{id}</code>.</p>
      */
     public CompletableFuture<OrganizationEnvelope> create(CreateOrganizationRequestSchema request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture = this.rawClient.create(request);
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -141,7 +210,15 @@ public class AsyncOrganizationClient {
      */
     public CompletableFuture<OrganizationEnvelope> create(
             CreateOrganizationRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -154,7 +231,14 @@ public class AsyncOrganizationClient {
      * </blockquote>
      */
     public CompletableFuture<OrganizationEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -167,7 +251,15 @@ public class AsyncOrganizationClient {
      * </blockquote>
      */
     public CompletableFuture<OrganizationEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -182,7 +274,14 @@ public class AsyncOrganizationClient {
      * </blockquote>
      */
     public CompletableFuture<OrganizationEnvelope> update(String id, UpdateOrganizationRequestSchema request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture = this.rawClient.update(id, request);
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -198,7 +297,15 @@ public class AsyncOrganizationClient {
      */
     public CompletableFuture<OrganizationEnvelope> update(
             String id, UpdateOrganizationRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<OrganizationEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<OrganizationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -206,7 +313,14 @@ public class AsyncOrganizationClient {
      * <p>Partner callers cannot delete their own owner organization.</p>
      */
     public CompletableFuture<Void> delete(String id) {
-        return this.rawClient.delete(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -214,6 +328,13 @@ public class AsyncOrganizationClient {
      * <p>Partner callers cannot delete their own owner organization.</p>
      */
     public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

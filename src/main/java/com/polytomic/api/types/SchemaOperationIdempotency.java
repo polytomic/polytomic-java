@@ -33,11 +33,17 @@ public final class SchemaOperationIdempotency {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Deduplication window in nanoseconds
+     */
     @JsonProperty("retention_ns")
     public Optional<Long> getRetentionNs() {
         return retentionNs;
     }
 
+    /**
+     * @return Where idempotency keys must be unique
+     */
     @JsonProperty("scope")
     public Optional<String> getScope() {
         return scope;
@@ -78,7 +84,6 @@ public final class SchemaOperationIdempotency {
 
         private Optional<String> scope = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -89,6 +94,9 @@ public final class SchemaOperationIdempotency {
             return this;
         }
 
+        /**
+         * <p>Deduplication window in nanoseconds</p>
+         */
         @JsonSetter(value = "retention_ns", nulls = Nulls.SKIP)
         public Builder retentionNs(Optional<Long> retentionNs) {
             this.retentionNs = retentionNs;
@@ -100,6 +108,9 @@ public final class SchemaOperationIdempotency {
             return this;
         }
 
+        /**
+         * <p>Where idempotency keys must be unique</p>
+         */
         @JsonSetter(value = "scope", nulls = Nulls.SKIP)
         public Builder scope(Optional<String> scope) {
             this.scope = scope;
@@ -113,6 +124,14 @@ public final class SchemaOperationIdempotency {
 
         public SchemaOperationIdempotency build() {
             return new SchemaOperationIdempotency(retentionNs, scope, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("retention_ns") || key.equalsIgnoreCase("scope")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

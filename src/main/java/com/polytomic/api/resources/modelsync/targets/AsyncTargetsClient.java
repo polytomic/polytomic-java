@@ -4,6 +4,7 @@
 package com.polytomic.api.resources.modelsync.targets;
 
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.modelsync.targets.requests.TargetsGetTargetFieldsRequest;
 import com.polytomic.api.resources.modelsync.targets.requests.TargetsListRequest;
@@ -66,7 +67,14 @@ public class AsyncTargetsClient {
      * not-yet-created target has no cached schema to refresh.</p>
      */
     public CompletableFuture<TargetResponseEnvelope> getTargetFields(String id) {
-        return this.rawClient.getTargetFields(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetResponseEnvelope>> rawFuture = this.rawClient.getTargetFields(id);
+        CompletableFuture<TargetResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -106,7 +114,15 @@ public class AsyncTargetsClient {
      * not-yet-created target has no cached schema to refresh.</p>
      */
     public CompletableFuture<TargetResponseEnvelope> getTargetFields(String id, RequestOptions requestOptions) {
-        return this.rawClient.getTargetFields(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetResponseEnvelope>> rawFuture =
+                this.rawClient.getTargetFields(id, requestOptions);
+        CompletableFuture<TargetResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -146,7 +162,15 @@ public class AsyncTargetsClient {
      * not-yet-created target has no cached schema to refresh.</p>
      */
     public CompletableFuture<TargetResponseEnvelope> getTargetFields(String id, TargetsGetTargetFieldsRequest request) {
-        return this.rawClient.getTargetFields(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetResponseEnvelope>> rawFuture =
+                this.rawClient.getTargetFields(id, request);
+        CompletableFuture<TargetResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -187,7 +211,15 @@ public class AsyncTargetsClient {
      */
     public CompletableFuture<TargetResponseEnvelope> getTargetFields(
             String id, TargetsGetTargetFieldsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getTargetFields(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetResponseEnvelope>> rawFuture =
+                this.rawClient.getTargetFields(id, request, requestOptions);
+        CompletableFuture<TargetResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -208,7 +240,14 @@ public class AsyncTargetsClient {
      * what operations the mode supports.</p>
      */
     public CompletableFuture<TargetObjectsResponseEnvelope> list(String id) {
-        return this.rawClient.list(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetObjectsResponseEnvelope>> rawFuture = this.rawClient.list(id);
+        CompletableFuture<TargetObjectsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -229,7 +268,15 @@ public class AsyncTargetsClient {
      * what operations the mode supports.</p>
      */
     public CompletableFuture<TargetObjectsResponseEnvelope> list(String id, RequestOptions requestOptions) {
-        return this.rawClient.list(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetObjectsResponseEnvelope>> rawFuture =
+                this.rawClient.list(id, requestOptions);
+        CompletableFuture<TargetObjectsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -250,7 +297,15 @@ public class AsyncTargetsClient {
      * what operations the mode supports.</p>
      */
     public CompletableFuture<TargetObjectsResponseEnvelope> list(String id, TargetsListRequest request) {
-        return this.rawClient.list(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetObjectsResponseEnvelope>> rawFuture =
+                this.rawClient.list(id, request);
+        CompletableFuture<TargetObjectsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -272,7 +327,15 @@ public class AsyncTargetsClient {
      */
     public CompletableFuture<TargetObjectsResponseEnvelope> list(
             String id, TargetsListRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetObjectsResponseEnvelope>> rawFuture =
+                this.rawClient.list(id, request, requestOptions);
+        CompletableFuture<TargetObjectsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -304,7 +367,15 @@ public class AsyncTargetsClient {
      * sync</a>.</p>
      */
     public CompletableFuture<TargetPropertyValuesEnvelope> getCreateProperty(String id, String property) {
-        return this.rawClient.getCreateProperty(id, property).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetPropertyValuesEnvelope>> rawFuture =
+                this.rawClient.getCreateProperty(id, property);
+        CompletableFuture<TargetPropertyValuesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -337,6 +408,14 @@ public class AsyncTargetsClient {
      */
     public CompletableFuture<TargetPropertyValuesEnvelope> getCreateProperty(
             String id, String property, RequestOptions requestOptions) {
-        return this.rawClient.getCreateProperty(id, property, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TargetPropertyValuesEnvelope>> rawFuture =
+                this.rawClient.getCreateProperty(id, property, requestOptions);
+        CompletableFuture<TargetPropertyValuesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

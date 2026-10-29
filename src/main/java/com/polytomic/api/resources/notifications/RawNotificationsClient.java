@@ -4,6 +4,7 @@
 package com.polytomic.api.resources.notifications;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.MediaTypes;
@@ -14,6 +15,7 @@ import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.RetryInterceptor;
 import com.polytomic.api.errors.BadRequestError;
+import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.resources.notifications.requests.GlobalErrorSubscribersRequest;
 import com.polytomic.api.types.ApiError;
@@ -162,7 +164,9 @@ public class RawNotificationsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -198,6 +202,9 @@ public class RawNotificationsClient {
                 switch (response.code()) {
                     case 400:
                         throw new BadRequestError(
+                                ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
+                    case 403:
+                        throw new ForbiddenError(
                                 ObjectMappers.JSON_MAPPER.readValue(responseBodyString, ApiError.class), response);
                     case 500:
                         throw new InternalServerError(

@@ -30,7 +30,7 @@ public final class RevokedHarborKeyEnvelopeData {
     }
 
     /**
-     * @return Unique identifier of the revoked credential.
+     * @return Unique identifier of the revoked credential
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -70,7 +70,6 @@ public final class RevokedHarborKeyEnvelopeData {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -81,7 +80,7 @@ public final class RevokedHarborKeyEnvelopeData {
         }
 
         /**
-         * <p>Unique identifier of the revoked credential.</p>
+         * <p>Unique identifier of the revoked credential</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -96,6 +95,14 @@ public final class RevokedHarborKeyEnvelopeData {
 
         public RevokedHarborKeyEnvelopeData build() {
             return new RevokedHarborKeyEnvelopeData(id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

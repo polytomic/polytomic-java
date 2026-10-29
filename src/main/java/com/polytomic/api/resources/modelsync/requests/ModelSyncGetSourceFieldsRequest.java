@@ -31,7 +31,7 @@ public final class ModelSyncGetSourceFieldsRequest {
     }
 
     /**
-     * @return Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for.
+     * @return Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for
      */
     @JsonProperty("params")
     public Optional<Map<String, Optional<String>>> getParams() {
@@ -71,7 +71,6 @@ public final class ModelSyncGetSourceFieldsRequest {
     public static final class Builder {
         private Optional<Map<String, Optional<String>>> params = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -82,7 +81,7 @@ public final class ModelSyncGetSourceFieldsRequest {
         }
 
         /**
-         * <p>Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for.</p>
+         * <p>Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for</p>
          */
         @JsonSetter(value = "params", nulls = Nulls.SKIP)
         public Builder params(Optional<Map<String, Optional<String>>> params) {
@@ -97,6 +96,14 @@ public final class ModelSyncGetSourceFieldsRequest {
 
         public ModelSyncGetSourceFieldsRequest build() {
             return new ModelSyncGetSourceFieldsRequest(params, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("params")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

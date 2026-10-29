@@ -32,11 +32,17 @@ public final class SchemaPrimaryKeyOverrideInput {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Field ID in the schema
+     */
     @JsonProperty("field_id")
     public String getFieldId() {
         return fieldId;
     }
 
+    /**
+     * @return Whether the field is part of the primary key
+     */
     @JsonProperty("is_primary_key")
     public boolean getIsPrimaryKey() {
         return isPrimaryKey;
@@ -72,12 +78,18 @@ public final class SchemaPrimaryKeyOverrideInput {
     }
 
     public interface FieldIdStage {
+        /**
+         * <p>Field ID in the schema</p>
+         */
         IsPrimaryKeyStage fieldId(@NotNull String fieldId);
 
         Builder from(SchemaPrimaryKeyOverrideInput other);
     }
 
     public interface IsPrimaryKeyStage {
+        /**
+         * <p>Whether the field is part of the primary key</p>
+         */
         _FinalStage isPrimaryKey(boolean isPrimaryKey);
     }
 
@@ -95,7 +107,6 @@ public final class SchemaPrimaryKeyOverrideInput {
 
         private boolean isPrimaryKey;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -107,6 +118,10 @@ public final class SchemaPrimaryKeyOverrideInput {
             return this;
         }
 
+        /**
+         * <p>Field ID in the schema</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("field_id")
         public IsPrimaryKeyStage fieldId(@NotNull String fieldId) {
@@ -114,6 +129,10 @@ public final class SchemaPrimaryKeyOverrideInput {
             return this;
         }
 
+        /**
+         * <p>Whether the field is part of the primary key</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("is_primary_key")
         public _FinalStage isPrimaryKey(boolean isPrimaryKey) {
@@ -124,6 +143,14 @@ public final class SchemaPrimaryKeyOverrideInput {
         @java.lang.Override
         public SchemaPrimaryKeyOverrideInput build() {
             return new SchemaPrimaryKeyOverrideInput(fieldId, isPrimaryKey, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field_id") || key.equalsIgnoreCase("is_primary_key")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

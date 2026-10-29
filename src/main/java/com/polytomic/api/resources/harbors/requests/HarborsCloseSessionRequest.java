@@ -49,31 +49,49 @@ public final class HarborsCloseSessionRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return ID of the key that signed the attestation
+     */
     @JsonIgnore
     public Optional<String> getPolytomicMcpKeyId() {
         return polytomicMcpKeyId;
     }
 
+    /**
+     * @return Unix time, in seconds, when the attestation was signed
+     */
     @JsonIgnore
     public Optional<Long> getPolytomicMcpTimestamp() {
         return polytomicMcpTimestamp;
     }
 
+    /**
+     * @return Single-use value of at least 16 characters included in the signature
+     */
     @JsonIgnore
     public Optional<String> getPolytomicMcpNonce() {
         return polytomicMcpNonce;
     }
 
+    /**
+     * @return Attestation signature
+     */
     @JsonIgnore
     public Optional<String> getPolytomicMcpSignature() {
         return polytomicMcpSignature;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
+    /**
+     * @return Token issued when the session was registered
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
@@ -133,7 +151,6 @@ public final class HarborsCloseSessionRequest {
 
         private Optional<String> polytomicHarborSession = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -148,6 +165,9 @@ public final class HarborsCloseSessionRequest {
             return this;
         }
 
+        /**
+         * <p>ID of the key that signed the attestation</p>
+         */
         public Builder polytomicMcpKeyId(Optional<String> polytomicMcpKeyId) {
             this.polytomicMcpKeyId = polytomicMcpKeyId;
             return this;
@@ -158,6 +178,9 @@ public final class HarborsCloseSessionRequest {
             return this;
         }
 
+        /**
+         * <p>Unix time, in seconds, when the attestation was signed</p>
+         */
         public Builder polytomicMcpTimestamp(Optional<Long> polytomicMcpTimestamp) {
             this.polytomicMcpTimestamp = polytomicMcpTimestamp;
             return this;
@@ -168,6 +191,9 @@ public final class HarborsCloseSessionRequest {
             return this;
         }
 
+        /**
+         * <p>Single-use value of at least 16 characters included in the signature</p>
+         */
         public Builder polytomicMcpNonce(Optional<String> polytomicMcpNonce) {
             this.polytomicMcpNonce = polytomicMcpNonce;
             return this;
@@ -178,6 +204,9 @@ public final class HarborsCloseSessionRequest {
             return this;
         }
 
+        /**
+         * <p>Attestation signature</p>
+         */
         public Builder polytomicMcpSignature(Optional<String> polytomicMcpSignature) {
             this.polytomicMcpSignature = polytomicMcpSignature;
             return this;
@@ -188,6 +217,9 @@ public final class HarborsCloseSessionRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -198,6 +230,9 @@ public final class HarborsCloseSessionRequest {
             return this;
         }
 
+        /**
+         * <p>Token issued when the session was registered</p>
+         */
         public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
             return this;
@@ -217,6 +252,11 @@ public final class HarborsCloseSessionRequest {
                     polytomicActivityRequestId,
                     polytomicHarborSession,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

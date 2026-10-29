@@ -34,6 +34,9 @@ public final class PolicyAction {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Action the roles may perform: create, delete, edit, trigger, query, export, apply_policy, modify_policy, sync_to, sync_from, connect, manage_access, or publish
+     */
     @JsonProperty("action")
     public String getAction() {
         return action;
@@ -74,6 +77,9 @@ public final class PolicyAction {
     }
 
     public interface ActionStage {
+        /**
+         * <p>Action the roles may perform: create, delete, edit, trigger, query, export, apply_policy, modify_policy, sync_to, sync_from, connect, manage_access, or publish</p>
+         */
         _FinalStage action(@NotNull String action);
 
         Builder from(PolicyAction other);
@@ -97,7 +103,6 @@ public final class PolicyAction {
 
         private Optional<List<String>> roleIds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -109,6 +114,10 @@ public final class PolicyAction {
             return this;
         }
 
+        /**
+         * <p>Action the roles may perform: create, delete, edit, trigger, query, export, apply_policy, modify_policy, sync_to, sync_from, connect, manage_access, or publish</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("action")
         public _FinalStage action(@NotNull String action) {
@@ -132,6 +141,14 @@ public final class PolicyAction {
         @java.lang.Override
         public PolicyAction build() {
             return new PolicyAction(action, roleIds, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("action") || key.equalsIgnoreCase("role_ids")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

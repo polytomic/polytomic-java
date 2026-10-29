@@ -44,7 +44,7 @@ public final class ConnectionProxyApi {
     }
 
     /**
-     * @return True for the API used when request.api is omitted.
+     * @return True for the API used when request.api is omitted
      */
     @JsonProperty("default")
     public Optional<Boolean> getDefault() {
@@ -52,20 +52,23 @@ public final class ConnectionProxyApi {
     }
 
     /**
-     * @return What this API is for.
+     * @return What this API is for
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return Base URL, query parameters, and headers that the proxy automatically applies to requests sent to this API
+     */
     @JsonProperty("inheritedBase")
     public Optional<ConnectionProxyInheritedBase> getInheritedBase() {
         return inheritedBase;
     }
 
     /**
-     * @return Identifier to pass as request.api to call this API.
+     * @return Identifier to pass as request.api to call this API
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -114,7 +117,6 @@ public final class ConnectionProxyApi {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -128,7 +130,7 @@ public final class ConnectionProxyApi {
         }
 
         /**
-         * <p>True for the API used when request.api is omitted.</p>
+         * <p>True for the API used when request.api is omitted</p>
          */
         @JsonSetter(value = "default", nulls = Nulls.SKIP)
         public Builder default_(Optional<Boolean> default_) {
@@ -142,7 +144,7 @@ public final class ConnectionProxyApi {
         }
 
         /**
-         * <p>What this API is for.</p>
+         * <p>What this API is for</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -155,6 +157,9 @@ public final class ConnectionProxyApi {
             return this;
         }
 
+        /**
+         * <p>Base URL, query parameters, and headers that the proxy automatically applies to requests sent to this API</p>
+         */
         @JsonSetter(value = "inheritedBase", nulls = Nulls.SKIP)
         public Builder inheritedBase(Optional<ConnectionProxyInheritedBase> inheritedBase) {
             this.inheritedBase = inheritedBase;
@@ -167,7 +172,7 @@ public final class ConnectionProxyApi {
         }
 
         /**
-         * <p>Identifier to pass as request.api to call this API.</p>
+         * <p>Identifier to pass as request.api to call this API</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -182,6 +187,17 @@ public final class ConnectionProxyApi {
 
         public ConnectionProxyApi build() {
             return new ConnectionProxyApi(default_, description, inheritedBase, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("default")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("inheritedBase")
+                    || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -70,7 +70,6 @@ public final class UsersCreateApiKeyRequest {
     public static final class Builder {
         private Optional<Boolean> force = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -96,6 +95,14 @@ public final class UsersCreateApiKeyRequest {
 
         public UsersCreateApiKeyRequest build() {
             return new UsersCreateApiKeyRequest(force, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("force")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

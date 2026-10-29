@@ -56,34 +56,49 @@ public final class Filter {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Model field to filter on
+     */
     @JsonProperty("field")
     public Optional<Source> getField() {
         return field;
     }
 
     /**
-     * @return Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.
+     * @return Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'
      */
     @JsonProperty("field_id")
     public Optional<String> getFieldId() {
         return fieldId;
     }
 
+    /**
+     * @return Type of field to filter on; required if the field name is ambiguous
+     */
     @JsonProperty("field_type")
     public Optional<FilterFieldReferenceType> getFieldType() {
         return fieldType;
     }
 
+    /**
+     * @return Comparison the filter applies
+     */
     @JsonProperty("function")
     public FilterFunction getFunction() {
         return function;
     }
 
+    /**
+     * @return Label naming this filter in filter_logic
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Value the field is compared against
+     */
     @JsonProperty("value")
     public Optional<Object> getValue() {
         return value;
@@ -134,6 +149,9 @@ public final class Filter {
     }
 
     public interface FunctionStage {
+        /**
+         * <p>Comparison the filter applies</p>
+         */
         _FinalStage function(@NotNull FilterFunction function);
 
         Builder from(Filter other);
@@ -146,25 +164,37 @@ public final class Filter {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Model field to filter on</p>
+         */
         _FinalStage field(Optional<Source> field);
 
         _FinalStage field(Source field);
 
         /**
-         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.</p>
+         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'</p>
          */
         _FinalStage fieldId(Optional<String> fieldId);
 
         _FinalStage fieldId(String fieldId);
 
+        /**
+         * <p>Type of field to filter on; required if the field name is ambiguous</p>
+         */
         _FinalStage fieldType(Optional<FilterFieldReferenceType> fieldType);
 
         _FinalStage fieldType(FilterFieldReferenceType fieldType);
 
+        /**
+         * <p>Label naming this filter in filter_logic</p>
+         */
         _FinalStage label(Optional<String> label);
 
         _FinalStage label(String label);
 
+        /**
+         * <p>Value the field is compared against</p>
+         */
         _FinalStage value(Optional<Object> value);
 
         _FinalStage value(Object value);
@@ -193,7 +223,6 @@ public final class Filter {
 
         private Optional<Source> field = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -210,6 +239,10 @@ public final class Filter {
             return this;
         }
 
+        /**
+         * <p>Comparison the filter applies</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("function")
         public _FinalStage function(@NotNull FilterFunction function) {
@@ -237,12 +270,19 @@ public final class Filter {
             return this;
         }
 
+        /**
+         * <p>Value the field is compared against</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage value(Object value) {
             this.value = Optional.ofNullable(value);
             return this;
         }
 
+        /**
+         * <p>Value the field is compared against</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public _FinalStage value(Optional<Object> value) {
@@ -250,12 +290,19 @@ public final class Filter {
             return this;
         }
 
+        /**
+         * <p>Label naming this filter in filter_logic</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage label(String label) {
             this.label = Optional.ofNullable(label);
             return this;
         }
 
+        /**
+         * <p>Label naming this filter in filter_logic</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public _FinalStage label(Optional<String> label) {
@@ -263,12 +310,19 @@ public final class Filter {
             return this;
         }
 
+        /**
+         * <p>Type of field to filter on; required if the field name is ambiguous</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage fieldType(FilterFieldReferenceType fieldType) {
             this.fieldType = Optional.ofNullable(fieldType);
             return this;
         }
 
+        /**
+         * <p>Type of field to filter on; required if the field name is ambiguous</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "field_type", nulls = Nulls.SKIP)
         public _FinalStage fieldType(Optional<FilterFieldReferenceType> fieldType) {
@@ -277,7 +331,7 @@ public final class Filter {
         }
 
         /**
-         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.</p>
+         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -287,7 +341,7 @@ public final class Filter {
         }
 
         /**
-         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'.</p>
+         * <p>Identifier of the field to filter on: a model field's UUID when 'field_type' is 'Model', or the destination's own field identifier when it is 'Target'</p>
          */
         @java.lang.Override
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
@@ -296,12 +350,19 @@ public final class Filter {
             return this;
         }
 
+        /**
+         * <p>Model field to filter on</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage field(Source field) {
             this.field = Optional.ofNullable(field);
             return this;
         }
 
+        /**
+         * <p>Model field to filter on</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "field", nulls = Nulls.SKIP)
         public _FinalStage field(Optional<Source> field) {
@@ -312,6 +373,20 @@ public final class Filter {
         @java.lang.Override
         public Filter build() {
             return new Filter(field, fieldId, fieldType, function, label, value, valueField, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field")
+                    || key.equalsIgnoreCase("field_id")
+                    || key.equalsIgnoreCase("field_type")
+                    || key.equalsIgnoreCase("function")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("value")
+                    || key.equalsIgnoreCase("value_field")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

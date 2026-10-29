@@ -61,7 +61,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return Complete plain-text context content.
+     * @return Complete plain-text context content
      */
     @JsonProperty("content")
     public Optional<String> getContent() {
@@ -69,7 +69,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return When the context document was created.
+     * @return When the context document was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -77,7 +77,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return Short summary of the context document.
+     * @return Short summary of the context document
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -85,7 +85,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return Unique identifier of the context document.
+     * @return Unique identifier of the context document
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -93,7 +93,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return Exact immutable revision currently published for this context document.
+     * @return Exact immutable revision currently published for this context document
      */
     @JsonProperty("revision_id")
     public Optional<String> getRevisionId() {
@@ -101,7 +101,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return Human-readable context title.
+     * @return Human-readable context title
      */
     @JsonProperty("title")
     public Optional<String> getTitle() {
@@ -109,7 +109,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return When the context document was last updated.
+     * @return When the context document was last updated
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
@@ -117,7 +117,7 @@ public final class HarborContextResponse {
     }
 
     /**
-     * @return Current published version number of the context document.
+     * @return Current published version number of the context document
      */
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
@@ -186,7 +186,6 @@ public final class HarborContextResponse {
 
         private Optional<Integer> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -204,7 +203,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>Complete plain-text context content.</p>
+         * <p>Complete plain-text context content</p>
          */
         @JsonSetter(value = "content", nulls = Nulls.SKIP)
         public Builder content(Optional<String> content) {
@@ -218,7 +217,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>When the context document was created.</p>
+         * <p>When the context document was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -232,7 +231,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>Short summary of the context document.</p>
+         * <p>Short summary of the context document</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -246,7 +245,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>Unique identifier of the context document.</p>
+         * <p>Unique identifier of the context document</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -260,7 +259,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>Exact immutable revision currently published for this context document.</p>
+         * <p>Exact immutable revision currently published for this context document</p>
          */
         @JsonSetter(value = "revision_id", nulls = Nulls.SKIP)
         public Builder revisionId(Optional<String> revisionId) {
@@ -274,7 +273,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>Human-readable context title.</p>
+         * <p>Human-readable context title</p>
          */
         @JsonSetter(value = "title", nulls = Nulls.SKIP)
         public Builder title(Optional<String> title) {
@@ -288,7 +287,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>When the context document was last updated.</p>
+         * <p>When the context document was last updated</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -302,7 +301,7 @@ public final class HarborContextResponse {
         }
 
         /**
-         * <p>Current published version number of the context document.</p>
+         * <p>Current published version number of the context document</p>
          */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
@@ -318,6 +317,21 @@ public final class HarborContextResponse {
         public HarborContextResponse build() {
             return new HarborContextResponse(
                     content, createdAt, description, id, revisionId, title, updatedAt, version, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("content")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("revision_id")
+                    || key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

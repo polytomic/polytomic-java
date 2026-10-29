@@ -38,16 +38,25 @@ public final class ModelSyncSourceConnection {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Source connection ID
+     */
     @JsonProperty("connection_id")
     public String getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Source connection name
+     */
     @JsonProperty("connection_name")
     public String getConnectionName() {
         return connectionName;
     }
 
+    /**
+     * @return Source connection type
+     */
     @JsonProperty("connection_type")
     public String getConnectionType() {
         return connectionType;
@@ -85,16 +94,25 @@ public final class ModelSyncSourceConnection {
     }
 
     public interface ConnectionIdStage {
+        /**
+         * <p>Source connection ID</p>
+         */
         ConnectionNameStage connectionId(@NotNull String connectionId);
 
         Builder from(ModelSyncSourceConnection other);
     }
 
     public interface ConnectionNameStage {
+        /**
+         * <p>Source connection name</p>
+         */
         ConnectionTypeStage connectionName(@NotNull String connectionName);
     }
 
     public interface ConnectionTypeStage {
+        /**
+         * <p>Source connection type</p>
+         */
         _FinalStage connectionType(@NotNull String connectionType);
     }
 
@@ -115,7 +133,6 @@ public final class ModelSyncSourceConnection {
 
         private String connectionType;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -128,6 +145,10 @@ public final class ModelSyncSourceConnection {
             return this;
         }
 
+        /**
+         * <p>Source connection ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_id")
         public ConnectionNameStage connectionId(@NotNull String connectionId) {
@@ -135,6 +156,10 @@ public final class ModelSyncSourceConnection {
             return this;
         }
 
+        /**
+         * <p>Source connection name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_name")
         public ConnectionTypeStage connectionName(@NotNull String connectionName) {
@@ -142,6 +167,10 @@ public final class ModelSyncSourceConnection {
             return this;
         }
 
+        /**
+         * <p>Source connection type</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_type")
         public _FinalStage connectionType(@NotNull String connectionType) {
@@ -152,6 +181,16 @@ public final class ModelSyncSourceConnection {
         @java.lang.Override
         public ModelSyncSourceConnection build() {
             return new ModelSyncSourceConnection(connectionId, connectionName, connectionType, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("connection_name")
+                    || key.equalsIgnoreCase("connection_type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

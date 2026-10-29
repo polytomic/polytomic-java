@@ -85,7 +85,6 @@ public final class CurrentOrgUpdateUserRequestSchema {
 
         private Optional<List<String>> roleIds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -126,6 +125,14 @@ public final class CurrentOrgUpdateUserRequestSchema {
 
         public CurrentOrgUpdateUserRequestSchema build() {
             return new CurrentOrgUpdateUserRequestSchema(role, roleIds, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("role") || key.equalsIgnoreCase("role_ids")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

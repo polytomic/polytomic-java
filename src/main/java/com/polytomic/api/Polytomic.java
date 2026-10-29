@@ -27,7 +27,7 @@ import com.polytomic.api.resources.users.UsersClient;
 import com.polytomic.api.resources.webhooks.WebhooksClient;
 import java.util.function.Supplier;
 
-public class Polytomic {
+public class Polytomic implements AutoCloseable {
     protected final ClientOptions clientOptions;
 
     protected final Supplier<BulkSyncClient> bulkSyncClient;
@@ -172,6 +172,16 @@ public class Polytomic {
 
     public PermissionsClient permissions() {
         return this.permissionsClient.get();
+    }
+
+    /**
+     * Releases resources owned by this client: any WebSocket clients still connected through
+     * it are disconnected first, then the SDK-owned HTTP client is shut down. See
+     * {@code ClientOptions.close()} for what is and is not released.
+     */
+    @Override
+    public void close() {
+        this.clientOptions.close();
     }
 
     public static PolytomicBuilder builder() {

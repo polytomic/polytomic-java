@@ -43,21 +43,33 @@ public final class HarboractivityapiHarborActivityActorSnapshot {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Actor display name when the event was recorded
+     */
     @JsonProperty("display_name")
     public Optional<String> getDisplayName() {
         return displayName;
     }
 
+    /**
+     * @return Actor email when the event was recorded
+     */
     @JsonProperty("email")
     public Optional<String> getEmail() {
         return email;
     }
 
+    /**
+     * @return ID of the actor, credential, or profile
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Actor type
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
@@ -106,7 +118,6 @@ public final class HarboractivityapiHarborActivityActorSnapshot {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -119,6 +130,9 @@ public final class HarboractivityapiHarborActivityActorSnapshot {
             return this;
         }
 
+        /**
+         * <p>Actor display name when the event was recorded</p>
+         */
         @JsonSetter(value = "display_name", nulls = Nulls.SKIP)
         public Builder displayName(Optional<String> displayName) {
             this.displayName = displayName;
@@ -130,6 +144,9 @@ public final class HarboractivityapiHarborActivityActorSnapshot {
             return this;
         }
 
+        /**
+         * <p>Actor email when the event was recorded</p>
+         */
         @JsonSetter(value = "email", nulls = Nulls.SKIP)
         public Builder email(Optional<String> email) {
             this.email = email;
@@ -141,6 +158,9 @@ public final class HarboractivityapiHarborActivityActorSnapshot {
             return this;
         }
 
+        /**
+         * <p>ID of the actor, credential, or profile</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -152,6 +172,9 @@ public final class HarboractivityapiHarborActivityActorSnapshot {
             return this;
         }
 
+        /**
+         * <p>Actor type</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -165,6 +188,17 @@ public final class HarboractivityapiHarborActivityActorSnapshot {
 
         public HarboractivityapiHarborActivityActorSnapshot build() {
             return new HarboractivityapiHarborActivityActorSnapshot(displayName, email, id, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("display_name")
+                    || key.equalsIgnoreCase("email")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

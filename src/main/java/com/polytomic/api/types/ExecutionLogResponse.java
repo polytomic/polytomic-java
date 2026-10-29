@@ -35,11 +35,17 @@ public final class ExecutionLogResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return When the signed URLs expire
+     */
     @JsonProperty("expires")
     public Optional<OffsetDateTime> getExpires() {
         return expires;
     }
 
+    /**
+     * @return Signed URLs for the execution log files of the requested type
+     */
     @JsonProperty("urls")
     public Optional<List<String>> getUrls() {
         return urls;
@@ -80,7 +86,6 @@ public final class ExecutionLogResponse {
 
         private Optional<List<String>> urls = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -91,6 +96,9 @@ public final class ExecutionLogResponse {
             return this;
         }
 
+        /**
+         * <p>When the signed URLs expire</p>
+         */
         @JsonSetter(value = "expires", nulls = Nulls.SKIP)
         public Builder expires(Optional<OffsetDateTime> expires) {
             this.expires = expires;
@@ -102,6 +110,9 @@ public final class ExecutionLogResponse {
             return this;
         }
 
+        /**
+         * <p>Signed URLs for the execution log files of the requested type</p>
+         */
         @JsonSetter(value = "urls", nulls = Nulls.SKIP)
         public Builder urls(Optional<List<String>> urls) {
             this.urls = urls;
@@ -115,6 +126,14 @@ public final class ExecutionLogResponse {
 
         public ExecutionLogResponse build() {
             return new ExecutionLogResponse(expires, urls, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("expires") || key.equalsIgnoreCase("urls")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

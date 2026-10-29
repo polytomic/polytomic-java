@@ -29,6 +29,9 @@ public final class SyncStatusEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The model sync's status
+     */
     @JsonProperty("data")
     public Optional<SyncStatusResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class SyncStatusEnvelope {
     public static final class Builder {
         private Optional<SyncStatusResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class SyncStatusEnvelope {
             return this;
         }
 
+        /**
+         * <p>The model sync's status</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<SyncStatusResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class SyncStatusEnvelope {
 
         public SyncStatusEnvelope build() {
             return new SyncStatusEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

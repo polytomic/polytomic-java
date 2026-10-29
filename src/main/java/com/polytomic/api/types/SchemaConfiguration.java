@@ -69,13 +69,16 @@ public final class SchemaConfiguration {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Per-schema cutoff; source records older than this are excluded
+     */
     @JsonProperty("data_cutoff_timestamp")
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
         return dataCutoffTimestamp;
     }
 
     /**
-     * @return Whether data cutoff is disabled for this schema.
+     * @return Whether data cutoff is disabled for this schema
      */
     @JsonProperty("disable_data_cutoff")
     public Optional<Boolean> getDisableDataCutoff() {
@@ -83,18 +86,24 @@ public final class SchemaConfiguration {
     }
 
     /**
-     * @return Whether the schema is enabled for syncing.
+     * @return Whether the schema is enabled for syncing
      */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
     }
 
+    /**
+     * @return Field IDs or field configurations for this schema; an empty list enables every field
+     */
     @JsonProperty("fields")
     public Optional<List<SchemaConfigurationFieldsItem>> getFields() {
         return fields;
     }
 
+    /**
+     * @return Filters applied to records read from this schema
+     */
     @JsonProperty("filters")
     public Optional<List<BulkFilter>> getFilters() {
         return filters;
@@ -108,16 +117,25 @@ public final class SchemaConfiguration {
         return historyEnabled;
     }
 
+    /**
+     * @return Source schema ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Source field used to partition rows in the destination
+     */
     @JsonProperty("partition_key")
     public Optional<String> getPartitionKey() {
         return partitionKey;
     }
 
+    /**
+     * @return Source field used to detect changes between incremental runs
+     */
     @JsonProperty("tracking_field")
     public Optional<String> getTrackingField() {
         return trackingField;
@@ -201,7 +219,6 @@ public final class SchemaConfiguration {
 
         private Optional<String> userOutputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -220,6 +237,9 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>Per-schema cutoff; source records older than this are excluded</p>
+         */
         @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
         public Builder dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
             this.dataCutoffTimestamp = dataCutoffTimestamp;
@@ -232,7 +252,7 @@ public final class SchemaConfiguration {
         }
 
         /**
-         * <p>Whether data cutoff is disabled for this schema.</p>
+         * <p>Whether data cutoff is disabled for this schema</p>
          */
         @JsonSetter(value = "disable_data_cutoff", nulls = Nulls.SKIP)
         public Builder disableDataCutoff(Optional<Boolean> disableDataCutoff) {
@@ -246,7 +266,7 @@ public final class SchemaConfiguration {
         }
 
         /**
-         * <p>Whether the schema is enabled for syncing.</p>
+         * <p>Whether the schema is enabled for syncing</p>
          */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
@@ -259,6 +279,9 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>Field IDs or field configurations for this schema; an empty list enables every field</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<SchemaConfigurationFieldsItem>> fields) {
             this.fields = fields;
@@ -270,6 +293,9 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>Filters applied to records read from this schema</p>
+         */
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
         public Builder filters(Optional<List<BulkFilter>> filters) {
             this.filters = filters;
@@ -295,6 +321,9 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>Source schema ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -306,6 +335,9 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>Source field used to partition rows in the destination</p>
+         */
         @JsonSetter(value = "partition_key", nulls = Nulls.SKIP)
         public Builder partitionKey(Optional<String> partitionKey) {
             this.partitionKey = partitionKey;
@@ -317,6 +349,9 @@ public final class SchemaConfiguration {
             return this;
         }
 
+        /**
+         * <p>Source field used to detect changes between incremental runs</p>
+         */
         @JsonSetter(value = "tracking_field", nulls = Nulls.SKIP)
         public Builder trackingField(Optional<String> trackingField) {
             this.trackingField = trackingField;
@@ -355,6 +390,23 @@ public final class SchemaConfiguration {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data_cutoff_timestamp")
+                    || key.equalsIgnoreCase("disable_data_cutoff")
+                    || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("filters")
+                    || key.equalsIgnoreCase("history_enabled")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("partition_key")
+                    || key.equalsIgnoreCase("tracking_field")
+                    || key.equalsIgnoreCase("user_output_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

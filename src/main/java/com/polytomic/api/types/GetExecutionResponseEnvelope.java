@@ -30,6 +30,9 @@ public final class GetExecutionResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The execution
+     */
     @JsonProperty("data")
     public Optional<GetExecutionResponseSchema> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class GetExecutionResponseEnvelope {
     public static final class Builder {
         private Optional<GetExecutionResponseSchema> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class GetExecutionResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The execution</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<GetExecutionResponseSchema> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class GetExecutionResponseEnvelope {
 
         public GetExecutionResponseEnvelope build() {
             return new GetExecutionResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

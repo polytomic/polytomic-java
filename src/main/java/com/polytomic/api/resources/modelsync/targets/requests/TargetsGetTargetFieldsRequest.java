@@ -101,7 +101,6 @@ public final class TargetsGetTargetFieldsRequest {
 
         private Optional<Map<String, Optional<List<String>>>> properties = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -157,6 +156,16 @@ public final class TargetsGetTargetFieldsRequest {
 
         public TargetsGetTargetFieldsRequest build() {
             return new TargetsGetTargetFieldsRequest(target, refresh, properties, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("target")
+                    || key.equalsIgnoreCase("refresh")
+                    || key.equalsIgnoreCase("properties")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

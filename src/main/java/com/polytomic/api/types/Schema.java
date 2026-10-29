@@ -40,16 +40,25 @@ public final class Schema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Fields in the schema
+     */
     @JsonProperty("fields")
     public Optional<List<SchemaField>> getFields() {
         return fields;
     }
 
+    /**
+     * @return Schema ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Display name of the schema
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
@@ -92,7 +101,6 @@ public final class Schema {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -104,6 +112,9 @@ public final class Schema {
             return this;
         }
 
+        /**
+         * <p>Fields in the schema</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<SchemaField>> fields) {
             this.fields = fields;
@@ -115,6 +126,9 @@ public final class Schema {
             return this;
         }
 
+        /**
+         * <p>Schema ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -126,6 +140,9 @@ public final class Schema {
             return this;
         }
 
+        /**
+         * <p>Display name of the schema</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -139,6 +156,14 @@ public final class Schema {
 
         public Schema build() {
             return new Schema(fields, id, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("fields") || key.equalsIgnoreCase("id") || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -48,26 +48,41 @@ public final class ActionsDescribeRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
+    /**
+     * @return Connection ID of the action
+     */
     @JsonProperty("connection_id")
     public String getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Schema ID of the action
+     */
     @JsonProperty("schema_id")
     public String getSchemaId() {
         return schemaId;
     }
 
+    /**
+     * @return Operation ID of the action
+     */
     @JsonProperty("operation_id")
     public String getOperationId() {
         return operationId;
@@ -112,16 +127,25 @@ public final class ActionsDescribeRequest {
     }
 
     public interface ConnectionIdStage {
+        /**
+         * <p>Connection ID of the action</p>
+         */
         SchemaIdStage connectionId(@NotNull String connectionId);
 
         Builder from(ActionsDescribeRequest other);
     }
 
     public interface SchemaIdStage {
+        /**
+         * <p>Schema ID of the action</p>
+         */
         OperationIdStage schemaId(@NotNull String schemaId);
     }
 
     public interface OperationIdStage {
+        /**
+         * <p>Operation ID of the action</p>
+         */
         _FinalStage operationId(@NotNull String operationId);
     }
 
@@ -132,10 +156,16 @@ public final class ActionsDescribeRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession);
 
         _FinalStage polytomicHarborSession(String polytomicHarborSession);
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId);
 
         _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId);
@@ -153,7 +183,6 @@ public final class ActionsDescribeRequest {
 
         private Optional<String> polytomicHarborSession = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -168,6 +197,10 @@ public final class ActionsDescribeRequest {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the action</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_id")
         public SchemaIdStage connectionId(@NotNull String connectionId) {
@@ -175,6 +208,10 @@ public final class ActionsDescribeRequest {
             return this;
         }
 
+        /**
+         * <p>Schema ID of the action</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("schema_id")
         public OperationIdStage schemaId(@NotNull String schemaId) {
@@ -182,6 +219,10 @@ public final class ActionsDescribeRequest {
             return this;
         }
 
+        /**
+         * <p>Operation ID of the action</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("operation_id")
         public _FinalStage operationId(@NotNull String operationId) {
@@ -189,24 +230,38 @@ public final class ActionsDescribeRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId) {
             this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(String polytomicHarborSession) {
             this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
@@ -222,6 +277,16 @@ public final class ActionsDescribeRequest {
                     schemaId,
                     operationId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("schema_id")
+                    || key.equalsIgnoreCase("operation_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -76,61 +76,97 @@ public final class ModelField {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return When the field was created
+     */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Actor that created the field
+     */
     @JsonProperty("created_by")
     public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * @return Description of the field
+     */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return Example value for the field
+     */
     @JsonProperty("example")
     public Optional<Object> getExample() {
         return example;
     }
 
+    /**
+     * @return Model field ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Display label for the field
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Source field name
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Field type reported by the source
+     */
     @JsonProperty("remote_type")
     public Optional<String> getRemoteType() {
         return remoteType;
     }
 
+    /**
+     * @return Polytomic field type
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return Whether the field uniquely identifies records
+     */
     @JsonProperty("unique")
     public Optional<Boolean> getUnique() {
         return unique;
     }
 
+    /**
+     * @return When the field was last updated
+     */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * @return Whether the field is user-defined rather than discovered from the source
+     */
     @JsonProperty("user_added")
     public Optional<Boolean> getUserAdded() {
         return userAdded;
@@ -214,7 +250,6 @@ public final class ModelField {
 
         private Optional<Boolean> userAdded = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -235,6 +270,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>When the field was created</p>
+         */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
             this.createdAt = createdAt;
@@ -246,6 +284,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Actor that created the field</p>
+         */
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
         public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
@@ -257,6 +298,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Description of the field</p>
+         */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
             this.description = description;
@@ -268,6 +312,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Example value for the field</p>
+         */
         @JsonSetter(value = "example", nulls = Nulls.SKIP)
         public Builder example(Optional<Object> example) {
             this.example = example;
@@ -279,6 +326,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Model field ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -290,6 +340,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Display label for the field</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -301,6 +354,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Source field name</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -312,6 +368,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Field type reported by the source</p>
+         */
         @JsonSetter(value = "remote_type", nulls = Nulls.SKIP)
         public Builder remoteType(Optional<String> remoteType) {
             this.remoteType = remoteType;
@@ -323,6 +382,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Polytomic field type</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -334,6 +396,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Whether the field uniquely identifies records</p>
+         */
         @JsonSetter(value = "unique", nulls = Nulls.SKIP)
         public Builder unique(Optional<Boolean> unique) {
             this.unique = unique;
@@ -345,6 +410,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>When the field was last updated</p>
+         */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
             this.updatedAt = updatedAt;
@@ -356,6 +424,9 @@ public final class ModelField {
             return this;
         }
 
+        /**
+         * <p>Whether the field is user-defined rather than discovered from the source</p>
+         */
         @JsonSetter(value = "user_added", nulls = Nulls.SKIP)
         public Builder userAdded(Optional<Boolean> userAdded) {
             this.userAdded = userAdded;
@@ -382,6 +453,25 @@ public final class ModelField {
                     updatedAt,
                     userAdded,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("example")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("remote_type")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("unique")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("user_added")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

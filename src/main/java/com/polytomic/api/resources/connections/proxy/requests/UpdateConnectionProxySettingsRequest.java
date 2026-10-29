@@ -28,7 +28,7 @@ public final class UpdateConnectionProxySettingsRequest {
     }
 
     /**
-     * @return Whether the connection can be used through the Connection Proxy API.
+     * @return Whether the connection can be used through the Connection Proxy API
      */
     @JsonProperty("enabled")
     public boolean getEnabled() {
@@ -67,7 +67,7 @@ public final class UpdateConnectionProxySettingsRequest {
 
     public interface EnabledStage {
         /**
-         * <p>Whether the connection can be used through the Connection Proxy API.</p>
+         * <p>Whether the connection can be used through the Connection Proxy API</p>
          */
         _FinalStage enabled(boolean enabled);
 
@@ -86,7 +86,6 @@ public final class UpdateConnectionProxySettingsRequest {
     public static final class Builder implements EnabledStage, _FinalStage {
         private boolean enabled;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -98,7 +97,7 @@ public final class UpdateConnectionProxySettingsRequest {
         }
 
         /**
-         * <p>Whether the connection can be used through the Connection Proxy API.</p>
+         * <p>Whether the connection can be used through the Connection Proxy API</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -111,6 +110,14 @@ public final class UpdateConnectionProxySettingsRequest {
         @java.lang.Override
         public UpdateConnectionProxySettingsRequest build() {
             return new UpdateConnectionProxySettingsRequest(enabled, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enabled")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

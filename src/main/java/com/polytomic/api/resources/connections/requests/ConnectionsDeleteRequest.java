@@ -29,6 +29,9 @@ public final class ConnectionsDeleteRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Delete the connection with the models and syncs that depend on it.
+     */
     @JsonProperty("force")
     public Optional<Boolean> getForce() {
         return force;
@@ -67,7 +70,6 @@ public final class ConnectionsDeleteRequest {
     public static final class Builder {
         private Optional<Boolean> force = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class ConnectionsDeleteRequest {
             return this;
         }
 
+        /**
+         * <p>Delete the connection with the models and syncs that depend on it.</p>
+         */
         @JsonSetter(value = "force", nulls = Nulls.SKIP)
         public Builder force(Optional<Boolean> force) {
             this.force = force;
@@ -90,6 +95,14 @@ public final class ConnectionsDeleteRequest {
 
         public ConnectionsDeleteRequest build() {
             return new ConnectionsDeleteRequest(force, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("force")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

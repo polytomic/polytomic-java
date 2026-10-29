@@ -88,7 +88,6 @@ public final class ModelSyncIdentities {
 
         private Optional<ModelSyncIdentitiesStrategy> strategy = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -139,6 +138,14 @@ public final class ModelSyncIdentities {
 
         public ModelSyncIdentities build() {
             return new ModelSyncIdentities(mappings, strategy, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("mappings") || key.equalsIgnoreCase("strategy")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

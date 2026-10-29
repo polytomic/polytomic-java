@@ -30,6 +30,9 @@ public final class CreateRecordViewLinkEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The created record-view link
+     */
     @JsonProperty("data")
     public Optional<CreateRecordViewLinkResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class CreateRecordViewLinkEnvelope {
     public static final class Builder {
         private Optional<CreateRecordViewLinkResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class CreateRecordViewLinkEnvelope {
             return this;
         }
 
+        /**
+         * <p>The created record-view link</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<CreateRecordViewLinkResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class CreateRecordViewLinkEnvelope {
 
         public CreateRecordViewLinkEnvelope build() {
             return new CreateRecordViewLinkEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

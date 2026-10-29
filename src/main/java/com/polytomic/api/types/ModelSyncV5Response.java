@@ -137,26 +137,41 @@ public final class ModelSyncV5Response {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether the sync is enabled and scheduled
+     */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
     }
 
+    /**
+     * @return When the sync was created
+     */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Actor that created the sync
+     */
     @JsonProperty("created_by")
     public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * @return Passphrase for encrypting the sync data, masked
+     */
     @JsonProperty("encryption_passphrase")
     public Optional<String> getEncryptionPassphrase() {
         return encryptionPassphrase;
     }
 
+    /**
+     * @return Fields synced from source to destination
+     */
     @JsonProperty("fields")
     public Optional<List<SyncField>> getFields() {
         return fields;
@@ -178,13 +193,16 @@ public final class ModelSyncV5Response {
         return filters;
     }
 
+    /**
+     * @return Model sync ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
     /**
-     * @return Identity mappings for the sync and the strategy combining them.
+     * @return Identity mappings for the sync and the strategy combining them
      */
     @JsonProperty("identities")
     public Optional<ModelSyncIdentities> getIdentities() {
@@ -199,49 +217,73 @@ public final class ModelSyncV5Response {
         return identity;
     }
 
+    /**
+     * @return How source records are written to the target
+     */
     @JsonProperty("mode")
     public Optional<ModelsyncSyncTargetMode> getMode() {
         return mode;
     }
 
+    /**
+     * @return Filters narrowing the records read from the source
+     */
     @JsonProperty("model_filters")
     public Optional<ModelFilters> getModelFilters() {
         return modelFilters;
     }
 
     /**
-     * @return Model IDs used in the sync.
+     * @return Model IDs used in the sync
      */
     @JsonProperty("model_ids")
     public Optional<List<String>> getModelIds() {
         return modelIds;
     }
 
+    /**
+     * @return Name of the model sync
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Whether only changes to the base models cause a record to sync, rather than changes to enrichment models
+     */
     @JsonProperty("only_enrich_updates")
     public Optional<Boolean> getOnlyEnrichUpdates() {
         return onlyEnrichUpdates;
     }
 
+    /**
+     * @return ID of the organization the sync belongs to
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Target fields which are set to a fixed value for every record
+     */
     @JsonProperty("override_fields")
     public Optional<List<OverrideField>> getOverrideFields() {
         return overrideFields;
     }
 
+    /**
+     * @return Conditional value replacement for fields
+     */
     @JsonProperty("overrides")
     public Optional<List<Override>> getOverrides() {
         return overrides;
     }
 
+    /**
+     * @return Permissions policy IDs applied to the sync
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
@@ -255,36 +297,57 @@ public final class ModelSyncV5Response {
         return problems;
     }
 
+    /**
+     * @return Sync schedule. Schedule times are interpreted in UTC.
+     */
     @JsonProperty("schedule")
     public Optional<Schedule> getSchedule() {
         return schedule;
     }
 
+    /**
+     * @return Whether the initial backfill of records is skipped, so only records seen after the sync is enabled are synced
+     */
     @JsonProperty("skip_initial_backfill")
     public Optional<Boolean> getSkipInitialBackfill() {
         return skipInitialBackfill;
     }
 
+    /**
+     * @return Whether to sync all records from the source, regardless of whether they have changed since the previous execution
+     */
     @JsonProperty("sync_all_records")
     public Optional<Boolean> getSyncAllRecords() {
         return syncAllRecords;
     }
 
+    /**
+     * @return Sync destination configuration
+     */
     @JsonProperty("target")
     public Optional<ModelSyncV5Target> getTarget() {
         return target;
     }
 
+    /**
+     * @return Filters narrowing the records written to the destination
+     */
     @JsonProperty("target_filters")
     public Optional<TargetFilters> getTargetFilters() {
         return targetFilters;
     }
 
+    /**
+     * @return When the sync was last updated
+     */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * @return Actor that most recently updated the sync
+     */
     @JsonProperty("updated_by")
     public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
@@ -428,7 +491,6 @@ public final class ModelSyncV5Response {
 
         private Optional<OutputActor> updatedBy = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -464,6 +526,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Whether the sync is enabled and scheduled</p>
+         */
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public Builder active(Optional<Boolean> active) {
             this.active = active;
@@ -475,6 +540,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>When the sync was created</p>
+         */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
             this.createdAt = createdAt;
@@ -486,6 +554,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Actor that created the sync</p>
+         */
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
         public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
@@ -497,6 +568,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Passphrase for encrypting the sync data, masked</p>
+         */
         @JsonSetter(value = "encryption_passphrase", nulls = Nulls.SKIP)
         public Builder encryptionPassphrase(Optional<String> encryptionPassphrase) {
             this.encryptionPassphrase = encryptionPassphrase;
@@ -508,6 +582,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Fields synced from source to destination</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<SyncField>> fields) {
             this.fields = fields;
@@ -547,6 +624,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Model sync ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -559,7 +639,7 @@ public final class ModelSyncV5Response {
         }
 
         /**
-         * <p>Identity mappings for the sync and the strategy combining them.</p>
+         * <p>Identity mappings for the sync and the strategy combining them</p>
          */
         @JsonSetter(value = "identities", nulls = Nulls.SKIP)
         public Builder identities(Optional<ModelSyncIdentities> identities) {
@@ -586,6 +666,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>How source records are written to the target</p>
+         */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public Builder mode(Optional<ModelsyncSyncTargetMode> mode) {
             this.mode = mode;
@@ -597,6 +680,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Filters narrowing the records read from the source</p>
+         */
         @JsonSetter(value = "model_filters", nulls = Nulls.SKIP)
         public Builder modelFilters(Optional<ModelFilters> modelFilters) {
             this.modelFilters = modelFilters;
@@ -609,7 +695,7 @@ public final class ModelSyncV5Response {
         }
 
         /**
-         * <p>Model IDs used in the sync.</p>
+         * <p>Model IDs used in the sync</p>
          */
         @JsonSetter(value = "model_ids", nulls = Nulls.SKIP)
         public Builder modelIds(Optional<List<String>> modelIds) {
@@ -622,6 +708,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Name of the model sync</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -633,6 +722,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Whether only changes to the base models cause a record to sync, rather than changes to enrichment models</p>
+         */
         @JsonSetter(value = "only_enrich_updates", nulls = Nulls.SKIP)
         public Builder onlyEnrichUpdates(Optional<Boolean> onlyEnrichUpdates) {
             this.onlyEnrichUpdates = onlyEnrichUpdates;
@@ -644,6 +736,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>ID of the organization the sync belongs to</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -655,6 +750,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Target fields which are set to a fixed value for every record</p>
+         */
         @JsonSetter(value = "override_fields", nulls = Nulls.SKIP)
         public Builder overrideFields(Optional<List<OverrideField>> overrideFields) {
             this.overrideFields = overrideFields;
@@ -666,6 +764,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Conditional value replacement for fields</p>
+         */
         @JsonSetter(value = "overrides", nulls = Nulls.SKIP)
         public Builder overrides(Optional<List<Override>> overrides) {
             this.overrides = overrides;
@@ -677,6 +778,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the sync</p>
+         */
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public Builder policies(Optional<List<String>> policies) {
             this.policies = policies;
@@ -702,6 +806,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Sync schedule. Schedule times are interpreted in UTC.</p>
+         */
         @JsonSetter(value = "schedule", nulls = Nulls.SKIP)
         public Builder schedule(Optional<Schedule> schedule) {
             this.schedule = schedule;
@@ -713,6 +820,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Whether the initial backfill of records is skipped, so only records seen after the sync is enabled are synced</p>
+         */
         @JsonSetter(value = "skip_initial_backfill", nulls = Nulls.SKIP)
         public Builder skipInitialBackfill(Optional<Boolean> skipInitialBackfill) {
             this.skipInitialBackfill = skipInitialBackfill;
@@ -724,6 +834,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Whether to sync all records from the source, regardless of whether they have changed since the previous execution</p>
+         */
         @JsonSetter(value = "sync_all_records", nulls = Nulls.SKIP)
         public Builder syncAllRecords(Optional<Boolean> syncAllRecords) {
             this.syncAllRecords = syncAllRecords;
@@ -735,6 +848,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Sync destination configuration</p>
+         */
         @JsonSetter(value = "target", nulls = Nulls.SKIP)
         public Builder target(Optional<ModelSyncV5Target> target) {
             this.target = target;
@@ -746,6 +862,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Filters narrowing the records written to the destination</p>
+         */
         @JsonSetter(value = "target_filters", nulls = Nulls.SKIP)
         public Builder targetFilters(Optional<TargetFilters> targetFilters) {
             this.targetFilters = targetFilters;
@@ -757,6 +876,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>When the sync was last updated</p>
+         */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
             this.updatedAt = updatedAt;
@@ -768,6 +890,9 @@ public final class ModelSyncV5Response {
             return this;
         }
 
+        /**
+         * <p>Actor that most recently updated the sync</p>
+         */
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
         public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
@@ -809,6 +934,40 @@ public final class ModelSyncV5Response {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("active")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("encryption_passphrase")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("filter_logic")
+                    || key.equalsIgnoreCase("filters")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("identities")
+                    || key.equalsIgnoreCase("identity")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("model_filters")
+                    || key.equalsIgnoreCase("model_ids")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("only_enrich_updates")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("override_fields")
+                    || key.equalsIgnoreCase("overrides")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("problems")
+                    || key.equalsIgnoreCase("schedule")
+                    || key.equalsIgnoreCase("skip_initial_backfill")
+                    || key.equalsIgnoreCase("sync_all_records")
+                    || key.equalsIgnoreCase("target")
+                    || key.equalsIgnoreCase("target_filters")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

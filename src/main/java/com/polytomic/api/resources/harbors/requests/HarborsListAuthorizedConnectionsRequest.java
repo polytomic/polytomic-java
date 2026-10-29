@@ -44,21 +44,33 @@ public final class HarborsListAuthorizedConnectionsRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
+    /**
+     * @return Maximum number of results to return
+     */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
         return limit;
     }
 
+    /**
+     * @return Token from the previous page
+     */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
         return pageToken;
@@ -107,7 +119,6 @@ public final class HarborsListAuthorizedConnectionsRequest {
 
         private Optional<String> pageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -120,6 +131,9 @@ public final class HarborsListAuthorizedConnectionsRequest {
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
             return this;
@@ -130,6 +144,9 @@ public final class HarborsListAuthorizedConnectionsRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -140,6 +157,9 @@ public final class HarborsListAuthorizedConnectionsRequest {
             return this;
         }
 
+        /**
+         * <p>Maximum number of results to return</p>
+         */
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public Builder limit(Optional<Integer> limit) {
             this.limit = limit;
@@ -151,6 +171,9 @@ public final class HarborsListAuthorizedConnectionsRequest {
             return this;
         }
 
+        /**
+         * <p>Token from the previous page</p>
+         */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
             this.pageToken = pageToken;
@@ -165,6 +188,14 @@ public final class HarborsListAuthorizedConnectionsRequest {
         public HarborsListAuthorizedConnectionsRequest build() {
             return new HarborsListAuthorizedConnectionsRequest(
                     polytomicHarborSession, polytomicActivityRequestId, limit, pageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

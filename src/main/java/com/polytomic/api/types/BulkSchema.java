@@ -77,24 +77,33 @@ public final class BulkSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Records older than this timestamp are excluded from sync runs.
+     */
     @JsonProperty("data_cutoff_timestamp")
     public Optional<OffsetDateTime> getDataCutoffTimestamp() {
         return dataCutoffTimestamp;
     }
 
     /**
-     * @return Name of the companion history table. Present only when history is enabled on a destination that supports it.
+     * @return Name of the companion history table. Present only when history is enabled on a destination that supports it. This value is computed and ignored on input.
      */
     @JsonProperty("destination_history_output_name")
     public Optional<String> getDestinationHistoryOutputName() {
         return destinationHistoryOutputName;
     }
 
+    /**
+     * @return When true, the sync ignores any configured data_cutoff_timestamp for this schema.
+     */
     @JsonProperty("disable_data_cutoff")
     public Optional<Boolean> getDisableDataCutoff() {
         return disableDataCutoff;
     }
 
+    /**
+     * @return Whether this schema is included in sync runs
+     */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
@@ -124,26 +133,41 @@ public final class BulkSchema {
         return historyEnabled;
     }
 
+    /**
+     * @return Source-side schema identifier
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Name of the object written to the destination. This value is computed and ignored on input; set user_output_name to rename the object.
+     */
     @JsonProperty("output_name")
     public Optional<String> getOutputName() {
         return outputName;
     }
 
+    /**
+     * @return Source field used to partition rows when writing to the destination
+     */
     @JsonProperty("partition_key")
     public Optional<String> getPartitionKey() {
         return partitionKey;
     }
 
+    /**
+     * @return Source field used to detect changes between incremental sync runs
+     */
     @JsonProperty("tracking_field")
     public Optional<String> getTrackingField() {
         return trackingField;
     }
 
+    /**
+     * @return User-specified override for the destination object name
+     */
     @JsonProperty("user_output_name")
     public Optional<String> getUserOutputName() {
         return userOutputName;
@@ -227,7 +251,6 @@ public final class BulkSchema {
 
         private Optional<String> userOutputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -248,6 +271,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>Records older than this timestamp are excluded from sync runs.</p>
+         */
         @JsonSetter(value = "data_cutoff_timestamp", nulls = Nulls.SKIP)
         public Builder dataCutoffTimestamp(Optional<OffsetDateTime> dataCutoffTimestamp) {
             this.dataCutoffTimestamp = dataCutoffTimestamp;
@@ -260,7 +286,7 @@ public final class BulkSchema {
         }
 
         /**
-         * <p>Name of the companion history table. Present only when history is enabled on a destination that supports it.</p>
+         * <p>Name of the companion history table. Present only when history is enabled on a destination that supports it. This value is computed and ignored on input.</p>
          */
         @JsonSetter(value = "destination_history_output_name", nulls = Nulls.SKIP)
         public Builder destinationHistoryOutputName(Optional<String> destinationHistoryOutputName) {
@@ -273,6 +299,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>When true, the sync ignores any configured data_cutoff_timestamp for this schema.</p>
+         */
         @JsonSetter(value = "disable_data_cutoff", nulls = Nulls.SKIP)
         public Builder disableDataCutoff(Optional<Boolean> disableDataCutoff) {
             this.disableDataCutoff = disableDataCutoff;
@@ -284,6 +313,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>Whether this schema is included in sync runs</p>
+         */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
             this.enabled = enabled;
@@ -337,6 +369,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>Source-side schema identifier</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -348,6 +383,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>Name of the object written to the destination. This value is computed and ignored on input; set user_output_name to rename the object.</p>
+         */
         @JsonSetter(value = "output_name", nulls = Nulls.SKIP)
         public Builder outputName(Optional<String> outputName) {
             this.outputName = outputName;
@@ -359,6 +397,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>Source field used to partition rows when writing to the destination</p>
+         */
         @JsonSetter(value = "partition_key", nulls = Nulls.SKIP)
         public Builder partitionKey(Optional<String> partitionKey) {
             this.partitionKey = partitionKey;
@@ -370,6 +411,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>Source field used to detect changes between incremental sync runs</p>
+         */
         @JsonSetter(value = "tracking_field", nulls = Nulls.SKIP)
         public Builder trackingField(Optional<String> trackingField) {
             this.trackingField = trackingField;
@@ -381,6 +425,9 @@ public final class BulkSchema {
             return this;
         }
 
+        /**
+         * <p>User-specified override for the destination object name</p>
+         */
         @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
         public Builder userOutputName(Optional<String> userOutputName) {
             this.userOutputName = userOutputName;
@@ -407,6 +454,25 @@ public final class BulkSchema {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data_cutoff_timestamp")
+                    || key.equalsIgnoreCase("destination_history_output_name")
+                    || key.equalsIgnoreCase("disable_data_cutoff")
+                    || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("filters")
+                    || key.equalsIgnoreCase("history_enabled")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("output_name")
+                    || key.equalsIgnoreCase("partition_key")
+                    || key.equalsIgnoreCase("tracking_field")
+                    || key.equalsIgnoreCase("user_output_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

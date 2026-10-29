@@ -89,7 +89,6 @@ public final class UpdateBulkSyncErrorHandlingRequest {
 
         private Optional<List<String>> subscribers = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -130,6 +129,14 @@ public final class UpdateBulkSyncErrorHandlingRequest {
 
         public UpdateBulkSyncErrorHandlingRequest build() {
             return new UpdateBulkSyncErrorHandlingRequest(ingestionFailureThreshold, subscribers, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("ingestion_failure_threshold") || key.equalsIgnoreCase("subscribers")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

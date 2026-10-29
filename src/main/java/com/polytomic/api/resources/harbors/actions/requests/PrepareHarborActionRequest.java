@@ -59,11 +59,17 @@ public final class PrepareHarborActionRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
@@ -77,18 +83,24 @@ public final class PrepareHarborActionRequest {
         return connectionId;
     }
 
+    /**
+     * @return Nonempty map of enabled input fields to JSON scalars. Omission leaves fields unchanged; null requires advertised nullability; empty strings follow field constraints. Numbers must use integer JSON notation (no decimal point or exponent) within +/-9007199254740991; opaque IDs remain strings. Arrays, objects, and coercion are unsupported.
+     */
     @JsonProperty("input")
     public Map<String, Object> getInput() {
         return input;
     }
 
+    /**
+     * @return One advertised lookup field and exact scalar value. Required when lookup_fields is nonempty; otherwise omit.
+     */
     @JsonProperty("lookup")
     public Optional<ActionLookup> getLookup() {
         return lookup;
     }
 
     /**
-     * @return Exact operation_id from action discovery.
+     * @return Exact operation_id from action discovery
      */
     @JsonProperty("operation_id")
     public String getOperationId() {
@@ -96,7 +108,7 @@ public final class PrepareHarborActionRequest {
     }
 
     /**
-     * @return Exact schema_id from action discovery.
+     * @return Exact schema_id from action discovery
      */
     @JsonProperty("schema_id")
     public String getSchemaId() {
@@ -156,14 +168,14 @@ public final class PrepareHarborActionRequest {
 
     public interface OperationIdStage {
         /**
-         * <p>Exact operation_id from action discovery.</p>
+         * <p>Exact operation_id from action discovery</p>
          */
         SchemaIdStage operationId(@NotNull String operationId);
     }
 
     public interface SchemaIdStage {
         /**
-         * <p>Exact schema_id from action discovery.</p>
+         * <p>Exact schema_id from action discovery</p>
          */
         _FinalStage schemaId(@NotNull String schemaId);
     }
@@ -175,20 +187,32 @@ public final class PrepareHarborActionRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession);
 
         _FinalStage polytomicHarborSession(String polytomicHarborSession);
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId);
 
         _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId);
 
+        /**
+         * <p>Nonempty map of enabled input fields to JSON scalars. Omission leaves fields unchanged; null requires advertised nullability; empty strings follow field constraints. Numbers must use integer JSON notation (no decimal point or exponent) within +/-9007199254740991; opaque IDs remain strings. Arrays, objects, and coercion are unsupported.</p>
+         */
         _FinalStage input(Map<String, Object> input);
 
         _FinalStage putAllInput(Map<String, Object> input);
 
         _FinalStage input(String key, Object value);
 
+        /**
+         * <p>One advertised lookup field and exact scalar value. Required when lookup_fields is nonempty; otherwise omit.</p>
+         */
         _FinalStage lookup(Optional<ActionLookup> lookup);
 
         _FinalStage lookup(ActionLookup lookup);
@@ -210,7 +234,6 @@ public final class PrepareHarborActionRequest {
 
         private Optional<String> polytomicHarborSession = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -239,7 +262,7 @@ public final class PrepareHarborActionRequest {
         }
 
         /**
-         * <p>Exact operation_id from action discovery.</p>
+         * <p>Exact operation_id from action discovery</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -250,7 +273,7 @@ public final class PrepareHarborActionRequest {
         }
 
         /**
-         * <p>Exact schema_id from action discovery.</p>
+         * <p>Exact schema_id from action discovery</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -260,12 +283,19 @@ public final class PrepareHarborActionRequest {
             return this;
         }
 
+        /**
+         * <p>One advertised lookup field and exact scalar value. Required when lookup_fields is nonempty; otherwise omit.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage lookup(ActionLookup lookup) {
             this.lookup = Optional.ofNullable(lookup);
             return this;
         }
 
+        /**
+         * <p>One advertised lookup field and exact scalar value. Required when lookup_fields is nonempty; otherwise omit.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "lookup", nulls = Nulls.SKIP)
         public _FinalStage lookup(Optional<ActionLookup> lookup) {
@@ -273,12 +303,20 @@ public final class PrepareHarborActionRequest {
             return this;
         }
 
+        /**
+         * <p>Nonempty map of enabled input fields to JSON scalars. Omission leaves fields unchanged; null requires advertised nullability; empty strings follow field constraints. Numbers must use integer JSON notation (no decimal point or exponent) within +/-9007199254740991; opaque IDs remain strings. Arrays, objects, and coercion are unsupported.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage input(String key, Object value) {
             this.input.put(key, value);
             return this;
         }
 
+        /**
+         * <p>Nonempty map of enabled input fields to JSON scalars. Omission leaves fields unchanged; null requires advertised nullability; empty strings follow field constraints. Numbers must use integer JSON notation (no decimal point or exponent) within +/-9007199254740991; opaque IDs remain strings. Arrays, objects, and coercion are unsupported.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage putAllInput(Map<String, Object> input) {
             if (input != null) {
@@ -287,6 +325,9 @@ public final class PrepareHarborActionRequest {
             return this;
         }
 
+        /**
+         * <p>Nonempty map of enabled input fields to JSON scalars. Omission leaves fields unchanged; null requires advertised nullability; empty strings follow field constraints. Numbers must use integer JSON notation (no decimal point or exponent) within +/-9007199254740991; opaque IDs remain strings. Arrays, objects, and coercion are unsupported.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "input", nulls = Nulls.SKIP)
         public _FinalStage input(Map<String, Object> input) {
@@ -297,24 +338,38 @@ public final class PrepareHarborActionRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId) {
             this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(String polytomicHarborSession) {
             this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
@@ -332,6 +387,18 @@ public final class PrepareHarborActionRequest {
                     operationId,
                     schemaId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("input")
+                    || key.equalsIgnoreCase("lookup")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("schema_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

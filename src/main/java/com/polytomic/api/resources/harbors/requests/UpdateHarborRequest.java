@@ -42,7 +42,7 @@ public final class UpdateHarborRequest {
     }
 
     /**
-     * @return Human-readable Harbor name.
+     * @return Human-readable Harbor name
      */
     @JsonProperty("name")
     public String getName() {
@@ -80,7 +80,7 @@ public final class UpdateHarborRequest {
 
     public interface NameStage {
         /**
-         * <p>Human-readable Harbor name.</p>
+         * <p>Human-readable Harbor name</p>
          */
         _FinalStage name(@NotNull String name);
 
@@ -108,7 +108,6 @@ public final class UpdateHarborRequest {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -121,7 +120,7 @@ public final class UpdateHarborRequest {
         }
 
         /**
-         * <p>Human-readable Harbor name.</p>
+         * <p>Human-readable Harbor name</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -154,6 +153,14 @@ public final class UpdateHarborRequest {
         @java.lang.Override
         public UpdateHarborRequest build() {
             return new UpdateHarborRequest(description, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("description") || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

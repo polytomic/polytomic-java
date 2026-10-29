@@ -30,7 +30,7 @@ public final class ExportSyncLogsResponse {
     }
 
     /**
-     * @return Signed URL to download the exported log archive.
+     * @return Signed URL to download the exported log archive
      */
     @JsonProperty("url")
     public Optional<String> getUrl() {
@@ -70,7 +70,6 @@ public final class ExportSyncLogsResponse {
     public static final class Builder {
         private Optional<String> url = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -81,7 +80,7 @@ public final class ExportSyncLogsResponse {
         }
 
         /**
-         * <p>Signed URL to download the exported log archive.</p>
+         * <p>Signed URL to download the exported log archive</p>
          */
         @JsonSetter(value = "url", nulls = Nulls.SKIP)
         public Builder url(Optional<String> url) {
@@ -96,6 +95,14 @@ public final class ExportSyncLogsResponse {
 
         public ExportSyncLogsResponse build() {
             return new ExportSyncLogsResponse(url, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("url")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -47,11 +47,17 @@ public final class PickValue {
         return dependsOn;
     }
 
+    /**
+     * @return Display label of the option
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Value of the option
+     */
     @JsonProperty("value")
     public Optional<String> getValue() {
         return value;
@@ -94,7 +100,6 @@ public final class PickValue {
 
         private Optional<String> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -120,6 +125,9 @@ public final class PickValue {
             return this;
         }
 
+        /**
+         * <p>Display label of the option</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -131,6 +139,9 @@ public final class PickValue {
             return this;
         }
 
+        /**
+         * <p>Value of the option</p>
+         */
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public Builder value(Optional<String> value) {
             this.value = value;
@@ -144,6 +155,14 @@ public final class PickValue {
 
         public PickValue build() {
             return new PickValue(dependsOn, label, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("depends_on") || key.equalsIgnoreCase("label") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

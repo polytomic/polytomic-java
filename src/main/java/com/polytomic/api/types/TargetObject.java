@@ -41,7 +41,7 @@ public final class TargetObject {
     }
 
     /**
-     * @return The identifier of the target object.
+     * @return The identifier of the target object
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -49,7 +49,7 @@ public final class TargetObject {
     }
 
     /**
-     * @return The supported sync modes and their properties for the target object.
+     * @return The supported sync modes and their properties for the target object
      */
     @JsonProperty("modes")
     public Optional<List<SupportedMode>> getModes() {
@@ -57,7 +57,7 @@ public final class TargetObject {
     }
 
     /**
-     * @return The name of the target object.
+     * @return The name of the target object
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -101,7 +101,6 @@ public final class TargetObject {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -114,7 +113,7 @@ public final class TargetObject {
         }
 
         /**
-         * <p>The identifier of the target object.</p>
+         * <p>The identifier of the target object</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -128,7 +127,7 @@ public final class TargetObject {
         }
 
         /**
-         * <p>The supported sync modes and their properties for the target object.</p>
+         * <p>The supported sync modes and their properties for the target object</p>
          */
         @JsonSetter(value = "modes", nulls = Nulls.SKIP)
         public Builder modes(Optional<List<SupportedMode>> modes) {
@@ -142,7 +141,7 @@ public final class TargetObject {
         }
 
         /**
-         * <p>The name of the target object.</p>
+         * <p>The name of the target object</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -157,6 +156,14 @@ public final class TargetObject {
 
         public TargetObject build() {
             return new TargetObject(id, modes, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id") || key.equalsIgnoreCase("modes") || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

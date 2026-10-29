@@ -58,7 +58,7 @@ public final class HarborUserResponse {
     }
 
     /**
-     * @return When the user was invited.
+     * @return When the user was invited
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -66,7 +66,7 @@ public final class HarborUserResponse {
     }
 
     /**
-     * @return Email address used to sign in.
+     * @return Email address used to sign in
      */
     @JsonProperty("email")
     public Optional<String> getEmail() {
@@ -74,7 +74,7 @@ public final class HarborUserResponse {
     }
 
     /**
-     * @return Harbors assigned to this user.
+     * @return Harbors assigned to this user
      */
     @JsonProperty("harbor_ids")
     public Optional<List<String>> getHarborIds() {
@@ -82,7 +82,7 @@ public final class HarborUserResponse {
     }
 
     /**
-     * @return Whether the account is restricted to assigned Harbors.
+     * @return Whether the account is restricted to assigned Harbors
      */
     @JsonProperty("harbor_only")
     public Optional<Boolean> getHarborOnly() {
@@ -90,7 +90,7 @@ public final class HarborUserResponse {
     }
 
     /**
-     * @return Unique identifier of the user.
+     * @return Unique identifier of the user
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -98,7 +98,7 @@ public final class HarborUserResponse {
     }
 
     /**
-     * @return Organization the user belongs to.
+     * @return Organization the user belongs to
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -106,7 +106,7 @@ public final class HarborUserResponse {
     }
 
     /**
-     * @return Current account status.
+     * @return Current account status
      */
     @JsonProperty("status")
     public Optional<String> getStatus() {
@@ -165,7 +165,6 @@ public final class HarborUserResponse {
 
         private Optional<String> status = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -182,7 +181,7 @@ public final class HarborUserResponse {
         }
 
         /**
-         * <p>When the user was invited.</p>
+         * <p>When the user was invited</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -196,7 +195,7 @@ public final class HarborUserResponse {
         }
 
         /**
-         * <p>Email address used to sign in.</p>
+         * <p>Email address used to sign in</p>
          */
         @JsonSetter(value = "email", nulls = Nulls.SKIP)
         public Builder email(Optional<String> email) {
@@ -210,7 +209,7 @@ public final class HarborUserResponse {
         }
 
         /**
-         * <p>Harbors assigned to this user.</p>
+         * <p>Harbors assigned to this user</p>
          */
         @JsonSetter(value = "harbor_ids", nulls = Nulls.SKIP)
         public Builder harborIds(Optional<List<String>> harborIds) {
@@ -224,7 +223,7 @@ public final class HarborUserResponse {
         }
 
         /**
-         * <p>Whether the account is restricted to assigned Harbors.</p>
+         * <p>Whether the account is restricted to assigned Harbors</p>
          */
         @JsonSetter(value = "harbor_only", nulls = Nulls.SKIP)
         public Builder harborOnly(Optional<Boolean> harborOnly) {
@@ -238,7 +237,7 @@ public final class HarborUserResponse {
         }
 
         /**
-         * <p>Unique identifier of the user.</p>
+         * <p>Unique identifier of the user</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -252,7 +251,7 @@ public final class HarborUserResponse {
         }
 
         /**
-         * <p>Organization the user belongs to.</p>
+         * <p>Organization the user belongs to</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -266,7 +265,7 @@ public final class HarborUserResponse {
         }
 
         /**
-         * <p>Current account status.</p>
+         * <p>Current account status</p>
          */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<String> status) {
@@ -282,6 +281,20 @@ public final class HarborUserResponse {
         public HarborUserResponse build() {
             return new HarborUserResponse(
                     createdAt, email, harborIds, harborOnly, id, organizationId, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("email")
+                    || key.equalsIgnoreCase("harbor_ids")
+                    || key.equalsIgnoreCase("harbor_only")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

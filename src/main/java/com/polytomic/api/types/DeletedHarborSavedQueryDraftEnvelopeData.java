@@ -30,7 +30,7 @@ public final class DeletedHarborSavedQueryDraftEnvelopeData {
     }
 
     /**
-     * @return Identifier of the discarded draft.
+     * @return Identifier of the discarded draft
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -71,7 +71,6 @@ public final class DeletedHarborSavedQueryDraftEnvelopeData {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -82,7 +81,7 @@ public final class DeletedHarborSavedQueryDraftEnvelopeData {
         }
 
         /**
-         * <p>Identifier of the discarded draft.</p>
+         * <p>Identifier of the discarded draft</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -97,6 +96,14 @@ public final class DeletedHarborSavedQueryDraftEnvelopeData {
 
         public DeletedHarborSavedQueryDraftEnvelopeData build() {
             return new DeletedHarborSavedQueryDraftEnvelopeData(id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

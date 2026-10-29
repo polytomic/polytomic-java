@@ -60,43 +60,64 @@ public final class SearchMatchMapping {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Kind of saved mapping
+     */
     @JsonProperty("kind")
     public SearchMatchMappingKind getKind() {
         return kind;
     }
 
+    /**
+     * @return Field ID of the mapped source field
+     */
     @JsonProperty("source_field_id")
     public Optional<String> getSourceFieldId() {
         return sourceFieldId;
     }
 
+    /**
+     * @return Label of the mapped source field
+     */
     @JsonProperty("source_field_label")
     public Optional<String> getSourceFieldLabel() {
         return sourceFieldLabel;
     }
 
+    /**
+     * @return Source name of the mapped source field
+     */
     @JsonProperty("source_field_name")
     public Optional<String> getSourceFieldName() {
         return sourceFieldName;
     }
 
+    /**
+     * @return Model ID of the mapped source field
+     */
     @JsonProperty("source_model_id")
     public Optional<String> getSourceModelId() {
         return sourceModelId;
     }
 
+    /**
+     * @return Name of the model that owns the mapped source field
+     */
     @JsonProperty("source_model_name")
     public Optional<String> getSourceModelName() {
         return sourceModelName;
     }
 
+    /**
+     * @return Target field ID the source field maps to
+     */
     @JsonProperty("target_field_id")
     public String getTargetFieldId() {
         return targetFieldId;
     }
 
     /**
-     * @return Target field name from stored schema metadata, when available.
+     * @return Target field name from stored schema metadata, when available
      */
     @JsonProperty("target_field_name")
     public Optional<String> getTargetFieldName() {
@@ -148,12 +169,18 @@ public final class SearchMatchMapping {
     }
 
     public interface KindStage {
+        /**
+         * <p>Kind of saved mapping</p>
+         */
         TargetFieldIdStage kind(@NotNull SearchMatchMappingKind kind);
 
         Builder from(SearchMatchMapping other);
     }
 
     public interface TargetFieldIdStage {
+        /**
+         * <p>Target field ID the source field maps to</p>
+         */
         _FinalStage targetFieldId(@NotNull String targetFieldId);
     }
 
@@ -164,28 +191,43 @@ public final class SearchMatchMapping {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Field ID of the mapped source field</p>
+         */
         _FinalStage sourceFieldId(Optional<String> sourceFieldId);
 
         _FinalStage sourceFieldId(String sourceFieldId);
 
+        /**
+         * <p>Label of the mapped source field</p>
+         */
         _FinalStage sourceFieldLabel(Optional<String> sourceFieldLabel);
 
         _FinalStage sourceFieldLabel(String sourceFieldLabel);
 
+        /**
+         * <p>Source name of the mapped source field</p>
+         */
         _FinalStage sourceFieldName(Optional<String> sourceFieldName);
 
         _FinalStage sourceFieldName(String sourceFieldName);
 
+        /**
+         * <p>Model ID of the mapped source field</p>
+         */
         _FinalStage sourceModelId(Optional<String> sourceModelId);
 
         _FinalStage sourceModelId(String sourceModelId);
 
+        /**
+         * <p>Name of the model that owns the mapped source field</p>
+         */
         _FinalStage sourceModelName(Optional<String> sourceModelName);
 
         _FinalStage sourceModelName(String sourceModelName);
 
         /**
-         * <p>Target field name from stored schema metadata, when available.</p>
+         * <p>Target field name from stored schema metadata, when available</p>
          */
         _FinalStage targetFieldName(Optional<String> targetFieldName);
 
@@ -210,7 +252,6 @@ public final class SearchMatchMapping {
 
         private Optional<String> sourceFieldId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -228,6 +269,10 @@ public final class SearchMatchMapping {
             return this;
         }
 
+        /**
+         * <p>Kind of saved mapping</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("kind")
         public TargetFieldIdStage kind(@NotNull SearchMatchMappingKind kind) {
@@ -235,6 +280,10 @@ public final class SearchMatchMapping {
             return this;
         }
 
+        /**
+         * <p>Target field ID the source field maps to</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target_field_id")
         public _FinalStage targetFieldId(@NotNull String targetFieldId) {
@@ -243,7 +292,7 @@ public final class SearchMatchMapping {
         }
 
         /**
-         * <p>Target field name from stored schema metadata, when available.</p>
+         * <p>Target field name from stored schema metadata, when available</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -253,7 +302,7 @@ public final class SearchMatchMapping {
         }
 
         /**
-         * <p>Target field name from stored schema metadata, when available.</p>
+         * <p>Target field name from stored schema metadata, when available</p>
          */
         @java.lang.Override
         @JsonSetter(value = "target_field_name", nulls = Nulls.SKIP)
@@ -262,12 +311,19 @@ public final class SearchMatchMapping {
             return this;
         }
 
+        /**
+         * <p>Name of the model that owns the mapped source field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage sourceModelName(String sourceModelName) {
             this.sourceModelName = Optional.ofNullable(sourceModelName);
             return this;
         }
 
+        /**
+         * <p>Name of the model that owns the mapped source field</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source_model_name", nulls = Nulls.SKIP)
         public _FinalStage sourceModelName(Optional<String> sourceModelName) {
@@ -275,12 +331,19 @@ public final class SearchMatchMapping {
             return this;
         }
 
+        /**
+         * <p>Model ID of the mapped source field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage sourceModelId(String sourceModelId) {
             this.sourceModelId = Optional.ofNullable(sourceModelId);
             return this;
         }
 
+        /**
+         * <p>Model ID of the mapped source field</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source_model_id", nulls = Nulls.SKIP)
         public _FinalStage sourceModelId(Optional<String> sourceModelId) {
@@ -288,12 +351,19 @@ public final class SearchMatchMapping {
             return this;
         }
 
+        /**
+         * <p>Source name of the mapped source field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage sourceFieldName(String sourceFieldName) {
             this.sourceFieldName = Optional.ofNullable(sourceFieldName);
             return this;
         }
 
+        /**
+         * <p>Source name of the mapped source field</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source_field_name", nulls = Nulls.SKIP)
         public _FinalStage sourceFieldName(Optional<String> sourceFieldName) {
@@ -301,12 +371,19 @@ public final class SearchMatchMapping {
             return this;
         }
 
+        /**
+         * <p>Label of the mapped source field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage sourceFieldLabel(String sourceFieldLabel) {
             this.sourceFieldLabel = Optional.ofNullable(sourceFieldLabel);
             return this;
         }
 
+        /**
+         * <p>Label of the mapped source field</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source_field_label", nulls = Nulls.SKIP)
         public _FinalStage sourceFieldLabel(Optional<String> sourceFieldLabel) {
@@ -314,12 +391,19 @@ public final class SearchMatchMapping {
             return this;
         }
 
+        /**
+         * <p>Field ID of the mapped source field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage sourceFieldId(String sourceFieldId) {
             this.sourceFieldId = Optional.ofNullable(sourceFieldId);
             return this;
         }
 
+        /**
+         * <p>Field ID of the mapped source field</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source_field_id", nulls = Nulls.SKIP)
         public _FinalStage sourceFieldId(Optional<String> sourceFieldId) {
@@ -339,6 +423,21 @@ public final class SearchMatchMapping {
                     targetFieldId,
                     targetFieldName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("kind")
+                    || key.equalsIgnoreCase("source_field_id")
+                    || key.equalsIgnoreCase("source_field_label")
+                    || key.equalsIgnoreCase("source_field_name")
+                    || key.equalsIgnoreCase("source_model_id")
+                    || key.equalsIgnoreCase("source_model_name")
+                    || key.equalsIgnoreCase("target_field_id")
+                    || key.equalsIgnoreCase("target_field_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

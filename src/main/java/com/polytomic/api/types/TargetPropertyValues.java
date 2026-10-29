@@ -45,7 +45,7 @@ public final class TargetPropertyValues {
     }
 
     /**
-     * @return True if the property is an enum.
+     * @return True if the property is an enum
      */
     @JsonProperty("enum")
     public Optional<Boolean> getEnum() {
@@ -53,7 +53,7 @@ public final class TargetPropertyValues {
     }
 
     /**
-     * @return The identifier of the target property.
+     * @return The identifier of the target property
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -61,7 +61,7 @@ public final class TargetPropertyValues {
     }
 
     /**
-     * @return A human readable title for the target property.
+     * @return A human readable title for the target property
      */
     @JsonProperty("title")
     public Optional<String> getTitle() {
@@ -69,7 +69,7 @@ public final class TargetPropertyValues {
     }
 
     /**
-     * @return Valid values for the target property.
+     * @return Valid values for the target property
      */
     @JsonProperty("values")
     public Optional<List<UtilEnumValue>> getValues() {
@@ -118,7 +118,6 @@ public final class TargetPropertyValues {
 
         private Optional<List<UtilEnumValue>> values = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -132,7 +131,7 @@ public final class TargetPropertyValues {
         }
 
         /**
-         * <p>True if the property is an enum.</p>
+         * <p>True if the property is an enum</p>
          */
         @JsonSetter(value = "enum", nulls = Nulls.SKIP)
         public Builder enum_(Optional<Boolean> enum_) {
@@ -146,7 +145,7 @@ public final class TargetPropertyValues {
         }
 
         /**
-         * <p>The identifier of the target property.</p>
+         * <p>The identifier of the target property</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -160,7 +159,7 @@ public final class TargetPropertyValues {
         }
 
         /**
-         * <p>A human readable title for the target property.</p>
+         * <p>A human readable title for the target property</p>
          */
         @JsonSetter(value = "title", nulls = Nulls.SKIP)
         public Builder title(Optional<String> title) {
@@ -174,7 +173,7 @@ public final class TargetPropertyValues {
         }
 
         /**
-         * <p>Valid values for the target property.</p>
+         * <p>Valid values for the target property</p>
          */
         @JsonSetter(value = "values", nulls = Nulls.SKIP)
         public Builder values(Optional<List<UtilEnumValue>> values) {
@@ -189,6 +188,17 @@ public final class TargetPropertyValues {
 
         public TargetPropertyValues build() {
             return new TargetPropertyValues(enum_, id, title, values, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enum")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

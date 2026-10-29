@@ -57,39 +57,57 @@ public final class ModelSearchHit {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return API paths of the model and its connection
+     */
     @JsonProperty("links")
     public SearchResultLinks getLinks() {
         return links;
     }
 
     /**
-     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata.
+     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata
      */
     @JsonProperty("matches")
     public Optional<List<SearchMatch>> getMatches() {
         return matches;
     }
 
+    /**
+     * @return Connection ID of the model
+     */
     @JsonProperty("model_connection_id")
     public String getModelConnectionId() {
         return modelConnectionId;
     }
 
+    /**
+     * @return Name of the model's connection
+     */
     @JsonProperty("model_connection_name")
     public String getModelConnectionName() {
         return modelConnectionName;
     }
 
+    /**
+     * @return Connection type of the model's connection
+     */
     @JsonProperty("model_connection_type")
     public String getModelConnectionType() {
         return modelConnectionType;
     }
 
+    /**
+     * @return Model ID
+     */
     @JsonProperty("model_id")
     public String getModelId() {
         return modelId;
     }
 
+    /**
+     * @return Model name
+     */
     @JsonProperty("model_name")
     public String getModelName() {
         return modelName;
@@ -138,28 +156,46 @@ public final class ModelSearchHit {
     }
 
     public interface LinksStage {
+        /**
+         * <p>API paths of the model and its connection</p>
+         */
         ModelConnectionIdStage links(@NotNull SearchResultLinks links);
 
         Builder from(ModelSearchHit other);
     }
 
     public interface ModelConnectionIdStage {
+        /**
+         * <p>Connection ID of the model</p>
+         */
         ModelConnectionNameStage modelConnectionId(@NotNull String modelConnectionId);
     }
 
     public interface ModelConnectionNameStage {
+        /**
+         * <p>Name of the model's connection</p>
+         */
         ModelConnectionTypeStage modelConnectionName(@NotNull String modelConnectionName);
     }
 
     public interface ModelConnectionTypeStage {
+        /**
+         * <p>Connection type of the model's connection</p>
+         */
         ModelIdStage modelConnectionType(@NotNull String modelConnectionType);
     }
 
     public interface ModelIdStage {
+        /**
+         * <p>Model ID</p>
+         */
         ModelNameStage modelId(@NotNull String modelId);
     }
 
     public interface ModelNameStage {
+        /**
+         * <p>Model name</p>
+         */
         _FinalStage modelName(@NotNull String modelName);
     }
 
@@ -171,7 +207,7 @@ public final class ModelSearchHit {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         _FinalStage matches(Optional<List<SearchMatch>> matches);
 
@@ -201,7 +237,6 @@ public final class ModelSearchHit {
 
         private Optional<List<SearchMatch>> matches = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -218,6 +253,10 @@ public final class ModelSearchHit {
             return this;
         }
 
+        /**
+         * <p>API paths of the model and its connection</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("links")
         public ModelConnectionIdStage links(@NotNull SearchResultLinks links) {
@@ -225,6 +264,10 @@ public final class ModelSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_connection_id")
         public ModelConnectionNameStage modelConnectionId(@NotNull String modelConnectionId) {
@@ -232,6 +275,10 @@ public final class ModelSearchHit {
             return this;
         }
 
+        /**
+         * <p>Name of the model's connection</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_connection_name")
         public ModelConnectionTypeStage modelConnectionName(@NotNull String modelConnectionName) {
@@ -239,6 +286,10 @@ public final class ModelSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connection type of the model's connection</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_connection_type")
         public ModelIdStage modelConnectionType(@NotNull String modelConnectionType) {
@@ -246,6 +297,10 @@ public final class ModelSearchHit {
             return this;
         }
 
+        /**
+         * <p>Model ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_id")
         public ModelNameStage modelId(@NotNull String modelId) {
@@ -253,6 +308,10 @@ public final class ModelSearchHit {
             return this;
         }
 
+        /**
+         * <p>Model name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_name")
         public _FinalStage modelName(@NotNull String modelName) {
@@ -261,7 +320,7 @@ public final class ModelSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -271,7 +330,7 @@ public final class ModelSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         @java.lang.Override
         @JsonSetter(value = "matches", nulls = Nulls.SKIP)
@@ -291,6 +350,20 @@ public final class ModelSearchHit {
                     modelId,
                     modelName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("links")
+                    || key.equalsIgnoreCase("matches")
+                    || key.equalsIgnoreCase("model_connection_id")
+                    || key.equalsIgnoreCase("model_connection_name")
+                    || key.equalsIgnoreCase("model_connection_type")
+                    || key.equalsIgnoreCase("model_id")
+                    || key.equalsIgnoreCase("model_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

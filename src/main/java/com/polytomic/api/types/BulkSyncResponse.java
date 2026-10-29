@@ -137,18 +137,24 @@ public final class BulkSyncResponse {
         return additionalSchedules;
     }
 
+    /**
+     * @return Whether Polytomic automatically enables newly discovered fields on existing objects
+     */
     @JsonProperty("automatically_add_new_fields")
     public Optional<BulkDiscover> getAutomaticallyAddNewFields() {
         return automaticallyAddNewFields;
     }
 
+    /**
+     * @return Whether Polytomic automatically enables newly discovered source objects
+     */
     @JsonProperty("automatically_add_new_objects")
     public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
         return automaticallyAddNewObjects;
     }
 
     /**
-     * @return Per-sync concurrency limit override.
+     * @return Per-sync concurrency limit override
      */
     @JsonProperty("concurrency_limit")
     public Optional<Integer> getConcurrencyLimit() {
@@ -156,13 +162,16 @@ public final class BulkSyncResponse {
     }
 
     /**
-     * @return Timestamp the sync was created.
+     * @return Timestamp the sync was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Actor that created the sync
+     */
     @JsonProperty("created_by")
     public Optional<OutputActor> getCreatedBy() {
         return createdBy;
@@ -176,6 +185,9 @@ public final class BulkSyncResponse {
         return dataCutoffTimestamp;
     }
 
+    /**
+     * @return The default bulk sync schedule. Null when no explicit default schedule is configured.
+     */
     @JsonProperty("default_schedule")
     public Optional<BulkSyncDefaultScheduleResponse> getDefaultSchedule() {
         return defaultSchedule;
@@ -190,7 +202,7 @@ public final class BulkSyncResponse {
     }
 
     /**
-     * @return Connection rows are written to.
+     * @return Connection rows are written to
      */
     @JsonProperty("destination_connection_id")
     public Optional<String> getDestinationConnectionId() {
@@ -206,33 +218,39 @@ public final class BulkSyncResponse {
     }
 
     /**
-     * @return Unique identifier of the bulk sync.
+     * @return Unique identifier of the bulk sync
      */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return How source data is written to the destination
+     */
     @JsonProperty("mode")
     public Optional<BulkSyncTargetMode> getMode() {
         return mode;
     }
 
     /**
-     * @return Human-readable name of the bulk sync.
+     * @return Human-readable name of the bulk sync
      */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Whether destination object and field names are normalized
+     */
     @JsonProperty("normalize_names")
     public Optional<BulkNormalizeNames> getNormalizeNames() {
         return normalizeNames;
     }
 
     /**
-     * @return Organization the sync belongs to.
+     * @return Organization the sync belongs to
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -240,7 +258,7 @@ public final class BulkSyncResponse {
     }
 
     /**
-     * @return List of permissions policies applied to the bulk sync.
+     * @return List of permissions policies applied to the bulk sync
      */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
@@ -248,7 +266,7 @@ public final class BulkSyncResponse {
     }
 
     /**
-     * @return Per-sync resync concurrency limit override.
+     * @return Per-sync resync concurrency limit override
      */
     @JsonProperty("resync_concurrency_limit")
     public Optional<Integer> getResyncConcurrencyLimit() {
@@ -264,7 +282,7 @@ public final class BulkSyncResponse {
     }
 
     /**
-     * @return Connection rows are read from.
+     * @return Connection rows are read from
      */
     @JsonProperty("source_connection_id")
     public Optional<String> getSourceConnectionId() {
@@ -272,13 +290,16 @@ public final class BulkSyncResponse {
     }
 
     /**
-     * @return Timestamp the sync was last updated.
+     * @return Timestamp the sync was last updated
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * @return Actor that most recently updated the sync
+     */
     @JsonProperty("updated_by")
     public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
@@ -406,7 +427,6 @@ public final class BulkSyncResponse {
 
         private Optional<OutputActor> updatedBy = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -466,6 +486,9 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        /**
+         * <p>Whether Polytomic automatically enables newly discovered fields on existing objects</p>
+         */
         @JsonSetter(value = "automatically_add_new_fields", nulls = Nulls.SKIP)
         public Builder automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields) {
             this.automaticallyAddNewFields = automaticallyAddNewFields;
@@ -477,6 +500,9 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        /**
+         * <p>Whether Polytomic automatically enables newly discovered source objects</p>
+         */
         @JsonSetter(value = "automatically_add_new_objects", nulls = Nulls.SKIP)
         public Builder automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects) {
             this.automaticallyAddNewObjects = automaticallyAddNewObjects;
@@ -489,7 +515,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Per-sync concurrency limit override.</p>
+         * <p>Per-sync concurrency limit override</p>
          */
         @JsonSetter(value = "concurrency_limit", nulls = Nulls.SKIP)
         public Builder concurrencyLimit(Optional<Integer> concurrencyLimit) {
@@ -503,7 +529,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Timestamp the sync was created.</p>
+         * <p>Timestamp the sync was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -516,6 +542,9 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        /**
+         * <p>Actor that created the sync</p>
+         */
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
         public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
@@ -541,6 +570,9 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        /**
+         * <p>The default bulk sync schedule. Null when no explicit default schedule is configured.</p>
+         */
         @JsonSetter(value = "default_schedule", nulls = Nulls.SKIP)
         public Builder defaultSchedule(Optional<BulkSyncDefaultScheduleResponse> defaultSchedule) {
             this.defaultSchedule = defaultSchedule;
@@ -567,7 +599,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Connection rows are written to.</p>
+         * <p>Connection rows are written to</p>
          */
         @JsonSetter(value = "destination_connection_id", nulls = Nulls.SKIP)
         public Builder destinationConnectionId(Optional<String> destinationConnectionId) {
@@ -595,7 +627,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Unique identifier of the bulk sync.</p>
+         * <p>Unique identifier of the bulk sync</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -608,6 +640,9 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        /**
+         * <p>How source data is written to the destination</p>
+         */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public Builder mode(Optional<BulkSyncTargetMode> mode) {
             this.mode = mode;
@@ -620,7 +655,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Human-readable name of the bulk sync.</p>
+         * <p>Human-readable name of the bulk sync</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -633,6 +668,9 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        /**
+         * <p>Whether destination object and field names are normalized</p>
+         */
         @JsonSetter(value = "normalize_names", nulls = Nulls.SKIP)
         public Builder normalizeNames(Optional<BulkNormalizeNames> normalizeNames) {
             this.normalizeNames = normalizeNames;
@@ -645,7 +683,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Organization the sync belongs to.</p>
+         * <p>Organization the sync belongs to</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -659,7 +697,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>List of permissions policies applied to the bulk sync.</p>
+         * <p>List of permissions policies applied to the bulk sync</p>
          */
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public Builder policies(Optional<List<String>> policies) {
@@ -673,7 +711,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Per-sync resync concurrency limit override.</p>
+         * <p>Per-sync resync concurrency limit override</p>
          */
         @JsonSetter(value = "resync_concurrency_limit", nulls = Nulls.SKIP)
         public Builder resyncConcurrencyLimit(Optional<Integer> resyncConcurrencyLimit) {
@@ -701,7 +739,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Connection rows are read from.</p>
+         * <p>Connection rows are read from</p>
          */
         @JsonSetter(value = "source_connection_id", nulls = Nulls.SKIP)
         public Builder sourceConnectionId(Optional<String> sourceConnectionId) {
@@ -715,7 +753,7 @@ public final class BulkSyncResponse {
         }
 
         /**
-         * <p>Timestamp the sync was last updated.</p>
+         * <p>Timestamp the sync was last updated</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -728,6 +766,9 @@ public final class BulkSyncResponse {
             return this;
         }
 
+        /**
+         * <p>Actor that most recently updated the sync</p>
+         */
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
         public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
@@ -765,6 +806,36 @@ public final class BulkSyncResponse {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("active")
+                    || key.equalsIgnoreCase("additional_schedules")
+                    || key.equalsIgnoreCase("automatically_add_new_fields")
+                    || key.equalsIgnoreCase("automatically_add_new_objects")
+                    || key.equalsIgnoreCase("concurrency_limit")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("data_cutoff_timestamp")
+                    || key.equalsIgnoreCase("default_schedule")
+                    || key.equalsIgnoreCase("destination_configuration")
+                    || key.equalsIgnoreCase("destination_connection_id")
+                    || key.equalsIgnoreCase("disable_record_timestamps")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("normalize_names")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("resync_concurrency_limit")
+                    || key.equalsIgnoreCase("source_configuration")
+                    || key.equalsIgnoreCase("source_connection_id")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

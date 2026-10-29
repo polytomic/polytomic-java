@@ -29,6 +29,9 @@ public final class GetSyncSourceMetaEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Source configuration choices for the connection
+     */
     @JsonProperty("data")
     public Optional<SyncSourceMetaResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class GetSyncSourceMetaEnvelope {
     public static final class Builder {
         private Optional<SyncSourceMetaResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class GetSyncSourceMetaEnvelope {
             return this;
         }
 
+        /**
+         * <p>Source configuration choices for the connection</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<SyncSourceMetaResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class GetSyncSourceMetaEnvelope {
 
         public GetSyncSourceMetaEnvelope build() {
             return new GetSyncSourceMetaEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

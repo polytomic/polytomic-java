@@ -93,7 +93,7 @@ public final class BulkSchemaListItem {
     }
 
     /**
-     * @return Whether this schema is included in sync runs.
+     * @return Whether this schema is included in sync runs
      */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
@@ -101,7 +101,7 @@ public final class BulkSchemaListItem {
     }
 
     /**
-     * @return Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs.
+     * @return Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs
      */
     @JsonProperty("history_enabled")
     public Optional<Boolean> getHistoryEnabled() {
@@ -109,7 +109,7 @@ public final class BulkSchemaListItem {
     }
 
     /**
-     * @return Source-side schema identifier (e.g. object name for SaaS sources, schema.table for databases).
+     * @return Source-side schema identifier (e.g. object name for SaaS sources, schema.table for databases)
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -117,7 +117,7 @@ public final class BulkSchemaListItem {
     }
 
     /**
-     * @return Effective name of the object written to the destination after any configured naming rules are applied.
+     * @return Effective name of the object written to the destination after any configured naming rules are applied
      */
     @JsonProperty("output_name")
     public Optional<String> getOutputName() {
@@ -218,7 +218,6 @@ public final class BulkSchemaListItem {
 
         private Optional<String> userOutputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -280,7 +279,7 @@ public final class BulkSchemaListItem {
         }
 
         /**
-         * <p>Whether this schema is included in sync runs.</p>
+         * <p>Whether this schema is included in sync runs</p>
          */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
@@ -294,7 +293,7 @@ public final class BulkSchemaListItem {
         }
 
         /**
-         * <p>Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs.</p>
+         * <p>Whether a companion history table is maintained beside this schema's output, recording every version observed on successive runs</p>
          */
         @JsonSetter(value = "history_enabled", nulls = Nulls.SKIP)
         public Builder historyEnabled(Optional<Boolean> historyEnabled) {
@@ -308,7 +307,7 @@ public final class BulkSchemaListItem {
         }
 
         /**
-         * <p>Source-side schema identifier (e.g. object name for SaaS sources, schema.table for databases).</p>
+         * <p>Source-side schema identifier (e.g. object name for SaaS sources, schema.table for databases)</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -322,7 +321,7 @@ public final class BulkSchemaListItem {
         }
 
         /**
-         * <p>Effective name of the object written to the destination after any configured naming rules are applied.</p>
+         * <p>Effective name of the object written to the destination after any configured naming rules are applied</p>
          */
         @JsonSetter(value = "output_name", nulls = Nulls.SKIP)
         public Builder outputName(Optional<String> outputName) {
@@ -390,6 +389,23 @@ public final class BulkSchemaListItem {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data_cutoff_timestamp")
+                    || key.equalsIgnoreCase("destination_history_output_name")
+                    || key.equalsIgnoreCase("disable_data_cutoff")
+                    || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("history_enabled")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("output_name")
+                    || key.equalsIgnoreCase("partition_key")
+                    || key.equalsIgnoreCase("tracking_field")
+                    || key.equalsIgnoreCase("user_output_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

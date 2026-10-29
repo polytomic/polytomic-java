@@ -42,7 +42,7 @@ public final class HarborsListKeysRequest {
     }
 
     /**
-     * @return Opaque pagination cursor returned by the previous request.
+     * @return Opaque pagination cursor returned by the previous request
      */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
@@ -84,7 +84,6 @@ public final class HarborsListKeysRequest {
 
         private Optional<String> pageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -110,7 +109,7 @@ public final class HarborsListKeysRequest {
         }
 
         /**
-         * <p>Opaque pagination cursor returned by the previous request.</p>
+         * <p>Opaque pagination cursor returned by the previous request</p>
          */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
@@ -125,6 +124,14 @@ public final class HarborsListKeysRequest {
 
         public HarborsListKeysRequest build() {
             return new HarborsListKeysRequest(limit, pageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

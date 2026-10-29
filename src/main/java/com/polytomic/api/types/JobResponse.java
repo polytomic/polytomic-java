@@ -48,7 +48,7 @@ public final class JobResponse {
     }
 
     /**
-     * @return Error message if the job failed.
+     * @return Error message if the job failed
      */
     @JsonProperty("error")
     public Optional<String> getError() {
@@ -56,7 +56,7 @@ public final class JobResponse {
     }
 
     /**
-     * @return Identifier of the job.
+     * @return Identifier of the job
      */
     @JsonProperty("job_id")
     public Optional<String> getJobId() {
@@ -71,6 +71,9 @@ public final class JobResponse {
         return result;
     }
 
+    /**
+     * @return Current execution status of the job (e.g. running, done, failed)
+     */
     @JsonProperty("status")
     public Optional<WorkTaskStatus> getStatus() {
         return status;
@@ -129,7 +132,6 @@ public final class JobResponse {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,7 +146,7 @@ public final class JobResponse {
         }
 
         /**
-         * <p>Error message if the job failed.</p>
+         * <p>Error message if the job failed</p>
          */
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public Builder error(Optional<String> error) {
@@ -158,7 +160,7 @@ public final class JobResponse {
         }
 
         /**
-         * <p>Identifier of the job.</p>
+         * <p>Identifier of the job</p>
          */
         @JsonSetter(value = "job_id", nulls = Nulls.SKIP)
         public Builder jobId(Optional<String> jobId) {
@@ -185,6 +187,9 @@ public final class JobResponse {
             return this;
         }
 
+        /**
+         * <p>Current execution status of the job (e.g. running, done, failed)</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<WorkTaskStatus> status) {
             this.status = status;
@@ -212,6 +217,18 @@ public final class JobResponse {
 
         public JobResponse build() {
             return new JobResponse(error, jobId, result, status, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("error")
+                    || key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("result")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -102,7 +102,6 @@ public final class ExecutionsListStatusRequest {
 
         private Optional<Boolean> active = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -163,6 +162,14 @@ public final class ExecutionsListStatusRequest {
 
         public ExecutionsListStatusRequest build() {
             return new ExecutionsListStatusRequest(syncId, all, active, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("sync_id") || key.equalsIgnoreCase("all") || key.equalsIgnoreCase("active")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

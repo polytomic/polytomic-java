@@ -5,6 +5,7 @@ package com.polytomic.api.resources.bulksync.errorhandling;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.errorhandling.requests.UpdateBulkSyncErrorHandlingRequest;
 import com.polytomic.api.types.BulkSyncErrorHandlingEnvelope;
@@ -31,28 +32,58 @@ public class AsyncErrorHandlingClient {
      * Returns the error handling settings for a bulk sync.
      */
     public CompletableFuture<BulkSyncErrorHandlingEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncErrorHandlingEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<BulkSyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the error handling settings for a bulk sync.
      */
     public CompletableFuture<BulkSyncErrorHandlingEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<BulkSyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the error handling settings for a bulk sync.
      */
     public CompletableFuture<BulkSyncErrorHandlingEnvelope> update(String id) {
-        return this.rawClient.update(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncErrorHandlingEnvelope>> rawFuture = this.rawClient.update(id);
+        CompletableFuture<BulkSyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the error handling settings for a bulk sync.
      */
     public CompletableFuture<BulkSyncErrorHandlingEnvelope> update(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.update(id, requestOptions);
+        CompletableFuture<BulkSyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -60,7 +91,15 @@ public class AsyncErrorHandlingClient {
      */
     public CompletableFuture<BulkSyncErrorHandlingEnvelope> update(
             String id, UpdateBulkSyncErrorHandlingRequest request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.update(id, request);
+        CompletableFuture<BulkSyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -68,6 +107,14 @@ public class AsyncErrorHandlingClient {
      */
     public CompletableFuture<BulkSyncErrorHandlingEnvelope> update(
             String id, UpdateBulkSyncErrorHandlingRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<BulkSyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

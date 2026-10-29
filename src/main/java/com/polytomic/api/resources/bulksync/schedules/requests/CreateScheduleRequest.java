@@ -29,6 +29,9 @@ public final class CreateScheduleRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Bulk sync schedule. Schedule times are interpreted in UTC.
+     */
     @JsonProperty("schedule")
     public BulkSyncScheduleApi getSchedule() {
         return schedule;
@@ -64,6 +67,9 @@ public final class CreateScheduleRequest {
     }
 
     public interface ScheduleStage {
+        /**
+         * <p>Bulk sync schedule. Schedule times are interpreted in UTC.</p>
+         */
         _FinalStage schedule(@NotNull BulkSyncScheduleApi schedule);
 
         Builder from(CreateScheduleRequest other);
@@ -81,7 +87,6 @@ public final class CreateScheduleRequest {
     public static final class Builder implements ScheduleStage, _FinalStage {
         private BulkSyncScheduleApi schedule;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,10 @@ public final class CreateScheduleRequest {
             return this;
         }
 
+        /**
+         * <p>Bulk sync schedule. Schedule times are interpreted in UTC.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("schedule")
         public _FinalStage schedule(@NotNull BulkSyncScheduleApi schedule) {
@@ -102,6 +111,14 @@ public final class CreateScheduleRequest {
         @java.lang.Override
         public CreateScheduleRequest build() {
             return new CreateScheduleRequest(schedule, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("schedule")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

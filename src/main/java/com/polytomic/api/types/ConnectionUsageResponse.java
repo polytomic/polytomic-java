@@ -45,7 +45,7 @@ public final class ConnectionUsageResponse {
     }
 
     /**
-     * @return Per-sync breakdown of API calls spent against this connection in the last 24 hours, sorted by total calls descending.
+     * @return Per-sync breakdown of API calls spent against this connection in the last 24 hours, sorted by total calls descending
      */
     @JsonProperty("bySync")
     public Optional<List<ConnectionUsageSyncStats>> getBySync() {
@@ -53,7 +53,7 @@ public final class ConnectionUsageResponse {
     }
 
     /**
-     * @return Total backend API calls made through this connection over the last 24 hours, or null if the backend does not report usage.
+     * @return Total backend API calls made through this connection over the last 24 hours, or null if the backend does not report usage
      */
     @JsonProperty("callsLast24h")
     public Optional<Integer> getCallsLast24H() {
@@ -61,7 +61,7 @@ public final class ConnectionUsageResponse {
     }
 
     /**
-     * @return Unique identifier of the connection the usage applies to.
+     * @return Unique identifier of the connection the usage applies to
      */
     @JsonProperty("connectionId")
     public Optional<String> getConnectionId() {
@@ -118,7 +118,6 @@ public final class ConnectionUsageResponse {
 
         private Optional<Boolean> reportsSyncStats = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -132,7 +131,7 @@ public final class ConnectionUsageResponse {
         }
 
         /**
-         * <p>Per-sync breakdown of API calls spent against this connection in the last 24 hours, sorted by total calls descending.</p>
+         * <p>Per-sync breakdown of API calls spent against this connection in the last 24 hours, sorted by total calls descending</p>
          */
         @JsonSetter(value = "bySync", nulls = Nulls.SKIP)
         public Builder bySync(Optional<List<ConnectionUsageSyncStats>> bySync) {
@@ -146,7 +145,7 @@ public final class ConnectionUsageResponse {
         }
 
         /**
-         * <p>Total backend API calls made through this connection over the last 24 hours, or null if the backend does not report usage.</p>
+         * <p>Total backend API calls made through this connection over the last 24 hours, or null if the backend does not report usage</p>
          */
         @JsonSetter(value = "callsLast24h", nulls = Nulls.SKIP)
         public Builder callsLast24H(Optional<Integer> callsLast24H) {
@@ -160,7 +159,7 @@ public final class ConnectionUsageResponse {
         }
 
         /**
-         * <p>Unique identifier of the connection the usage applies to.</p>
+         * <p>Unique identifier of the connection the usage applies to</p>
          */
         @JsonSetter(value = "connectionId", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
@@ -190,6 +189,17 @@ public final class ConnectionUsageResponse {
         public ConnectionUsageResponse build() {
             return new ConnectionUsageResponse(
                     bySync, callsLast24H, connectionId, reportsSyncStats, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("bySync")
+                    || key.equalsIgnoreCase("callsLast24h")
+                    || key.equalsIgnoreCase("connectionId")
+                    || key.equalsIgnoreCase("reportsSyncStats")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

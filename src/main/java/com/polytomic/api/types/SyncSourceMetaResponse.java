@@ -41,7 +41,7 @@ public final class SyncSourceMetaResponse {
     }
 
     /**
-     * @return Additional configuration fields available for this source, keyed by field name.
+     * @return Additional configuration fields available for this source, keyed by field name
      */
     @JsonProperty("configuration")
     public Optional<Map<String, ConfigurationValue>> getConfiguration() {
@@ -49,7 +49,7 @@ public final class SyncSourceMetaResponse {
     }
 
     /**
-     * @return Map of configuration item name to its metadata (available values, required-one-of groups).
+     * @return Map of configuration item name to its metadata (available values, required-one-of groups)
      */
     @JsonProperty("items")
     public Optional<Map<String, Optional<SourceMeta>>> getItems() {
@@ -57,7 +57,7 @@ public final class SyncSourceMetaResponse {
     }
 
     /**
-     * @return Configuration items where exactly one must be selected by the caller.
+     * @return Configuration items where exactly one must be selected by the caller
      */
     @JsonProperty("requires_one_of")
     public Optional<List<String>> getRequiresOneOf() {
@@ -103,7 +103,6 @@ public final class SyncSourceMetaResponse {
 
         private Optional<List<String>> requiresOneOf = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -116,7 +115,7 @@ public final class SyncSourceMetaResponse {
         }
 
         /**
-         * <p>Additional configuration fields available for this source, keyed by field name.</p>
+         * <p>Additional configuration fields available for this source, keyed by field name</p>
          */
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public Builder configuration(Optional<Map<String, ConfigurationValue>> configuration) {
@@ -130,7 +129,7 @@ public final class SyncSourceMetaResponse {
         }
 
         /**
-         * <p>Map of configuration item name to its metadata (available values, required-one-of groups).</p>
+         * <p>Map of configuration item name to its metadata (available values, required-one-of groups)</p>
          */
         @JsonSetter(value = "items", nulls = Nulls.SKIP)
         public Builder items(Optional<Map<String, Optional<SourceMeta>>> items) {
@@ -144,7 +143,7 @@ public final class SyncSourceMetaResponse {
         }
 
         /**
-         * <p>Configuration items where exactly one must be selected by the caller.</p>
+         * <p>Configuration items where exactly one must be selected by the caller</p>
          */
         @JsonSetter(value = "requires_one_of", nulls = Nulls.SKIP)
         public Builder requiresOneOf(Optional<List<String>> requiresOneOf) {
@@ -159,6 +158,16 @@ public final class SyncSourceMetaResponse {
 
         public SyncSourceMetaResponse build() {
             return new SyncSourceMetaResponse(configuration, items, requiresOneOf, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("items")
+                    || key.equalsIgnoreCase("requires_one_of")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

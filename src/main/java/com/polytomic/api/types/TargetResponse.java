@@ -78,13 +78,16 @@ public final class TargetResponse {
     }
 
     /**
-     * @return Human-readable name of the target object.
+     * @return Human-readable name of the target object
      */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Capability flags describing how the target behaves; controls which sync options are valid for this target
+     */
     @JsonProperty("properties")
     public Optional<SyncDestinationProperties> getProperties() {
         return properties;
@@ -146,7 +149,6 @@ public final class TargetResponse {
 
         private Optional<OffsetDateTime> refreshedAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -204,7 +206,7 @@ public final class TargetResponse {
         }
 
         /**
-         * <p>Human-readable name of the target object.</p>
+         * <p>Human-readable name of the target object</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -217,6 +219,9 @@ public final class TargetResponse {
             return this;
         }
 
+        /**
+         * <p>Capability flags describing how the target behaves; controls which sync options are valid for this target</p>
+         */
         @JsonSetter(value = "properties", nulls = Nulls.SKIP)
         public Builder properties(Optional<SyncDestinationProperties> properties) {
             this.properties = properties;
@@ -244,6 +249,19 @@ public final class TargetResponse {
 
         public TargetResponse build() {
             return new TargetResponse(fields, id, modes, name, properties, refreshedAt, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("modes")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("properties")
+                    || key.equalsIgnoreCase("refreshed_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

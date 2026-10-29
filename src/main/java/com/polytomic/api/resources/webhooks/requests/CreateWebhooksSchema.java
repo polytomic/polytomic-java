@@ -42,6 +42,9 @@ public final class CreateWebhooksSchema {
         return endpoint;
     }
 
+    /**
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
@@ -100,6 +103,9 @@ public final class CreateWebhooksSchema {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
@@ -113,7 +119,6 @@ public final class CreateWebhooksSchema {
 
         private Optional<String> organizationId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -140,12 +145,19 @@ public final class CreateWebhooksSchema {
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -156,6 +168,16 @@ public final class CreateWebhooksSchema {
         @java.lang.Override
         public CreateWebhooksSchema build() {
             return new CreateWebhooksSchema(endpoint, organizationId, secret, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("endpoint")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("secret")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

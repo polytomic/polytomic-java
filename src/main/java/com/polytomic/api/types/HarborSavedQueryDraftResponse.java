@@ -90,7 +90,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Optional draft change note.
+     * @return Optional draft change note
      */
     @JsonProperty("change_note")
     public Optional<String> getChangeNote() {
@@ -98,7 +98,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return When the draft was created.
+     * @return When the draft was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -114,7 +114,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Type of actor that created the draft.
+     * @return Type of actor that created the draft
      */
     @JsonProperty("created_by_type")
     public Optional<String> getCreatedByType() {
@@ -122,7 +122,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Draft business definition.
+     * @return Draft business definition
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -130,7 +130,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Unique identifier of this mutable draft candidate.
+     * @return Unique identifier of this mutable draft candidate
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -138,7 +138,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Draft name.
+     * @return Draft name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -146,7 +146,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Draft owner label.
+     * @return Draft owner label
      */
     @JsonProperty("owner")
     public Optional<String> getOwner() {
@@ -154,7 +154,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Draft typed parameter declarations.
+     * @return Draft typed parameter declarations
      */
     @JsonProperty("parameters")
     public Optional<List<HarborSavedQueryParameter>> getParameters() {
@@ -162,7 +162,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Stable saved-query identifier.
+     * @return Stable saved-query identifier
      */
     @JsonProperty("saved_query_id")
     public Optional<String> getSavedQueryId() {
@@ -170,7 +170,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Draft SQL template.
+     * @return Draft SQL template
      */
     @JsonProperty("sql_template")
     public Optional<String> getSqlTemplate() {
@@ -178,7 +178,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return When the draft was last replaced.
+     * @return When the draft was last replaced
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
@@ -194,7 +194,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Type of actor that last replaced the draft.
+     * @return Type of actor that last replaced the draft
      */
     @JsonProperty("updated_by_type")
     public Optional<String> getUpdatedByType() {
@@ -202,7 +202,7 @@ public final class HarborSavedQueryDraftResponse {
     }
 
     /**
-     * @return Author-supplied validation inputs.
+     * @return Author-supplied validation inputs
      */
     @JsonProperty("validation_values")
     public Optional<Map<String, Object>> getValidationValues() {
@@ -299,7 +299,6 @@ public final class HarborSavedQueryDraftResponse {
 
         private Optional<Map<String, Object>> validationValues = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -324,7 +323,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Optional draft change note.</p>
+         * <p>Optional draft change note</p>
          */
         @JsonSetter(value = "change_note", nulls = Nulls.SKIP)
         public Builder changeNote(Optional<String> changeNote) {
@@ -338,7 +337,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>When the draft was created.</p>
+         * <p>When the draft was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -366,7 +365,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Type of actor that created the draft.</p>
+         * <p>Type of actor that created the draft</p>
          */
         @JsonSetter(value = "created_by_type", nulls = Nulls.SKIP)
         public Builder createdByType(Optional<String> createdByType) {
@@ -380,7 +379,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Draft business definition.</p>
+         * <p>Draft business definition</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -394,7 +393,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Unique identifier of this mutable draft candidate.</p>
+         * <p>Unique identifier of this mutable draft candidate</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -408,7 +407,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Draft name.</p>
+         * <p>Draft name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -422,7 +421,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Draft owner label.</p>
+         * <p>Draft owner label</p>
          */
         @JsonSetter(value = "owner", nulls = Nulls.SKIP)
         public Builder owner(Optional<String> owner) {
@@ -436,7 +435,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Draft typed parameter declarations.</p>
+         * <p>Draft typed parameter declarations</p>
          */
         @JsonSetter(value = "parameters", nulls = Nulls.SKIP)
         public Builder parameters(Optional<List<HarborSavedQueryParameter>> parameters) {
@@ -450,7 +449,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Stable saved-query identifier.</p>
+         * <p>Stable saved-query identifier</p>
          */
         @JsonSetter(value = "saved_query_id", nulls = Nulls.SKIP)
         public Builder savedQueryId(Optional<String> savedQueryId) {
@@ -464,7 +463,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Draft SQL template.</p>
+         * <p>Draft SQL template</p>
          */
         @JsonSetter(value = "sql_template", nulls = Nulls.SKIP)
         public Builder sqlTemplate(Optional<String> sqlTemplate) {
@@ -478,7 +477,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>When the draft was last replaced.</p>
+         * <p>When the draft was last replaced</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -506,7 +505,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Type of actor that last replaced the draft.</p>
+         * <p>Type of actor that last replaced the draft</p>
          */
         @JsonSetter(value = "updated_by_type", nulls = Nulls.SKIP)
         public Builder updatedByType(Optional<String> updatedByType) {
@@ -520,7 +519,7 @@ public final class HarborSavedQueryDraftResponse {
         }
 
         /**
-         * <p>Author-supplied validation inputs.</p>
+         * <p>Author-supplied validation inputs</p>
          */
         @JsonSetter(value = "validation_values", nulls = Nulls.SKIP)
         public Builder validationValues(Optional<Map<String, Object>> validationValues) {
@@ -551,6 +550,28 @@ public final class HarborSavedQueryDraftResponse {
                     updatedByType,
                     validationValues,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("change_note")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("created_by_type")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("owner")
+                    || key.equalsIgnoreCase("parameters")
+                    || key.equalsIgnoreCase("saved_query_id")
+                    || key.equalsIgnoreCase("sql_template")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")
+                    || key.equalsIgnoreCase("updated_by_type")
+                    || key.equalsIgnoreCase("validation_values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

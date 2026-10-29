@@ -51,31 +51,49 @@ public final class SearchResultLinks {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return API path of the bulk sync
+     */
     @JsonProperty("bulk_sync")
     public Optional<String> getBulkSync() {
         return bulkSync;
     }
 
+    /**
+     * @return API path of the connection
+     */
     @JsonProperty("connection")
     public Optional<String> getConnection() {
         return connection;
     }
 
+    /**
+     * @return API path of the model
+     */
     @JsonProperty("model")
     public Optional<String> getModel() {
         return model;
     }
 
+    /**
+     * @return API path of the model sync
+     */
     @JsonProperty("model_sync")
     public Optional<String> getModelSync() {
         return modelSync;
     }
 
+    /**
+     * @return API path of the source connection
+     */
     @JsonProperty("source_connection")
     public Optional<String> getSourceConnection() {
         return sourceConnection;
     }
 
+    /**
+     * @return API path of the target connection
+     */
     @JsonProperty("target_connection")
     public Optional<String> getTargetConnection() {
         return targetConnection;
@@ -135,7 +153,6 @@ public final class SearchResultLinks {
 
         private Optional<String> targetConnection = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -150,6 +167,9 @@ public final class SearchResultLinks {
             return this;
         }
 
+        /**
+         * <p>API path of the bulk sync</p>
+         */
         @JsonSetter(value = "bulk_sync", nulls = Nulls.SKIP)
         public Builder bulkSync(Optional<String> bulkSync) {
             this.bulkSync = bulkSync;
@@ -161,6 +181,9 @@ public final class SearchResultLinks {
             return this;
         }
 
+        /**
+         * <p>API path of the connection</p>
+         */
         @JsonSetter(value = "connection", nulls = Nulls.SKIP)
         public Builder connection(Optional<String> connection) {
             this.connection = connection;
@@ -172,6 +195,9 @@ public final class SearchResultLinks {
             return this;
         }
 
+        /**
+         * <p>API path of the model</p>
+         */
         @JsonSetter(value = "model", nulls = Nulls.SKIP)
         public Builder model(Optional<String> model) {
             this.model = model;
@@ -183,6 +209,9 @@ public final class SearchResultLinks {
             return this;
         }
 
+        /**
+         * <p>API path of the model sync</p>
+         */
         @JsonSetter(value = "model_sync", nulls = Nulls.SKIP)
         public Builder modelSync(Optional<String> modelSync) {
             this.modelSync = modelSync;
@@ -194,6 +223,9 @@ public final class SearchResultLinks {
             return this;
         }
 
+        /**
+         * <p>API path of the source connection</p>
+         */
         @JsonSetter(value = "source_connection", nulls = Nulls.SKIP)
         public Builder sourceConnection(Optional<String> sourceConnection) {
             this.sourceConnection = sourceConnection;
@@ -205,6 +237,9 @@ public final class SearchResultLinks {
             return this;
         }
 
+        /**
+         * <p>API path of the target connection</p>
+         */
         @JsonSetter(value = "target_connection", nulls = Nulls.SKIP)
         public Builder targetConnection(Optional<String> targetConnection) {
             this.targetConnection = targetConnection;
@@ -219,6 +254,19 @@ public final class SearchResultLinks {
         public SearchResultLinks build() {
             return new SearchResultLinks(
                     bulkSync, connection, model, modelSync, sourceConnection, targetConnection, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("bulk_sync")
+                    || key.equalsIgnoreCase("connection")
+                    || key.equalsIgnoreCase("model")
+                    || key.equalsIgnoreCase("model_sync")
+                    || key.equalsIgnoreCase("source_connection")
+                    || key.equalsIgnoreCase("target_connection")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

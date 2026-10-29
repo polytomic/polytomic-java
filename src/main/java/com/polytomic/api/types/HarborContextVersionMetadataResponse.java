@@ -61,7 +61,7 @@ public final class HarborContextVersionMetadataResponse {
     }
 
     /**
-     * @return Optional note supplied when this version was published.
+     * @return Optional note supplied when this version was published
      */
     @JsonProperty("change_note")
     public Optional<String> getChangeNote() {
@@ -69,7 +69,7 @@ public final class HarborContextVersionMetadataResponse {
     }
 
     /**
-     * @return Description captured in this version.
+     * @return Description captured in this version
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -77,7 +77,7 @@ public final class HarborContextVersionMetadataResponse {
     }
 
     /**
-     * @return Unique identifier of this published version.
+     * @return Unique identifier of this published version
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -85,7 +85,7 @@ public final class HarborContextVersionMetadataResponse {
     }
 
     /**
-     * @return When this version was published.
+     * @return When this version was published
      */
     @JsonProperty("published_at")
     public Optional<OffsetDateTime> getPublishedAt() {
@@ -101,7 +101,7 @@ public final class HarborContextVersionMetadataResponse {
     }
 
     /**
-     * @return Type of actor that published this version.
+     * @return Type of actor that published this version
      */
     @JsonProperty("published_by_type")
     public Optional<String> getPublishedByType() {
@@ -109,7 +109,7 @@ public final class HarborContextVersionMetadataResponse {
     }
 
     /**
-     * @return Title captured in this version.
+     * @return Title captured in this version
      */
     @JsonProperty("title")
     public Optional<String> getTitle() {
@@ -117,7 +117,7 @@ public final class HarborContextVersionMetadataResponse {
     }
 
     /**
-     * @return Monotonic version number within the context document.
+     * @return Monotonic version number within the context document
      */
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
@@ -187,7 +187,6 @@ public final class HarborContextVersionMetadataResponse {
 
         private Optional<Integer> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -205,7 +204,7 @@ public final class HarborContextVersionMetadataResponse {
         }
 
         /**
-         * <p>Optional note supplied when this version was published.</p>
+         * <p>Optional note supplied when this version was published</p>
          */
         @JsonSetter(value = "change_note", nulls = Nulls.SKIP)
         public Builder changeNote(Optional<String> changeNote) {
@@ -219,7 +218,7 @@ public final class HarborContextVersionMetadataResponse {
         }
 
         /**
-         * <p>Description captured in this version.</p>
+         * <p>Description captured in this version</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -233,7 +232,7 @@ public final class HarborContextVersionMetadataResponse {
         }
 
         /**
-         * <p>Unique identifier of this published version.</p>
+         * <p>Unique identifier of this published version</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -247,7 +246,7 @@ public final class HarborContextVersionMetadataResponse {
         }
 
         /**
-         * <p>When this version was published.</p>
+         * <p>When this version was published</p>
          */
         @JsonSetter(value = "published_at", nulls = Nulls.SKIP)
         public Builder publishedAt(Optional<OffsetDateTime> publishedAt) {
@@ -275,7 +274,7 @@ public final class HarborContextVersionMetadataResponse {
         }
 
         /**
-         * <p>Type of actor that published this version.</p>
+         * <p>Type of actor that published this version</p>
          */
         @JsonSetter(value = "published_by_type", nulls = Nulls.SKIP)
         public Builder publishedByType(Optional<String> publishedByType) {
@@ -289,7 +288,7 @@ public final class HarborContextVersionMetadataResponse {
         }
 
         /**
-         * <p>Title captured in this version.</p>
+         * <p>Title captured in this version</p>
          */
         @JsonSetter(value = "title", nulls = Nulls.SKIP)
         public Builder title(Optional<String> title) {
@@ -303,7 +302,7 @@ public final class HarborContextVersionMetadataResponse {
         }
 
         /**
-         * <p>Monotonic version number within the context document.</p>
+         * <p>Monotonic version number within the context document</p>
          */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
@@ -327,6 +326,21 @@ public final class HarborContextVersionMetadataResponse {
                     title,
                     version,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("change_note")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("published_at")
+                    || key.equalsIgnoreCase("published_by")
+                    || key.equalsIgnoreCase("published_by_type")
+                    || key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

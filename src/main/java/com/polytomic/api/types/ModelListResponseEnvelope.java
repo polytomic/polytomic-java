@@ -30,6 +30,9 @@ public final class ModelListResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Models in the organization
+     */
     @JsonProperty("data")
     public Optional<List<ModelResponse>> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class ModelListResponseEnvelope {
     public static final class Builder {
         private Optional<List<ModelResponse>> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class ModelListResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Models in the organization</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<ModelResponse>> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class ModelListResponseEnvelope {
 
         public ModelListResponseEnvelope build() {
             return new ModelListResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

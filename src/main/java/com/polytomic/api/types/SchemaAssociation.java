@@ -44,21 +44,33 @@ public final class SchemaAssociation {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Association ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Association name
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Schema IDs the field references
+     */
     @JsonProperty("reference_to")
     public Optional<List<String>> getReferenceTo() {
         return referenceTo;
     }
 
+    /**
+     * @return Field in the referenced schema that the field matches
+     */
     @JsonProperty("referenced_field")
     public Optional<String> getReferencedField() {
         return referencedField;
@@ -106,7 +118,6 @@ public final class SchemaAssociation {
 
         private Optional<String> referencedField = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -119,6 +130,9 @@ public final class SchemaAssociation {
             return this;
         }
 
+        /**
+         * <p>Association ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -130,6 +144,9 @@ public final class SchemaAssociation {
             return this;
         }
 
+        /**
+         * <p>Association name</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -141,6 +158,9 @@ public final class SchemaAssociation {
             return this;
         }
 
+        /**
+         * <p>Schema IDs the field references</p>
+         */
         @JsonSetter(value = "reference_to", nulls = Nulls.SKIP)
         public Builder referenceTo(Optional<List<String>> referenceTo) {
             this.referenceTo = referenceTo;
@@ -152,6 +172,9 @@ public final class SchemaAssociation {
             return this;
         }
 
+        /**
+         * <p>Field in the referenced schema that the field matches</p>
+         */
         @JsonSetter(value = "referenced_field", nulls = Nulls.SKIP)
         public Builder referencedField(Optional<String> referencedField) {
             this.referencedField = referencedField;
@@ -165,6 +188,17 @@ public final class SchemaAssociation {
 
         public SchemaAssociation build() {
             return new SchemaAssociation(id, name, referenceTo, referencedField, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("reference_to")
+                    || key.equalsIgnoreCase("referenced_field")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

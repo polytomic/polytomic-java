@@ -76,7 +76,7 @@ public final class ConnectionProxyResponse {
     }
 
     /**
-     * @return Content-Type of the upstream response.
+     * @return Content-Type of the upstream response
      */
     @JsonProperty("contentType")
     public Optional<String> getContentType() {
@@ -92,20 +92,23 @@ public final class ConnectionProxyResponse {
     }
 
     /**
-     * @return Identifier for the async proxy job when async is true.
+     * @return Identifier for the async proxy job when async is true
      */
     @JsonProperty("jobId")
     public Optional<String> getJobId() {
         return jobId;
     }
 
+    /**
+     * @return Current async proxy job status when async is true
+     */
     @JsonProperty("jobStatus")
     public Optional<WorkTaskStatus> getJobStatus() {
         return jobStatus;
     }
 
     /**
-     * @return Polling URL for the async proxy job when async is true.
+     * @return Polling URL for the async proxy job when async is true
      */
     @JsonProperty("jobUrl")
     public Optional<String> getJobUrl() {
@@ -113,7 +116,7 @@ public final class ConnectionProxyResponse {
     }
 
     /**
-     * @return End-to-end latency of the proxied request in milliseconds.
+     * @return End-to-end latency of the proxied request in milliseconds
      */
     @JsonProperty("latencyMs")
     public Optional<Long> getLatencyMs() {
@@ -121,7 +124,7 @@ public final class ConnectionProxyResponse {
     }
 
     /**
-     * @return Identifier for this proxy call, suitable for correlating with audit logs.
+     * @return Identifier for this proxy call, suitable for correlating with audit logs
      */
     @JsonProperty("proxyCallId")
     public Optional<String> getProxyCallId() {
@@ -129,7 +132,7 @@ public final class ConnectionProxyResponse {
     }
 
     /**
-     * @return HTTP status code returned by the upstream service for synchronous calls, or 202 when an async proxy job is accepted.
+     * @return HTTP status code returned by the upstream service for synchronous calls, or 202 when an async proxy job is accepted
      */
     @JsonProperty("status")
     public Optional<Integer> getStatus() {
@@ -137,7 +140,7 @@ public final class ConnectionProxyResponse {
     }
 
     /**
-     * @return True if the response body was truncated because it exceeded maxResponseBodyBytes.
+     * @return True if the response body was truncated because it exceeded maxResponseBodyBytes
      */
     @JsonProperty("truncated")
     public Optional<Boolean> getTruncated() {
@@ -214,7 +217,6 @@ public final class ConnectionProxyResponse {
 
         private Optional<Boolean> truncated = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -248,7 +250,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>Content-Type of the upstream response.</p>
+         * <p>Content-Type of the upstream response</p>
          */
         @JsonSetter(value = "contentType", nulls = Nulls.SKIP)
         public Builder contentType(Optional<String> contentType) {
@@ -276,7 +278,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>Identifier for the async proxy job when async is true.</p>
+         * <p>Identifier for the async proxy job when async is true</p>
          */
         @JsonSetter(value = "jobId", nulls = Nulls.SKIP)
         public Builder jobId(Optional<String> jobId) {
@@ -289,6 +291,9 @@ public final class ConnectionProxyResponse {
             return this;
         }
 
+        /**
+         * <p>Current async proxy job status when async is true</p>
+         */
         @JsonSetter(value = "jobStatus", nulls = Nulls.SKIP)
         public Builder jobStatus(Optional<WorkTaskStatus> jobStatus) {
             this.jobStatus = jobStatus;
@@ -301,7 +306,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>Polling URL for the async proxy job when async is true.</p>
+         * <p>Polling URL for the async proxy job when async is true</p>
          */
         @JsonSetter(value = "jobUrl", nulls = Nulls.SKIP)
         public Builder jobUrl(Optional<String> jobUrl) {
@@ -315,7 +320,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>End-to-end latency of the proxied request in milliseconds.</p>
+         * <p>End-to-end latency of the proxied request in milliseconds</p>
          */
         @JsonSetter(value = "latencyMs", nulls = Nulls.SKIP)
         public Builder latencyMs(Optional<Long> latencyMs) {
@@ -329,7 +334,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>Identifier for this proxy call, suitable for correlating with audit logs.</p>
+         * <p>Identifier for this proxy call, suitable for correlating with audit logs</p>
          */
         @JsonSetter(value = "proxyCallId", nulls = Nulls.SKIP)
         public Builder proxyCallId(Optional<String> proxyCallId) {
@@ -343,7 +348,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>HTTP status code returned by the upstream service for synchronous calls, or 202 when an async proxy job is accepted.</p>
+         * <p>HTTP status code returned by the upstream service for synchronous calls, or 202 when an async proxy job is accepted</p>
          */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<Integer> status) {
@@ -357,7 +362,7 @@ public final class ConnectionProxyResponse {
         }
 
         /**
-         * <p>True if the response body was truncated because it exceeded maxResponseBodyBytes.</p>
+         * <p>True if the response body was truncated because it exceeded maxResponseBodyBytes</p>
          */
         @JsonSetter(value = "truncated", nulls = Nulls.SKIP)
         public Builder truncated(Optional<Boolean> truncated) {
@@ -383,6 +388,23 @@ public final class ConnectionProxyResponse {
                     status,
                     truncated,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("body")
+                    || key.equalsIgnoreCase("contentType")
+                    || key.equalsIgnoreCase("headers")
+                    || key.equalsIgnoreCase("jobId")
+                    || key.equalsIgnoreCase("jobStatus")
+                    || key.equalsIgnoreCase("jobUrl")
+                    || key.equalsIgnoreCase("latencyMs")
+                    || key.equalsIgnoreCase("proxyCallId")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("truncated")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

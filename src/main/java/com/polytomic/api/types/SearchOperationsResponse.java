@@ -37,7 +37,7 @@ public final class SearchOperationsResponse {
     }
 
     /**
-     * @return Ranked results in the same order as the input queries.
+     * @return Ranked results in the same order as the input queries
      */
     @JsonProperty("results")
     public Optional<List<OperationSearchResult>> getResults() {
@@ -45,7 +45,7 @@ public final class SearchOperationsResponse {
     }
 
     /**
-     * @return SHA-256 digest of the OpenAPI-derived operation catalog source.
+     * @return SHA-256 digest of the OpenAPI-derived operation catalog source
      */
     @JsonProperty("sourceSha256")
     public Optional<String> getSourceSha256() {
@@ -87,7 +87,6 @@ public final class SearchOperationsResponse {
 
         private Optional<String> sourceSha256 = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -99,7 +98,7 @@ public final class SearchOperationsResponse {
         }
 
         /**
-         * <p>Ranked results in the same order as the input queries.</p>
+         * <p>Ranked results in the same order as the input queries</p>
          */
         @JsonSetter(value = "results", nulls = Nulls.SKIP)
         public Builder results(Optional<List<OperationSearchResult>> results) {
@@ -113,7 +112,7 @@ public final class SearchOperationsResponse {
         }
 
         /**
-         * <p>SHA-256 digest of the OpenAPI-derived operation catalog source.</p>
+         * <p>SHA-256 digest of the OpenAPI-derived operation catalog source</p>
          */
         @JsonSetter(value = "sourceSha256", nulls = Nulls.SKIP)
         public Builder sourceSha256(Optional<String> sourceSha256) {
@@ -128,6 +127,14 @@ public final class SearchOperationsResponse {
 
         public SearchOperationsResponse build() {
             return new SearchOperationsResponse(results, sourceSha256, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("results") || key.equalsIgnoreCase("sourceSha256")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

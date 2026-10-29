@@ -51,31 +51,49 @@ public final class EventingBulkSyncRunningEvent {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Destination connection ID
+     */
     @JsonProperty("destination_connection_id")
     public Optional<String> getDestinationConnectionId() {
         return destinationConnectionId;
     }
 
+    /**
+     * @return Execution ID
+     */
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
         return executionId;
     }
 
+    /**
+     * @return Organization ID
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Source connection ID
+     */
     @JsonProperty("source_connection_id")
     public Optional<String> getSourceConnectionId() {
         return sourceConnectionId;
     }
 
+    /**
+     * @return Bulk sync ID
+     */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
         return syncId;
     }
 
+    /**
+     * @return Name of the bulk sync
+     */
     @JsonProperty("sync_name")
     public Optional<String> getSyncName() {
         return syncName;
@@ -135,7 +153,6 @@ public final class EventingBulkSyncRunningEvent {
 
         private Optional<String> syncName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -150,6 +167,9 @@ public final class EventingBulkSyncRunningEvent {
             return this;
         }
 
+        /**
+         * <p>Destination connection ID</p>
+         */
         @JsonSetter(value = "destination_connection_id", nulls = Nulls.SKIP)
         public Builder destinationConnectionId(Optional<String> destinationConnectionId) {
             this.destinationConnectionId = destinationConnectionId;
@@ -161,6 +181,9 @@ public final class EventingBulkSyncRunningEvent {
             return this;
         }
 
+        /**
+         * <p>Execution ID</p>
+         */
         @JsonSetter(value = "execution_id", nulls = Nulls.SKIP)
         public Builder executionId(Optional<String> executionId) {
             this.executionId = executionId;
@@ -172,6 +195,9 @@ public final class EventingBulkSyncRunningEvent {
             return this;
         }
 
+        /**
+         * <p>Organization ID</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -183,6 +209,9 @@ public final class EventingBulkSyncRunningEvent {
             return this;
         }
 
+        /**
+         * <p>Source connection ID</p>
+         */
         @JsonSetter(value = "source_connection_id", nulls = Nulls.SKIP)
         public Builder sourceConnectionId(Optional<String> sourceConnectionId) {
             this.sourceConnectionId = sourceConnectionId;
@@ -194,6 +223,9 @@ public final class EventingBulkSyncRunningEvent {
             return this;
         }
 
+        /**
+         * <p>Bulk sync ID</p>
+         */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
             this.syncId = syncId;
@@ -205,6 +237,9 @@ public final class EventingBulkSyncRunningEvent {
             return this;
         }
 
+        /**
+         * <p>Name of the bulk sync</p>
+         */
         @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
         public Builder syncName(Optional<String> syncName) {
             this.syncName = syncName;
@@ -225,6 +260,19 @@ public final class EventingBulkSyncRunningEvent {
                     syncId,
                     syncName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("destination_connection_id")
+                    || key.equalsIgnoreCase("execution_id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("source_connection_id")
+                    || key.equalsIgnoreCase("sync_id")
+                    || key.equalsIgnoreCase("sync_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -70,7 +70,6 @@ public final class ExecutionsExportLogsRequest {
     public static final class Builder {
         private Optional<Boolean> notify = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -96,6 +95,14 @@ public final class ExecutionsExportLogsRequest {
 
         public ExecutionsExportLogsRequest build() {
             return new ExecutionsExportLogsRequest(notify, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("notify")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

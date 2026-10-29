@@ -89,7 +89,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return Optional note copied to the published version on promotion.
+     * @return Optional note copied to the published version on promotion
      */
     @JsonProperty("change_note")
     public Optional<String> getChangeNote() {
@@ -97,7 +97,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return Complete plain-text draft content.
+     * @return Complete plain-text draft content
      */
     @JsonProperty("content")
     public Optional<String> getContent() {
@@ -113,7 +113,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return When the draft was created.
+     * @return When the draft was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -129,7 +129,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return Type of actor that created the draft.
+     * @return Type of actor that created the draft
      */
     @JsonProperty("created_by_type")
     public Optional<String> getCreatedByType() {
@@ -137,7 +137,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return Draft description.
+     * @return Draft description
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -145,7 +145,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return Unique identifier of the mutable draft.
+     * @return Unique identifier of the mutable draft
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -153,7 +153,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return Draft title.
+     * @return Draft title
      */
     @JsonProperty("title")
     public Optional<String> getTitle() {
@@ -161,7 +161,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return When the draft was most recently replaced.
+     * @return When the draft was most recently replaced
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
@@ -177,7 +177,7 @@ public final class HarborContextDraftResponse {
     }
 
     /**
-     * @return Type of actor that most recently replaced the draft.
+     * @return Type of actor that most recently replaced the draft
      */
     @JsonProperty("updated_by_type")
     public Optional<String> getUpdatedByType() {
@@ -266,7 +266,6 @@ public final class HarborContextDraftResponse {
 
         private Optional<String> updatedByType = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -303,7 +302,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>Optional note copied to the published version on promotion.</p>
+         * <p>Optional note copied to the published version on promotion</p>
          */
         @JsonSetter(value = "change_note", nulls = Nulls.SKIP)
         public Builder changeNote(Optional<String> changeNote) {
@@ -317,7 +316,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>Complete plain-text draft content.</p>
+         * <p>Complete plain-text draft content</p>
          */
         @JsonSetter(value = "content", nulls = Nulls.SKIP)
         public Builder content(Optional<String> content) {
@@ -345,7 +344,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>When the draft was created.</p>
+         * <p>When the draft was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -373,7 +372,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>Type of actor that created the draft.</p>
+         * <p>Type of actor that created the draft</p>
          */
         @JsonSetter(value = "created_by_type", nulls = Nulls.SKIP)
         public Builder createdByType(Optional<String> createdByType) {
@@ -387,7 +386,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>Draft description.</p>
+         * <p>Draft description</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -401,7 +400,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>Unique identifier of the mutable draft.</p>
+         * <p>Unique identifier of the mutable draft</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -415,7 +414,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>Draft title.</p>
+         * <p>Draft title</p>
          */
         @JsonSetter(value = "title", nulls = Nulls.SKIP)
         public Builder title(Optional<String> title) {
@@ -429,7 +428,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>When the draft was most recently replaced.</p>
+         * <p>When the draft was most recently replaced</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -457,7 +456,7 @@ public final class HarborContextDraftResponse {
         }
 
         /**
-         * <p>Type of actor that most recently replaced the draft.</p>
+         * <p>Type of actor that most recently replaced the draft</p>
          */
         @JsonSetter(value = "updated_by_type", nulls = Nulls.SKIP)
         public Builder updatedByType(Optional<String> updatedByType) {
@@ -486,6 +485,26 @@ public final class HarborContextDraftResponse {
                     updatedBy,
                     updatedByType,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("base_revision_id")
+                    || key.equalsIgnoreCase("change_note")
+                    || key.equalsIgnoreCase("content")
+                    || key.equalsIgnoreCase("context_id")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("created_by_type")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")
+                    || key.equalsIgnoreCase("updated_by_type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

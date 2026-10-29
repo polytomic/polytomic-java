@@ -39,7 +39,7 @@ public final class SearchMatchAttribute {
     }
 
     /**
-     * @return Indexed attribute that matched a query term.
+     * @return Indexed attribute that matched a query term
      */
     @JsonProperty("attribute")
     public String getAttribute() {
@@ -47,7 +47,7 @@ public final class SearchMatchAttribute {
     }
 
     /**
-     * @return Unique normalized query terms matching word prefixes in this value.
+     * @return Unique normalized query terms matching word prefixes in this value
      */
     @JsonProperty("terms")
     public Optional<List<String>> getTerms() {
@@ -55,7 +55,7 @@ public final class SearchMatchAttribute {
     }
 
     /**
-     * @return Original indexed string, before tokenization and case normalization.
+     * @return Original indexed string, before tokenization and case normalization
      */
     @JsonProperty("value")
     public String getValue() {
@@ -93,7 +93,7 @@ public final class SearchMatchAttribute {
 
     public interface AttributeStage {
         /**
-         * <p>Indexed attribute that matched a query term.</p>
+         * <p>Indexed attribute that matched a query term</p>
          */
         ValueStage attribute(@NotNull String attribute);
 
@@ -102,7 +102,7 @@ public final class SearchMatchAttribute {
 
     public interface ValueStage {
         /**
-         * <p>Original indexed string, before tokenization and case normalization.</p>
+         * <p>Original indexed string, before tokenization and case normalization</p>
          */
         _FinalStage value(@NotNull String value);
     }
@@ -115,7 +115,7 @@ public final class SearchMatchAttribute {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Unique normalized query terms matching word prefixes in this value.</p>
+         * <p>Unique normalized query terms matching word prefixes in this value</p>
          */
         _FinalStage terms(Optional<List<String>> terms);
 
@@ -130,7 +130,6 @@ public final class SearchMatchAttribute {
 
         private Optional<List<String>> terms = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,7 +143,7 @@ public final class SearchMatchAttribute {
         }
 
         /**
-         * <p>Indexed attribute that matched a query term.</p>
+         * <p>Indexed attribute that matched a query term</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -155,7 +154,7 @@ public final class SearchMatchAttribute {
         }
 
         /**
-         * <p>Original indexed string, before tokenization and case normalization.</p>
+         * <p>Original indexed string, before tokenization and case normalization</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -166,7 +165,7 @@ public final class SearchMatchAttribute {
         }
 
         /**
-         * <p>Unique normalized query terms matching word prefixes in this value.</p>
+         * <p>Unique normalized query terms matching word prefixes in this value</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -176,7 +175,7 @@ public final class SearchMatchAttribute {
         }
 
         /**
-         * <p>Unique normalized query terms matching word prefixes in this value.</p>
+         * <p>Unique normalized query terms matching word prefixes in this value</p>
          */
         @java.lang.Override
         @JsonSetter(value = "terms", nulls = Nulls.SKIP)
@@ -188,6 +187,14 @@ public final class SearchMatchAttribute {
         @java.lang.Override
         public SearchMatchAttribute build() {
             return new SearchMatchAttribute(attribute, terms, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("attribute") || key.equalsIgnoreCase("terms") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

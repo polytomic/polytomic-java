@@ -42,7 +42,7 @@ public final class SearchOperationsRequest {
     }
 
     /**
-     * @return Maximum operations per task, from 1 to 10; defaults to 5.
+     * @return Maximum operations per task, from 1 to 10; defaults to 5
      */
     @JsonProperty("limit")
     public Optional<Integer> getLimit() {
@@ -50,7 +50,7 @@ public final class SearchOperationsRequest {
     }
 
     /**
-     * @return Optional nonempty list of unique stable operation IDs to rank; omitted to rank the full catalog.
+     * @return Optional nonempty list of unique stable operation IDs to rank; omitted to rank the full catalog
      */
     @JsonProperty("operationIds")
     public Optional<List<String>> getOperationIds() {
@@ -58,7 +58,7 @@ public final class SearchOperationsRequest {
     }
 
     /**
-     * @return One to three plain-language tasks to find API operations for.
+     * @return One to three plain-language tasks to find API operations for
      */
     @JsonProperty("queries")
     public List<String> getQueries() {
@@ -102,7 +102,6 @@ public final class SearchOperationsRequest {
 
         private List<String> queries = new ArrayList<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -115,7 +114,7 @@ public final class SearchOperationsRequest {
         }
 
         /**
-         * <p>Maximum operations per task, from 1 to 10; defaults to 5.</p>
+         * <p>Maximum operations per task, from 1 to 10; defaults to 5</p>
          */
         @JsonSetter(value = "limit", nulls = Nulls.SKIP)
         public Builder limit(Optional<Integer> limit) {
@@ -129,7 +128,7 @@ public final class SearchOperationsRequest {
         }
 
         /**
-         * <p>Optional nonempty list of unique stable operation IDs to rank; omitted to rank the full catalog.</p>
+         * <p>Optional nonempty list of unique stable operation IDs to rank; omitted to rank the full catalog</p>
          */
         @JsonSetter(value = "operationIds", nulls = Nulls.SKIP)
         public Builder operationIds(Optional<List<String>> operationIds) {
@@ -143,7 +142,7 @@ public final class SearchOperationsRequest {
         }
 
         /**
-         * <p>One to three plain-language tasks to find API operations for.</p>
+         * <p>One to three plain-language tasks to find API operations for</p>
          */
         @JsonSetter(value = "queries", nulls = Nulls.SKIP)
         public Builder queries(List<String> queries) {
@@ -168,6 +167,16 @@ public final class SearchOperationsRequest {
 
         public SearchOperationsRequest build() {
             return new SearchOperationsRequest(limit, operationIds, queries, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("limit")
+                    || key.equalsIgnoreCase("operationIds")
+                    || key.equalsIgnoreCase("queries")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

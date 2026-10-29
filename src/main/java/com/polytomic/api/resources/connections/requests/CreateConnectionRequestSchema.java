@@ -68,7 +68,7 @@ public final class CreateConnectionRequestSchema {
     }
 
     /**
-     * @return Override interval for connection health checking.
+     * @return Override interval for connection health checking
      */
     @JsonProperty("healthcheck_interval")
     public Optional<String> getHealthcheckInterval() {
@@ -80,18 +80,24 @@ public final class CreateConnectionRequestSchema {
         return name;
     }
 
+    /**
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Permissions policy IDs applied to the connection
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
     }
 
     /**
-     * @return URL to redirect to after completing OAuth flow.
+     * @return URL to redirect to after completing OAuth flow
      */
     @JsonProperty("redirect_url")
     public Optional<String> getRedirectUrl() {
@@ -179,22 +185,28 @@ public final class CreateConnectionRequestSchema {
         _FinalStage configuration(String key, Object value);
 
         /**
-         * <p>Override interval for connection health checking.</p>
+         * <p>Override interval for connection health checking</p>
          */
         _FinalStage healthcheckInterval(Optional<String> healthcheckInterval);
 
         _FinalStage healthcheckInterval(String healthcheckInterval);
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
+        /**
+         * <p>Permissions policy IDs applied to the connection</p>
+         */
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
 
         /**
-         * <p>URL to redirect to after completing OAuth flow.</p>
+         * <p>URL to redirect to after completing OAuth flow</p>
          */
         _FinalStage redirectUrl(Optional<String> redirectUrl);
 
@@ -226,7 +238,6 @@ public final class CreateConnectionRequestSchema {
 
         private Map<String, Object> configuration = new LinkedHashMap<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -279,7 +290,7 @@ public final class CreateConnectionRequestSchema {
         }
 
         /**
-         * <p>URL to redirect to after completing OAuth flow.</p>
+         * <p>URL to redirect to after completing OAuth flow</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -289,7 +300,7 @@ public final class CreateConnectionRequestSchema {
         }
 
         /**
-         * <p>URL to redirect to after completing OAuth flow.</p>
+         * <p>URL to redirect to after completing OAuth flow</p>
          */
         @java.lang.Override
         @JsonSetter(value = "redirect_url", nulls = Nulls.SKIP)
@@ -298,12 +309,19 @@ public final class CreateConnectionRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the connection</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.ofNullable(policies);
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the connection</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
@@ -311,12 +329,19 @@ public final class CreateConnectionRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -325,7 +350,7 @@ public final class CreateConnectionRequestSchema {
         }
 
         /**
-         * <p>Override interval for connection health checking.</p>
+         * <p>Override interval for connection health checking</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -335,7 +360,7 @@ public final class CreateConnectionRequestSchema {
         }
 
         /**
-         * <p>Override interval for connection health checking.</p>
+         * <p>Override interval for connection health checking</p>
          */
         @java.lang.Override
         @JsonSetter(value = "healthcheck_interval", nulls = Nulls.SKIP)
@@ -380,6 +405,21 @@ public final class CreateConnectionRequestSchema {
                     type,
                     validate,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("healthcheck_interval")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("redirect_url")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("validate")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

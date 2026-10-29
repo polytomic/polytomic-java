@@ -69,57 +69,81 @@ public final class ModelFieldSearchHit {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Model field ID
+     */
     @JsonProperty("field_id")
     public String getFieldId() {
         return fieldId;
     }
 
+    /**
+     * @return Model field label
+     */
     @JsonProperty("field_label")
     public String getFieldLabel() {
         return fieldLabel;
     }
 
     /**
-     * @return Source or technical field name.
+     * @return Source or technical field name
      */
     @JsonProperty("field_name")
     public String getFieldName() {
         return fieldName;
     }
 
+    /**
+     * @return API paths of the field's model and its connection
+     */
     @JsonProperty("links")
     public SearchResultLinks getLinks() {
         return links;
     }
 
     /**
-     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata.
+     * @return Contributing attributes grouped by saved mapping context, with one group for resource metadata
      */
     @JsonProperty("matches")
     public Optional<List<SearchMatch>> getMatches() {
         return matches;
     }
 
+    /**
+     * @return Connection ID of the field's model
+     */
     @JsonProperty("model_connection_id")
     public String getModelConnectionId() {
         return modelConnectionId;
     }
 
+    /**
+     * @return Name of the connection of the field's model
+     */
     @JsonProperty("model_connection_name")
     public String getModelConnectionName() {
         return modelConnectionName;
     }
 
+    /**
+     * @return Connection type of the connection of the field's model
+     */
     @JsonProperty("model_connection_type")
     public String getModelConnectionType() {
         return modelConnectionType;
     }
 
+    /**
+     * @return Model ID of the field's model
+     */
     @JsonProperty("model_id")
     public String getModelId() {
         return modelId;
     }
 
+    /**
+     * @return Name of the field's model
+     */
     @JsonProperty("model_name")
     public String getModelName() {
         return modelName;
@@ -174,43 +198,67 @@ public final class ModelFieldSearchHit {
     }
 
     public interface FieldIdStage {
+        /**
+         * <p>Model field ID</p>
+         */
         FieldLabelStage fieldId(@NotNull String fieldId);
 
         Builder from(ModelFieldSearchHit other);
     }
 
     public interface FieldLabelStage {
+        /**
+         * <p>Model field label</p>
+         */
         FieldNameStage fieldLabel(@NotNull String fieldLabel);
     }
 
     public interface FieldNameStage {
         /**
-         * <p>Source or technical field name.</p>
+         * <p>Source or technical field name</p>
          */
         LinksStage fieldName(@NotNull String fieldName);
     }
 
     public interface LinksStage {
+        /**
+         * <p>API paths of the field's model and its connection</p>
+         */
         ModelConnectionIdStage links(@NotNull SearchResultLinks links);
     }
 
     public interface ModelConnectionIdStage {
+        /**
+         * <p>Connection ID of the field's model</p>
+         */
         ModelConnectionNameStage modelConnectionId(@NotNull String modelConnectionId);
     }
 
     public interface ModelConnectionNameStage {
+        /**
+         * <p>Name of the connection of the field's model</p>
+         */
         ModelConnectionTypeStage modelConnectionName(@NotNull String modelConnectionName);
     }
 
     public interface ModelConnectionTypeStage {
+        /**
+         * <p>Connection type of the connection of the field's model</p>
+         */
         ModelIdStage modelConnectionType(@NotNull String modelConnectionType);
     }
 
     public interface ModelIdStage {
+        /**
+         * <p>Model ID of the field's model</p>
+         */
         ModelNameStage modelId(@NotNull String modelId);
     }
 
     public interface ModelNameStage {
+        /**
+         * <p>Name of the field's model</p>
+         */
         _FinalStage modelName(@NotNull String modelName);
     }
 
@@ -222,7 +270,7 @@ public final class ModelFieldSearchHit {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         _FinalStage matches(Optional<List<SearchMatch>> matches);
 
@@ -261,7 +309,6 @@ public final class ModelFieldSearchHit {
 
         private Optional<List<SearchMatch>> matches = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -281,6 +328,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>Model field ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("field_id")
         public FieldLabelStage fieldId(@NotNull String fieldId) {
@@ -288,6 +339,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>Model field label</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("field_label")
         public FieldNameStage fieldLabel(@NotNull String fieldLabel) {
@@ -296,7 +351,7 @@ public final class ModelFieldSearchHit {
         }
 
         /**
-         * <p>Source or technical field name.</p>
+         * <p>Source or technical field name</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -306,6 +361,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>API paths of the field's model and its connection</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("links")
         public ModelConnectionIdStage links(@NotNull SearchResultLinks links) {
@@ -313,6 +372,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the field's model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_connection_id")
         public ModelConnectionNameStage modelConnectionId(@NotNull String modelConnectionId) {
@@ -320,6 +383,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>Name of the connection of the field's model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_connection_name")
         public ModelConnectionTypeStage modelConnectionName(@NotNull String modelConnectionName) {
@@ -327,6 +394,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>Connection type of the connection of the field's model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_connection_type")
         public ModelIdStage modelConnectionType(@NotNull String modelConnectionType) {
@@ -334,6 +405,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>Model ID of the field's model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_id")
         public ModelNameStage modelId(@NotNull String modelId) {
@@ -341,6 +416,10 @@ public final class ModelFieldSearchHit {
             return this;
         }
 
+        /**
+         * <p>Name of the field's model</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("model_name")
         public _FinalStage modelName(@NotNull String modelName) {
@@ -349,7 +428,7 @@ public final class ModelFieldSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -359,7 +438,7 @@ public final class ModelFieldSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping context, with one group for resource metadata</p>
          */
         @java.lang.Override
         @JsonSetter(value = "matches", nulls = Nulls.SKIP)
@@ -382,6 +461,23 @@ public final class ModelFieldSearchHit {
                     modelId,
                     modelName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field_id")
+                    || key.equalsIgnoreCase("field_label")
+                    || key.equalsIgnoreCase("field_name")
+                    || key.equalsIgnoreCase("links")
+                    || key.equalsIgnoreCase("matches")
+                    || key.equalsIgnoreCase("model_connection_id")
+                    || key.equalsIgnoreCase("model_connection_name")
+                    || key.equalsIgnoreCase("model_connection_type")
+                    || key.equalsIgnoreCase("model_id")
+                    || key.equalsIgnoreCase("model_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

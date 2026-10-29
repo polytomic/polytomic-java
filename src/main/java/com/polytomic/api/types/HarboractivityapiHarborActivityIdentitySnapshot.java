@@ -30,6 +30,9 @@ public final class HarboractivityapiHarborActivityIdentitySnapshot {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return ID of the actor, credential, or profile
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
@@ -69,7 +72,6 @@ public final class HarboractivityapiHarborActivityIdentitySnapshot {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -79,6 +81,9 @@ public final class HarboractivityapiHarborActivityIdentitySnapshot {
             return this;
         }
 
+        /**
+         * <p>ID of the actor, credential, or profile</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -92,6 +97,14 @@ public final class HarboractivityapiHarborActivityIdentitySnapshot {
 
         public HarboractivityapiHarborActivityIdentitySnapshot build() {
             return new HarboractivityapiHarborActivityIdentitySnapshot(id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -9,6 +9,7 @@ import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.modelsync.errorhandling.ErrorHandlingClient;
 import com.polytomic.api.resources.modelsync.executions.ExecutionsClient;
+import com.polytomic.api.resources.modelsync.requests.ActivateSyncInput;
 import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
@@ -17,7 +18,6 @@ import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.targets.TargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.CancelSyncResponseEnvelope;
 import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListSyncResponseEnvelope;
@@ -453,7 +453,8 @@ public class ModelSyncClient {
      * Updates a model sync's configuration.
      * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
      * Every field in the request body is written to the sync; any field you omit is
-     * cleared or reset to its default value.</p>
+     * cleared or reset to its default value. An empty or omitted <code>policies</code> list
+     * leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
      * single field mapping — fetch the current sync with
      * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,
@@ -471,7 +472,8 @@ public class ModelSyncClient {
      * Updates a model sync's configuration.
      * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
      * Every field in the request body is written to the sync; any field you omit is
-     * cleared or reset to its default value.</p>
+     * cleared or reset to its default value. An empty or omitted <code>policies</code> list
+     * leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
      * single field mapping — fetch the current sync with
      * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,

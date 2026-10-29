@@ -4,6 +4,7 @@
 package com.polytomic.api.resources.events;
 
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.events.requests.EventsListRequest;
 import com.polytomic.api.types.EventTypesEnvelope;
@@ -41,7 +42,14 @@ public class AsyncEventsClient {
      * </blockquote>
      */
     public CompletableFuture<EventsEnvelope> list() {
-        return this.rawClient.list().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EventsEnvelope>> rawFuture = this.rawClient.list();
+        CompletableFuture<EventsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -58,7 +66,14 @@ public class AsyncEventsClient {
      * </blockquote>
      */
     public CompletableFuture<EventsEnvelope> list(RequestOptions requestOptions) {
-        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EventsEnvelope>> rawFuture = this.rawClient.list(requestOptions);
+        CompletableFuture<EventsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -75,7 +90,14 @@ public class AsyncEventsClient {
      * </blockquote>
      */
     public CompletableFuture<EventsEnvelope> list(EventsListRequest request) {
-        return this.rawClient.list(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EventsEnvelope>> rawFuture = this.rawClient.list(request);
+        CompletableFuture<EventsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -92,7 +114,15 @@ public class AsyncEventsClient {
      * </blockquote>
      */
     public CompletableFuture<EventsEnvelope> list(EventsListRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EventsEnvelope>> rawFuture =
+                this.rawClient.list(request, requestOptions);
+        CompletableFuture<EventsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -101,7 +131,14 @@ public class AsyncEventsClient {
      * <a href="../../api-reference/events/list"><code>GET /api/events</code></a>.</p>
      */
     public CompletableFuture<EventTypesEnvelope> getTypes() {
-        return this.rawClient.getTypes().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EventTypesEnvelope>> rawFuture = this.rawClient.getTypes();
+        CompletableFuture<EventTypesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -110,6 +147,14 @@ public class AsyncEventsClient {
      * <a href="../../api-reference/events/list"><code>GET /api/events</code></a>.</p>
      */
     public CompletableFuture<EventTypesEnvelope> getTypes(RequestOptions requestOptions) {
-        return this.rawClient.getTypes(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<EventTypesEnvelope>> rawFuture =
+                this.rawClient.getTypes(requestOptions);
+        CompletableFuture<EventTypesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

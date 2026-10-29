@@ -35,11 +35,17 @@ public final class CreateHarborResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return New plaintext credential. Omitted when credential generation is disabled.
+     */
     @JsonProperty("api_key")
     public Optional<HarborApiKeyCreatedResponse> getApiKey() {
         return apiKey;
     }
 
+    /**
+     * @return Created Harbor
+     */
     @JsonProperty("harbor")
     public Optional<HarborResponse> getHarbor() {
         return harbor;
@@ -80,7 +86,6 @@ public final class CreateHarborResponse {
 
         private Optional<HarborResponse> harbor = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -91,6 +96,9 @@ public final class CreateHarborResponse {
             return this;
         }
 
+        /**
+         * <p>New plaintext credential. Omitted when credential generation is disabled.</p>
+         */
         @JsonSetter(value = "api_key", nulls = Nulls.SKIP)
         public Builder apiKey(Optional<HarborApiKeyCreatedResponse> apiKey) {
             this.apiKey = apiKey;
@@ -102,6 +110,9 @@ public final class CreateHarborResponse {
             return this;
         }
 
+        /**
+         * <p>Created Harbor</p>
+         */
         @JsonSetter(value = "harbor", nulls = Nulls.SKIP)
         public Builder harbor(Optional<HarborResponse> harbor) {
             this.harbor = harbor;
@@ -115,6 +126,14 @@ public final class CreateHarborResponse {
 
         public CreateHarborResponse build() {
             return new CreateHarborResponse(apiKey, harbor, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("api_key") || key.equalsIgnoreCase("harbor")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

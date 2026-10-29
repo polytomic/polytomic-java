@@ -35,6 +35,9 @@ public final class ModelsCreateRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Run in the background and return a job instead of the result.
+     */
     @JsonProperty("async")
     public Optional<Boolean> getAsync() {
         return async;
@@ -87,6 +90,9 @@ public final class ModelsCreateRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Run in the background and return a job instead of the result.</p>
+         */
         _FinalStage async(Optional<Boolean> async);
 
         _FinalStage async(Boolean async);
@@ -98,7 +104,6 @@ public final class ModelsCreateRequest {
 
         private Optional<Boolean> async = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -117,12 +122,19 @@ public final class ModelsCreateRequest {
             return this;
         }
 
+        /**
+         * <p>Run in the background and return a job instead of the result.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage async(Boolean async) {
             this.async = Optional.ofNullable(async);
             return this;
         }
 
+        /**
+         * <p>Run in the background and return a job instead of the result.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "async", nulls = Nulls.SKIP)
         public _FinalStage async(Optional<Boolean> async) {
@@ -133,6 +145,14 @@ public final class ModelsCreateRequest {
         @java.lang.Override
         public ModelsCreateRequest build() {
             return new ModelsCreateRequest(async, body, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("async") || key.equalsIgnoreCase("body")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

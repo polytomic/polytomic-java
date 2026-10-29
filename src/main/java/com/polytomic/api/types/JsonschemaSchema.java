@@ -747,7 +747,6 @@ public final class JsonschemaSchema {
 
         private Optional<Boolean> writeOnly = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> _additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -1448,6 +1447,66 @@ public final class JsonschemaSchema {
                     uniqueItems,
                     writeOnly,
                     _additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("$anchor")
+                    || key.equalsIgnoreCase("$comment")
+                    || key.equalsIgnoreCase("$defs")
+                    || key.equalsIgnoreCase("$dynamicRef")
+                    || key.equalsIgnoreCase("$id")
+                    || key.equalsIgnoreCase("$ref")
+                    || key.equalsIgnoreCase("$schema")
+                    || key.equalsIgnoreCase("additionalProperties")
+                    || key.equalsIgnoreCase("allOf")
+                    || key.equalsIgnoreCase("anyOf")
+                    || key.equalsIgnoreCase("const")
+                    || key.equalsIgnoreCase("contains")
+                    || key.equalsIgnoreCase("contentEncoding")
+                    || key.equalsIgnoreCase("contentMediaType")
+                    || key.equalsIgnoreCase("contentSchema")
+                    || key.equalsIgnoreCase("default")
+                    || key.equalsIgnoreCase("dependentRequired")
+                    || key.equalsIgnoreCase("dependentSchemas")
+                    || key.equalsIgnoreCase("deprecated")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("else")
+                    || key.equalsIgnoreCase("enum")
+                    || key.equalsIgnoreCase("examples")
+                    || key.equalsIgnoreCase("exclusiveMaximum")
+                    || key.equalsIgnoreCase("exclusiveMinimum")
+                    || key.equalsIgnoreCase("format")
+                    || key.equalsIgnoreCase("if")
+                    || key.equalsIgnoreCase("items")
+                    || key.equalsIgnoreCase("maxContains")
+                    || key.equalsIgnoreCase("maxItems")
+                    || key.equalsIgnoreCase("maxLength")
+                    || key.equalsIgnoreCase("maxProperties")
+                    || key.equalsIgnoreCase("maximum")
+                    || key.equalsIgnoreCase("minContains")
+                    || key.equalsIgnoreCase("minItems")
+                    || key.equalsIgnoreCase("minLength")
+                    || key.equalsIgnoreCase("minProperties")
+                    || key.equalsIgnoreCase("minimum")
+                    || key.equalsIgnoreCase("multipleOf")
+                    || key.equalsIgnoreCase("not")
+                    || key.equalsIgnoreCase("oneOf")
+                    || key.equalsIgnoreCase("pattern")
+                    || key.equalsIgnoreCase("patternProperties")
+                    || key.equalsIgnoreCase("prefixItems")
+                    || key.equalsIgnoreCase("properties")
+                    || key.equalsIgnoreCase("propertyNames")
+                    || key.equalsIgnoreCase("readOnly")
+                    || key.equalsIgnoreCase("required")
+                    || key.equalsIgnoreCase("then")
+                    || key.equalsIgnoreCase("title")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("uniqueItems")
+                    || key.equalsIgnoreCase("writeOnly")) {
+                return;
+            }
+            this._additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

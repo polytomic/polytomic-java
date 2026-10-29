@@ -65,48 +65,72 @@ public final class GetExecutionResponseSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return When the execution completed
+     */
     @JsonProperty("completed_at")
     public Optional<OffsetDateTime> getCompletedAt() {
         return completedAt;
     }
 
+    /**
+     * @return Record counts for the execution
+     */
     @JsonProperty("counts")
     public Optional<ExecutionCounts> getCounts() {
         return counts;
     }
 
+    /**
+     * @return When the execution was created
+     */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Execution errors not tied to a specific record
+     */
     @JsonProperty("errors")
     public Optional<List<String>> getErrors() {
         return errors;
     }
 
+    /**
+     * @return Execution ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return When the execution started
+     */
     @JsonProperty("started_at")
     public Optional<OffsetDateTime> getStartedAt() {
         return startedAt;
     }
 
+    /**
+     * @return Status of the execution
+     */
     @JsonProperty("status")
     public Optional<UtilExecutionStatus> getStatus() {
         return status;
     }
 
+    /**
+     * @return What triggered the execution
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
     /**
-     * @return Polytomic version which last ran this execution.
+     * @return Polytomic version which last ran this execution
      */
     @JsonProperty("version")
     public Optional<String> getVersion() {
@@ -179,7 +203,6 @@ public final class GetExecutionResponseSchema {
 
         private Optional<String> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -197,6 +220,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>When the execution completed</p>
+         */
         @JsonSetter(value = "completed_at", nulls = Nulls.SKIP)
         public Builder completedAt(Optional<OffsetDateTime> completedAt) {
             this.completedAt = completedAt;
@@ -208,6 +234,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Record counts for the execution</p>
+         */
         @JsonSetter(value = "counts", nulls = Nulls.SKIP)
         public Builder counts(Optional<ExecutionCounts> counts) {
             this.counts = counts;
@@ -219,6 +248,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>When the execution was created</p>
+         */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
             this.createdAt = createdAt;
@@ -230,6 +262,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Execution errors not tied to a specific record</p>
+         */
         @JsonSetter(value = "errors", nulls = Nulls.SKIP)
         public Builder errors(Optional<List<String>> errors) {
             this.errors = errors;
@@ -241,6 +276,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Execution ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -252,6 +290,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>When the execution started</p>
+         */
         @JsonSetter(value = "started_at", nulls = Nulls.SKIP)
         public Builder startedAt(Optional<OffsetDateTime> startedAt) {
             this.startedAt = startedAt;
@@ -263,6 +304,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Status of the execution</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<UtilExecutionStatus> status) {
             this.status = status;
@@ -274,6 +318,9 @@ public final class GetExecutionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>What triggered the execution</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -286,7 +333,7 @@ public final class GetExecutionResponseSchema {
         }
 
         /**
-         * <p>Polytomic version which last ran this execution.</p>
+         * <p>Polytomic version which last ran this execution</p>
          */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<String> version) {
@@ -302,6 +349,22 @@ public final class GetExecutionResponseSchema {
         public GetExecutionResponseSchema build() {
             return new GetExecutionResponseSchema(
                     completedAt, counts, createdAt, errors, id, startedAt, status, type, version, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("completed_at")
+                    || key.equalsIgnoreCase("counts")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("errors")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("started_at")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

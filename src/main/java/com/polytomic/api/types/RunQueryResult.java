@@ -65,7 +65,7 @@ public final class RunQueryResult {
     }
 
     /**
-     * @return Error message if the query failed.
+     * @return Error message if the query failed
      */
     @JsonProperty("error")
     public Optional<String> getError() {
@@ -97,13 +97,16 @@ public final class RunQueryResult {
     }
 
     /**
-     * @return The query results, returned as an array of objects.
+     * @return The query results, returned as an array of objects
      */
     @JsonProperty("results")
     public Optional<List<Map<String, Object>>> getResults() {
         return results;
     }
 
+    /**
+     * @return Current query status. The terminal statuses are done, failed, and unknown. Unknown means execution started but its durable terminal result was lost or expired.
+     */
     @JsonProperty("status")
     public Optional<QueryStatus> getStatus() {
         return status;
@@ -160,7 +163,6 @@ public final class RunQueryResult {
 
         private Optional<QueryStatus> status = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -191,7 +193,7 @@ public final class RunQueryResult {
         }
 
         /**
-         * <p>Error message if the query failed.</p>
+         * <p>Error message if the query failed</p>
          */
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public Builder error(Optional<String> error) {
@@ -247,7 +249,7 @@ public final class RunQueryResult {
         }
 
         /**
-         * <p>The query results, returned as an array of objects.</p>
+         * <p>The query results, returned as an array of objects</p>
          */
         @JsonSetter(value = "results", nulls = Nulls.SKIP)
         public Builder results(Optional<List<Map<String, Object>>> results) {
@@ -260,6 +262,9 @@ public final class RunQueryResult {
             return this;
         }
 
+        /**
+         * <p>Current query status. The terminal statuses are done, failed, and unknown. Unknown means execution started but its durable terminal result was lost or expired.</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<QueryStatus> status) {
             this.status = status;
@@ -273,6 +278,20 @@ public final class RunQueryResult {
 
         public RunQueryResult build() {
             return new RunQueryResult(count, error, expires, fields, id, results, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("count")
+                    || key.equalsIgnoreCase("error")
+                    || key.equalsIgnoreCase("expires")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("results")
+                    || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

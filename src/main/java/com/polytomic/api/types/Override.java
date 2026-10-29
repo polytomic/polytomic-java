@@ -47,29 +47,41 @@ public final class Override {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Model field whose value is overridden
+     */
     @JsonProperty("field")
     public Optional<Source> getField() {
         return field;
     }
 
     /**
-     * @return Field ID of the model field to override.
+     * @return Field ID of the model field to override
      */
     @JsonProperty("field_id")
     public Optional<String> getFieldId() {
         return fieldId;
     }
 
+    /**
+     * @return Comparison that decides when the override applies
+     */
     @JsonProperty("function")
     public Optional<FilterFunction> getFunction() {
         return function;
     }
 
+    /**
+     * @return Value written in place of the field value when the condition matches
+     */
     @JsonProperty("override")
     public Optional<Object> getOverride() {
         return override;
     }
 
+    /**
+     * @return Value the field is compared against
+     */
     @JsonProperty("value")
     public Optional<Object> getValue() {
         return value;
@@ -120,7 +132,6 @@ public final class Override {
 
         private Optional<Object> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -134,6 +145,9 @@ public final class Override {
             return this;
         }
 
+        /**
+         * <p>Model field whose value is overridden</p>
+         */
         @JsonSetter(value = "field", nulls = Nulls.SKIP)
         public Builder field(Optional<Source> field) {
             this.field = field;
@@ -146,7 +160,7 @@ public final class Override {
         }
 
         /**
-         * <p>Field ID of the model field to override.</p>
+         * <p>Field ID of the model field to override</p>
          */
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
         public Builder fieldId(Optional<String> fieldId) {
@@ -159,6 +173,9 @@ public final class Override {
             return this;
         }
 
+        /**
+         * <p>Comparison that decides when the override applies</p>
+         */
         @JsonSetter(value = "function", nulls = Nulls.SKIP)
         public Builder function(Optional<FilterFunction> function) {
             this.function = function;
@@ -170,6 +187,9 @@ public final class Override {
             return this;
         }
 
+        /**
+         * <p>Value written in place of the field value when the condition matches</p>
+         */
         @JsonSetter(value = "override", nulls = Nulls.SKIP)
         public Builder override(Optional<Object> override) {
             this.override = override;
@@ -181,6 +201,9 @@ public final class Override {
             return this;
         }
 
+        /**
+         * <p>Value the field is compared against</p>
+         */
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public Builder value(Optional<Object> value) {
             this.value = value;
@@ -194,6 +217,18 @@ public final class Override {
 
         public Override build() {
             return new Override(field, fieldId, function, override, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field")
+                    || key.equalsIgnoreCase("field_id")
+                    || key.equalsIgnoreCase("function")
+                    || key.equalsIgnoreCase("override")
+                    || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

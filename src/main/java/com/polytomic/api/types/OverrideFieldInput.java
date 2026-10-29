@@ -69,7 +69,7 @@ public final class OverrideFieldInput {
     }
 
     /**
-     * @return Value written to the target field for every record; required unless a source is provided.
+     * @return Value written to the target field for every record; required unless a source is provided
      */
     @JsonProperty("override_value")
     public Optional<String> getOverrideValue() {
@@ -93,7 +93,7 @@ public final class OverrideFieldInput {
     }
 
     /**
-     * @return Target field ID the value will be written to.
+     * @return Target field ID the value will be written to
      */
     @JsonProperty("target")
     public String getTarget() {
@@ -137,7 +137,7 @@ public final class OverrideFieldInput {
 
     public interface TargetStage {
         /**
-         * <p>Target field ID the value will be written to.</p>
+         * <p>Target field ID the value will be written to</p>
          */
         _FinalStage target(@NotNull String target);
 
@@ -166,7 +166,7 @@ public final class OverrideFieldInput {
         _FinalStage new_(Boolean new_);
 
         /**
-         * <p>Value written to the target field for every record; required unless a source is provided.</p>
+         * <p>Value written to the target field for every record; required unless a source is provided</p>
          */
         _FinalStage overrideValue(Optional<String> overrideValue);
 
@@ -201,7 +201,6 @@ public final class OverrideFieldInput {
 
         private Optional<Boolean> encryptionEnabled = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -218,7 +217,7 @@ public final class OverrideFieldInput {
         }
 
         /**
-         * <p>Target field ID the value will be written to.</p>
+         * <p>Target field ID the value will be written to</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -269,7 +268,7 @@ public final class OverrideFieldInput {
         }
 
         /**
-         * <p>Value written to the target field for every record; required unless a source is provided.</p>
+         * <p>Value written to the target field for every record; required unless a source is provided</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -279,7 +278,7 @@ public final class OverrideFieldInput {
         }
 
         /**
-         * <p>Value written to the target field for every record; required unless a source is provided.</p>
+         * <p>Value written to the target field for every record; required unless a source is provided</p>
          */
         @java.lang.Override
         @JsonSetter(value = "override_value", nulls = Nulls.SKIP)
@@ -332,6 +331,19 @@ public final class OverrideFieldInput {
         public OverrideFieldInput build() {
             return new OverrideFieldInput(
                     encryptionEnabled, new_, overrideValue, source, syncMode, target, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("encryption_enabled")
+                    || key.equalsIgnoreCase("new")
+                    || key.equalsIgnoreCase("override_value")
+                    || key.equalsIgnoreCase("source")
+                    || key.equalsIgnoreCase("sync_mode")
+                    || key.equalsIgnoreCase("target")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -118,7 +118,6 @@ public final class ConnectionTypeSchema {
 
         private Optional<List<String>> operations = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -189,6 +188,18 @@ public final class ConnectionTypeSchema {
 
         public ConnectionTypeSchema build() {
             return new ConnectionTypeSchema(id, logoDarkUrl, logoUrl, name, operations, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("logo_dark_url")
+                    || key.equalsIgnoreCase("logo_url")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("operations")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -40,7 +40,7 @@ public final class ConnectionUsageCategoryStats {
     }
 
     /**
-     * @return Calls the sync spent in this category over the last 24 hours.
+     * @return Calls the sync spent in this category over the last 24 hours
      */
     @JsonProperty("calls")
     public Optional<Integer> getCalls() {
@@ -48,7 +48,7 @@ public final class ConnectionUsageCategoryStats {
     }
 
     /**
-     * @return Backend-defined category identifier (e.g. rest, bulk).
+     * @return Backend-defined category identifier (e.g. rest, bulk)
      */
     @JsonProperty("key")
     public Optional<String> getKey() {
@@ -56,7 +56,7 @@ public final class ConnectionUsageCategoryStats {
     }
 
     /**
-     * @return Human-readable category name for display.
+     * @return Human-readable category name for display
      */
     @JsonProperty("label")
     public Optional<String> getLabel() {
@@ -100,7 +100,6 @@ public final class ConnectionUsageCategoryStats {
 
         private Optional<String> label = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -113,7 +112,7 @@ public final class ConnectionUsageCategoryStats {
         }
 
         /**
-         * <p>Calls the sync spent in this category over the last 24 hours.</p>
+         * <p>Calls the sync spent in this category over the last 24 hours</p>
          */
         @JsonSetter(value = "calls", nulls = Nulls.SKIP)
         public Builder calls(Optional<Integer> calls) {
@@ -127,7 +126,7 @@ public final class ConnectionUsageCategoryStats {
         }
 
         /**
-         * <p>Backend-defined category identifier (e.g. rest, bulk).</p>
+         * <p>Backend-defined category identifier (e.g. rest, bulk)</p>
          */
         @JsonSetter(value = "key", nulls = Nulls.SKIP)
         public Builder key(Optional<String> key) {
@@ -141,7 +140,7 @@ public final class ConnectionUsageCategoryStats {
         }
 
         /**
-         * <p>Human-readable category name for display.</p>
+         * <p>Human-readable category name for display</p>
          */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
@@ -156,6 +155,14 @@ public final class ConnectionUsageCategoryStats {
 
         public ConnectionUsageCategoryStats build() {
             return new ConnectionUsageCategoryStats(calls, key, label, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("calls") || key.equalsIgnoreCase("key") || key.equalsIgnoreCase("label")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.recordviewlinks;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.recordviewlinks.requests.CreateRecordViewLinkRequest;
 import com.polytomic.api.resources.recordviewlinks.requests.RecordViewLinksGetCapabilitiesRequest;
@@ -33,7 +34,15 @@ public class AsyncRecordViewLinksClient {
      * Creates a short-lived capability link for viewing one stored record snapshot.
      */
     public CompletableFuture<CreateRecordViewLinkEnvelope> create(CreateRecordViewLinkRequest request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateRecordViewLinkEnvelope>> rawFuture =
+                this.rawClient.create(request);
+        CompletableFuture<CreateRecordViewLinkEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -41,7 +50,15 @@ public class AsyncRecordViewLinksClient {
      */
     public CompletableFuture<CreateRecordViewLinkEnvelope> create(
             CreateRecordViewLinkRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateRecordViewLinkEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<CreateRecordViewLinkEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -49,7 +66,15 @@ public class AsyncRecordViewLinksClient {
      */
     public CompletableFuture<GetRecordViewCapabilitiesEnvelope> getCapabilities(
             RecordViewLinksGetCapabilitiesRequest request) {
-        return this.rawClient.getCapabilities(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetRecordViewCapabilitiesEnvelope>> rawFuture =
+                this.rawClient.getCapabilities(request);
+        CompletableFuture<GetRecordViewCapabilitiesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -57,6 +82,14 @@ public class AsyncRecordViewLinksClient {
      */
     public CompletableFuture<GetRecordViewCapabilitiesEnvelope> getCapabilities(
             RecordViewLinksGetCapabilitiesRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getCapabilities(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetRecordViewCapabilitiesEnvelope>> rawFuture =
+                this.rawClient.getCapabilities(request, requestOptions);
+        CompletableFuture<GetRecordViewCapabilitiesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

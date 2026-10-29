@@ -4,9 +4,11 @@
 package com.polytomic.api.resources.bulksync.executions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -156,7 +158,8 @@ public class AsyncRawExecutionsClient {
         }
         CompletableFuture<PolytomicHttpResponse<ListBulkSyncExecutionsStatusEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -192,6 +195,11 @@ public class AsyncRawExecutionsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -268,7 +276,7 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("executions");
         if (request.getPageToken().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -311,7 +319,8 @@ public class AsyncRawExecutionsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<ListBulkSyncExecutionsEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -349,6 +358,11 @@ public class AsyncRawExecutionsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -375,9 +389,9 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("executions")
-                .addPathSegment(execId);
+                .addPathSegment(PathSegments.validate(execId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -403,7 +417,8 @@ public class AsyncRawExecutionsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncExecutionEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -441,6 +456,11 @@ public class AsyncRawExecutionsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -469,9 +489,9 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("executions")
-                .addPathSegment(execId)
+                .addPathSegment(PathSegments.validate(execId))
                 .addPathSegments("cancel");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -480,7 +500,11 @@ public class AsyncRawExecutionsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -498,7 +522,8 @@ public class AsyncRawExecutionsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<CancelBulkSyncResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -548,6 +573,11 @@ public class AsyncRawExecutionsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -585,9 +615,9 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(executionId)
+                .addPathSegment(PathSegments.validate(executionId))
                 .addPathSegments("consolelog");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -623,7 +653,8 @@ public class AsyncRawExecutionsClient {
         }
         CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -678,6 +709,11 @@ public class AsyncRawExecutionsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -715,9 +751,9 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(executionId)
+                .addPathSegment(PathSegments.validate(executionId))
                 .addPathSegments("logs");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -744,7 +780,8 @@ public class AsyncRawExecutionsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncExecutionLogsEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -780,6 +817,11 @@ public class AsyncRawExecutionsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -866,9 +908,9 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(executionId)
+                .addPathSegment(PathSegments.validate(executionId))
                 .addPathSegments("logs")
                 .addPathSegments("export");
         if (request.getNotify().isPresent()) {
@@ -882,7 +924,11 @@ public class AsyncRawExecutionsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -900,7 +946,8 @@ public class AsyncRawExecutionsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<ExportSyncLogsEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -947,6 +994,11 @@ public class AsyncRawExecutionsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -997,11 +1049,11 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(executionId)
+                .addPathSegment(PathSegments.validate(executionId))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId)
+                .addPathSegment(PathSegments.validate(schemaId))
                 .addPathSegments("consolelog");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -1037,7 +1089,8 @@ public class AsyncRawExecutionsClient {
         }
         CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1092,6 +1145,11 @@ public class AsyncRawExecutionsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1129,7 +1187,7 @@ public class AsyncRawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("ingest")
                 .addPathSegments("consolelog");
         if (request.getSyncId().isPresent()) {
@@ -1170,7 +1228,8 @@ public class AsyncRawExecutionsClient {
         }
         CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1223,6 +1282,11 @@ public class AsyncRawExecutionsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;

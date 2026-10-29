@@ -30,6 +30,9 @@ public final class HarborActivityEventEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The Activity event
+     */
     @JsonProperty("data")
     public Optional<HarboractivityapiHarborActivityEvent> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class HarborActivityEventEnvelope {
     public static final class Builder {
         private Optional<HarboractivityapiHarborActivityEvent> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class HarborActivityEventEnvelope {
             return this;
         }
 
+        /**
+         * <p>The Activity event</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<HarboractivityapiHarborActivityEvent> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class HarborActivityEventEnvelope {
 
         public HarborActivityEventEnvelope build() {
             return new HarborActivityEventEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

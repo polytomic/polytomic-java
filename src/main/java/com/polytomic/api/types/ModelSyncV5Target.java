@@ -56,11 +56,17 @@ public final class ModelSyncV5Target {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Destination-specific settings for the target object
+     */
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Connection ID of the destination
+     */
     @JsonProperty("connection_id")
     public String getConnectionId() {
         return connectionId;
@@ -83,13 +89,16 @@ public final class ModelSyncV5Target {
     }
 
     /**
-     * @return Name for a new target object.
+     * @return Name for a new target object
      */
     @JsonProperty("new_name")
     public Optional<String> getNewName() {
         return newName;
     }
 
+    /**
+     * @return Destination object the sync writes to
+     */
     @JsonProperty("object")
     public Optional<String> getObject() {
         return object;
@@ -143,6 +152,9 @@ public final class ModelSyncV5Target {
     }
 
     public interface ConnectionIdStage {
+        /**
+         * <p>Connection ID of the destination</p>
+         */
         _FinalStage connectionId(@NotNull String connectionId);
 
         Builder from(ModelSyncV5Target other);
@@ -155,6 +167,9 @@ public final class ModelSyncV5Target {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Destination-specific settings for the target object</p>
+         */
         _FinalStage configuration(Optional<Map<String, Object>> configuration);
 
         _FinalStage configuration(Map<String, Object> configuration);
@@ -174,12 +189,15 @@ public final class ModelSyncV5Target {
         _FinalStage filterLogic(String filterLogic);
 
         /**
-         * <p>Name for a new target object.</p>
+         * <p>Name for a new target object</p>
          */
         _FinalStage newName(Optional<String> newName);
 
         _FinalStage newName(String newName);
 
+        /**
+         * <p>Destination object the sync writes to</p>
+         */
         _FinalStage object(Optional<String> object);
 
         _FinalStage object(String object);
@@ -205,7 +223,6 @@ public final class ModelSyncV5Target {
 
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -222,6 +239,10 @@ public final class ModelSyncV5Target {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the destination</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("connection_id")
         public _FinalStage connectionId(@NotNull String connectionId) {
@@ -242,12 +263,19 @@ public final class ModelSyncV5Target {
             return this;
         }
 
+        /**
+         * <p>Destination object the sync writes to</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage object(String object) {
             this.object = Optional.ofNullable(object);
             return this;
         }
 
+        /**
+         * <p>Destination object the sync writes to</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "object", nulls = Nulls.SKIP)
         public _FinalStage object(Optional<String> object) {
@@ -256,7 +284,7 @@ public final class ModelSyncV5Target {
         }
 
         /**
-         * <p>Name for a new target object.</p>
+         * <p>Name for a new target object</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -266,7 +294,7 @@ public final class ModelSyncV5Target {
         }
 
         /**
-         * <p>Name for a new target object.</p>
+         * <p>Name for a new target object</p>
          */
         @java.lang.Override
         @JsonSetter(value = "new_name", nulls = Nulls.SKIP)
@@ -315,12 +343,19 @@ public final class ModelSyncV5Target {
             return this;
         }
 
+        /**
+         * <p>Destination-specific settings for the target object</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage configuration(Map<String, Object> configuration) {
             this.configuration = Optional.ofNullable(configuration);
             return this;
         }
 
+        /**
+         * <p>Destination-specific settings for the target object</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public _FinalStage configuration(Optional<Map<String, Object>> configuration) {
@@ -339,6 +374,20 @@ public final class ModelSyncV5Target {
                     object,
                     searchValues,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("create")
+                    || key.equalsIgnoreCase("filter_logic")
+                    || key.equalsIgnoreCase("new_name")
+                    || key.equalsIgnoreCase("object")
+                    || key.equalsIgnoreCase("search_values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -122,7 +122,7 @@ public final class UpdateModelSyncV5Request {
     }
 
     /**
-     * @return Whether the sync is enabled and scheduled.
+     * @return Whether the sync is enabled and scheduled
      */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
@@ -130,7 +130,7 @@ public final class UpdateModelSyncV5Request {
     }
 
     /**
-     * @return Passphrase for encrypting the sync data.
+     * @return Passphrase for encrypting the sync data
      */
     @JsonProperty("encryption_passphrase")
     public Optional<String> getEncryptionPassphrase() {
@@ -138,7 +138,7 @@ public final class UpdateModelSyncV5Request {
     }
 
     /**
-     * @return Fields to sync from source to destination.
+     * @return Fields to sync from source to destination
      */
     @JsonProperty("fields")
     public List<SyncField> getFields() {
@@ -177,16 +177,25 @@ public final class UpdateModelSyncV5Request {
         return identity;
     }
 
+    /**
+     * @return How source records are written to the target
+     */
     @JsonProperty("mode")
     public ModelsyncSyncTargetMode getMode() {
         return mode;
     }
 
+    /**
+     * @return Filters narrowing the records read from the source. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.
+     */
     @JsonProperty("model_filters")
     public Optional<ModelFilters> getModelFilters() {
         return modelFilters;
     }
 
+    /**
+     * @return Name of the model sync
+     */
     @JsonProperty("name")
     public String getName() {
         return name;
@@ -201,7 +210,7 @@ public final class UpdateModelSyncV5Request {
     }
 
     /**
-     * @return Organization ID for the sync; read-only with a partner key.
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -209,7 +218,7 @@ public final class UpdateModelSyncV5Request {
     }
 
     /**
-     * @return Target fields which are set to a fixed value for every record, rather than mapped from a model field.
+     * @return Target fields which are set to a fixed value for every record, rather than mapped from a model field
      */
     @JsonProperty("override_fields")
     public Optional<List<OverrideFieldInput>> getOverrideFields() {
@@ -217,18 +226,24 @@ public final class UpdateModelSyncV5Request {
     }
 
     /**
-     * @return Conditional value replacement for fields.
+     * @return Conditional value replacement for fields
      */
     @JsonProperty("overrides")
     public Optional<List<Override>> getOverrides() {
         return overrides;
     }
 
+    /**
+     * @return Permissions policy IDs applied to the sync. On update, a non-empty list replaces the sync's policies and an empty or omitted list leaves them unchanged.
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
     }
 
+    /**
+     * @return Sync schedule. Schedule times are interpreted in UTC.
+     */
     @JsonProperty("schedule")
     public Schedule getSchedule() {
         return schedule;
@@ -243,18 +258,24 @@ public final class UpdateModelSyncV5Request {
     }
 
     /**
-     * @return Whether to sync all records from the source, regardless of whether they've changed since the previous execution.
+     * @return Whether to sync all records from the source, regardless of whether they've changed since the previous execution
      */
     @JsonProperty("sync_all_records")
     public Optional<Boolean> getSyncAllRecords() {
         return syncAllRecords;
     }
 
+    /**
+     * @return Sync destination configuration
+     */
     @JsonProperty("target")
     public ModelSyncV5Target getTarget() {
         return target;
     }
 
+    /**
+     * @return Filters narrowing the records written to the destination. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.
+     */
     @JsonProperty("target_filters")
     public Optional<TargetFilters> getTargetFilters() {
         return targetFilters;
@@ -329,20 +350,32 @@ public final class UpdateModelSyncV5Request {
     }
 
     public interface ModeStage {
+        /**
+         * <p>How source records are written to the target</p>
+         */
         NameStage mode(@NotNull ModelsyncSyncTargetMode mode);
 
         Builder from(UpdateModelSyncV5Request other);
     }
 
     public interface NameStage {
+        /**
+         * <p>Name of the model sync</p>
+         */
         ScheduleStage name(@NotNull String name);
     }
 
     public interface ScheduleStage {
+        /**
+         * <p>Sync schedule. Schedule times are interpreted in UTC.</p>
+         */
         TargetStage schedule(@NotNull Schedule schedule);
     }
 
     public interface TargetStage {
+        /**
+         * <p>Sync destination configuration</p>
+         */
         _FinalStage target(@NotNull ModelSyncV5Target target);
     }
 
@@ -354,21 +387,21 @@ public final class UpdateModelSyncV5Request {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Whether the sync is enabled and scheduled.</p>
+         * <p>Whether the sync is enabled and scheduled</p>
          */
         _FinalStage active(Optional<Boolean> active);
 
         _FinalStage active(Boolean active);
 
         /**
-         * <p>Passphrase for encrypting the sync data.</p>
+         * <p>Passphrase for encrypting the sync data</p>
          */
         _FinalStage encryptionPassphrase(Optional<String> encryptionPassphrase);
 
         _FinalStage encryptionPassphrase(String encryptionPassphrase);
 
         /**
-         * <p>Fields to sync from source to destination.</p>
+         * <p>Fields to sync from source to destination</p>
          */
         _FinalStage fields(List<SyncField> fields);
 
@@ -404,6 +437,9 @@ public final class UpdateModelSyncV5Request {
 
         _FinalStage identity(Identity identity);
 
+        /**
+         * <p>Filters narrowing the records read from the source. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.</p>
+         */
         _FinalStage modelFilters(Optional<ModelFilters> modelFilters);
 
         _FinalStage modelFilters(ModelFilters modelFilters);
@@ -416,26 +452,29 @@ public final class UpdateModelSyncV5Request {
         _FinalStage onlyEnrichUpdates(Boolean onlyEnrichUpdates);
 
         /**
-         * <p>Organization ID for the sync; read-only with a partner key.</p>
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
          */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
         /**
-         * <p>Target fields which are set to a fixed value for every record, rather than mapped from a model field.</p>
+         * <p>Target fields which are set to a fixed value for every record, rather than mapped from a model field</p>
          */
         _FinalStage overrideFields(Optional<List<OverrideFieldInput>> overrideFields);
 
         _FinalStage overrideFields(List<OverrideFieldInput> overrideFields);
 
         /**
-         * <p>Conditional value replacement for fields.</p>
+         * <p>Conditional value replacement for fields</p>
          */
         _FinalStage overrides(Optional<List<Override>> overrides);
 
         _FinalStage overrides(List<Override> overrides);
 
+        /**
+         * <p>Permissions policy IDs applied to the sync. On update, a non-empty list replaces the sync's policies and an empty or omitted list leaves them unchanged.</p>
+         */
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
@@ -448,12 +487,15 @@ public final class UpdateModelSyncV5Request {
         _FinalStage skipInitialBackfill(Boolean skipInitialBackfill);
 
         /**
-         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution.</p>
+         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution</p>
          */
         _FinalStage syncAllRecords(Optional<Boolean> syncAllRecords);
 
         _FinalStage syncAllRecords(Boolean syncAllRecords);
 
+        /**
+         * <p>Filters narrowing the records written to the destination. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.</p>
+         */
         _FinalStage targetFilters(Optional<TargetFilters> targetFilters);
 
         _FinalStage targetFilters(TargetFilters targetFilters);
@@ -501,7 +543,6 @@ public final class UpdateModelSyncV5Request {
 
         private Optional<Boolean> active = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -531,6 +572,10 @@ public final class UpdateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>How source records are written to the target</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("mode")
         public NameStage mode(@NotNull ModelsyncSyncTargetMode mode) {
@@ -538,6 +583,10 @@ public final class UpdateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>Name of the model sync</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("name")
         public ScheduleStage name(@NotNull String name) {
@@ -545,6 +594,10 @@ public final class UpdateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>Sync schedule. Schedule times are interpreted in UTC.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("schedule")
         public TargetStage schedule(@NotNull Schedule schedule) {
@@ -552,6 +605,10 @@ public final class UpdateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>Sync destination configuration</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(@NotNull ModelSyncV5Target target) {
@@ -559,12 +616,19 @@ public final class UpdateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>Filters narrowing the records written to the destination. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage targetFilters(TargetFilters targetFilters) {
             this.targetFilters = Optional.ofNullable(targetFilters);
             return this;
         }
 
+        /**
+         * <p>Filters narrowing the records written to the destination. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "target_filters", nulls = Nulls.SKIP)
         public _FinalStage targetFilters(Optional<TargetFilters> targetFilters) {
@@ -573,7 +637,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution.</p>
+         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -583,7 +647,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution.</p>
+         * <p>Whether to sync all records from the source, regardless of whether they've changed since the previous execution</p>
          */
         @java.lang.Override
         @JsonSetter(value = "sync_all_records", nulls = Nulls.SKIP)
@@ -612,12 +676,19 @@ public final class UpdateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the sync. On update, a non-empty list replaces the sync's policies and an empty or omitted list leaves them unchanged.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.ofNullable(policies);
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the sync. On update, a non-empty list replaces the sync's policies and an empty or omitted list leaves them unchanged.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
@@ -626,7 +697,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Conditional value replacement for fields.</p>
+         * <p>Conditional value replacement for fields</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -636,7 +707,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Conditional value replacement for fields.</p>
+         * <p>Conditional value replacement for fields</p>
          */
         @java.lang.Override
         @JsonSetter(value = "overrides", nulls = Nulls.SKIP)
@@ -646,7 +717,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Target fields which are set to a fixed value for every record, rather than mapped from a model field.</p>
+         * <p>Target fields which are set to a fixed value for every record, rather than mapped from a model field</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -656,7 +727,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Target fields which are set to a fixed value for every record, rather than mapped from a model field.</p>
+         * <p>Target fields which are set to a fixed value for every record, rather than mapped from a model field</p>
          */
         @java.lang.Override
         @JsonSetter(value = "override_fields", nulls = Nulls.SKIP)
@@ -666,7 +737,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Organization ID for the sync; read-only with a partner key.</p>
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -676,7 +747,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Organization ID for the sync; read-only with a partner key.</p>
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
          */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
@@ -705,12 +776,19 @@ public final class UpdateModelSyncV5Request {
             return this;
         }
 
+        /**
+         * <p>Filters narrowing the records read from the source. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage modelFilters(ModelFilters modelFilters) {
             this.modelFilters = Optional.ofNullable(modelFilters);
             return this;
         }
 
+        /**
+         * <p>Filters narrowing the records read from the source. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "model_filters", nulls = Nulls.SKIP)
         public _FinalStage modelFilters(Optional<ModelFilters> modelFilters) {
@@ -799,7 +877,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Fields to sync from source to destination.</p>
+         * <p>Fields to sync from source to destination</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -811,7 +889,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Fields to sync from source to destination.</p>
+         * <p>Fields to sync from source to destination</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -821,7 +899,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Fields to sync from source to destination.</p>
+         * <p>Fields to sync from source to destination</p>
          */
         @java.lang.Override
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
@@ -834,7 +912,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Passphrase for encrypting the sync data.</p>
+         * <p>Passphrase for encrypting the sync data</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -844,7 +922,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Passphrase for encrypting the sync data.</p>
+         * <p>Passphrase for encrypting the sync data</p>
          */
         @java.lang.Override
         @JsonSetter(value = "encryption_passphrase", nulls = Nulls.SKIP)
@@ -854,7 +932,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Whether the sync is enabled and scheduled.</p>
+         * <p>Whether the sync is enabled and scheduled</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -864,7 +942,7 @@ public final class UpdateModelSyncV5Request {
         }
 
         /**
-         * <p>Whether the sync is enabled and scheduled.</p>
+         * <p>Whether the sync is enabled and scheduled</p>
          */
         @java.lang.Override
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
@@ -897,6 +975,33 @@ public final class UpdateModelSyncV5Request {
                     target,
                     targetFilters,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("active")
+                    || key.equalsIgnoreCase("encryption_passphrase")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("filter_logic")
+                    || key.equalsIgnoreCase("filters")
+                    || key.equalsIgnoreCase("identities")
+                    || key.equalsIgnoreCase("identity")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("model_filters")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("only_enrich_updates")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("override_fields")
+                    || key.equalsIgnoreCase("overrides")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("schedule")
+                    || key.equalsIgnoreCase("skip_initial_backfill")
+                    || key.equalsIgnoreCase("sync_all_records")
+                    || key.equalsIgnoreCase("target")
+                    || key.equalsIgnoreCase("target_filters")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

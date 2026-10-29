@@ -37,7 +37,7 @@ public final class ResolveHarborSourceMappingsEnvelopeData {
     }
 
     /**
-     * @return Connection the resolved names belong to.
+     * @return Connection the resolved names belong to
      */
     @JsonProperty("backing_connection_id")
     public Optional<String> getBackingConnectionId() {
@@ -45,7 +45,7 @@ public final class ResolveHarborSourceMappingsEnvelopeData {
     }
 
     /**
-     * @return One result per requested source table, in request order.
+     * @return One result per requested source table, in request order
      */
     @JsonProperty("sources")
     public Optional<List<HarborSourceMappingResponse>> getSources() {
@@ -88,7 +88,6 @@ public final class ResolveHarborSourceMappingsEnvelopeData {
 
         private Optional<List<HarborSourceMappingResponse>> sources = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -100,7 +99,7 @@ public final class ResolveHarborSourceMappingsEnvelopeData {
         }
 
         /**
-         * <p>Connection the resolved names belong to.</p>
+         * <p>Connection the resolved names belong to</p>
          */
         @JsonSetter(value = "backing_connection_id", nulls = Nulls.SKIP)
         public Builder backingConnectionId(Optional<String> backingConnectionId) {
@@ -114,7 +113,7 @@ public final class ResolveHarborSourceMappingsEnvelopeData {
         }
 
         /**
-         * <p>One result per requested source table, in request order.</p>
+         * <p>One result per requested source table, in request order</p>
          */
         @JsonSetter(value = "sources", nulls = Nulls.SKIP)
         public Builder sources(Optional<List<HarborSourceMappingResponse>> sources) {
@@ -129,6 +128,14 @@ public final class ResolveHarborSourceMappingsEnvelopeData {
 
         public ResolveHarborSourceMappingsEnvelopeData build() {
             return new ResolveHarborSourceMappingsEnvelopeData(backingConnectionId, sources, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("backing_connection_id") || key.equalsIgnoreCase("sources")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

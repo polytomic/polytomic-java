@@ -86,7 +86,6 @@ public final class SearchResultMetadata {
 
         private Optional<Boolean> truncated = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -127,6 +126,14 @@ public final class SearchResultMetadata {
 
         public SearchResultMetadata build() {
             return new SearchResultMetadata(modelFieldsComplete, truncated, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("model_fields_complete") || key.equalsIgnoreCase("truncated")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

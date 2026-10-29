@@ -98,86 +98,137 @@ public final class BulkBulkSyncSchedule {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Timestamp the schedule was created
+     */
     @JsonProperty("createdAt")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return ID of the actor that created the schedule
+     */
     @JsonProperty("createdBy")
     public Optional<String> getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * @return Day of the month for custom and builder schedules
+     */
     @JsonProperty("dayOfMonth")
     public Optional<String> getDayOfMonth() {
         return dayOfMonth;
     }
 
+    /**
+     * @return Day of the week for weekly, custom, and builder schedules
+     */
     @JsonProperty("dayOfWeek")
     public Optional<String> getDayOfWeek() {
         return dayOfWeek;
     }
 
+    /**
+     * @return Timestamp the schedule was deleted
+     */
     @JsonProperty("deletedAt")
     public Optional<OffsetDateTime> getDeletedAt() {
         return deletedAt;
     }
 
+    /**
+     * @return ID of the actor that deleted the schedule
+     */
     @JsonProperty("deletedBy")
     public Optional<String> getDeletedBy() {
         return deletedBy;
     }
 
+    /**
+     * @return How often the sync runs on this schedule
+     */
     @JsonProperty("frequency")
     public ScheduleFrequency getFrequency() {
         return frequency;
     }
 
+    /**
+     * @return Hour of the day, in UTC, for daily, weekly, custom, and builder schedules
+     */
     @JsonProperty("hour")
     public Optional<String> getHour() {
         return hour;
     }
 
+    /**
+     * @return Whether this is the bulk sync's default schedule
+     */
     @JsonProperty("isDefault")
     public Optional<Boolean> getIsDefault() {
         return isDefault;
     }
 
+    /**
+     * @return Minute of the hour for hourly, daily, weekly, custom, and builder schedules
+     */
     @JsonProperty("minute")
     public Optional<String> getMinute() {
         return minute;
     }
 
+    /**
+     * @return Month of the year for custom and builder schedules
+     */
     @JsonProperty("month")
     public Optional<String> getMonth() {
         return month;
     }
 
+    /**
+     * @return Schema IDs this schedule applies to; empty means all schemas
+     */
     @JsonProperty("schemas")
     public Optional<List<String>> getSchemas() {
         return schemas;
     }
 
+    /**
+     * @return Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields
+     */
     @JsonProperty("selectiveMode")
     public Optional<BulkSelectiveMode> getSelectiveMode() {
         return selectiveMode;
     }
 
+    /**
+     * @return Bulk sync ID
+     */
     @JsonProperty("syncId")
     public Optional<String> getSyncId() {
         return syncId;
     }
 
+    /**
+     * @return Controls how the destination is handled when this schedule executes
+     */
     @JsonProperty("syncMode")
     public Optional<BulkScheduleSyncMode> getSyncMode() {
         return syncMode;
     }
 
+    /**
+     * @return Timestamp the schedule was last updated
+     */
     @JsonProperty("updatedAt")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * @return ID of the actor that most recently updated the schedule
+     */
     @JsonProperty("updatedBy")
     public Optional<String> getUpdatedBy() {
         return updatedBy;
@@ -246,6 +297,9 @@ public final class BulkBulkSyncSchedule {
     }
 
     public interface FrequencyStage {
+        /**
+         * <p>How often the sync runs on this schedule</p>
+         */
         _FinalStage frequency(@NotNull ScheduleFrequency frequency);
 
         Builder from(BulkBulkSyncSchedule other);
@@ -258,66 +312,114 @@ public final class BulkBulkSyncSchedule {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Timestamp the schedule was created</p>
+         */
         _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
 
         _FinalStage createdAt(OffsetDateTime createdAt);
 
+        /**
+         * <p>ID of the actor that created the schedule</p>
+         */
         _FinalStage createdBy(Optional<String> createdBy);
 
         _FinalStage createdBy(String createdBy);
 
+        /**
+         * <p>Day of the month for custom and builder schedules</p>
+         */
         _FinalStage dayOfMonth(Optional<String> dayOfMonth);
 
         _FinalStage dayOfMonth(String dayOfMonth);
 
+        /**
+         * <p>Day of the week for weekly, custom, and builder schedules</p>
+         */
         _FinalStage dayOfWeek(Optional<String> dayOfWeek);
 
         _FinalStage dayOfWeek(String dayOfWeek);
 
+        /**
+         * <p>Timestamp the schedule was deleted</p>
+         */
         _FinalStage deletedAt(Optional<OffsetDateTime> deletedAt);
 
         _FinalStage deletedAt(OffsetDateTime deletedAt);
 
+        /**
+         * <p>ID of the actor that deleted the schedule</p>
+         */
         _FinalStage deletedBy(Optional<String> deletedBy);
 
         _FinalStage deletedBy(String deletedBy);
 
+        /**
+         * <p>Hour of the day, in UTC, for daily, weekly, custom, and builder schedules</p>
+         */
         _FinalStage hour(Optional<String> hour);
 
         _FinalStage hour(String hour);
 
+        /**
+         * <p>Whether this is the bulk sync's default schedule</p>
+         */
         _FinalStage isDefault(Optional<Boolean> isDefault);
 
         _FinalStage isDefault(Boolean isDefault);
 
+        /**
+         * <p>Minute of the hour for hourly, daily, weekly, custom, and builder schedules</p>
+         */
         _FinalStage minute(Optional<String> minute);
 
         _FinalStage minute(String minute);
 
+        /**
+         * <p>Month of the year for custom and builder schedules</p>
+         */
         _FinalStage month(Optional<String> month);
 
         _FinalStage month(String month);
 
+        /**
+         * <p>Schema IDs this schedule applies to; empty means all schemas</p>
+         */
         _FinalStage schemas(Optional<List<String>> schemas);
 
         _FinalStage schemas(List<String> schemas);
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         */
         _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode);
 
         _FinalStage selectiveMode(BulkSelectiveMode selectiveMode);
 
+        /**
+         * <p>Bulk sync ID</p>
+         */
         _FinalStage syncId(Optional<String> syncId);
 
         _FinalStage syncId(String syncId);
 
+        /**
+         * <p>Controls how the destination is handled when this schedule executes</p>
+         */
         _FinalStage syncMode(Optional<BulkScheduleSyncMode> syncMode);
 
         _FinalStage syncMode(BulkScheduleSyncMode syncMode);
 
+        /**
+         * <p>Timestamp the schedule was last updated</p>
+         */
         _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt);
 
         _FinalStage updatedAt(OffsetDateTime updatedAt);
 
+        /**
+         * <p>ID of the actor that most recently updated the schedule</p>
+         */
         _FinalStage updatedBy(Optional<String> updatedBy);
 
         _FinalStage updatedBy(String updatedBy);
@@ -359,7 +461,6 @@ public final class BulkBulkSyncSchedule {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -386,6 +487,10 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>How often the sync runs on this schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("frequency")
         public _FinalStage frequency(@NotNull ScheduleFrequency frequency) {
@@ -393,12 +498,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>ID of the actor that most recently updated the schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage updatedBy(String updatedBy) {
             this.updatedBy = Optional.ofNullable(updatedBy);
             return this;
         }
 
+        /**
+         * <p>ID of the actor that most recently updated the schedule</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "updatedBy", nulls = Nulls.SKIP)
         public _FinalStage updatedBy(Optional<String> updatedBy) {
@@ -406,12 +518,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Timestamp the schedule was last updated</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage updatedAt(OffsetDateTime updatedAt) {
             this.updatedAt = Optional.ofNullable(updatedAt);
             return this;
         }
 
+        /**
+         * <p>Timestamp the schedule was last updated</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "updatedAt", nulls = Nulls.SKIP)
         public _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -419,12 +538,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Controls how the destination is handled when this schedule executes</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage syncMode(BulkScheduleSyncMode syncMode) {
             this.syncMode = Optional.ofNullable(syncMode);
             return this;
         }
 
+        /**
+         * <p>Controls how the destination is handled when this schedule executes</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "syncMode", nulls = Nulls.SKIP)
         public _FinalStage syncMode(Optional<BulkScheduleSyncMode> syncMode) {
@@ -432,12 +558,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Bulk sync ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage syncId(String syncId) {
             this.syncId = Optional.ofNullable(syncId);
             return this;
         }
 
+        /**
+         * <p>Bulk sync ID</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "syncId", nulls = Nulls.SKIP)
         public _FinalStage syncId(Optional<String> syncId) {
@@ -445,12 +578,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage selectiveMode(BulkSelectiveMode selectiveMode) {
             this.selectiveMode = Optional.ofNullable(selectiveMode);
             return this;
         }
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "selectiveMode", nulls = Nulls.SKIP)
         public _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode) {
@@ -458,12 +598,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Schema IDs this schedule applies to; empty means all schemas</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage schemas(List<String> schemas) {
             this.schemas = Optional.ofNullable(schemas);
             return this;
         }
 
+        /**
+         * <p>Schema IDs this schedule applies to; empty means all schemas</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public _FinalStage schemas(Optional<List<String>> schemas) {
@@ -471,12 +618,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Month of the year for custom and builder schedules</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage month(String month) {
             this.month = Optional.ofNullable(month);
             return this;
         }
 
+        /**
+         * <p>Month of the year for custom and builder schedules</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "month", nulls = Nulls.SKIP)
         public _FinalStage month(Optional<String> month) {
@@ -484,12 +638,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Minute of the hour for hourly, daily, weekly, custom, and builder schedules</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage minute(String minute) {
             this.minute = Optional.ofNullable(minute);
             return this;
         }
 
+        /**
+         * <p>Minute of the hour for hourly, daily, weekly, custom, and builder schedules</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "minute", nulls = Nulls.SKIP)
         public _FinalStage minute(Optional<String> minute) {
@@ -497,12 +658,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Whether this is the bulk sync's default schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage isDefault(Boolean isDefault) {
             this.isDefault = Optional.ofNullable(isDefault);
             return this;
         }
 
+        /**
+         * <p>Whether this is the bulk sync's default schedule</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "isDefault", nulls = Nulls.SKIP)
         public _FinalStage isDefault(Optional<Boolean> isDefault) {
@@ -510,12 +678,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Hour of the day, in UTC, for daily, weekly, custom, and builder schedules</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage hour(String hour) {
             this.hour = Optional.ofNullable(hour);
             return this;
         }
 
+        /**
+         * <p>Hour of the day, in UTC, for daily, weekly, custom, and builder schedules</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "hour", nulls = Nulls.SKIP)
         public _FinalStage hour(Optional<String> hour) {
@@ -523,12 +698,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>ID of the actor that deleted the schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage deletedBy(String deletedBy) {
             this.deletedBy = Optional.ofNullable(deletedBy);
             return this;
         }
 
+        /**
+         * <p>ID of the actor that deleted the schedule</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "deletedBy", nulls = Nulls.SKIP)
         public _FinalStage deletedBy(Optional<String> deletedBy) {
@@ -536,12 +718,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Timestamp the schedule was deleted</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage deletedAt(OffsetDateTime deletedAt) {
             this.deletedAt = Optional.ofNullable(deletedAt);
             return this;
         }
 
+        /**
+         * <p>Timestamp the schedule was deleted</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "deletedAt", nulls = Nulls.SKIP)
         public _FinalStage deletedAt(Optional<OffsetDateTime> deletedAt) {
@@ -549,12 +738,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Day of the week for weekly, custom, and builder schedules</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage dayOfWeek(String dayOfWeek) {
             this.dayOfWeek = Optional.ofNullable(dayOfWeek);
             return this;
         }
 
+        /**
+         * <p>Day of the week for weekly, custom, and builder schedules</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "dayOfWeek", nulls = Nulls.SKIP)
         public _FinalStage dayOfWeek(Optional<String> dayOfWeek) {
@@ -562,12 +758,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Day of the month for custom and builder schedules</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage dayOfMonth(String dayOfMonth) {
             this.dayOfMonth = Optional.ofNullable(dayOfMonth);
             return this;
         }
 
+        /**
+         * <p>Day of the month for custom and builder schedules</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "dayOfMonth", nulls = Nulls.SKIP)
         public _FinalStage dayOfMonth(Optional<String> dayOfMonth) {
@@ -575,12 +778,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>ID of the actor that created the schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage createdBy(String createdBy) {
             this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
+        /**
+         * <p>ID of the actor that created the schedule</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "createdBy", nulls = Nulls.SKIP)
         public _FinalStage createdBy(Optional<String> createdBy) {
@@ -588,12 +798,19 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Timestamp the schedule was created</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage createdAt(OffsetDateTime createdAt) {
             this.createdAt = Optional.ofNullable(createdAt);
             return this;
         }
 
+        /**
+         * <p>Timestamp the schedule was created</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "createdAt", nulls = Nulls.SKIP)
         public _FinalStage createdAt(Optional<OffsetDateTime> createdAt) {
@@ -622,6 +839,30 @@ public final class BulkBulkSyncSchedule {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("createdAt")
+                    || key.equalsIgnoreCase("createdBy")
+                    || key.equalsIgnoreCase("dayOfMonth")
+                    || key.equalsIgnoreCase("dayOfWeek")
+                    || key.equalsIgnoreCase("deletedAt")
+                    || key.equalsIgnoreCase("deletedBy")
+                    || key.equalsIgnoreCase("frequency")
+                    || key.equalsIgnoreCase("hour")
+                    || key.equalsIgnoreCase("isDefault")
+                    || key.equalsIgnoreCase("minute")
+                    || key.equalsIgnoreCase("month")
+                    || key.equalsIgnoreCase("schemas")
+                    || key.equalsIgnoreCase("selectiveMode")
+                    || key.equalsIgnoreCase("syncId")
+                    || key.equalsIgnoreCase("syncMode")
+                    || key.equalsIgnoreCase("updatedAt")
+                    || key.equalsIgnoreCase("updatedBy")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

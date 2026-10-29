@@ -29,6 +29,9 @@ public final class LogsIndexResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Record-log index for the execution
+     */
     @JsonProperty("data")
     public Optional<LogsIndexResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class LogsIndexResponseEnvelope {
     public static final class Builder {
         private Optional<LogsIndexResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class LogsIndexResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Record-log index for the execution</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<LogsIndexResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class LogsIndexResponseEnvelope {
 
         public LogsIndexResponseEnvelope build() {
             return new LogsIndexResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

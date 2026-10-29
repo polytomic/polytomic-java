@@ -49,7 +49,7 @@ public final class User {
     }
 
     /**
-     * @return Email address used to sign in and receive notifications.
+     * @return Email address used to sign in and receive notifications
      */
     @JsonProperty("email")
     public Optional<String> getEmail() {
@@ -57,7 +57,7 @@ public final class User {
     }
 
     /**
-     * @return Unique identifier of the user.
+     * @return Unique identifier of the user
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -65,7 +65,7 @@ public final class User {
     }
 
     /**
-     * @return Unique identifier of the organization the user belongs to.
+     * @return Unique identifier of the organization the user belongs to
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -81,7 +81,7 @@ public final class User {
     }
 
     /**
-     * @return Identifiers of the permissions roles assigned to the user.
+     * @return Identifiers of the permissions roles assigned to the user
      */
     @JsonProperty("role_ids")
     public Optional<List<String>> getRoleIds() {
@@ -133,7 +133,6 @@ public final class User {
 
         private Optional<List<String>> roleIds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -148,7 +147,7 @@ public final class User {
         }
 
         /**
-         * <p>Email address used to sign in and receive notifications.</p>
+         * <p>Email address used to sign in and receive notifications</p>
          */
         @JsonSetter(value = "email", nulls = Nulls.SKIP)
         public Builder email(Optional<String> email) {
@@ -162,7 +161,7 @@ public final class User {
         }
 
         /**
-         * <p>Unique identifier of the user.</p>
+         * <p>Unique identifier of the user</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -176,7 +175,7 @@ public final class User {
         }
 
         /**
-         * <p>Unique identifier of the organization the user belongs to.</p>
+         * <p>Unique identifier of the organization the user belongs to</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -204,7 +203,7 @@ public final class User {
         }
 
         /**
-         * <p>Identifiers of the permissions roles assigned to the user.</p>
+         * <p>Identifiers of the permissions roles assigned to the user</p>
          */
         @JsonSetter(value = "role_ids", nulls = Nulls.SKIP)
         public Builder roleIds(Optional<List<String>> roleIds) {
@@ -219,6 +218,18 @@ public final class User {
 
         public User build() {
             return new User(email, id, organizationId, role, roleIds, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("email")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("role")
+                    || key.equalsIgnoreCase("role_ids")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

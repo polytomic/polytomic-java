@@ -53,7 +53,7 @@ public final class SyncField {
     }
 
     /**
-     * @return Whether the field should be encrypted.
+     * @return Whether the field should be encrypted
      */
     @JsonProperty("encryption_enabled")
     public Optional<Boolean> getEncryptionEnabled() {
@@ -76,6 +76,9 @@ public final class SyncField {
         return overrideValue;
     }
 
+    /**
+     * @return Source field to sync from. Required if 'override_value' is not provided.
+     */
     @JsonProperty("source")
     public Optional<Source> getSource() {
         return source;
@@ -90,7 +93,7 @@ public final class SyncField {
     }
 
     /**
-     * @return Target field ID the source field value will be written to.
+     * @return Target field ID the source field value will be written to
      */
     @JsonProperty("target")
     public String getTarget() {
@@ -134,7 +137,7 @@ public final class SyncField {
 
     public interface TargetStage {
         /**
-         * <p>Target field ID the source field value will be written to.</p>
+         * <p>Target field ID the source field value will be written to</p>
          */
         _FinalStage target(@NotNull String target);
 
@@ -149,7 +152,7 @@ public final class SyncField {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Whether the field should be encrypted.</p>
+         * <p>Whether the field should be encrypted</p>
          */
         _FinalStage encryptionEnabled(Optional<Boolean> encryptionEnabled);
 
@@ -169,6 +172,9 @@ public final class SyncField {
 
         _FinalStage overrideValue(String overrideValue);
 
+        /**
+         * <p>Source field to sync from. Required if 'override_value' is not provided.</p>
+         */
         _FinalStage source(Optional<Source> source);
 
         _FinalStage source(Source source);
@@ -195,7 +201,6 @@ public final class SyncField {
 
         private Optional<Boolean> encryptionEnabled = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -212,7 +217,7 @@ public final class SyncField {
         }
 
         /**
-         * <p>Target field ID the source field value will be written to.</p>
+         * <p>Target field ID the source field value will be written to</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -242,12 +247,19 @@ public final class SyncField {
             return this;
         }
 
+        /**
+         * <p>Source field to sync from. Required if 'override_value' is not provided.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage source(Source source) {
             this.source = Optional.ofNullable(source);
             return this;
         }
 
+        /**
+         * <p>Source field to sync from. Required if 'override_value' is not provided.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "source", nulls = Nulls.SKIP)
         public _FinalStage source(Optional<Source> source) {
@@ -296,7 +308,7 @@ public final class SyncField {
         }
 
         /**
-         * <p>Whether the field should be encrypted.</p>
+         * <p>Whether the field should be encrypted</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -306,7 +318,7 @@ public final class SyncField {
         }
 
         /**
-         * <p>Whether the field should be encrypted.</p>
+         * <p>Whether the field should be encrypted</p>
          */
         @java.lang.Override
         @JsonSetter(value = "encryption_enabled", nulls = Nulls.SKIP)
@@ -319,6 +331,19 @@ public final class SyncField {
         public SyncField build() {
             return new SyncField(
                     encryptionEnabled, new_, overrideValue, source, syncMode, target, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("encryption_enabled")
+                    || key.equalsIgnoreCase("new")
+                    || key.equalsIgnoreCase("override_value")
+                    || key.equalsIgnoreCase("source")
+                    || key.equalsIgnoreCase("sync_mode")
+                    || key.equalsIgnoreCase("target")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -29,6 +29,9 @@ public final class DeletedHarborEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The deleted Harbor
+     */
     @JsonProperty("data")
     public Optional<DeletedHarborResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class DeletedHarborEnvelope {
     public static final class Builder {
         private Optional<DeletedHarborResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class DeletedHarborEnvelope {
             return this;
         }
 
+        /**
+         * <p>The deleted Harbor</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<DeletedHarborResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class DeletedHarborEnvelope {
 
         public DeletedHarborEnvelope build() {
             return new DeletedHarborEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

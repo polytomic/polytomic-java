@@ -81,7 +81,7 @@ public final class CreateHarborRequest {
     }
 
     /**
-     * @return Human-readable Harbor name.
+     * @return Human-readable Harbor name
      */
     @JsonProperty("name")
     public String getName() {
@@ -133,7 +133,7 @@ public final class CreateHarborRequest {
 
     public interface NameStage {
         /**
-         * <p>Human-readable Harbor name.</p>
+         * <p>Human-readable Harbor name</p>
          */
         _FinalStage name(@NotNull String name);
     }
@@ -179,7 +179,6 @@ public final class CreateHarborRequest {
 
         private Optional<String> backingConnectionId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -206,7 +205,7 @@ public final class CreateHarborRequest {
         }
 
         /**
-         * <p>Human-readable Harbor name.</p>
+         * <p>Human-readable Harbor name</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -280,6 +279,18 @@ public final class CreateHarborRequest {
         public CreateHarborRequest build() {
             return new CreateHarborRequest(
                     backingConnectionId, backingMode, description, generateApiKey, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("backing_connection_id")
+                    || key.equalsIgnoreCase("backing_mode")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("generate_api_key")
+                    || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -35,7 +35,7 @@ public final class PartnerCreateSharedConnectionRequestSchema {
     }
 
     /**
-     * @return Unique identifier of the child organization that should receive the shared connection.
+     * @return Unique identifier of the child organization that should receive the shared connection
      */
     @JsonProperty("child_organization_id")
     public String getChildOrganizationId() {
@@ -82,7 +82,7 @@ public final class PartnerCreateSharedConnectionRequestSchema {
 
     public interface ChildOrganizationIdStage {
         /**
-         * <p>Unique identifier of the child organization that should receive the shared connection.</p>
+         * <p>Unique identifier of the child organization that should receive the shared connection</p>
          */
         _FinalStage childOrganizationId(@NotNull String childOrganizationId);
 
@@ -110,7 +110,6 @@ public final class PartnerCreateSharedConnectionRequestSchema {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -123,7 +122,7 @@ public final class PartnerCreateSharedConnectionRequestSchema {
         }
 
         /**
-         * <p>Unique identifier of the child organization that should receive the shared connection.</p>
+         * <p>Unique identifier of the child organization that should receive the shared connection</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -156,6 +155,14 @@ public final class PartnerCreateSharedConnectionRequestSchema {
         @java.lang.Override
         public PartnerCreateSharedConnectionRequestSchema build() {
             return new PartnerCreateSharedConnectionRequestSchema(childOrganizationId, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("child_organization_id") || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

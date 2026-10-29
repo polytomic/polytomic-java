@@ -40,18 +40,24 @@ public final class QueryRunnerGetQueryRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
     /**
-     * @return Opaque pagination token returned in the links.next or links.previous URL of the previous response.
+     * @return Opaque pagination token returned in the links.next or links.previous URL of the previous response
      */
     @JsonProperty("page")
     public Optional<String> getPage() {
@@ -97,7 +103,6 @@ public final class QueryRunnerGetQueryRequest {
 
         private Optional<String> page = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -109,6 +114,9 @@ public final class QueryRunnerGetQueryRequest {
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
             return this;
@@ -119,6 +127,9 @@ public final class QueryRunnerGetQueryRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -130,7 +141,7 @@ public final class QueryRunnerGetQueryRequest {
         }
 
         /**
-         * <p>Opaque pagination token returned in the links.next or links.previous URL of the previous response.</p>
+         * <p>Opaque pagination token returned in the links.next or links.previous URL of the previous response</p>
          */
         @JsonSetter(value = "page", nulls = Nulls.SKIP)
         public Builder page(Optional<String> page) {
@@ -146,6 +157,14 @@ public final class QueryRunnerGetQueryRequest {
         public QueryRunnerGetQueryRequest build() {
             return new QueryRunnerGetQueryRequest(
                     polytomicHarborSession, polytomicActivityRequestId, page, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

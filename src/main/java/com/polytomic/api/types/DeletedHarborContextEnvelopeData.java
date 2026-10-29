@@ -30,7 +30,7 @@ public final class DeletedHarborContextEnvelopeData {
     }
 
     /**
-     * @return Unique identifier of the deleted context document.
+     * @return Unique identifier of the deleted context document
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -70,7 +70,6 @@ public final class DeletedHarborContextEnvelopeData {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -81,7 +80,7 @@ public final class DeletedHarborContextEnvelopeData {
         }
 
         /**
-         * <p>Unique identifier of the deleted context document.</p>
+         * <p>Unique identifier of the deleted context document</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -96,6 +95,14 @@ public final class DeletedHarborContextEnvelopeData {
 
         public DeletedHarborContextEnvelopeData build() {
             return new DeletedHarborContextEnvelopeData(id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

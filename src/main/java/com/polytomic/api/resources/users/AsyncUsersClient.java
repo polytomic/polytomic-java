@@ -5,6 +5,7 @@ package com.polytomic.api.resources.users;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.users.requests.CreateUserRequestSchema;
 import com.polytomic.api.resources.users.requests.CurrentOrgCreateUserRequestSchema;
@@ -40,7 +41,15 @@ public class AsyncUsersClient {
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public CompletableFuture<CurrentOrgListUsersEnvelope> listCurrentOrgUsers() {
-        return this.rawClient.listCurrentOrgUsers().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CurrentOrgListUsersEnvelope>> rawFuture =
+                this.rawClient.listCurrentOrgUsers();
+        CompletableFuture<CurrentOrgListUsersEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -48,7 +57,15 @@ public class AsyncUsersClient {
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public CompletableFuture<CurrentOrgListUsersEnvelope> listCurrentOrgUsers(RequestOptions requestOptions) {
-        return this.rawClient.listCurrentOrgUsers(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CurrentOrgListUsersEnvelope>> rawFuture =
+                this.rawClient.listCurrentOrgUsers(requestOptions);
+        CompletableFuture<CurrentOrgListUsersEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -57,7 +74,14 @@ public class AsyncUsersClient {
      * account. Role assignments take effect as soon as the invitation is accepted.</p>
      */
     public CompletableFuture<UserEnvelope> createCurrentOrgUser(CurrentOrgCreateUserRequestSchema request) {
-        return this.rawClient.createCurrentOrgUser(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture = this.rawClient.createCurrentOrgUser(request);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -67,21 +91,45 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<UserEnvelope> createCurrentOrgUser(
             CurrentOrgCreateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.createCurrentOrgUser(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.createCurrentOrgUser(request, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single user from the caller's current organization.
      */
     public CompletableFuture<CurrentOrgUserEnvelope> getCurrentOrgUser(String id) {
-        return this.rawClient.getCurrentOrgUser(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CurrentOrgUserEnvelope>> rawFuture =
+                this.rawClient.getCurrentOrgUser(id);
+        CompletableFuture<CurrentOrgUserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns a single user from the caller's current organization.
      */
     public CompletableFuture<CurrentOrgUserEnvelope> getCurrentOrgUser(String id, RequestOptions requestOptions) {
-        return this.rawClient.getCurrentOrgUser(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CurrentOrgUserEnvelope>> rawFuture =
+                this.rawClient.getCurrentOrgUser(id, requestOptions);
+        CompletableFuture<CurrentOrgUserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -90,7 +138,14 @@ public class AsyncUsersClient {
      * and email address is not affected by this endpoint.</p>
      */
     public CompletableFuture<UserEnvelope> updateCurrentOrgUser(String id) {
-        return this.rawClient.updateCurrentOrgUser(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture = this.rawClient.updateCurrentOrgUser(id);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -99,7 +154,15 @@ public class AsyncUsersClient {
      * and email address is not affected by this endpoint.</p>
      */
     public CompletableFuture<UserEnvelope> updateCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.updateCurrentOrgUser(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.updateCurrentOrgUser(id, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -108,7 +171,15 @@ public class AsyncUsersClient {
      * and email address is not affected by this endpoint.</p>
      */
     public CompletableFuture<UserEnvelope> updateCurrentOrgUser(String id, CurrentOrgUpdateUserRequestSchema request) {
-        return this.rawClient.updateCurrentOrgUser(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.updateCurrentOrgUser(id, request);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -118,7 +189,15 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<UserEnvelope> updateCurrentOrgUser(
             String id, CurrentOrgUpdateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.updateCurrentOrgUser(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.updateCurrentOrgUser(id, request, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -130,7 +209,14 @@ public class AsyncUsersClient {
      * </blockquote>
      */
     public CompletableFuture<UserEnvelope> deleteCurrentOrgUser(String id) {
-        return this.rawClient.deleteCurrentOrgUser(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture = this.rawClient.deleteCurrentOrgUser(id);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -142,7 +228,15 @@ public class AsyncUsersClient {
      * </blockquote>
      */
     public CompletableFuture<UserEnvelope> deleteCurrentOrgUser(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.deleteCurrentOrgUser(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.deleteCurrentOrgUser(id, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -154,7 +248,14 @@ public class AsyncUsersClient {
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public CompletableFuture<ListUsersEnvelope> list(String orgId) {
-        return this.rawClient.list(orgId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListUsersEnvelope>> rawFuture = this.rawClient.list(orgId);
+        CompletableFuture<ListUsersEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -166,7 +267,15 @@ public class AsyncUsersClient {
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public CompletableFuture<ListUsersEnvelope> list(String orgId, RequestOptions requestOptions) {
-        return this.rawClient.list(orgId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListUsersEnvelope>> rawFuture =
+                this.rawClient.list(orgId, requestOptions);
+        CompletableFuture<ListUsersEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -179,7 +288,14 @@ public class AsyncUsersClient {
      * account. Role assignments take effect as soon as the invitation is accepted.</p>
      */
     public CompletableFuture<UserEnvelope> create(String orgId, CreateUserRequestSchema request) {
-        return this.rawClient.create(orgId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture = this.rawClient.create(orgId, request);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -193,7 +309,15 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<UserEnvelope> create(
             String orgId, CreateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(orgId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.create(orgId, request, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -204,7 +328,14 @@ public class AsyncUsersClient {
      * </blockquote>
      */
     public CompletableFuture<UserEnvelope> get(String orgId, String id) {
-        return this.rawClient.get(orgId, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture = this.rawClient.get(orgId, id);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -215,7 +346,15 @@ public class AsyncUsersClient {
      * </blockquote>
      */
     public CompletableFuture<UserEnvelope> get(String orgId, String id, RequestOptions requestOptions) {
-        return this.rawClient.get(orgId, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.get(orgId, id, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -228,7 +367,14 @@ public class AsyncUsersClient {
      * and email address is not affected by this endpoint.</p>
      */
     public CompletableFuture<UserEnvelope> update(String orgId, String id, UpdateUserRequestSchema request) {
-        return this.rawClient.update(orgId, id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture = this.rawClient.update(orgId, id, request);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -242,7 +388,15 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<UserEnvelope> update(
             String orgId, String id, UpdateUserRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(orgId, id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.update(orgId, id, request, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -258,7 +412,14 @@ public class AsyncUsersClient {
      * </blockquote>
      */
     public CompletableFuture<UserEnvelope> delete(String orgId, String id) {
-        return this.rawClient.delete(orgId, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture = this.rawClient.delete(orgId, id);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -274,7 +435,15 @@ public class AsyncUsersClient {
      * </blockquote>
      */
     public CompletableFuture<UserEnvelope> delete(String orgId, String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(orgId, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UserEnvelope>> rawFuture =
+                this.rawClient.delete(orgId, id, requestOptions);
+        CompletableFuture<UserEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -285,7 +454,15 @@ public class AsyncUsersClient {
      * </blockquote>
      */
     public CompletableFuture<ApiKeyResponseEnvelope> createApiKey(String orgId, String id) {
-        return this.rawClient.createApiKey(orgId, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ApiKeyResponseEnvelope>> rawFuture =
+                this.rawClient.createApiKey(orgId, id);
+        CompletableFuture<ApiKeyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -297,7 +474,15 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<ApiKeyResponseEnvelope> createApiKey(
             String orgId, String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.createApiKey(orgId, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ApiKeyResponseEnvelope>> rawFuture =
+                this.rawClient.createApiKey(orgId, id, requestOptions);
+        CompletableFuture<ApiKeyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -309,7 +494,15 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<ApiKeyResponseEnvelope> createApiKey(
             String orgId, String id, UsersCreateApiKeyRequest request) {
-        return this.rawClient.createApiKey(orgId, id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ApiKeyResponseEnvelope>> rawFuture =
+                this.rawClient.createApiKey(orgId, id, request);
+        CompletableFuture<ApiKeyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -321,6 +514,14 @@ public class AsyncUsersClient {
      */
     public CompletableFuture<ApiKeyResponseEnvelope> createApiKey(
             String orgId, String id, UsersCreateApiKeyRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.createApiKey(orgId, id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ApiKeyResponseEnvelope>> rawFuture =
+                this.rawClient.createApiKey(orgId, id, request, requestOptions);
+        CompletableFuture<ApiKeyResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

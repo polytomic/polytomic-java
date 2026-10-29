@@ -29,6 +29,9 @@ public final class ScheduleEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The bulk sync schedule
+     */
     @JsonProperty("data")
     public Optional<BulkBulkSyncSchedule> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class ScheduleEnvelope {
     public static final class Builder {
         private Optional<BulkBulkSyncSchedule> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class ScheduleEnvelope {
             return this;
         }
 
+        /**
+         * <p>The bulk sync schedule</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<BulkBulkSyncSchedule> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class ScheduleEnvelope {
 
         public ScheduleEnvelope build() {
             return new ScheduleEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

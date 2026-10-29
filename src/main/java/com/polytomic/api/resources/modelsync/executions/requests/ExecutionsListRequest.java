@@ -39,16 +39,25 @@ public final class ExecutionsListRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Token from the previous page
+     */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
         return pageToken;
     }
 
+    /**
+     * @return Return only completed executions.
+     */
     @JsonProperty("only_completed")
     public Optional<Boolean> getOnlyCompleted() {
         return onlyCompleted;
     }
 
+    /**
+     * @return Return executions oldest first.
+     */
     @JsonProperty("ascending")
     public Optional<Boolean> getAscending() {
         return ascending;
@@ -93,7 +102,6 @@ public final class ExecutionsListRequest {
 
         private Optional<Boolean> ascending = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -105,6 +113,9 @@ public final class ExecutionsListRequest {
             return this;
         }
 
+        /**
+         * <p>Token from the previous page</p>
+         */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
             this.pageToken = pageToken;
@@ -116,6 +127,9 @@ public final class ExecutionsListRequest {
             return this;
         }
 
+        /**
+         * <p>Return only completed executions.</p>
+         */
         @JsonSetter(value = "only_completed", nulls = Nulls.SKIP)
         public Builder onlyCompleted(Optional<Boolean> onlyCompleted) {
             this.onlyCompleted = onlyCompleted;
@@ -127,6 +141,9 @@ public final class ExecutionsListRequest {
             return this;
         }
 
+        /**
+         * <p>Return executions oldest first.</p>
+         */
         @JsonSetter(value = "ascending", nulls = Nulls.SKIP)
         public Builder ascending(Optional<Boolean> ascending) {
             this.ascending = ascending;
@@ -140,6 +157,16 @@ public final class ExecutionsListRequest {
 
         public ExecutionsListRequest build() {
             return new ExecutionsListRequest(pageToken, onlyCompleted, ascending, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page_token")
+                    || key.equalsIgnoreCase("only_completed")
+                    || key.equalsIgnoreCase("ascending")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

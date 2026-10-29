@@ -57,7 +57,7 @@ public final class HarborKeyResponse {
     }
 
     /**
-     * @return Recorded API calls made with this credential in the last 24 hours.
+     * @return Recorded API calls made with this credential in the last 24 hours
      */
     @JsonProperty("calls_last_24_hours")
     public Optional<Integer> getCallsLast24Hours() {
@@ -65,7 +65,7 @@ public final class HarborKeyResponse {
     }
 
     /**
-     * @return OAuth client that issued this credential, when applicable.
+     * @return OAuth client that issued this credential, when applicable
      */
     @JsonProperty("client_name")
     public Optional<String> getClientName() {
@@ -73,7 +73,7 @@ public final class HarborKeyResponse {
     }
 
     /**
-     * @return When the credential was created.
+     * @return When the credential was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -89,7 +89,7 @@ public final class HarborKeyResponse {
     }
 
     /**
-     * @return Unique identifier of the credential.
+     * @return Unique identifier of the credential
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -105,7 +105,7 @@ public final class HarborKeyResponse {
     }
 
     /**
-     * @return Credential authorization mode.
+     * @return Credential authorization mode
      */
     @JsonProperty("mode")
     public Optional<String> getMode() {
@@ -170,7 +170,6 @@ public final class HarborKeyResponse {
 
         private Optional<String> mode = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -187,7 +186,7 @@ public final class HarborKeyResponse {
         }
 
         /**
-         * <p>Recorded API calls made with this credential in the last 24 hours.</p>
+         * <p>Recorded API calls made with this credential in the last 24 hours</p>
          */
         @JsonSetter(value = "calls_last_24_hours", nulls = Nulls.SKIP)
         public Builder callsLast24Hours(Optional<Integer> callsLast24Hours) {
@@ -201,7 +200,7 @@ public final class HarborKeyResponse {
         }
 
         /**
-         * <p>OAuth client that issued this credential, when applicable.</p>
+         * <p>OAuth client that issued this credential, when applicable</p>
          */
         @JsonSetter(value = "client_name", nulls = Nulls.SKIP)
         public Builder clientName(Optional<String> clientName) {
@@ -215,7 +214,7 @@ public final class HarborKeyResponse {
         }
 
         /**
-         * <p>When the credential was created.</p>
+         * <p>When the credential was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -243,7 +242,7 @@ public final class HarborKeyResponse {
         }
 
         /**
-         * <p>Unique identifier of the credential.</p>
+         * <p>Unique identifier of the credential</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -271,7 +270,7 @@ public final class HarborKeyResponse {
         }
 
         /**
-         * <p>Credential authorization mode.</p>
+         * <p>Credential authorization mode</p>
          */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public Builder mode(Optional<String> mode) {
@@ -287,6 +286,20 @@ public final class HarborKeyResponse {
         public HarborKeyResponse build() {
             return new HarborKeyResponse(
                     callsLast24Hours, clientName, createdAt, expiresAt, id, keyHint, mode, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("calls_last_24_hours")
+                    || key.equalsIgnoreCase("client_name")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("key_hint")
+                    || key.equalsIgnoreCase("mode")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -65,7 +65,7 @@ public final class HarborActionConfigurationOperationResponse {
     }
 
     /**
-     * @return Operation description.
+     * @return Operation description
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -73,20 +73,23 @@ public final class HarborActionConfigurationOperationResponse {
     }
 
     /**
-     * @return Whether the operation changes records or only reads them.
+     * @return Whether the operation changes records or only reads them
      */
     @JsonProperty("effect")
     public Optional<HarborActionConfigurationOperationResponseEffect> getEffect() {
         return effect;
     }
 
+    /**
+     * @return Provider idempotency guarantees, when supported
+     */
     @JsonProperty("idempotency")
     public Optional<HarborActionConfigurationIdempotencyResponse> getIdempotency() {
         return idempotency;
     }
 
     /**
-     * @return Fields you can grant for a mutating operation.
+     * @return Fields you can grant for a mutating operation
      */
     @JsonProperty("input_fields")
     public Optional<List<HarborActionConfigurationFieldResponse>> getInputFields() {
@@ -94,7 +97,7 @@ public final class HarborActionConfigurationOperationResponse {
     }
 
     /**
-     * @return Lookup fields supported by this operation.
+     * @return Lookup fields supported by this operation
      */
     @JsonProperty("lookup_fields")
     public Optional<List<HarborActionConfigurationFieldResponse>> getLookupFields() {
@@ -102,7 +105,7 @@ public final class HarborActionConfigurationOperationResponse {
     }
 
     /**
-     * @return Operation name.
+     * @return Operation name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -110,7 +113,7 @@ public final class HarborActionConfigurationOperationResponse {
     }
 
     /**
-     * @return Stable operation ID.
+     * @return Stable operation ID
      */
     @JsonProperty("operation_id")
     public Optional<String> getOperationId() {
@@ -118,7 +121,7 @@ public final class HarborActionConfigurationOperationResponse {
     }
 
     /**
-     * @return Fields you can grant for a read-only operation.
+     * @return Fields you can grant for a read-only operation
      */
     @JsonProperty("output_fields")
     public Optional<List<HarborActionConfigurationFieldResponse>> getOutputFields() {
@@ -126,7 +129,7 @@ public final class HarborActionConfigurationOperationResponse {
     }
 
     /**
-     * @return Action schema ID.
+     * @return Action schema ID
      */
     @JsonProperty("schema_id")
     public Optional<String> getSchemaId() {
@@ -200,7 +203,6 @@ public final class HarborActionConfigurationOperationResponse {
 
         private Optional<String> schemaId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -219,7 +221,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Operation description.</p>
+         * <p>Operation description</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -233,7 +235,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Whether the operation changes records or only reads them.</p>
+         * <p>Whether the operation changes records or only reads them</p>
          */
         @JsonSetter(value = "effect", nulls = Nulls.SKIP)
         public Builder effect(Optional<HarborActionConfigurationOperationResponseEffect> effect) {
@@ -246,6 +248,9 @@ public final class HarborActionConfigurationOperationResponse {
             return this;
         }
 
+        /**
+         * <p>Provider idempotency guarantees, when supported</p>
+         */
         @JsonSetter(value = "idempotency", nulls = Nulls.SKIP)
         public Builder idempotency(Optional<HarborActionConfigurationIdempotencyResponse> idempotency) {
             this.idempotency = idempotency;
@@ -258,7 +263,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Fields you can grant for a mutating operation.</p>
+         * <p>Fields you can grant for a mutating operation</p>
          */
         @JsonSetter(value = "input_fields", nulls = Nulls.SKIP)
         public Builder inputFields(Optional<List<HarborActionConfigurationFieldResponse>> inputFields) {
@@ -272,7 +277,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Lookup fields supported by this operation.</p>
+         * <p>Lookup fields supported by this operation</p>
          */
         @JsonSetter(value = "lookup_fields", nulls = Nulls.SKIP)
         public Builder lookupFields(Optional<List<HarborActionConfigurationFieldResponse>> lookupFields) {
@@ -286,7 +291,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Operation name.</p>
+         * <p>Operation name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -300,7 +305,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Stable operation ID.</p>
+         * <p>Stable operation ID</p>
          */
         @JsonSetter(value = "operation_id", nulls = Nulls.SKIP)
         public Builder operationId(Optional<String> operationId) {
@@ -314,7 +319,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Fields you can grant for a read-only operation.</p>
+         * <p>Fields you can grant for a read-only operation</p>
          */
         @JsonSetter(value = "output_fields", nulls = Nulls.SKIP)
         public Builder outputFields(Optional<List<HarborActionConfigurationFieldResponse>> outputFields) {
@@ -328,7 +333,7 @@ public final class HarborActionConfigurationOperationResponse {
         }
 
         /**
-         * <p>Action schema ID.</p>
+         * <p>Action schema ID</p>
          */
         @JsonSetter(value = "schema_id", nulls = Nulls.SKIP)
         public Builder schemaId(Optional<String> schemaId) {
@@ -353,6 +358,22 @@ public final class HarborActionConfigurationOperationResponse {
                     outputFields,
                     schemaId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("effect")
+                    || key.equalsIgnoreCase("idempotency")
+                    || key.equalsIgnoreCase("input_fields")
+                    || key.equalsIgnoreCase("lookup_fields")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("output_fields")
+                    || key.equalsIgnoreCase("schema_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

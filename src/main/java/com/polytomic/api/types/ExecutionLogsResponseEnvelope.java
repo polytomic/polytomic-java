@@ -30,6 +30,9 @@ public final class ExecutionLogsResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Signed URLs for the execution log files
+     */
     @JsonProperty("data")
     public Optional<ExecutionLogResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class ExecutionLogsResponseEnvelope {
     public static final class Builder {
         private Optional<ExecutionLogResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class ExecutionLogsResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Signed URLs for the execution log files</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ExecutionLogResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class ExecutionLogsResponseEnvelope {
 
         public ExecutionLogsResponseEnvelope build() {
             return new ExecutionLogsResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

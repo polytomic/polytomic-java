@@ -94,7 +94,7 @@ public final class ConnectionResponseSchema {
     }
 
     /**
-     * @return API calls made to service in the last 24h (supported integrations only).
+     * @return API calls made to service in the last 24h (supported integrations only)
      */
     @JsonProperty("api_calls_last_24_hours")
     public Optional<Integer> getApiCallsLast24Hours() {
@@ -132,7 +132,7 @@ public final class ConnectionResponseSchema {
     }
 
     /**
-     * @return For shared connections, the ID of the parent connection.
+     * @return For shared connections, the ID of the parent connection
      */
     @JsonProperty("parent_connection_id")
     public Optional<String> getParentConnectionId() {
@@ -276,7 +276,6 @@ public final class ConnectionResponseSchema {
 
         private Optional<OutputActor> updatedBy = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -302,7 +301,7 @@ public final class ConnectionResponseSchema {
         }
 
         /**
-         * <p>API calls made to service in the last 24h (supported integrations only).</p>
+         * <p>API calls made to service in the last 24h (supported integrations only)</p>
          */
         @JsonSetter(value = "api_calls_last_24_hours", nulls = Nulls.SKIP)
         public Builder apiCallsLast24Hours(Optional<Integer> apiCallsLast24Hours) {
@@ -382,7 +381,7 @@ public final class ConnectionResponseSchema {
         }
 
         /**
-         * <p>For shared connections, the ID of the parent connection.</p>
+         * <p>For shared connections, the ID of the parent connection</p>
          */
         @JsonSetter(value = "parent_connection_id", nulls = Nulls.SKIP)
         public Builder parentConnectionId(Optional<String> parentConnectionId) {
@@ -505,6 +504,29 @@ public final class ConnectionResponseSchema {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("api_calls_last_24_hours")
+                    || key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("parent_connection_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("rate_limit")
+                    || key.equalsIgnoreCase("saved")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("status_error")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

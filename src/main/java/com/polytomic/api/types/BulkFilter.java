@@ -41,18 +41,24 @@ public final class BulkFilter {
     }
 
     /**
-     * @return Schema field ID to filter on.
+     * @return Schema field ID to filter on
      */
     @JsonProperty("field_id")
     public Optional<String> getFieldId() {
         return fieldId;
     }
 
+    /**
+     * @return Comparison function applied to the field
+     */
     @JsonProperty("function")
     public FilterFunction getFunction() {
         return function;
     }
 
+    /**
+     * @return Value the function compares the field against
+     */
     @JsonProperty("value")
     public Optional<Object> getValue() {
         return value;
@@ -88,6 +94,9 @@ public final class BulkFilter {
     }
 
     public interface FunctionStage {
+        /**
+         * <p>Comparison function applied to the field</p>
+         */
         _FinalStage function(@NotNull FilterFunction function);
 
         Builder from(BulkFilter other);
@@ -101,12 +110,15 @@ public final class BulkFilter {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Schema field ID to filter on.</p>
+         * <p>Schema field ID to filter on</p>
          */
         _FinalStage fieldId(Optional<String> fieldId);
 
         _FinalStage fieldId(String fieldId);
 
+        /**
+         * <p>Value the function compares the field against</p>
+         */
         _FinalStage value(Optional<Object> value);
 
         _FinalStage value(Object value);
@@ -120,7 +132,6 @@ public final class BulkFilter {
 
         private Optional<String> fieldId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -133,6 +144,10 @@ public final class BulkFilter {
             return this;
         }
 
+        /**
+         * <p>Comparison function applied to the field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("function")
         public _FinalStage function(@NotNull FilterFunction function) {
@@ -140,12 +155,19 @@ public final class BulkFilter {
             return this;
         }
 
+        /**
+         * <p>Value the function compares the field against</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage value(Object value) {
             this.value = Optional.ofNullable(value);
             return this;
         }
 
+        /**
+         * <p>Value the function compares the field against</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public _FinalStage value(Optional<Object> value) {
@@ -154,7 +176,7 @@ public final class BulkFilter {
         }
 
         /**
-         * <p>Schema field ID to filter on.</p>
+         * <p>Schema field ID to filter on</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -164,7 +186,7 @@ public final class BulkFilter {
         }
 
         /**
-         * <p>Schema field ID to filter on.</p>
+         * <p>Schema field ID to filter on</p>
          */
         @java.lang.Override
         @JsonSetter(value = "field_id", nulls = Nulls.SKIP)
@@ -176,6 +198,14 @@ public final class BulkFilter {
         @java.lang.Override
         public BulkFilter build() {
             return new BulkFilter(fieldId, function, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field_id") || key.equalsIgnoreCase("function") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

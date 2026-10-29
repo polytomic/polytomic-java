@@ -48,26 +48,41 @@ public final class ExecutionConsoleLogEntry {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Console log entry ID, usable as the after cursor
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Severity level of the entry
+     */
     @JsonProperty("level")
     public Optional<String> getLevel() {
         return level;
     }
 
+    /**
+     * @return Text of the log entry
+     */
     @JsonProperty("message")
     public Optional<String> getMessage() {
         return message;
     }
 
+    /**
+     * @return Structured data logged with the entry
+     */
     @JsonProperty("payload")
     public Optional<Map<String, Object>> getPayload() {
         return payload;
     }
 
+    /**
+     * @return When the entry was logged
+     */
     @JsonProperty("timestamp")
     public Optional<OffsetDateTime> getTimestamp() {
         return timestamp;
@@ -118,7 +133,6 @@ public final class ExecutionConsoleLogEntry {
 
         private Optional<OffsetDateTime> timestamp = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -132,6 +146,9 @@ public final class ExecutionConsoleLogEntry {
             return this;
         }
 
+        /**
+         * <p>Console log entry ID, usable as the after cursor</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -143,6 +160,9 @@ public final class ExecutionConsoleLogEntry {
             return this;
         }
 
+        /**
+         * <p>Severity level of the entry</p>
+         */
         @JsonSetter(value = "level", nulls = Nulls.SKIP)
         public Builder level(Optional<String> level) {
             this.level = level;
@@ -154,6 +174,9 @@ public final class ExecutionConsoleLogEntry {
             return this;
         }
 
+        /**
+         * <p>Text of the log entry</p>
+         */
         @JsonSetter(value = "message", nulls = Nulls.SKIP)
         public Builder message(Optional<String> message) {
             this.message = message;
@@ -165,6 +188,9 @@ public final class ExecutionConsoleLogEntry {
             return this;
         }
 
+        /**
+         * <p>Structured data logged with the entry</p>
+         */
         @JsonSetter(value = "payload", nulls = Nulls.SKIP)
         public Builder payload(Optional<Map<String, Object>> payload) {
             this.payload = payload;
@@ -176,6 +202,9 @@ public final class ExecutionConsoleLogEntry {
             return this;
         }
 
+        /**
+         * <p>When the entry was logged</p>
+         */
         @JsonSetter(value = "timestamp", nulls = Nulls.SKIP)
         public Builder timestamp(Optional<OffsetDateTime> timestamp) {
             this.timestamp = timestamp;
@@ -189,6 +218,18 @@ public final class ExecutionConsoleLogEntry {
 
         public ExecutionConsoleLogEntry build() {
             return new ExecutionConsoleLogEntry(id, level, message, payload, timestamp, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("level")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("payload")
+                    || key.equalsIgnoreCase("timestamp")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

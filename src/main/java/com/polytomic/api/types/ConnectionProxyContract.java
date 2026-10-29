@@ -77,7 +77,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return HTTP methods the proxy accepts.
+     * @return HTTP methods the proxy accepts
      */
     @JsonProperty("allowedMethods")
     public Optional<List<String>> getAllowedMethods() {
@@ -85,7 +85,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Headers the proxy strips from caller-supplied requests before forwarding.
+     * @return Headers the proxy strips from caller-supplied requests before forwarding
      */
     @JsonProperty("blockedRequestHeaders")
     public Optional<List<String>> getBlockedRequestHeaders() {
@@ -93,7 +93,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Headers the proxy strips from upstream responses before returning them.
+     * @return Headers the proxy strips from upstream responses before returning them
      */
     @JsonProperty("blockedResponseHeaders")
     public Optional<List<String>> getBlockedResponseHeaders() {
@@ -101,7 +101,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Supported JSON types for request.body (e.g. object, string, null).
+     * @return Supported JSON types for request.body (e.g. object, string, null)
      */
     @JsonProperty("bodyTypes")
     public Optional<List<String>> getBodyTypes() {
@@ -109,7 +109,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Maximum accepted request body size in bytes.
+     * @return Maximum accepted request body size in bytes
      */
     @JsonProperty("maxRequestBodyBytes")
     public Optional<Integer> getMaxRequestBodyBytes() {
@@ -125,7 +125,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Rule the caller-supplied path must satisfy.
+     * @return Rule the caller-supplied path must satisfy
      */
     @JsonProperty("pathRule")
     public Optional<String> getPathRule() {
@@ -141,7 +141,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Supported value types for request.query.
+     * @return Supported value types for request.query
      */
     @JsonProperty("queryValueTypes")
     public Optional<List<String>> getQueryValueTypes() {
@@ -149,7 +149,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Maximum proxied requests per minute per connection before the proxy returns 429.
+     * @return Maximum proxied requests per minute per connection before the proxy returns 429
      */
     @JsonProperty("rateLimitPerMinute")
     public Optional<Integer> getRateLimitPerMinute() {
@@ -157,7 +157,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return How request.rawQuery is appended and who is responsible for encoding.
+     * @return How request.rawQuery is appended and who is responsible for encoding
      */
     @JsonProperty("rawQueryRule")
     public Optional<String> getRawQueryRule() {
@@ -165,7 +165,7 @@ public final class ConnectionProxyContract {
     }
 
     /**
-     * @return Per-request timeout in milliseconds.
+     * @return Per-request timeout in milliseconds
      */
     @JsonProperty("timeoutMs")
     public Optional<Integer> getTimeoutMs() {
@@ -250,7 +250,6 @@ public final class ConnectionProxyContract {
 
         private Optional<Integer> timeoutMs = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -272,7 +271,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>HTTP methods the proxy accepts.</p>
+         * <p>HTTP methods the proxy accepts</p>
          */
         @JsonSetter(value = "allowedMethods", nulls = Nulls.SKIP)
         public Builder allowedMethods(Optional<List<String>> allowedMethods) {
@@ -286,7 +285,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Headers the proxy strips from caller-supplied requests before forwarding.</p>
+         * <p>Headers the proxy strips from caller-supplied requests before forwarding</p>
          */
         @JsonSetter(value = "blockedRequestHeaders", nulls = Nulls.SKIP)
         public Builder blockedRequestHeaders(Optional<List<String>> blockedRequestHeaders) {
@@ -300,7 +299,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Headers the proxy strips from upstream responses before returning them.</p>
+         * <p>Headers the proxy strips from upstream responses before returning them</p>
          */
         @JsonSetter(value = "blockedResponseHeaders", nulls = Nulls.SKIP)
         public Builder blockedResponseHeaders(Optional<List<String>> blockedResponseHeaders) {
@@ -314,7 +313,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Supported JSON types for request.body (e.g. object, string, null).</p>
+         * <p>Supported JSON types for request.body (e.g. object, string, null)</p>
          */
         @JsonSetter(value = "bodyTypes", nulls = Nulls.SKIP)
         public Builder bodyTypes(Optional<List<String>> bodyTypes) {
@@ -328,7 +327,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Maximum accepted request body size in bytes.</p>
+         * <p>Maximum accepted request body size in bytes</p>
          */
         @JsonSetter(value = "maxRequestBodyBytes", nulls = Nulls.SKIP)
         public Builder maxRequestBodyBytes(Optional<Integer> maxRequestBodyBytes) {
@@ -356,7 +355,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Rule the caller-supplied path must satisfy.</p>
+         * <p>Rule the caller-supplied path must satisfy</p>
          */
         @JsonSetter(value = "pathRule", nulls = Nulls.SKIP)
         public Builder pathRule(Optional<String> pathRule) {
@@ -384,7 +383,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Supported value types for request.query.</p>
+         * <p>Supported value types for request.query</p>
          */
         @JsonSetter(value = "queryValueTypes", nulls = Nulls.SKIP)
         public Builder queryValueTypes(Optional<List<String>> queryValueTypes) {
@@ -398,7 +397,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Maximum proxied requests per minute per connection before the proxy returns 429.</p>
+         * <p>Maximum proxied requests per minute per connection before the proxy returns 429</p>
          */
         @JsonSetter(value = "rateLimitPerMinute", nulls = Nulls.SKIP)
         public Builder rateLimitPerMinute(Optional<Integer> rateLimitPerMinute) {
@@ -412,7 +411,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>How request.rawQuery is appended and who is responsible for encoding.</p>
+         * <p>How request.rawQuery is appended and who is responsible for encoding</p>
          */
         @JsonSetter(value = "rawQueryRule", nulls = Nulls.SKIP)
         public Builder rawQueryRule(Optional<String> rawQueryRule) {
@@ -426,7 +425,7 @@ public final class ConnectionProxyContract {
         }
 
         /**
-         * <p>Per-request timeout in milliseconds.</p>
+         * <p>Per-request timeout in milliseconds</p>
          */
         @JsonSetter(value = "timeoutMs", nulls = Nulls.SKIP)
         public Builder timeoutMs(Optional<Integer> timeoutMs) {
@@ -454,6 +453,25 @@ public final class ConnectionProxyContract {
                     rawQueryRule,
                     timeoutMs,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("allowedMethods")
+                    || key.equalsIgnoreCase("blockedRequestHeaders")
+                    || key.equalsIgnoreCase("blockedResponseHeaders")
+                    || key.equalsIgnoreCase("bodyTypes")
+                    || key.equalsIgnoreCase("maxRequestBodyBytes")
+                    || key.equalsIgnoreCase("maxResponseBodyBytes")
+                    || key.equalsIgnoreCase("pathRule")
+                    || key.equalsIgnoreCase("queryModes")
+                    || key.equalsIgnoreCase("queryValueTypes")
+                    || key.equalsIgnoreCase("rateLimitPerMinute")
+                    || key.equalsIgnoreCase("rawQueryRule")
+                    || key.equalsIgnoreCase("timeoutMs")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

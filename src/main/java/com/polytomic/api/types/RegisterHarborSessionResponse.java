@@ -40,18 +40,24 @@ public final class RegisterHarborSessionResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return When the session expires
+     */
     @JsonProperty("expires_at")
     public Optional<OffsetDateTime> getExpiresAt() {
         return expiresAt;
     }
 
+    /**
+     * @return Harbor session ID
+     */
     @JsonProperty("session_id")
     public Optional<String> getSessionId() {
         return sessionId;
     }
 
     /**
-     * @return Opaque bearer token for subsequent governed requests.
+     * @return Opaque bearer token for subsequent governed requests
      */
     @JsonProperty("token")
     public Optional<String> getToken() {
@@ -95,7 +101,6 @@ public final class RegisterHarborSessionResponse {
 
         private Optional<String> token = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -107,6 +112,9 @@ public final class RegisterHarborSessionResponse {
             return this;
         }
 
+        /**
+         * <p>When the session expires</p>
+         */
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
             this.expiresAt = expiresAt;
@@ -118,6 +126,9 @@ public final class RegisterHarborSessionResponse {
             return this;
         }
 
+        /**
+         * <p>Harbor session ID</p>
+         */
         @JsonSetter(value = "session_id", nulls = Nulls.SKIP)
         public Builder sessionId(Optional<String> sessionId) {
             this.sessionId = sessionId;
@@ -130,7 +141,7 @@ public final class RegisterHarborSessionResponse {
         }
 
         /**
-         * <p>Opaque bearer token for subsequent governed requests.</p>
+         * <p>Opaque bearer token for subsequent governed requests</p>
          */
         @JsonSetter(value = "token", nulls = Nulls.SKIP)
         public Builder token(Optional<String> token) {
@@ -145,6 +156,16 @@ public final class RegisterHarborSessionResponse {
 
         public RegisterHarborSessionResponse build() {
             return new RegisterHarborSessionResponse(expiresAt, sessionId, token, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("session_id")
+                    || key.equalsIgnoreCase("token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

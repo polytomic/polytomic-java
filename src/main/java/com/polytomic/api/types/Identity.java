@@ -48,26 +48,41 @@ public final class Identity {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Function used to match source and destination values
+     */
     @JsonProperty("function")
     public SchemaIdentityFunction getFunction() {
         return function;
     }
 
+    /**
+     * @return Whether Polytomic creates the identity field in the destination
+     */
     @JsonProperty("new_field")
     public Optional<Boolean> getNewField() {
         return newField;
     }
 
+    /**
+     * @return Destination field type to use when Polytomic creates the identity field
+     */
     @JsonProperty("remote_field_type_id")
     public Optional<String> getRemoteFieldTypeId() {
         return remoteFieldTypeId;
     }
 
+    /**
+     * @return Model field matched against the destination
+     */
     @JsonProperty("source")
     public Source getSource() {
         return source;
     }
 
+    /**
+     * @return Destination field ID matched against the source field
+     */
     @JsonProperty("target")
     public String getTarget() {
         return target;
@@ -107,16 +122,25 @@ public final class Identity {
     }
 
     public interface FunctionStage {
+        /**
+         * <p>Function used to match source and destination values</p>
+         */
         SourceStage function(@NotNull SchemaIdentityFunction function);
 
         Builder from(Identity other);
     }
 
     public interface SourceStage {
+        /**
+         * <p>Model field matched against the destination</p>
+         */
         TargetStage source(@NotNull Source source);
     }
 
     public interface TargetStage {
+        /**
+         * <p>Destination field ID matched against the source field</p>
+         */
         _FinalStage target(@NotNull String target);
     }
 
@@ -127,10 +151,16 @@ public final class Identity {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Whether Polytomic creates the identity field in the destination</p>
+         */
         _FinalStage newField(Optional<Boolean> newField);
 
         _FinalStage newField(Boolean newField);
 
+        /**
+         * <p>Destination field type to use when Polytomic creates the identity field</p>
+         */
         _FinalStage remoteFieldTypeId(Optional<String> remoteFieldTypeId);
 
         _FinalStage remoteFieldTypeId(String remoteFieldTypeId);
@@ -148,7 +178,6 @@ public final class Identity {
 
         private Optional<Boolean> newField = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -163,6 +192,10 @@ public final class Identity {
             return this;
         }
 
+        /**
+         * <p>Function used to match source and destination values</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("function")
         public SourceStage function(@NotNull SchemaIdentityFunction function) {
@@ -170,6 +203,10 @@ public final class Identity {
             return this;
         }
 
+        /**
+         * <p>Model field matched against the destination</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("source")
         public TargetStage source(@NotNull Source source) {
@@ -177,6 +214,10 @@ public final class Identity {
             return this;
         }
 
+        /**
+         * <p>Destination field ID matched against the source field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target")
         public _FinalStage target(@NotNull String target) {
@@ -184,12 +225,19 @@ public final class Identity {
             return this;
         }
 
+        /**
+         * <p>Destination field type to use when Polytomic creates the identity field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage remoteFieldTypeId(String remoteFieldTypeId) {
             this.remoteFieldTypeId = Optional.ofNullable(remoteFieldTypeId);
             return this;
         }
 
+        /**
+         * <p>Destination field type to use when Polytomic creates the identity field</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "remote_field_type_id", nulls = Nulls.SKIP)
         public _FinalStage remoteFieldTypeId(Optional<String> remoteFieldTypeId) {
@@ -197,12 +245,19 @@ public final class Identity {
             return this;
         }
 
+        /**
+         * <p>Whether Polytomic creates the identity field in the destination</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage newField(Boolean newField) {
             this.newField = Optional.ofNullable(newField);
             return this;
         }
 
+        /**
+         * <p>Whether Polytomic creates the identity field in the destination</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "new_field", nulls = Nulls.SKIP)
         public _FinalStage newField(Optional<Boolean> newField) {
@@ -213,6 +268,18 @@ public final class Identity {
         @java.lang.Override
         public Identity build() {
             return new Identity(function, newField, remoteFieldTypeId, source, target, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("function")
+                    || key.equalsIgnoreCase("new_field")
+                    || key.equalsIgnoreCase("remote_field_type_id")
+                    || key.equalsIgnoreCase("source")
+                    || key.equalsIgnoreCase("target")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

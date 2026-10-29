@@ -36,13 +36,16 @@ public final class ExecuteConnectionProxyRequest {
     }
 
     /**
-     * @return When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response.
+     * @return When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response
      */
     @JsonProperty("async")
     public Optional<Boolean> getAsync() {
         return async;
     }
 
+    /**
+     * @return Details of the upstream HTTP request to perform
+     */
     @JsonProperty("request")
     public ConnectionProxyCall getRequest() {
         return request;
@@ -78,6 +81,9 @@ public final class ExecuteConnectionProxyRequest {
     }
 
     public interface RequestStage {
+        /**
+         * <p>Details of the upstream HTTP request to perform</p>
+         */
         _FinalStage request(@NotNull ConnectionProxyCall request);
 
         Builder from(ExecuteConnectionProxyRequest other);
@@ -91,7 +97,7 @@ public final class ExecuteConnectionProxyRequest {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response.</p>
+         * <p>When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response</p>
          */
         _FinalStage async(Optional<Boolean> async);
 
@@ -104,7 +110,6 @@ public final class ExecuteConnectionProxyRequest {
 
         private Optional<Boolean> async = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -116,6 +121,10 @@ public final class ExecuteConnectionProxyRequest {
             return this;
         }
 
+        /**
+         * <p>Details of the upstream HTTP request to perform</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("request")
         public _FinalStage request(@NotNull ConnectionProxyCall request) {
@@ -124,7 +133,7 @@ public final class ExecuteConnectionProxyRequest {
         }
 
         /**
-         * <p>When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response.</p>
+         * <p>When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -134,7 +143,7 @@ public final class ExecuteConnectionProxyRequest {
         }
 
         /**
-         * <p>When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response.</p>
+         * <p>When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response</p>
          */
         @java.lang.Override
         @JsonSetter(value = "async", nulls = Nulls.SKIP)
@@ -146,6 +155,14 @@ public final class ExecuteConnectionProxyRequest {
         @java.lang.Override
         public ExecuteConnectionProxyRequest build() {
             return new ExecuteConnectionProxyRequest(async, request, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("async") || key.equalsIgnoreCase("request")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -34,7 +34,7 @@ public final class EntitiesSearchRequest {
     }
 
     /**
-     * @return Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization.
+     * @return Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization
      */
     @JsonProperty("search")
     public String getSearch() {
@@ -80,7 +80,7 @@ public final class EntitiesSearchRequest {
 
     public interface SearchStage {
         /**
-         * <p>Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization.</p>
+         * <p>Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization</p>
          */
         _FinalStage search(@NotNull String search);
 
@@ -108,7 +108,6 @@ public final class EntitiesSearchRequest {
 
         private Optional<Integer> limit = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -121,7 +120,7 @@ public final class EntitiesSearchRequest {
         }
 
         /**
-         * <p>Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization.</p>
+         * <p>Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -154,6 +153,14 @@ public final class EntitiesSearchRequest {
         @java.lang.Override
         public EntitiesSearchRequest build() {
             return new EntitiesSearchRequest(search, limit, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("search") || key.equalsIgnoreCase("limit")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

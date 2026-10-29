@@ -49,7 +49,7 @@ public final class TargetFilterCondition {
     }
 
     /**
-     * @return Destination field this condition tests, identified the same way as a field mapping's target.
+     * @return Destination field this condition tests, identified the same way as a field mapping's target
      */
     @JsonProperty("field")
     public String getField() {
@@ -57,7 +57,7 @@ public final class TargetFilterCondition {
     }
 
     /**
-     * @return Comparison this condition applies to the field's value.
+     * @return Comparison this condition applies to the field's value
      */
     @JsonProperty("function")
     public FilterFunction getFunction() {
@@ -123,7 +123,7 @@ public final class TargetFilterCondition {
 
     public interface FieldStage {
         /**
-         * <p>Destination field this condition tests, identified the same way as a field mapping's target.</p>
+         * <p>Destination field this condition tests, identified the same way as a field mapping's target</p>
          */
         FunctionStage field(@NotNull String field);
 
@@ -132,7 +132,7 @@ public final class TargetFilterCondition {
 
     public interface FunctionStage {
         /**
-         * <p>Comparison this condition applies to the field's value.</p>
+         * <p>Comparison this condition applies to the field's value</p>
          */
         _FinalStage function(@NotNull FilterFunction function);
     }
@@ -178,7 +178,6 @@ public final class TargetFilterCondition {
 
         private Optional<String> label = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -194,7 +193,7 @@ public final class TargetFilterCondition {
         }
 
         /**
-         * <p>Destination field this condition tests, identified the same way as a field mapping's target.</p>
+         * <p>Destination field this condition tests, identified the same way as a field mapping's target</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -205,7 +204,7 @@ public final class TargetFilterCondition {
         }
 
         /**
-         * <p>Comparison this condition applies to the field's value.</p>
+         * <p>Comparison this condition applies to the field's value</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -278,6 +277,18 @@ public final class TargetFilterCondition {
         @java.lang.Override
         public TargetFilterCondition build() {
             return new TargetFilterCondition(field, function, label, value, valueSource, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field")
+                    || key.equalsIgnoreCase("function")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("value")
+                    || key.equalsIgnoreCase("value_source")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -40,7 +40,7 @@ public final class HarborActionSourceConnectionResponse {
     }
 
     /**
-     * @return Connection backend type.
+     * @return Connection backend type
      */
     @JsonProperty("connection_type")
     public Optional<String> getConnectionType() {
@@ -48,7 +48,7 @@ public final class HarborActionSourceConnectionResponse {
     }
 
     /**
-     * @return Eligible source Connection ID.
+     * @return Eligible source Connection ID
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -56,7 +56,7 @@ public final class HarborActionSourceConnectionResponse {
     }
 
     /**
-     * @return Connection name.
+     * @return Connection name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -101,7 +101,6 @@ public final class HarborActionSourceConnectionResponse {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -114,7 +113,7 @@ public final class HarborActionSourceConnectionResponse {
         }
 
         /**
-         * <p>Connection backend type.</p>
+         * <p>Connection backend type</p>
          */
         @JsonSetter(value = "connection_type", nulls = Nulls.SKIP)
         public Builder connectionType(Optional<String> connectionType) {
@@ -128,7 +127,7 @@ public final class HarborActionSourceConnectionResponse {
         }
 
         /**
-         * <p>Eligible source Connection ID.</p>
+         * <p>Eligible source Connection ID</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -142,7 +141,7 @@ public final class HarborActionSourceConnectionResponse {
         }
 
         /**
-         * <p>Connection name.</p>
+         * <p>Connection name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -157,6 +156,14 @@ public final class HarborActionSourceConnectionResponse {
 
         public HarborActionSourceConnectionResponse build() {
             return new HarborActionSourceConnectionResponse(connectionType, id, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_type") || key.equalsIgnoreCase("id") || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -36,11 +36,17 @@ public final class HarborActionListEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Configured actions on this page
+     */
     @JsonProperty("data")
     public Optional<List<HarborActionSummary>> getData() {
         return data;
     }
 
+    /**
+     * @return Pagination details for the next page
+     */
     @JsonProperty("pagination")
     public Optional<HarborActionListEnvelopePagination> getPagination() {
         return pagination;
@@ -81,7 +87,6 @@ public final class HarborActionListEnvelope {
 
         private Optional<HarborActionListEnvelopePagination> pagination = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class HarborActionListEnvelope {
             return this;
         }
 
+        /**
+         * <p>Configured actions on this page</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<HarborActionSummary>> data) {
             this.data = data;
@@ -103,6 +111,9 @@ public final class HarborActionListEnvelope {
             return this;
         }
 
+        /**
+         * <p>Pagination details for the next page</p>
+         */
         @JsonSetter(value = "pagination", nulls = Nulls.SKIP)
         public Builder pagination(Optional<HarborActionListEnvelopePagination> pagination) {
             this.pagination = pagination;
@@ -116,6 +127,14 @@ public final class HarborActionListEnvelope {
 
         public HarborActionListEnvelope build() {
             return new HarborActionListEnvelope(data, pagination, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("pagination")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -44,21 +44,33 @@ public final class ModelModelFieldRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Example value of the field
+     */
     @JsonProperty("example")
     public Optional<String> getExample() {
         return example;
     }
 
+    /**
+     * @return Display label of the field
+     */
     @JsonProperty("label")
     public String getLabel() {
         return label;
     }
 
+    /**
+     * @return Name of the field
+     */
     @JsonProperty("name")
     public String getName() {
         return name;
     }
 
+    /**
+     * @return Data type of the field
+     */
     @JsonProperty("type")
     public String getType() {
         return type;
@@ -97,16 +109,25 @@ public final class ModelModelFieldRequest {
     }
 
     public interface LabelStage {
+        /**
+         * <p>Display label of the field</p>
+         */
         NameStage label(@NotNull String label);
 
         Builder from(ModelModelFieldRequest other);
     }
 
     public interface NameStage {
+        /**
+         * <p>Name of the field</p>
+         */
         TypeStage name(@NotNull String name);
     }
 
     public interface TypeStage {
+        /**
+         * <p>Data type of the field</p>
+         */
         _FinalStage type(@NotNull String type);
     }
 
@@ -117,6 +138,9 @@ public final class ModelModelFieldRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Example value of the field</p>
+         */
         _FinalStage example(Optional<String> example);
 
         _FinalStage example(String example);
@@ -132,7 +156,6 @@ public final class ModelModelFieldRequest {
 
         private Optional<String> example = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -146,6 +169,10 @@ public final class ModelModelFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Display label of the field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("label")
         public NameStage label(@NotNull String label) {
@@ -153,6 +180,10 @@ public final class ModelModelFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Name of the field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("name")
         public TypeStage name(@NotNull String name) {
@@ -160,6 +191,10 @@ public final class ModelModelFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Data type of the field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("type")
         public _FinalStage type(@NotNull String type) {
@@ -167,12 +202,19 @@ public final class ModelModelFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Example value of the field</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage example(String example) {
             this.example = Optional.ofNullable(example);
             return this;
         }
 
+        /**
+         * <p>Example value of the field</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "example", nulls = Nulls.SKIP)
         public _FinalStage example(Optional<String> example) {
@@ -183,6 +225,17 @@ public final class ModelModelFieldRequest {
         @java.lang.Override
         public ModelModelFieldRequest build() {
             return new ModelModelFieldRequest(example, label, name, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("example")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

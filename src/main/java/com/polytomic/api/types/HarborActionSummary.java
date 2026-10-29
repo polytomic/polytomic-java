@@ -47,26 +47,41 @@ public final class HarborActionSummary {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Connection ID
+     */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Name of the connection; empty when unavailable is true
+     */
     @JsonProperty("connection_name")
     public Optional<String> getConnectionName() {
         return connectionName;
     }
 
+    /**
+     * @return Operation ID
+     */
     @JsonProperty("operation_id")
     public Optional<String> getOperationId() {
         return operationId;
     }
 
+    /**
+     * @return Schema ID
+     */
     @JsonProperty("schema_id")
     public Optional<String> getSchemaId() {
         return schemaId;
     }
 
+    /**
+     * @return Whether the connection cannot currently run actions; schema and operation availability is checked when the action is described
+     */
     @JsonProperty("unavailable")
     public Optional<Boolean> getUnavailable() {
         return unavailable;
@@ -117,7 +132,6 @@ public final class HarborActionSummary {
 
         private Optional<Boolean> unavailable = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -131,6 +145,9 @@ public final class HarborActionSummary {
             return this;
         }
 
+        /**
+         * <p>Connection ID</p>
+         */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
             this.connectionId = connectionId;
@@ -142,6 +159,9 @@ public final class HarborActionSummary {
             return this;
         }
 
+        /**
+         * <p>Name of the connection; empty when unavailable is true</p>
+         */
         @JsonSetter(value = "connection_name", nulls = Nulls.SKIP)
         public Builder connectionName(Optional<String> connectionName) {
             this.connectionName = connectionName;
@@ -153,6 +173,9 @@ public final class HarborActionSummary {
             return this;
         }
 
+        /**
+         * <p>Operation ID</p>
+         */
         @JsonSetter(value = "operation_id", nulls = Nulls.SKIP)
         public Builder operationId(Optional<String> operationId) {
             this.operationId = operationId;
@@ -164,6 +187,9 @@ public final class HarborActionSummary {
             return this;
         }
 
+        /**
+         * <p>Schema ID</p>
+         */
         @JsonSetter(value = "schema_id", nulls = Nulls.SKIP)
         public Builder schemaId(Optional<String> schemaId) {
             this.schemaId = schemaId;
@@ -175,6 +201,9 @@ public final class HarborActionSummary {
             return this;
         }
 
+        /**
+         * <p>Whether the connection cannot currently run actions; schema and operation availability is checked when the action is described</p>
+         */
         @JsonSetter(value = "unavailable", nulls = Nulls.SKIP)
         public Builder unavailable(Optional<Boolean> unavailable) {
             this.unavailable = unavailable;
@@ -189,6 +218,18 @@ public final class HarborActionSummary {
         public HarborActionSummary build() {
             return new HarborActionSummary(
                     connectionId, connectionName, operationId, schemaId, unavailable, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("connection_name")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("schema_id")
+                    || key.equalsIgnoreCase("unavailable")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

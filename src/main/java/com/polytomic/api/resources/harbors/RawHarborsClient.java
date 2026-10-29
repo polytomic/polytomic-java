@@ -4,10 +4,12 @@
 package com.polytomic.api.resources.harbors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -237,7 +239,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbor/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -341,9 +343,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbor/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId);
+                .addPathSegment(PathSegments.validate(schemaId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -434,7 +436,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -542,7 +546,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbor/sessions")
-                .addPathSegment(sessionId);
+                .addPathSegment(PathSegments.validate(sessionId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -550,7 +554,10 @@ public class RawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicMcpKeyId().isPresent()) {
@@ -756,7 +763,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -831,7 +840,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId);
+                .addPathSegment(PathSegments.validate(harborId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -911,7 +920,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId);
+                .addPathSegment(PathSegments.validate(harborId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -920,7 +929,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -1011,7 +1022,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId);
+                .addPathSegment(PathSegments.validate(harborId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1019,7 +1030,10 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -1104,7 +1118,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1208,7 +1222,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1217,7 +1231,10 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -1310,7 +1327,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration")
                 .addPathSegments("connections");
         if (requestOptions != null) {
@@ -1490,9 +1507,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId);
+                .addPathSegment(PathSegments.validate(connectionId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1501,7 +1518,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -1603,9 +1622,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId);
+                .addPathSegment(PathSegments.validate(connectionId));
         QueryStringMapper.addQueryParameter(httpUrl, "expected_revision", request.getExpectedRevision(), false);
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1614,7 +1633,10 @@ public class RawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -1752,9 +1774,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas");
         if (request.getSearch().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -1871,11 +1893,11 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId)
+                .addPathSegment(PathSegments.validate(schemaId))
                 .addPathSegments("operations");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1991,7 +2013,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -2089,7 +2111,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -2099,7 +2121,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -2215,7 +2239,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
                 .addPathSegments("drafts");
         if (request.getLimit().isPresent()) {
@@ -2316,7 +2340,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
                 .addPathSegments("drafts");
         if (requestOptions != null) {
@@ -2327,7 +2351,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -2436,9 +2462,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId);
+                .addPathSegment(PathSegments.validate(contextId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -2530,9 +2556,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId);
+                .addPathSegment(PathSegments.validate(contextId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -2541,7 +2567,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -2650,9 +2678,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId);
+                .addPathSegment(PathSegments.validate(contextId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -2660,7 +2688,10 @@ public class RawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicHarborSession().isPresent()) {
@@ -2769,9 +2800,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -2875,9 +2906,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -2887,7 +2918,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -3006,9 +3039,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -3017,7 +3050,10 @@ public class RawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicHarborSession().isPresent()) {
@@ -3138,9 +3174,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft")
                 .addPathSegments("promote");
         if (requestOptions != null) {
@@ -3150,7 +3186,11 @@ public class RawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicHarborSession().isPresent()) {
@@ -3290,9 +3330,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("versions");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -3433,11 +3473,11 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("versions")
-                .addPathSegment(versionId);
+                .addPathSegment(PathSegments.validate(versionId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -3538,7 +3578,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("keys");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -3624,7 +3664,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("keys");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -3633,7 +3673,11 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -3699,9 +3743,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("keys")
-                .addPathSegment(keyId);
+                .addPathSegment(PathSegments.validate(keyId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -3709,7 +3753,10 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -3794,7 +3841,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("query");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -3804,7 +3851,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -3984,7 +4033,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -4127,7 +4176,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -4137,7 +4186,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -4245,7 +4296,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
                 .addPathSegments("drafts");
         if (request.getLimit().isPresent()) {
@@ -4418,9 +4469,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId);
+                .addPathSegment(PathSegments.validate(savedQueryId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -4530,9 +4581,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId);
+                .addPathSegment(PathSegments.validate(savedQueryId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -4540,7 +4591,10 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -4638,9 +4692,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -4650,7 +4704,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -4735,9 +4791,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -4746,7 +4802,10 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -4839,9 +4898,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft")
                 .addPathSegments("publish");
         if (requestOptions != null) {
@@ -4851,7 +4910,11 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -4937,9 +5000,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft")
                 .addPathSegments("validate");
         if (requestOptions != null) {
@@ -4949,7 +5012,11 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -5252,9 +5319,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("execute");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -5264,7 +5331,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -5376,7 +5445,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("source-mappings")
                 .addPathSegments("resolve");
         if (requestOptions != null) {
@@ -5387,7 +5456,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -5522,7 +5593,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("status");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -5613,7 +5684,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -5700,7 +5771,7 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -5710,7 +5781,9 @@ public class RawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -5789,9 +5862,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users")
-                .addPathSegment(userId);
+                .addPathSegment(PathSegments.validate(userId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -5799,7 +5872,11 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("PUT", RequestBody.create("", null))
+                .method(
+                        "PUT",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -5868,9 +5945,9 @@ public class RawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users")
-                .addPathSegment(userId);
+                .addPathSegment(PathSegments.validate(userId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -5878,7 +5955,10 @@ public class RawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();

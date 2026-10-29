@@ -29,6 +29,9 @@ public final class BulkSyncSourceSchemaEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The schema
+     */
     @JsonProperty("data")
     public Optional<Schema> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class BulkSyncSourceSchemaEnvelope {
     public static final class Builder {
         private Optional<Schema> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class BulkSyncSourceSchemaEnvelope {
             return this;
         }
 
+        /**
+         * <p>The schema</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<Schema> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class BulkSyncSourceSchemaEnvelope {
 
         public BulkSyncSourceSchemaEnvelope build() {
             return new BulkSyncSourceSchemaEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

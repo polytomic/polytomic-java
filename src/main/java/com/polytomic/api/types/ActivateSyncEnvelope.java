@@ -29,6 +29,9 @@ public final class ActivateSyncEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The sync's updated active state
+     */
     @JsonProperty("data")
     public Optional<ActivateSyncOutput> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class ActivateSyncEnvelope {
     public static final class Builder {
         private Optional<ActivateSyncOutput> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class ActivateSyncEnvelope {
             return this;
         }
 
+        /**
+         * <p>The sync's updated active state</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ActivateSyncOutput> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class ActivateSyncEnvelope {
 
         public ActivateSyncEnvelope build() {
             return new ActivateSyncEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

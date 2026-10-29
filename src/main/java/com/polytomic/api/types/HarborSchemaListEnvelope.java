@@ -40,16 +40,25 @@ public final class HarborSchemaListEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Schemas on this page
+     */
     @JsonProperty("data")
     public Optional<List<HarborSchemaResponse>> getData() {
         return data;
     }
 
+    /**
+     * @return Pagination details for the next page
+     */
     @JsonProperty("pagination")
     public Optional<PaginationDetails> getPagination() {
         return pagination;
     }
 
+    /**
+     * @return Whether the connection organizes schemas into namespaces
+     */
     @JsonProperty("supports_namespaces")
     public Optional<Boolean> getSupportsNamespaces() {
         return supportsNamespaces;
@@ -94,7 +103,6 @@ public final class HarborSchemaListEnvelope {
 
         private Optional<Boolean> supportsNamespaces = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -106,6 +114,9 @@ public final class HarborSchemaListEnvelope {
             return this;
         }
 
+        /**
+         * <p>Schemas on this page</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<HarborSchemaResponse>> data) {
             this.data = data;
@@ -117,6 +128,9 @@ public final class HarborSchemaListEnvelope {
             return this;
         }
 
+        /**
+         * <p>Pagination details for the next page</p>
+         */
         @JsonSetter(value = "pagination", nulls = Nulls.SKIP)
         public Builder pagination(Optional<PaginationDetails> pagination) {
             this.pagination = pagination;
@@ -128,6 +142,9 @@ public final class HarborSchemaListEnvelope {
             return this;
         }
 
+        /**
+         * <p>Whether the connection organizes schemas into namespaces</p>
+         */
         @JsonSetter(value = "supports_namespaces", nulls = Nulls.SKIP)
         public Builder supportsNamespaces(Optional<Boolean> supportsNamespaces) {
             this.supportsNamespaces = supportsNamespaces;
@@ -141,6 +158,16 @@ public final class HarborSchemaListEnvelope {
 
         public HarborSchemaListEnvelope build() {
             return new HarborSchemaListEnvelope(data, pagination, supportsNamespaces, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")
+                    || key.equalsIgnoreCase("pagination")
+                    || key.equalsIgnoreCase("supports_namespaces")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

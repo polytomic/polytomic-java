@@ -59,18 +59,24 @@ public final class LookupHarborActionRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
     /**
-     * @return Connection ID from Harbor action discovery.
+     * @return Connection ID from Harbor action discovery
      */
     @JsonProperty("connection_id")
     public String getConnectionId() {
@@ -85,13 +91,16 @@ public final class LookupHarborActionRequest {
         return fields;
     }
 
+    /**
+     * @return One granted lookup field and exact scalar value
+     */
     @JsonProperty("lookup")
     public ActionLookup getLookup() {
         return lookup;
     }
 
     /**
-     * @return Exact read-only operation ID from action discovery.
+     * @return Exact read-only operation ID from action discovery
      */
     @JsonProperty("operation_id")
     public String getOperationId() {
@@ -99,7 +108,7 @@ public final class LookupHarborActionRequest {
     }
 
     /**
-     * @return Exact schema ID from action discovery.
+     * @return Exact schema ID from action discovery
      */
     @JsonProperty("schema_id")
     public String getSchemaId() {
@@ -150,7 +159,7 @@ public final class LookupHarborActionRequest {
 
     public interface ConnectionIdStage {
         /**
-         * <p>Connection ID from Harbor action discovery.</p>
+         * <p>Connection ID from Harbor action discovery</p>
          */
         LookupStage connectionId(@NotNull String connectionId);
 
@@ -158,19 +167,22 @@ public final class LookupHarborActionRequest {
     }
 
     public interface LookupStage {
+        /**
+         * <p>One granted lookup field and exact scalar value</p>
+         */
         OperationIdStage lookup(@NotNull ActionLookup lookup);
     }
 
     public interface OperationIdStage {
         /**
-         * <p>Exact read-only operation ID from action discovery.</p>
+         * <p>Exact read-only operation ID from action discovery</p>
          */
         SchemaIdStage operationId(@NotNull String operationId);
     }
 
     public interface SchemaIdStage {
         /**
-         * <p>Exact schema ID from action discovery.</p>
+         * <p>Exact schema ID from action discovery</p>
          */
         _FinalStage schemaId(@NotNull String schemaId);
     }
@@ -182,10 +194,16 @@ public final class LookupHarborActionRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession);
 
         _FinalStage polytomicHarborSession(String polytomicHarborSession);
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId);
 
         _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId);
@@ -215,7 +233,6 @@ public final class LookupHarborActionRequest {
 
         private Optional<String> polytomicHarborSession = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -233,7 +250,7 @@ public final class LookupHarborActionRequest {
         }
 
         /**
-         * <p>Connection ID from Harbor action discovery.</p>
+         * <p>Connection ID from Harbor action discovery</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -243,6 +260,10 @@ public final class LookupHarborActionRequest {
             return this;
         }
 
+        /**
+         * <p>One granted lookup field and exact scalar value</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("lookup")
         public OperationIdStage lookup(@NotNull ActionLookup lookup) {
@@ -251,7 +272,7 @@ public final class LookupHarborActionRequest {
         }
 
         /**
-         * <p>Exact read-only operation ID from action discovery.</p>
+         * <p>Exact read-only operation ID from action discovery</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -262,7 +283,7 @@ public final class LookupHarborActionRequest {
         }
 
         /**
-         * <p>Exact schema ID from action discovery.</p>
+         * <p>Exact schema ID from action discovery</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -292,24 +313,38 @@ public final class LookupHarborActionRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId) {
             this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(String polytomicHarborSession) {
             this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
@@ -327,6 +362,18 @@ public final class LookupHarborActionRequest {
                     operationId,
                     schemaId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("lookup")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("schema_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

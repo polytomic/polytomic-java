@@ -47,13 +47,16 @@ public final class IdentityCredentialApiKeyProfileSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Profile-scoped resource capabilities. These capabilities narrow, but do not expand, the caller's authority.
+     */
     @JsonProperty("capabilities")
     public Optional<IdentityCredentialCapabilitiesSchema> getCapabilities() {
         return capabilities;
     }
 
     /**
-     * @return Organization-provided summary of the data and questions this scoped profile supports.
+     * @return Organization-provided summary of the data and questions this scoped profile supports
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -61,7 +64,7 @@ public final class IdentityCredentialApiKeyProfileSchema {
     }
 
     /**
-     * @return Stable API key profile ID.
+     * @return Stable API key profile ID
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -69,7 +72,7 @@ public final class IdentityCredentialApiKeyProfileSchema {
     }
 
     /**
-     * @return API key profile kind.
+     * @return API key profile kind
      */
     @JsonProperty("kind")
     public Optional<String> getKind() {
@@ -77,7 +80,7 @@ public final class IdentityCredentialApiKeyProfileSchema {
     }
 
     /**
-     * @return Stable API key profile name.
+     * @return Stable API key profile name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -130,7 +133,6 @@ public final class IdentityCredentialApiKeyProfileSchema {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,6 +146,9 @@ public final class IdentityCredentialApiKeyProfileSchema {
             return this;
         }
 
+        /**
+         * <p>Profile-scoped resource capabilities. These capabilities narrow, but do not expand, the caller's authority.</p>
+         */
         @JsonSetter(value = "capabilities", nulls = Nulls.SKIP)
         public Builder capabilities(Optional<IdentityCredentialCapabilitiesSchema> capabilities) {
             this.capabilities = capabilities;
@@ -156,7 +161,7 @@ public final class IdentityCredentialApiKeyProfileSchema {
         }
 
         /**
-         * <p>Organization-provided summary of the data and questions this scoped profile supports.</p>
+         * <p>Organization-provided summary of the data and questions this scoped profile supports</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -170,7 +175,7 @@ public final class IdentityCredentialApiKeyProfileSchema {
         }
 
         /**
-         * <p>Stable API key profile ID.</p>
+         * <p>Stable API key profile ID</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -184,7 +189,7 @@ public final class IdentityCredentialApiKeyProfileSchema {
         }
 
         /**
-         * <p>API key profile kind.</p>
+         * <p>API key profile kind</p>
          */
         @JsonSetter(value = "kind", nulls = Nulls.SKIP)
         public Builder kind(Optional<String> kind) {
@@ -198,7 +203,7 @@ public final class IdentityCredentialApiKeyProfileSchema {
         }
 
         /**
-         * <p>Stable API key profile name.</p>
+         * <p>Stable API key profile name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -214,6 +219,18 @@ public final class IdentityCredentialApiKeyProfileSchema {
         public IdentityCredentialApiKeyProfileSchema build() {
             return new IdentityCredentialApiKeyProfileSchema(
                     capabilities, description, id, kind, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("capabilities")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("kind")
+                    || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

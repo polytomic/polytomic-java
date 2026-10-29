@@ -222,7 +222,6 @@ public final class ConnectionProxyCall {
 
         private Optional<String> api = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -364,6 +363,20 @@ public final class ConnectionProxyCall {
         @java.lang.Override
         public ConnectionProxyCall build() {
             return new ConnectionProxyCall(api, body, headers, method, path, query, rawQuery, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("api")
+                    || key.equalsIgnoreCase("body")
+                    || key.equalsIgnoreCase("headers")
+                    || key.equalsIgnoreCase("method")
+                    || key.equalsIgnoreCase("path")
+                    || key.equalsIgnoreCase("query")
+                    || key.equalsIgnoreCase("rawQuery")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

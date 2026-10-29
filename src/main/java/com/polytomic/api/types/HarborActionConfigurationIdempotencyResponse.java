@@ -34,7 +34,7 @@ public final class HarborActionConfigurationIdempotencyResponse {
     }
 
     /**
-     * @return Provider deduplication window in nanoseconds.
+     * @return Provider deduplication window in nanoseconds
      */
     @JsonProperty("retention_ns")
     public Optional<Long> getRetentionNs() {
@@ -42,7 +42,7 @@ public final class HarborActionConfigurationIdempotencyResponse {
     }
 
     /**
-     * @return Provider idempotency scope.
+     * @return Provider idempotency scope
      */
     @JsonProperty("scope")
     public Optional<String> getScope() {
@@ -85,7 +85,6 @@ public final class HarborActionConfigurationIdempotencyResponse {
 
         private Optional<String> scope = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -97,7 +96,7 @@ public final class HarborActionConfigurationIdempotencyResponse {
         }
 
         /**
-         * <p>Provider deduplication window in nanoseconds.</p>
+         * <p>Provider deduplication window in nanoseconds</p>
          */
         @JsonSetter(value = "retention_ns", nulls = Nulls.SKIP)
         public Builder retentionNs(Optional<Long> retentionNs) {
@@ -111,7 +110,7 @@ public final class HarborActionConfigurationIdempotencyResponse {
         }
 
         /**
-         * <p>Provider idempotency scope.</p>
+         * <p>Provider idempotency scope</p>
          */
         @JsonSetter(value = "scope", nulls = Nulls.SKIP)
         public Builder scope(Optional<String> scope) {
@@ -126,6 +125,14 @@ public final class HarborActionConfigurationIdempotencyResponse {
 
         public HarborActionConfigurationIdempotencyResponse build() {
             return new HarborActionConfigurationIdempotencyResponse(retentionNs, scope, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("retention_ns") || key.equalsIgnoreCase("scope")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

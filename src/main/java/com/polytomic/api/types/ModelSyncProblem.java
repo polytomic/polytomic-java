@@ -52,7 +52,7 @@ public final class ModelSyncProblem {
     }
 
     /**
-     * @return Description of the problem, suitable for showing to a person.
+     * @return Description of the problem, suitable for showing to a person
      */
     @JsonProperty("message")
     public Optional<String> getMessage() {
@@ -60,7 +60,7 @@ public final class ModelSyncProblem {
     }
 
     /**
-     * @return JSON path of the part of this configuration the problem is about, relative to the sync object.
+     * @return JSON path of the part of this configuration the problem is about, relative to the sync object
      */
     @JsonProperty("path")
     public Optional<String> getPath() {
@@ -117,7 +117,6 @@ public final class ModelSyncProblem {
 
         private Optional<String> severity = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -145,7 +144,7 @@ public final class ModelSyncProblem {
         }
 
         /**
-         * <p>Description of the problem, suitable for showing to a person.</p>
+         * <p>Description of the problem, suitable for showing to a person</p>
          */
         @JsonSetter(value = "message", nulls = Nulls.SKIP)
         public Builder message(Optional<String> message) {
@@ -159,7 +158,7 @@ public final class ModelSyncProblem {
         }
 
         /**
-         * <p>JSON path of the part of this configuration the problem is about, relative to the sync object.</p>
+         * <p>JSON path of the part of this configuration the problem is about, relative to the sync object</p>
          */
         @JsonSetter(value = "path", nulls = Nulls.SKIP)
         public Builder path(Optional<String> path) {
@@ -188,6 +187,17 @@ public final class ModelSyncProblem {
 
         public ModelSyncProblem build() {
             return new ModelSyncProblem(code, message, path, severity, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("code")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("path")
+                    || key.equalsIgnoreCase("severity")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

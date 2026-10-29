@@ -51,31 +51,49 @@ public final class SupportedBulkMode {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Description of the mode
+     */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return Bulk sync mode identifier
+     */
     @JsonProperty("id")
     public Optional<BulkSyncTargetMode> getId() {
         return id;
     }
 
+    /**
+     * @return Human-readable label for the mode
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Deprecated; always false for bulk sync modes
+     */
     @JsonProperty("requires_identity")
     public Optional<Boolean> getRequiresIdentity() {
         return requiresIdentity;
     }
 
+    /**
+     * @return Deprecated; always false for bulk sync modes
+     */
     @JsonProperty("supports_field_sync_mode")
     public Optional<Boolean> getSupportsFieldSyncMode() {
         return supportsFieldSyncMode;
     }
 
+    /**
+     * @return Deprecated; always false for bulk sync modes
+     */
     @JsonProperty("supports_target_filters")
     public Optional<Boolean> getSupportsTargetFilters() {
         return supportsTargetFilters;
@@ -135,7 +153,6 @@ public final class SupportedBulkMode {
 
         private Optional<Boolean> supportsTargetFilters = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -150,6 +167,9 @@ public final class SupportedBulkMode {
             return this;
         }
 
+        /**
+         * <p>Description of the mode</p>
+         */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
             this.description = description;
@@ -161,6 +181,9 @@ public final class SupportedBulkMode {
             return this;
         }
 
+        /**
+         * <p>Bulk sync mode identifier</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<BulkSyncTargetMode> id) {
             this.id = id;
@@ -172,6 +195,9 @@ public final class SupportedBulkMode {
             return this;
         }
 
+        /**
+         * <p>Human-readable label for the mode</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -183,6 +209,9 @@ public final class SupportedBulkMode {
             return this;
         }
 
+        /**
+         * <p>Deprecated; always false for bulk sync modes</p>
+         */
         @JsonSetter(value = "requires_identity", nulls = Nulls.SKIP)
         public Builder requiresIdentity(Optional<Boolean> requiresIdentity) {
             this.requiresIdentity = requiresIdentity;
@@ -194,6 +223,9 @@ public final class SupportedBulkMode {
             return this;
         }
 
+        /**
+         * <p>Deprecated; always false for bulk sync modes</p>
+         */
         @JsonSetter(value = "supports_field_sync_mode", nulls = Nulls.SKIP)
         public Builder supportsFieldSyncMode(Optional<Boolean> supportsFieldSyncMode) {
             this.supportsFieldSyncMode = supportsFieldSyncMode;
@@ -205,6 +237,9 @@ public final class SupportedBulkMode {
             return this;
         }
 
+        /**
+         * <p>Deprecated; always false for bulk sync modes</p>
+         */
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
         public Builder supportsTargetFilters(Optional<Boolean> supportsTargetFilters) {
             this.supportsTargetFilters = supportsTargetFilters;
@@ -225,6 +260,19 @@ public final class SupportedBulkMode {
                     supportsFieldSyncMode,
                     supportsTargetFilters,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("requires_identity")
+                    || key.equalsIgnoreCase("supports_field_sync_mode")
+                    || key.equalsIgnoreCase("supports_target_filters")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

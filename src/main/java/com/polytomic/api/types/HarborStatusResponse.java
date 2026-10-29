@@ -39,7 +39,7 @@ public final class HarborStatusResponse {
     }
 
     /**
-     * @return UTC time at which Polytomic assembled this status snapshot.
+     * @return UTC time at which Polytomic assembled this status snapshot
      */
     @JsonProperty("as_of")
     public OffsetDateTime getAsOf() {
@@ -85,7 +85,7 @@ public final class HarborStatusResponse {
 
     public interface AsOfStage {
         /**
-         * <p>UTC time at which Polytomic assembled this status snapshot.</p>
+         * <p>UTC time at which Polytomic assembled this status snapshot</p>
          */
         _FinalStage asOf(@NotNull OffsetDateTime asOf);
 
@@ -113,7 +113,6 @@ public final class HarborStatusResponse {
 
         private Optional<List<HarborPipelineStatusResponse>> pipelines = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -126,7 +125,7 @@ public final class HarborStatusResponse {
         }
 
         /**
-         * <p>UTC time at which Polytomic assembled this status snapshot.</p>
+         * <p>UTC time at which Polytomic assembled this status snapshot</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -159,6 +158,14 @@ public final class HarborStatusResponse {
         @java.lang.Override
         public HarborStatusResponse build() {
             return new HarborStatusResponse(asOf, pipelines, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("as_of") || key.equalsIgnoreCase("pipelines")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -30,6 +30,9 @@ public final class CreateSharedConnectionResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The shared connection
+     */
     @JsonProperty("data")
     public Optional<CreateSharedConnectionResponseSchema> getData() {
         return data;
@@ -69,7 +72,6 @@ public final class CreateSharedConnectionResponseEnvelope {
     public static final class Builder {
         private Optional<CreateSharedConnectionResponseSchema> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -79,6 +81,9 @@ public final class CreateSharedConnectionResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The shared connection</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<CreateSharedConnectionResponseSchema> data) {
             this.data = data;
@@ -92,6 +97,14 @@ public final class CreateSharedConnectionResponseEnvelope {
 
         public CreateSharedConnectionResponseEnvelope build() {
             return new CreateSharedConnectionResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

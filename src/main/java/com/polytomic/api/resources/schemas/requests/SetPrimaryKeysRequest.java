@@ -73,7 +73,6 @@ public final class SetPrimaryKeysRequest {
     public static final class Builder {
         private Optional<List<SchemaPrimaryKeyOverrideInput>> fields = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -99,6 +98,14 @@ public final class SetPrimaryKeysRequest {
 
         public SetPrimaryKeysRequest build() {
             return new SetPrimaryKeysRequest(fields, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("fields")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

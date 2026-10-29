@@ -30,6 +30,9 @@ public final class CancelBulkSyncResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Result of the cancellation request
+     */
     @JsonProperty("data")
     public Optional<CancelBulkSyncResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class CancelBulkSyncResponseEnvelope {
     public static final class Builder {
         private Optional<CancelBulkSyncResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class CancelBulkSyncResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Result of the cancellation request</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<CancelBulkSyncResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class CancelBulkSyncResponseEnvelope {
 
         public CancelBulkSyncResponseEnvelope build() {
             return new CancelBulkSyncResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

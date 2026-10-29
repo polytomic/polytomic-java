@@ -117,7 +117,6 @@ public final class ExecutionsListRequest {
 
         private Optional<Integer> limit = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -188,6 +187,17 @@ public final class ExecutionsListRequest {
 
         public ExecutionsListRequest build() {
             return new ExecutionsListRequest(pageToken, onlyTerminal, ascending, limit, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("page_token")
+                    || key.equalsIgnoreCase("only_terminal")
+                    || key.equalsIgnoreCase("ascending")
+                    || key.equalsIgnoreCase("limit")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

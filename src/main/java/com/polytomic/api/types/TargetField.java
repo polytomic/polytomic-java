@@ -93,7 +93,7 @@ public final class TargetField {
     }
 
     /**
-     * @return True if this field is an association (foreign key) to another object rather than a value column.
+     * @return True if this field is an association (foreign key) to another object rather than a value column
      */
     @JsonProperty("association")
     public Optional<Boolean> getAssociation() {
@@ -101,7 +101,7 @@ public final class TargetField {
     }
 
     /**
-     * @return True if this field can be written when creating a new record.
+     * @return True if this field can be written when creating a new record
      */
     @JsonProperty("createable")
     public Optional<Boolean> getCreateable() {
@@ -109,7 +109,7 @@ public final class TargetField {
     }
 
     /**
-     * @return Description of the field, when the backend provides one.
+     * @return Description of the field, when the backend provides one
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -117,7 +117,7 @@ public final class TargetField {
     }
 
     /**
-     * @return True if this field supports field-level encryption.
+     * @return True if this field supports field-level encryption
      */
     @JsonProperty("encryptable")
     public Optional<Boolean> getEncryptable() {
@@ -133,7 +133,7 @@ public final class TargetField {
     }
 
     /**
-     * @return True if this field can be used in a target filter.
+     * @return True if this field can be used in a target filter
      */
     @JsonProperty("filterable")
     public Optional<Boolean> getFilterable() {
@@ -149,7 +149,7 @@ public final class TargetField {
     }
 
     /**
-     * @return Identity match functions supported when this field is used as the sync identity (e.g. exact match, hashed match).
+     * @return Identity match functions supported when this field is used as the sync identity (e.g. exact match, hashed match)
      */
     @JsonProperty("identity_functions")
     public Optional<List<IdentityFunction>> getIdentityFunctions() {
@@ -165,7 +165,7 @@ public final class TargetField {
     }
 
     /**
-     * @return Human-readable name of the field.
+     * @return Human-readable name of the field
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -173,7 +173,7 @@ public final class TargetField {
     }
 
     /**
-     * @return True if a model sync must map a value to this field for records to be accepted.
+     * @return True if a model sync must map a value to this field for records to be accepted
      */
     @JsonProperty("required")
     public Optional<Boolean> getRequired() {
@@ -181,7 +181,7 @@ public final class TargetField {
     }
 
     /**
-     * @return Native type reported by the destination system.
+     * @return Native type reported by the destination system
      */
     @JsonProperty("source_type")
     public Optional<String> getSourceType() {
@@ -189,7 +189,7 @@ public final class TargetField {
     }
 
     /**
-     * @return True if this field may be used as the identity (match key) for syncs that require one.
+     * @return True if this field may be used as the identity (match key) for syncs that require one
      */
     @JsonProperty("supports_identity")
     public Optional<Boolean> getSupportsIdentity() {
@@ -197,7 +197,7 @@ public final class TargetField {
     }
 
     /**
-     * @return Polytomic-normalized type used when mapping values to this field.
+     * @return Polytomic-normalized type used when mapping values to this field
      */
     @JsonProperty("type")
     public Optional<String> getType() {
@@ -205,7 +205,7 @@ public final class TargetField {
     }
 
     /**
-     * @return True if this field can be written when updating an existing record.
+     * @return True if this field can be written when updating an existing record
      */
     @JsonProperty("updateable")
     public Optional<Boolean> getUpdateable() {
@@ -314,7 +314,6 @@ public final class TargetField {
 
         private Optional<List<PickValue>> values = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -340,7 +339,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>True if this field is an association (foreign key) to another object rather than a value column.</p>
+         * <p>True if this field is an association (foreign key) to another object rather than a value column</p>
          */
         @JsonSetter(value = "association", nulls = Nulls.SKIP)
         public Builder association(Optional<Boolean> association) {
@@ -354,7 +353,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>True if this field can be written when creating a new record.</p>
+         * <p>True if this field can be written when creating a new record</p>
          */
         @JsonSetter(value = "createable", nulls = Nulls.SKIP)
         public Builder createable(Optional<Boolean> createable) {
@@ -368,7 +367,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>Description of the field, when the backend provides one.</p>
+         * <p>Description of the field, when the backend provides one</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -382,7 +381,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>True if this field supports field-level encryption.</p>
+         * <p>True if this field supports field-level encryption</p>
          */
         @JsonSetter(value = "encryptable", nulls = Nulls.SKIP)
         public Builder encryptable(Optional<Boolean> encryptable) {
@@ -410,7 +409,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>True if this field can be used in a target filter.</p>
+         * <p>True if this field can be used in a target filter</p>
          */
         @JsonSetter(value = "filterable", nulls = Nulls.SKIP)
         public Builder filterable(Optional<Boolean> filterable) {
@@ -438,7 +437,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>Identity match functions supported when this field is used as the sync identity (e.g. exact match, hashed match).</p>
+         * <p>Identity match functions supported when this field is used as the sync identity (e.g. exact match, hashed match)</p>
          */
         @JsonSetter(value = "identity_functions", nulls = Nulls.SKIP)
         public Builder identityFunctions(Optional<List<IdentityFunction>> identityFunctions) {
@@ -466,7 +465,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>Human-readable name of the field.</p>
+         * <p>Human-readable name of the field</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -480,7 +479,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>True if a model sync must map a value to this field for records to be accepted.</p>
+         * <p>True if a model sync must map a value to this field for records to be accepted</p>
          */
         @JsonSetter(value = "required", nulls = Nulls.SKIP)
         public Builder required(Optional<Boolean> required) {
@@ -494,7 +493,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>Native type reported by the destination system.</p>
+         * <p>Native type reported by the destination system</p>
          */
         @JsonSetter(value = "source_type", nulls = Nulls.SKIP)
         public Builder sourceType(Optional<String> sourceType) {
@@ -508,7 +507,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>True if this field may be used as the identity (match key) for syncs that require one.</p>
+         * <p>True if this field may be used as the identity (match key) for syncs that require one</p>
          */
         @JsonSetter(value = "supports_identity", nulls = Nulls.SKIP)
         public Builder supportsIdentity(Optional<Boolean> supportsIdentity) {
@@ -522,7 +521,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>Polytomic-normalized type used when mapping values to this field.</p>
+         * <p>Polytomic-normalized type used when mapping values to this field</p>
          */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
@@ -536,7 +535,7 @@ public final class TargetField {
         }
 
         /**
-         * <p>True if this field can be written when updating an existing record.</p>
+         * <p>True if this field can be written when updating an existing record</p>
          */
         @JsonSetter(value = "updateable", nulls = Nulls.SKIP)
         public Builder updateable(Optional<Boolean> updateable) {
@@ -582,6 +581,29 @@ public final class TargetField {
                     updateable,
                     values,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("association")
+                    || key.equalsIgnoreCase("createable")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("encryptable")
+                    || key.equalsIgnoreCase("filter_functions")
+                    || key.equalsIgnoreCase("filterable")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("identity_functions")
+                    || key.equalsIgnoreCase("multiple_associations")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("required")
+                    || key.equalsIgnoreCase("source_type")
+                    || key.equalsIgnoreCase("supports_identity")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("updateable")
+                    || key.equalsIgnoreCase("values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

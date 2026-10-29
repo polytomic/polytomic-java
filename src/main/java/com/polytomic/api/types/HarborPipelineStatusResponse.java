@@ -51,7 +51,7 @@ public final class HarborPipelineStatusResponse {
     }
 
     /**
-     * @return Dataset refresh evidence keyed by the effective destination name visible to Harbor queries.
+     * @return Dataset refresh evidence keyed by the effective destination name visible to Harbor queries
      */
     @JsonProperty("datasets")
     public Optional<Map<String, Optional<HarborDatasetStatusResponse>>> getDatasets() {
@@ -59,7 +59,7 @@ public final class HarborPipelineStatusResponse {
     }
 
     /**
-     * @return Unique identifier of the Polytomic pipeline.
+     * @return Unique identifier of the Polytomic pipeline
      */
     @JsonProperty("id")
     public String getId() {
@@ -67,7 +67,7 @@ public final class HarborPipelineStatusResponse {
     }
 
     /**
-     * @return Whether this pipeline is enabled.
+     * @return Whether this pipeline is enabled
      */
     @JsonProperty("refresh_enabled")
     public boolean getRefreshEnabled() {
@@ -75,7 +75,7 @@ public final class HarborPipelineStatusResponse {
     }
 
     /**
-     * @return Exact Polytomic schedules that can select datasets in this pipeline.
+     * @return Exact Polytomic schedules that can select datasets in this pipeline
      */
     @JsonProperty("schedules")
     public List<HarborStatusScheduleResponse> getSchedules() {
@@ -83,7 +83,7 @@ public final class HarborPipelineStatusResponse {
     }
 
     /**
-     * @return Type of Polytomic pipeline.
+     * @return Type of Polytomic pipeline
      */
     @JsonProperty("type")
     public HarborPipelineStatusResponseType getType() {
@@ -125,7 +125,7 @@ public final class HarborPipelineStatusResponse {
 
     public interface IdStage {
         /**
-         * <p>Unique identifier of the Polytomic pipeline.</p>
+         * <p>Unique identifier of the Polytomic pipeline</p>
          */
         RefreshEnabledStage id(@NotNull String id);
 
@@ -134,14 +134,14 @@ public final class HarborPipelineStatusResponse {
 
     public interface RefreshEnabledStage {
         /**
-         * <p>Whether this pipeline is enabled.</p>
+         * <p>Whether this pipeline is enabled</p>
          */
         TypeStage refreshEnabled(boolean refreshEnabled);
     }
 
     public interface TypeStage {
         /**
-         * <p>Type of Polytomic pipeline.</p>
+         * <p>Type of Polytomic pipeline</p>
          */
         _FinalStage type(@NotNull HarborPipelineStatusResponseType type);
     }
@@ -154,14 +154,14 @@ public final class HarborPipelineStatusResponse {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Dataset refresh evidence keyed by the effective destination name visible to Harbor queries.</p>
+         * <p>Dataset refresh evidence keyed by the effective destination name visible to Harbor queries</p>
          */
         _FinalStage datasets(Optional<Map<String, Optional<HarborDatasetStatusResponse>>> datasets);
 
         _FinalStage datasets(Map<String, Optional<HarborDatasetStatusResponse>> datasets);
 
         /**
-         * <p>Exact Polytomic schedules that can select datasets in this pipeline.</p>
+         * <p>Exact Polytomic schedules that can select datasets in this pipeline</p>
          */
         _FinalStage schedules(List<HarborStatusScheduleResponse> schedules);
 
@@ -182,7 +182,6 @@ public final class HarborPipelineStatusResponse {
 
         private Optional<Map<String, Optional<HarborDatasetStatusResponse>>> datasets = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -198,7 +197,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Unique identifier of the Polytomic pipeline.</p>
+         * <p>Unique identifier of the Polytomic pipeline</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -209,7 +208,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Whether this pipeline is enabled.</p>
+         * <p>Whether this pipeline is enabled</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -220,7 +219,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Type of Polytomic pipeline.</p>
+         * <p>Type of Polytomic pipeline</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -231,7 +230,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Exact Polytomic schedules that can select datasets in this pipeline.</p>
+         * <p>Exact Polytomic schedules that can select datasets in this pipeline</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -243,7 +242,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Exact Polytomic schedules that can select datasets in this pipeline.</p>
+         * <p>Exact Polytomic schedules that can select datasets in this pipeline</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -253,7 +252,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Exact Polytomic schedules that can select datasets in this pipeline.</p>
+         * <p>Exact Polytomic schedules that can select datasets in this pipeline</p>
          */
         @java.lang.Override
         @JsonSetter(value = "schedules", nulls = Nulls.SKIP)
@@ -266,7 +265,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Dataset refresh evidence keyed by the effective destination name visible to Harbor queries.</p>
+         * <p>Dataset refresh evidence keyed by the effective destination name visible to Harbor queries</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -276,7 +275,7 @@ public final class HarborPipelineStatusResponse {
         }
 
         /**
-         * <p>Dataset refresh evidence keyed by the effective destination name visible to Harbor queries.</p>
+         * <p>Dataset refresh evidence keyed by the effective destination name visible to Harbor queries</p>
          */
         @java.lang.Override
         @JsonSetter(value = "datasets", nulls = Nulls.SKIP)
@@ -289,6 +288,18 @@ public final class HarborPipelineStatusResponse {
         public HarborPipelineStatusResponse build() {
             return new HarborPipelineStatusResponse(
                     datasets, id, refreshEnabled, schedules, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("datasets")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("refresh_enabled")
+                    || key.equalsIgnoreCase("schedules")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

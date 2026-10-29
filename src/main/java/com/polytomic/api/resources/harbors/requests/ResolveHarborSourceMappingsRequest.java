@@ -74,7 +74,6 @@ public final class ResolveHarborSourceMappingsRequest {
     public static final class Builder {
         private Optional<List<HarborSourceReference>> sources = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -100,6 +99,14 @@ public final class ResolveHarborSourceMappingsRequest {
 
         public ResolveHarborSourceMappingsRequest build() {
             return new ResolveHarborSourceMappingsRequest(sources, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("sources")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

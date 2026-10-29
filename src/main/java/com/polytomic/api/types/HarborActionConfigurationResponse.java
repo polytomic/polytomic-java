@@ -50,7 +50,7 @@ public final class HarborActionConfigurationResponse {
     }
 
     /**
-     * @return Configured source Connection ID, including sources no longer attached to the Harbor.
+     * @return Configured source Connection ID, including sources no longer attached to the Harbor
      */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
@@ -58,7 +58,7 @@ public final class HarborActionConfigurationResponse {
     }
 
     /**
-     * @return When these grants were first created.
+     * @return When these grants were first created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -66,7 +66,7 @@ public final class HarborActionConfigurationResponse {
     }
 
     /**
-     * @return Configured action permissions.
+     * @return Configured action permissions
      */
     @JsonProperty("grants")
     public Optional<List<HarborActionGrantSchema>> getGrants() {
@@ -74,7 +74,7 @@ public final class HarborActionConfigurationResponse {
     }
 
     /**
-     * @return Revision to supply when replacing or removing these grants.
+     * @return Revision to supply when replacing or removing these grants
      */
     @JsonProperty("revision")
     public Optional<String> getRevision() {
@@ -82,7 +82,7 @@ public final class HarborActionConfigurationResponse {
     }
 
     /**
-     * @return When these grants were last replaced.
+     * @return When these grants were last replaced
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
@@ -134,7 +134,6 @@ public final class HarborActionConfigurationResponse {
 
         private Optional<OffsetDateTime> updatedAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -149,7 +148,7 @@ public final class HarborActionConfigurationResponse {
         }
 
         /**
-         * <p>Configured source Connection ID, including sources no longer attached to the Harbor.</p>
+         * <p>Configured source Connection ID, including sources no longer attached to the Harbor</p>
          */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
@@ -163,7 +162,7 @@ public final class HarborActionConfigurationResponse {
         }
 
         /**
-         * <p>When these grants were first created.</p>
+         * <p>When these grants were first created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -177,7 +176,7 @@ public final class HarborActionConfigurationResponse {
         }
 
         /**
-         * <p>Configured action permissions.</p>
+         * <p>Configured action permissions</p>
          */
         @JsonSetter(value = "grants", nulls = Nulls.SKIP)
         public Builder grants(Optional<List<HarborActionGrantSchema>> grants) {
@@ -191,7 +190,7 @@ public final class HarborActionConfigurationResponse {
         }
 
         /**
-         * <p>Revision to supply when replacing or removing these grants.</p>
+         * <p>Revision to supply when replacing or removing these grants</p>
          */
         @JsonSetter(value = "revision", nulls = Nulls.SKIP)
         public Builder revision(Optional<String> revision) {
@@ -205,7 +204,7 @@ public final class HarborActionConfigurationResponse {
         }
 
         /**
-         * <p>When these grants were last replaced.</p>
+         * <p>When these grants were last replaced</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -221,6 +220,18 @@ public final class HarborActionConfigurationResponse {
         public HarborActionConfigurationResponse build() {
             return new HarborActionConfigurationResponse(
                     connectionId, createdAt, grants, revision, updatedAt, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("grants")
+                    || key.equalsIgnoreCase("revision")
+                    || key.equalsIgnoreCase("updated_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

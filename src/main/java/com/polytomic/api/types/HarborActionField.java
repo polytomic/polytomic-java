@@ -72,56 +72,89 @@ public final class HarborActionField {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Detailed type definition of the field
+     */
     @JsonProperty("definition")
     public Optional<TypesDefinition> getDefinition() {
         return definition;
     }
 
+    /**
+     * @return Description of the field
+     */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return Field ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Maximum length of a string value in bytes
+     */
     @JsonProperty("max_bytes")
     public Optional<Integer> getMaxBytes() {
         return maxBytes;
     }
 
+    /**
+     * @return Display name of the field
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Whether a string value must contain a non-whitespace character
+     */
     @JsonProperty("non_blank")
     public Optional<Boolean> getNonBlank() {
         return nonBlank;
     }
 
+    /**
+     * @return Whether the field accepts null
+     */
     @JsonProperty("nullable")
     public Optional<Boolean> getNullable() {
         return nullable;
     }
 
+    /**
+     * @return Regular expression a string value must match
+     */
     @JsonProperty("pattern")
     public Optional<String> getPattern() {
         return pattern;
     }
 
+    /**
+     * @return Whether input must include the field
+     */
     @JsonProperty("required")
     public Optional<Boolean> getRequired() {
         return required;
     }
 
+    /**
+     * @return Type of the field
+     */
     @JsonProperty("type")
     public Optional<UtilFieldType> getType() {
         return type;
     }
 
+    /**
+     * @return Known values for the field; not enforced on input
+     */
     @JsonProperty("values")
     public Optional<List<CompletionValue>> getValues() {
         return values;
@@ -201,7 +234,6 @@ public final class HarborActionField {
 
         private Optional<List<CompletionValue>> values = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -221,6 +253,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Detailed type definition of the field</p>
+         */
         @JsonSetter(value = "definition", nulls = Nulls.SKIP)
         public Builder definition(Optional<TypesDefinition> definition) {
             this.definition = definition;
@@ -232,6 +267,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Description of the field</p>
+         */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
             this.description = description;
@@ -243,6 +281,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Field ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -254,6 +295,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Maximum length of a string value in bytes</p>
+         */
         @JsonSetter(value = "max_bytes", nulls = Nulls.SKIP)
         public Builder maxBytes(Optional<Integer> maxBytes) {
             this.maxBytes = maxBytes;
@@ -265,6 +309,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Display name of the field</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -276,6 +323,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Whether a string value must contain a non-whitespace character</p>
+         */
         @JsonSetter(value = "non_blank", nulls = Nulls.SKIP)
         public Builder nonBlank(Optional<Boolean> nonBlank) {
             this.nonBlank = nonBlank;
@@ -287,6 +337,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Whether the field accepts null</p>
+         */
         @JsonSetter(value = "nullable", nulls = Nulls.SKIP)
         public Builder nullable(Optional<Boolean> nullable) {
             this.nullable = nullable;
@@ -298,6 +351,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Regular expression a string value must match</p>
+         */
         @JsonSetter(value = "pattern", nulls = Nulls.SKIP)
         public Builder pattern(Optional<String> pattern) {
             this.pattern = pattern;
@@ -309,6 +365,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Whether input must include the field</p>
+         */
         @JsonSetter(value = "required", nulls = Nulls.SKIP)
         public Builder required(Optional<Boolean> required) {
             this.required = required;
@@ -320,6 +379,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Type of the field</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<UtilFieldType> type) {
             this.type = type;
@@ -331,6 +393,9 @@ public final class HarborActionField {
             return this;
         }
 
+        /**
+         * <p>Known values for the field; not enforced on input</p>
+         */
         @JsonSetter(value = "values", nulls = Nulls.SKIP)
         public Builder values(Optional<List<CompletionValue>> values) {
             this.values = values;
@@ -356,6 +421,24 @@ public final class HarborActionField {
                     type,
                     values,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("definition")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("max_bytes")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("non_blank")
+                    || key.equalsIgnoreCase("nullable")
+                    || key.equalsIgnoreCase("pattern")
+                    || key.equalsIgnoreCase("required")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

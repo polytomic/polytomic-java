@@ -70,7 +70,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Existing or newly-created connection bound to this session.
+     * @return Existing or newly-created connection bound to this session
      */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
@@ -78,7 +78,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Whether the Connect modal uses the dark theme.
+     * @return Whether the Connect modal uses the dark theme
      */
     @JsonProperty("dark")
     public Optional<Boolean> getDark() {
@@ -86,7 +86,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Absolute time when the Connect session expires.
+     * @return Absolute time when the Connect session expires
      */
     @JsonProperty("expires_at")
     public Optional<OffsetDateTime> getExpiresAt() {
@@ -94,7 +94,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Stable identifier for this Connect session.
+     * @return Stable identifier for this Connect session
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -102,7 +102,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Trusted logo URL displayed by the Connect modal.
+     * @return Trusted logo URL displayed by the Connect modal
      */
     @JsonProperty("logo")
     public Optional<String> getLogo() {
@@ -110,7 +110,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Trusted connection name for this session.
+     * @return Trusted connection name for this session
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -118,7 +118,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Trusted organization or partner name displayed by the Connect modal.
+     * @return Trusted organization or partner name displayed by the Connect modal
      */
     @JsonProperty("organization_name")
     public Optional<String> getOrganizationName() {
@@ -126,7 +126,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return URL to redirect to after the Connect flow finishes.
+     * @return URL to redirect to after the Connect flow finishes
      */
     @JsonProperty("redirect_url")
     public Optional<String> getRedirectUrl() {
@@ -134,7 +134,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Fixed connection type for this session, if any.
+     * @return Fixed connection type for this session, if any
      */
     @JsonProperty("type")
     public Optional<String> getType() {
@@ -142,7 +142,7 @@ public final class ConnectSessionResponse {
     }
 
     /**
-     * @return Connection types allowed for this session when type is empty.
+     * @return Connection types allowed for this session when type is empty
      */
     @JsonProperty("whitelist")
     public Optional<List<String>> getWhitelist() {
@@ -219,7 +219,6 @@ public final class ConnectSessionResponse {
 
         private Optional<List<String>> whitelist = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -239,7 +238,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Existing or newly-created connection bound to this session.</p>
+         * <p>Existing or newly-created connection bound to this session</p>
          */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
@@ -253,7 +252,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Whether the Connect modal uses the dark theme.</p>
+         * <p>Whether the Connect modal uses the dark theme</p>
          */
         @JsonSetter(value = "dark", nulls = Nulls.SKIP)
         public Builder dark(Optional<Boolean> dark) {
@@ -267,7 +266,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Absolute time when the Connect session expires.</p>
+         * <p>Absolute time when the Connect session expires</p>
          */
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
@@ -281,7 +280,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Stable identifier for this Connect session.</p>
+         * <p>Stable identifier for this Connect session</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -295,7 +294,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Trusted logo URL displayed by the Connect modal.</p>
+         * <p>Trusted logo URL displayed by the Connect modal</p>
          */
         @JsonSetter(value = "logo", nulls = Nulls.SKIP)
         public Builder logo(Optional<String> logo) {
@@ -309,7 +308,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Trusted connection name for this session.</p>
+         * <p>Trusted connection name for this session</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -323,7 +322,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Trusted organization or partner name displayed by the Connect modal.</p>
+         * <p>Trusted organization or partner name displayed by the Connect modal</p>
          */
         @JsonSetter(value = "organization_name", nulls = Nulls.SKIP)
         public Builder organizationName(Optional<String> organizationName) {
@@ -337,7 +336,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>URL to redirect to after the Connect flow finishes.</p>
+         * <p>URL to redirect to after the Connect flow finishes</p>
          */
         @JsonSetter(value = "redirect_url", nulls = Nulls.SKIP)
         public Builder redirectUrl(Optional<String> redirectUrl) {
@@ -351,7 +350,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Fixed connection type for this session, if any.</p>
+         * <p>Fixed connection type for this session, if any</p>
          */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
@@ -365,7 +364,7 @@ public final class ConnectSessionResponse {
         }
 
         /**
-         * <p>Connection types allowed for this session when type is empty.</p>
+         * <p>Connection types allowed for this session when type is empty</p>
          */
         @JsonSetter(value = "whitelist", nulls = Nulls.SKIP)
         public Builder whitelist(Optional<List<String>> whitelist) {
@@ -391,6 +390,23 @@ public final class ConnectSessionResponse {
                     type,
                     whitelist,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("dark")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("logo")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_name")
+                    || key.equalsIgnoreCase("redirect_url")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("whitelist")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -4,10 +4,12 @@
 package com.polytomic.api.resources.modelsync;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -21,6 +23,7 @@ import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.UnauthorizedError;
 import com.polytomic.api.errors.UnprocessableEntityError;
+import com.polytomic.api.resources.modelsync.requests.ActivateSyncInput;
 import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
@@ -28,7 +31,6 @@ import com.polytomic.api.resources.modelsync.requests.ModelSyncListRequest;
 import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.CancelSyncResponseEnvelope;
 import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
@@ -99,7 +101,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("modelsync")
                 .addPathSegments("source");
         if (request.getParams().isPresent()) {
@@ -312,7 +314,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("modelsync/source")
                 .addPathSegments("fields");
         if (request.getParams().isPresent()) {
@@ -632,7 +634,9 @@ public class RawModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -785,7 +789,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(id));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -844,7 +848,8 @@ public class RawModelSyncClient {
      * Updates a model sync's configuration.
      * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
      * Every field in the request body is written to the sync; any field you omit is
-     * cleared or reset to its default value.</p>
+     * cleared or reset to its default value. An empty or omitted <code>policies</code> list
+     * leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
      * single field mapping — fetch the current sync with
      * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,
@@ -862,7 +867,8 @@ public class RawModelSyncClient {
      * Updates a model sync's configuration.
      * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
      * Every field in the request body is written to the sync; any field you omit is
-     * cleared or reset to its default value.</p>
+     * cleared or reset to its default value. An empty or omitted <code>policies</code> list
+     * leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
      * single field mapping — fetch the current sync with
      * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,
@@ -877,7 +883,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(id));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -886,7 +892,9 @@ public class RawModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -972,7 +980,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(id));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -980,7 +988,10 @@ public class RawModelSyncClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -1063,7 +1074,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("activate");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1073,7 +1084,9 @@ public class RawModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -1157,7 +1170,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("cancel");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1166,7 +1179,11 @@ public class RawModelSyncClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -1261,7 +1278,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("executions");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1271,7 +1288,9 @@ public class RawModelSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -1354,7 +1373,7 @@ public class RawModelSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("status");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {

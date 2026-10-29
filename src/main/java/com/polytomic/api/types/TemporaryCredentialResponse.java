@@ -53,7 +53,7 @@ public final class TemporaryCredentialResponse {
     }
 
     /**
-     * @return Timestamp after which the credential is rejected.
+     * @return Timestamp after which the credential is rejected
      */
     @JsonProperty("expires_at")
     public Optional<OffsetDateTime> getExpiresAt() {
@@ -61,7 +61,7 @@ public final class TemporaryCredentialResponse {
     }
 
     /**
-     * @return Temporary credential identifier used for usage attribution.
+     * @return Temporary credential identifier used for usage attribution
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -118,7 +118,6 @@ public final class TemporaryCredentialResponse {
 
         private Optional<String> tokenType = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -146,7 +145,7 @@ public final class TemporaryCredentialResponse {
         }
 
         /**
-         * <p>Timestamp after which the credential is rejected.</p>
+         * <p>Timestamp after which the credential is rejected</p>
          */
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
@@ -160,7 +159,7 @@ public final class TemporaryCredentialResponse {
         }
 
         /**
-         * <p>Temporary credential identifier used for usage attribution.</p>
+         * <p>Temporary credential identifier used for usage attribution</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -189,6 +188,17 @@ public final class TemporaryCredentialResponse {
 
         public TemporaryCredentialResponse build() {
             return new TemporaryCredentialResponse(accessToken, expiresAt, id, tokenType, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("access_token")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("token_type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

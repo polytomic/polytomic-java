@@ -64,7 +64,7 @@ public final class OperationMatch {
     }
 
     /**
-     * @return Stable METHOD and path identifier.
+     * @return Stable METHOD and path identifier
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -72,7 +72,7 @@ public final class OperationMatch {
     }
 
     /**
-     * @return HTTP method of the operation.
+     * @return HTTP method of the operation
      */
     @JsonProperty("method")
     public Optional<String> getMethod() {
@@ -80,7 +80,7 @@ public final class OperationMatch {
     }
 
     /**
-     * @return JSON pointer into the public OpenAPI paths object.
+     * @return JSON pointer into the public OpenAPI paths object
      */
     @JsonProperty("openapiPointer")
     public Optional<String> getOpenapiPointer() {
@@ -88,7 +88,7 @@ public final class OperationMatch {
     }
 
     /**
-     * @return Templated public API path.
+     * @return Templated public API path
      */
     @JsonProperty("path")
     public Optional<String> getPath() {
@@ -96,7 +96,7 @@ public final class OperationMatch {
     }
 
     /**
-     * @return Relative probability of selection as the single best operation for this query, not an independent relevance score.
+     * @return Relative probability of selection as the single best operation for this query, not an independent relevance score
      */
     @JsonProperty("selectionProbability")
     public Optional<Double> getSelectionProbability() {
@@ -104,7 +104,7 @@ public final class OperationMatch {
     }
 
     /**
-     * @return Short description of the operation.
+     * @return Short description of the operation
      */
     @JsonProperty("summary")
     public Optional<String> getSummary() {
@@ -169,7 +169,6 @@ public final class OperationMatch {
 
         private Optional<String> summary = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -200,7 +199,7 @@ public final class OperationMatch {
         }
 
         /**
-         * <p>Stable METHOD and path identifier.</p>
+         * <p>Stable METHOD and path identifier</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -214,7 +213,7 @@ public final class OperationMatch {
         }
 
         /**
-         * <p>HTTP method of the operation.</p>
+         * <p>HTTP method of the operation</p>
          */
         @JsonSetter(value = "method", nulls = Nulls.SKIP)
         public Builder method(Optional<String> method) {
@@ -228,7 +227,7 @@ public final class OperationMatch {
         }
 
         /**
-         * <p>JSON pointer into the public OpenAPI paths object.</p>
+         * <p>JSON pointer into the public OpenAPI paths object</p>
          */
         @JsonSetter(value = "openapiPointer", nulls = Nulls.SKIP)
         public Builder openapiPointer(Optional<String> openapiPointer) {
@@ -242,7 +241,7 @@ public final class OperationMatch {
         }
 
         /**
-         * <p>Templated public API path.</p>
+         * <p>Templated public API path</p>
          */
         @JsonSetter(value = "path", nulls = Nulls.SKIP)
         public Builder path(Optional<String> path) {
@@ -256,7 +255,7 @@ public final class OperationMatch {
         }
 
         /**
-         * <p>Relative probability of selection as the single best operation for this query, not an independent relevance score.</p>
+         * <p>Relative probability of selection as the single best operation for this query, not an independent relevance score</p>
          */
         @JsonSetter(value = "selectionProbability", nulls = Nulls.SKIP)
         public Builder selectionProbability(Optional<Double> selectionProbability) {
@@ -270,7 +269,7 @@ public final class OperationMatch {
         }
 
         /**
-         * <p>Short description of the operation.</p>
+         * <p>Short description of the operation</p>
          */
         @JsonSetter(value = "summary", nulls = Nulls.SKIP)
         public Builder summary(Optional<String> summary) {
@@ -293,6 +292,20 @@ public final class OperationMatch {
                     selectionProbability,
                     summary,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("authAudience")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("method")
+                    || key.equalsIgnoreCase("openapiPointer")
+                    || key.equalsIgnoreCase("path")
+                    || key.equalsIgnoreCase("selectionProbability")
+                    || key.equalsIgnoreCase("summary")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -45,7 +45,7 @@ public final class HarborApiKeyCreatedResponse {
     }
 
     /**
-     * @return When the credential was created.
+     * @return When the credential was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -53,7 +53,7 @@ public final class HarborApiKeyCreatedResponse {
     }
 
     /**
-     * @return Unique identifier of the credential.
+     * @return Unique identifier of the credential
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -61,7 +61,7 @@ public final class HarborApiKeyCreatedResponse {
     }
 
     /**
-     * @return Credential authorization mode.
+     * @return Credential authorization mode
      */
     @JsonProperty("mode")
     public Optional<String> getMode() {
@@ -118,7 +118,6 @@ public final class HarborApiKeyCreatedResponse {
 
         private Optional<String> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -132,7 +131,7 @@ public final class HarborApiKeyCreatedResponse {
         }
 
         /**
-         * <p>When the credential was created.</p>
+         * <p>When the credential was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -146,7 +145,7 @@ public final class HarborApiKeyCreatedResponse {
         }
 
         /**
-         * <p>Unique identifier of the credential.</p>
+         * <p>Unique identifier of the credential</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -160,7 +159,7 @@ public final class HarborApiKeyCreatedResponse {
         }
 
         /**
-         * <p>Credential authorization mode.</p>
+         * <p>Credential authorization mode</p>
          */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public Builder mode(Optional<String> mode) {
@@ -189,6 +188,17 @@ public final class HarborApiKeyCreatedResponse {
 
         public HarborApiKeyCreatedResponse build() {
             return new HarborApiKeyCreatedResponse(createdAt, id, mode, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

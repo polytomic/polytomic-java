@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
 import com.polytomic.api.resources.activity.types.ActivityListRequestOrder;
+import com.polytomic.api.types.HarboractivityEventType;
+import com.polytomic.api.types.HarboractivityOutcome;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,9 +29,9 @@ import org.jetbrains.annotations.NotNull;
 public final class ActivityListRequest {
     private final Optional<List<String>> harborId;
 
-    private final Optional<List<String>> eventType;
+    private final Optional<List<HarboractivityEventType>> eventType;
 
-    private final Optional<List<String>> outcome;
+    private final Optional<List<HarboractivityOutcome>> outcome;
 
     private final Optional<List<String>> operationId;
 
@@ -55,8 +57,8 @@ public final class ActivityListRequest {
 
     private ActivityListRequest(
             Optional<List<String>> harborId,
-            Optional<List<String>> eventType,
-            Optional<List<String>> outcome,
+            Optional<List<HarboractivityEventType>> eventType,
+            Optional<List<HarboractivityOutcome>> outcome,
             Optional<List<String>> operationId,
             Optional<List<String>> sessionId,
             Optional<List<String>> actorId,
@@ -96,7 +98,7 @@ public final class ActivityListRequest {
      * @return Return events with these event types. Repeat the parameter to filter by multiple types.
      */
     @JsonProperty("event_type")
-    public Optional<List<String>> getEventType() {
+    public Optional<List<HarboractivityEventType>> getEventType() {
         return eventType;
     }
 
@@ -104,7 +106,7 @@ public final class ActivityListRequest {
      * @return Return events with these outcomes. Repeat the parameter to filter by multiple outcomes.
      */
     @JsonProperty("outcome")
-    public Optional<List<String>> getOutcome() {
+    public Optional<List<HarboractivityOutcome>> getOutcome() {
         return outcome;
     }
 
@@ -149,7 +151,7 @@ public final class ActivityListRequest {
     }
 
     /**
-     * @return Inclusive start of the event recorded-time range.
+     * @return Inclusive start of the event recorded-time range
      */
     @JsonProperty("start_time")
     public OffsetDateTime getStartTime() {
@@ -244,7 +246,7 @@ public final class ActivityListRequest {
 
     public interface StartTimeStage {
         /**
-         * <p>Inclusive start of the event recorded-time range.</p>
+         * <p>Inclusive start of the event recorded-time range</p>
          */
         EndTimeStage startTime(@NotNull OffsetDateTime startTime);
 
@@ -277,20 +279,20 @@ public final class ActivityListRequest {
         /**
          * <p>Return events with these event types. Repeat the parameter to filter by multiple types.</p>
          */
-        _FinalStage eventType(Optional<List<String>> eventType);
+        _FinalStage eventType(Optional<List<HarboractivityEventType>> eventType);
 
-        _FinalStage eventType(List<String> eventType);
+        _FinalStage eventType(List<HarboractivityEventType> eventType);
 
-        _FinalStage eventType(String eventType);
+        _FinalStage eventType(HarboractivityEventType eventType);
 
         /**
          * <p>Return events with these outcomes. Repeat the parameter to filter by multiple outcomes.</p>
          */
-        _FinalStage outcome(Optional<List<String>> outcome);
+        _FinalStage outcome(Optional<List<HarboractivityOutcome>> outcome);
 
-        _FinalStage outcome(List<String> outcome);
+        _FinalStage outcome(List<HarboractivityOutcome> outcome);
 
-        _FinalStage outcome(String outcome);
+        _FinalStage outcome(HarboractivityOutcome outcome);
 
         /**
          * <p>Return events for these operation IDs.</p>
@@ -381,13 +383,12 @@ public final class ActivityListRequest {
 
         private Optional<List<String>> operationId = Optional.empty();
 
-        private Optional<List<String>> outcome = Optional.empty();
+        private Optional<List<HarboractivityOutcome>> outcome = Optional.empty();
 
-        private Optional<List<String>> eventType = Optional.empty();
+        private Optional<List<HarboractivityEventType>> eventType = Optional.empty();
 
         private Optional<List<String>> harborId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -411,7 +412,7 @@ public final class ActivityListRequest {
         }
 
         /**
-         * <p>Inclusive start of the event recorded-time range.</p>
+         * <p>Inclusive start of the event recorded-time range</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -623,7 +624,7 @@ public final class ActivityListRequest {
         }
 
         @java.lang.Override
-        public _FinalStage outcome(String outcome) {
+        public _FinalStage outcome(HarboractivityOutcome outcome) {
             this.outcome = Optional.of(Collections.singletonList(outcome));
             return this;
         }
@@ -633,7 +634,7 @@ public final class ActivityListRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage outcome(List<String> outcome) {
+        public _FinalStage outcome(List<HarboractivityOutcome> outcome) {
             this.outcome = Optional.ofNullable(outcome);
             return this;
         }
@@ -643,13 +644,13 @@ public final class ActivityListRequest {
          */
         @java.lang.Override
         @JsonSetter(value = "outcome", nulls = Nulls.SKIP)
-        public _FinalStage outcome(Optional<List<String>> outcome) {
+        public _FinalStage outcome(Optional<List<HarboractivityOutcome>> outcome) {
             this.outcome = outcome;
             return this;
         }
 
         @java.lang.Override
-        public _FinalStage eventType(String eventType) {
+        public _FinalStage eventType(HarboractivityEventType eventType) {
             this.eventType = Optional.of(Collections.singletonList(eventType));
             return this;
         }
@@ -659,7 +660,7 @@ public final class ActivityListRequest {
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        public _FinalStage eventType(List<String> eventType) {
+        public _FinalStage eventType(List<HarboractivityEventType> eventType) {
             this.eventType = Optional.ofNullable(eventType);
             return this;
         }
@@ -669,7 +670,7 @@ public final class ActivityListRequest {
          */
         @java.lang.Override
         @JsonSetter(value = "event_type", nulls = Nulls.SKIP)
-        public _FinalStage eventType(Optional<List<String>> eventType) {
+        public _FinalStage eventType(Optional<List<HarboractivityEventType>> eventType) {
             this.eventType = eventType;
             return this;
         }
@@ -717,6 +718,26 @@ public final class ActivityListRequest {
                     pageToken,
                     order,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("harbor_id")
+                    || key.equalsIgnoreCase("event_type")
+                    || key.equalsIgnoreCase("outcome")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("session_id")
+                    || key.equalsIgnoreCase("actor_id")
+                    || key.equalsIgnoreCase("credential_id")
+                    || key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("start_time")
+                    || key.equalsIgnoreCase("end_time")
+                    || key.equalsIgnoreCase("limit")
+                    || key.equalsIgnoreCase("page_token")
+                    || key.equalsIgnoreCase("order")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

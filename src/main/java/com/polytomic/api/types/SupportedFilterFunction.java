@@ -48,13 +48,16 @@ public final class SupportedFilterFunction {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Identifier of the comparison; use this value as a target filter condition's function.
+     */
     @JsonProperty("id")
     public Optional<FilterFunction> getId() {
         return id;
     }
 
     /**
-     * @return Human-readable label for the comparison.
+     * @return Human-readable label for the comparison
      */
     @JsonProperty("label")
     public Optional<String> getLabel() {
@@ -62,7 +65,7 @@ public final class SupportedFilterFunction {
     }
 
     /**
-     * @return True if this comparison takes a list of values rather than a single one.
+     * @return True if this comparison takes a list of values rather than a single one
      */
     @JsonProperty("multi_value")
     public Optional<Boolean> getMultiValue() {
@@ -130,7 +133,6 @@ public final class SupportedFilterFunction {
 
         private Optional<List<PickValue>> values = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,6 +146,9 @@ public final class SupportedFilterFunction {
             return this;
         }
 
+        /**
+         * <p>Identifier of the comparison; use this value as a target filter condition's function.</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<FilterFunction> id) {
             this.id = id;
@@ -156,7 +161,7 @@ public final class SupportedFilterFunction {
         }
 
         /**
-         * <p>Human-readable label for the comparison.</p>
+         * <p>Human-readable label for the comparison</p>
          */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
@@ -170,7 +175,7 @@ public final class SupportedFilterFunction {
         }
 
         /**
-         * <p>True if this comparison takes a list of values rather than a single one.</p>
+         * <p>True if this comparison takes a list of values rather than a single one</p>
          */
         @JsonSetter(value = "multi_value", nulls = Nulls.SKIP)
         public Builder multiValue(Optional<Boolean> multiValue) {
@@ -213,6 +218,18 @@ public final class SupportedFilterFunction {
 
         public SupportedFilterFunction build() {
             return new SupportedFilterFunction(id, label, multiValue, requiresValue, values, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("multi_value")
+                    || key.equalsIgnoreCase("requires_value")
+                    || key.equalsIgnoreCase("values")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -56,7 +56,7 @@ public final class IdentityCredentialHarborSchema {
     }
 
     /**
-     * @return Organization-provided summary of the Harbor.
+     * @return Organization-provided summary of the Harbor
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -64,7 +64,7 @@ public final class IdentityCredentialHarborSchema {
     }
 
     /**
-     * @return Immutable Harbor ID.
+     * @return Immutable Harbor ID
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -80,7 +80,7 @@ public final class IdentityCredentialHarborSchema {
     }
 
     /**
-     * @return Current Harbor display name.
+     * @return Current Harbor display name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -132,7 +132,6 @@ public final class IdentityCredentialHarborSchema {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -161,7 +160,7 @@ public final class IdentityCredentialHarborSchema {
         }
 
         /**
-         * <p>Organization-provided summary of the Harbor.</p>
+         * <p>Organization-provided summary of the Harbor</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -175,7 +174,7 @@ public final class IdentityCredentialHarborSchema {
         }
 
         /**
-         * <p>Immutable Harbor ID.</p>
+         * <p>Immutable Harbor ID</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -203,7 +202,7 @@ public final class IdentityCredentialHarborSchema {
         }
 
         /**
-         * <p>Current Harbor display name.</p>
+         * <p>Current Harbor display name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -219,6 +218,18 @@ public final class IdentityCredentialHarborSchema {
         public IdentityCredentialHarborSchema build() {
             return new IdentityCredentialHarborSchema(
                     actionsEnabled, description, id, mcpServerUrl, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("actions_enabled")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("mcp_server_url")
+                    || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

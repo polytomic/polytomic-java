@@ -34,7 +34,7 @@ public final class ConnectCardResponse {
     }
 
     /**
-     * @return URL that opens the Polytomic Connect flow for creating or reconnecting a Connection.
+     * @return URL that opens the hosted Polytomic Connect flow for creating or reconnecting a Connection. Empty when the request has no redirect_url.
      */
     @JsonProperty("redirect_url")
     public Optional<String> getRedirectUrl() {
@@ -42,7 +42,7 @@ public final class ConnectCardResponse {
     }
 
     /**
-     * @return Token for the Polytomic Connect session.
+     * @return Token for the Polytomic Connect session
      */
     @JsonProperty("token")
     public Optional<String> getToken() {
@@ -84,7 +84,6 @@ public final class ConnectCardResponse {
 
         private Optional<String> token = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -96,7 +95,7 @@ public final class ConnectCardResponse {
         }
 
         /**
-         * <p>URL that opens the Polytomic Connect flow for creating or reconnecting a Connection.</p>
+         * <p>URL that opens the hosted Polytomic Connect flow for creating or reconnecting a Connection. Empty when the request has no redirect_url.</p>
          */
         @JsonSetter(value = "redirect_url", nulls = Nulls.SKIP)
         public Builder redirectUrl(Optional<String> redirectUrl) {
@@ -110,7 +109,7 @@ public final class ConnectCardResponse {
         }
 
         /**
-         * <p>Token for the Polytomic Connect session.</p>
+         * <p>Token for the Polytomic Connect session</p>
          */
         @JsonSetter(value = "token", nulls = Nulls.SKIP)
         public Builder token(Optional<String> token) {
@@ -125,6 +124,14 @@ public final class ConnectCardResponse {
 
         public ConnectCardResponse build() {
             return new ConnectCardResponse(redirectUrl, token, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("redirect_url") || key.equalsIgnoreCase("token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

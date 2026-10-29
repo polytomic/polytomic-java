@@ -30,6 +30,9 @@ public final class HarborSavedQueryEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The saved query
+     */
     @JsonProperty("data")
     public Optional<HarborSavedQueryResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class HarborSavedQueryEnvelope {
     public static final class Builder {
         private Optional<HarborSavedQueryResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class HarborSavedQueryEnvelope {
             return this;
         }
 
+        /**
+         * <p>The saved query</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<HarborSavedQueryResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class HarborSavedQueryEnvelope {
 
         public HarborSavedQueryEnvelope build() {
             return new HarborSavedQueryEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

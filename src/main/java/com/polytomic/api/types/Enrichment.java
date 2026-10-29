@@ -48,11 +48,17 @@ public final class Enrichment {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Enricher configuration
+     */
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Connection ID of the enrichment source
+     */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
@@ -74,6 +80,9 @@ public final class Enrichment {
         return fields;
     }
 
+    /**
+     * @return Mappings from model fields to enricher input fields
+     */
     @JsonProperty("mappings")
     public Optional<Map<String, String>> getMappings() {
         return mappings;
@@ -124,7 +133,6 @@ public final class Enrichment {
 
         private Optional<Map<String, String>> mappings = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -138,6 +146,9 @@ public final class Enrichment {
             return this;
         }
 
+        /**
+         * <p>Enricher configuration</p>
+         */
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public Builder configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
@@ -149,6 +160,9 @@ public final class Enrichment {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the enrichment source</p>
+         */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
             this.connectionId = connectionId;
@@ -188,6 +202,9 @@ public final class Enrichment {
             return this;
         }
 
+        /**
+         * <p>Mappings from model fields to enricher input fields</p>
+         */
         @JsonSetter(value = "mappings", nulls = Nulls.SKIP)
         public Builder mappings(Optional<Map<String, String>> mappings) {
             this.mappings = mappings;
@@ -201,6 +218,18 @@ public final class Enrichment {
 
         public Enrichment build() {
             return new Enrichment(configuration, connectionId, enricherId, fields, mappings, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("enricher_id")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("mappings")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

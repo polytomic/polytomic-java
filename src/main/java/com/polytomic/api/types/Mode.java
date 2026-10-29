@@ -52,7 +52,7 @@ public final class Mode {
     }
 
     /**
-     * @return Description of the operations performed in this mode.
+     * @return Description of the operations performed in this mode
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -60,7 +60,7 @@ public final class Mode {
     }
 
     /**
-     * @return Human-readable label for the sync mode.
+     * @return Human-readable label for the sync mode
      */
     @JsonProperty("label")
     public Optional<String> getLabel() {
@@ -76,7 +76,7 @@ public final class Mode {
     }
 
     /**
-     * @return True if this mode requires a sync identity to match records on.
+     * @return True if this mode requires a sync identity to match records on
      */
     @JsonProperty("requires_identity")
     public Optional<Boolean> getRequiresIdentity() {
@@ -84,7 +84,7 @@ public final class Mode {
     }
 
     /**
-     * @return True if per-field sync modes (e.g. write-once vs. always-update) may be configured under this mode.
+     * @return True if per-field sync modes (e.g. write-once vs. always-update) may be configured under this mode
      */
     @JsonProperty("supports_field_sync_mode")
     public Optional<Boolean> getSupportsFieldSyncMode() {
@@ -92,7 +92,7 @@ public final class Mode {
     }
 
     /**
-     * @return True if this mode allows target filters to constrain which destination records are touched.
+     * @return True if this mode allows target filters to constrain which destination records are touched
      */
     @JsonProperty("supports_target_filters")
     public Optional<Boolean> getSupportsTargetFilters() {
@@ -153,7 +153,6 @@ public final class Mode {
 
         private Optional<Boolean> supportsTargetFilters = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -169,7 +168,7 @@ public final class Mode {
         }
 
         /**
-         * <p>Description of the operations performed in this mode.</p>
+         * <p>Description of the operations performed in this mode</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -183,7 +182,7 @@ public final class Mode {
         }
 
         /**
-         * <p>Human-readable label for the sync mode.</p>
+         * <p>Human-readable label for the sync mode</p>
          */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
@@ -211,7 +210,7 @@ public final class Mode {
         }
 
         /**
-         * <p>True if this mode requires a sync identity to match records on.</p>
+         * <p>True if this mode requires a sync identity to match records on</p>
          */
         @JsonSetter(value = "requires_identity", nulls = Nulls.SKIP)
         public Builder requiresIdentity(Optional<Boolean> requiresIdentity) {
@@ -225,7 +224,7 @@ public final class Mode {
         }
 
         /**
-         * <p>True if per-field sync modes (e.g. write-once vs. always-update) may be configured under this mode.</p>
+         * <p>True if per-field sync modes (e.g. write-once vs. always-update) may be configured under this mode</p>
          */
         @JsonSetter(value = "supports_field_sync_mode", nulls = Nulls.SKIP)
         public Builder supportsFieldSyncMode(Optional<Boolean> supportsFieldSyncMode) {
@@ -239,7 +238,7 @@ public final class Mode {
         }
 
         /**
-         * <p>True if this mode allows target filters to constrain which destination records are touched.</p>
+         * <p>True if this mode allows target filters to constrain which destination records are touched</p>
          */
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
         public Builder supportsTargetFilters(Optional<Boolean> supportsTargetFilters) {
@@ -261,6 +260,19 @@ public final class Mode {
                     supportsFieldSyncMode,
                     supportsTargetFilters,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("requires_identity")
+                    || key.equalsIgnoreCase("supports_field_sync_mode")
+                    || key.equalsIgnoreCase("supports_target_filters")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

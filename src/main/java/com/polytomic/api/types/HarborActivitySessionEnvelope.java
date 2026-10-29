@@ -35,11 +35,17 @@ public final class HarborActivitySessionEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The session and its events on this page
+     */
     @JsonProperty("data")
     public Optional<HarboractivityapiHarborActivitySession> getData() {
         return data;
     }
 
+    /**
+     * @return Pagination details for the next page
+     */
     @JsonProperty("pagination")
     public Optional<PaginationDetails> getPagination() {
         return pagination;
@@ -80,7 +86,6 @@ public final class HarborActivitySessionEnvelope {
 
         private Optional<PaginationDetails> pagination = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -91,6 +96,9 @@ public final class HarborActivitySessionEnvelope {
             return this;
         }
 
+        /**
+         * <p>The session and its events on this page</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<HarboractivityapiHarborActivitySession> data) {
             this.data = data;
@@ -102,6 +110,9 @@ public final class HarborActivitySessionEnvelope {
             return this;
         }
 
+        /**
+         * <p>Pagination details for the next page</p>
+         */
         @JsonSetter(value = "pagination", nulls = Nulls.SKIP)
         public Builder pagination(Optional<PaginationDetails> pagination) {
             this.pagination = pagination;
@@ -115,6 +126,14 @@ public final class HarborActivitySessionEnvelope {
 
         public HarborActivitySessionEnvelope build() {
             return new HarborActivitySessionEnvelope(data, pagination, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("pagination")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -29,6 +29,9 @@ public final class TargetResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The target object and its fields
+     */
     @JsonProperty("data")
     public Optional<TargetResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class TargetResponseEnvelope {
     public static final class Builder {
         private Optional<TargetResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class TargetResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The target object and its fields</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<TargetResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class TargetResponseEnvelope {
 
         public TargetResponseEnvelope build() {
             return new TargetResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

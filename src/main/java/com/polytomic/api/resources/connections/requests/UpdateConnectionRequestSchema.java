@@ -68,7 +68,7 @@ public final class UpdateConnectionRequestSchema {
     }
 
     /**
-     * @return Override interval for connection health checking.
+     * @return Override interval for connection health checking
      */
     @JsonProperty("healthcheck_interval")
     public Optional<String> getHealthcheckInterval() {
@@ -80,11 +80,17 @@ public final class UpdateConnectionRequestSchema {
         return name;
     }
 
+    /**
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Permissions policy IDs applied to the connection. A non-empty list replaces the connection's policies and an empty or omitted list leaves them unchanged.
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
@@ -95,6 +101,9 @@ public final class UpdateConnectionRequestSchema {
         return reconnect;
     }
 
+    /**
+     * @return Ignored. A connection's type is fixed at creation.
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
@@ -172,16 +181,22 @@ public final class UpdateConnectionRequestSchema {
         _FinalStage configuration(String key, Object value);
 
         /**
-         * <p>Override interval for connection health checking.</p>
+         * <p>Override interval for connection health checking</p>
          */
         _FinalStage healthcheckInterval(Optional<String> healthcheckInterval);
 
         _FinalStage healthcheckInterval(String healthcheckInterval);
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
+        /**
+         * <p>Permissions policy IDs applied to the connection. A non-empty list replaces the connection's policies and an empty or omitted list leaves them unchanged.</p>
+         */
         _FinalStage policies(Optional<List<String>> policies);
 
         _FinalStage policies(List<String> policies);
@@ -190,6 +205,9 @@ public final class UpdateConnectionRequestSchema {
 
         _FinalStage reconnect(Boolean reconnect);
 
+        /**
+         * <p>Ignored. A connection's type is fixed at creation.</p>
+         */
         _FinalStage type(Optional<String> type);
 
         _FinalStage type(String type);
@@ -220,7 +238,6 @@ public final class UpdateConnectionRequestSchema {
 
         private Map<String, Object> configuration = new LinkedHashMap<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -265,12 +282,19 @@ public final class UpdateConnectionRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Ignored. A connection's type is fixed at creation.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage type(String type) {
             this.type = Optional.ofNullable(type);
             return this;
         }
 
+        /**
+         * <p>Ignored. A connection's type is fixed at creation.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public _FinalStage type(Optional<String> type) {
@@ -291,12 +315,19 @@ public final class UpdateConnectionRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the connection. A non-empty list replaces the connection's policies and an empty or omitted list leaves them unchanged.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage policies(List<String> policies) {
             this.policies = Optional.ofNullable(policies);
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the connection. A non-empty list replaces the connection's policies and an empty or omitted list leaves them unchanged.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public _FinalStage policies(Optional<List<String>> policies) {
@@ -304,12 +335,19 @@ public final class UpdateConnectionRequestSchema {
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage organizationId(String organizationId) {
             this.organizationId = Optional.ofNullable(organizationId);
             return this;
         }
 
+        /**
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public _FinalStage organizationId(Optional<String> organizationId) {
@@ -318,7 +356,7 @@ public final class UpdateConnectionRequestSchema {
         }
 
         /**
-         * <p>Override interval for connection health checking.</p>
+         * <p>Override interval for connection health checking</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -328,7 +366,7 @@ public final class UpdateConnectionRequestSchema {
         }
 
         /**
-         * <p>Override interval for connection health checking.</p>
+         * <p>Override interval for connection health checking</p>
          */
         @java.lang.Override
         @JsonSetter(value = "healthcheck_interval", nulls = Nulls.SKIP)
@@ -373,6 +411,21 @@ public final class UpdateConnectionRequestSchema {
                     type,
                     validate,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("healthcheck_interval")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("reconnect")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("validate")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

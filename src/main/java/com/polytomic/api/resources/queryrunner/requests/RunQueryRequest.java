@@ -39,18 +39,24 @@ public final class RunQueryRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
     /**
-     * @return The query to execute against the connection.
+     * @return The query to execute against the connection
      */
     @JsonIgnore
     public Optional<String> getQuery() {
@@ -96,7 +102,6 @@ public final class RunQueryRequest {
 
         private Optional<String> query = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -108,6 +113,9 @@ public final class RunQueryRequest {
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
             return this;
@@ -118,6 +126,9 @@ public final class RunQueryRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -129,7 +140,7 @@ public final class RunQueryRequest {
         }
 
         /**
-         * <p>The query to execute against the connection.</p>
+         * <p>The query to execute against the connection</p>
          */
         @JsonSetter(value = "query", nulls = Nulls.SKIP)
         public Builder query(Optional<String> query) {
@@ -144,6 +155,11 @@ public final class RunQueryRequest {
 
         public RunQueryRequest build() {
             return new RunQueryRequest(polytomicHarborSession, polytomicActivityRequestId, query, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -103,7 +103,6 @@ public final class ConnectionProxyInheritedBase {
 
         private Optional<Map<String, Object>> lockedQuery = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -159,6 +158,16 @@ public final class ConnectionProxyInheritedBase {
 
         public ConnectionProxyInheritedBase build() {
             return new ConnectionProxyInheritedBase(baseUrl, lockedHeaders, lockedQuery, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("baseUrl")
+                    || key.equalsIgnoreCase("lockedHeaders")
+                    || key.equalsIgnoreCase("lockedQuery")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -57,6 +57,9 @@ public final class CreateTemporaryCredentialRequest {
         return sessionName;
     }
 
+    /**
+     * @return User or Harbor authority the temporary credential will assume
+     */
     @JsonProperty("subject")
     public TemporaryCredentialSubject getSubject() {
         return subject;
@@ -94,6 +97,9 @@ public final class CreateTemporaryCredentialRequest {
     }
 
     public interface SubjectStage {
+        /**
+         * <p>User or Harbor authority the temporary credential will assume</p>
+         */
         _FinalStage subject(@NotNull TemporaryCredentialSubject subject);
 
         Builder from(CreateTemporaryCredentialRequest other);
@@ -129,7 +135,6 @@ public final class CreateTemporaryCredentialRequest {
 
         private Optional<Integer> durationSeconds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -142,6 +147,10 @@ public final class CreateTemporaryCredentialRequest {
             return this;
         }
 
+        /**
+         * <p>User or Harbor authority the temporary credential will assume</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("subject")
         public _FinalStage subject(@NotNull TemporaryCredentialSubject subject) {
@@ -192,6 +201,16 @@ public final class CreateTemporaryCredentialRequest {
         @java.lang.Override
         public CreateTemporaryCredentialRequest build() {
             return new CreateTemporaryCredentialRequest(durationSeconds, sessionName, subject, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("duration_seconds")
+                    || key.equalsIgnoreCase("session_name")
+                    || key.equalsIgnoreCase("subject")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -30,7 +30,7 @@ public final class DeletedHarborResponse {
     }
 
     /**
-     * @return Unique identifier of the deleted Harbor.
+     * @return Unique identifier of the deleted Harbor
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -70,7 +70,6 @@ public final class DeletedHarborResponse {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -81,7 +80,7 @@ public final class DeletedHarborResponse {
         }
 
         /**
-         * <p>Unique identifier of the deleted Harbor.</p>
+         * <p>Unique identifier of the deleted Harbor</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -96,6 +95,14 @@ public final class DeletedHarborResponse {
 
         public DeletedHarborResponse build() {
             return new DeletedHarborResponse(id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -6,6 +6,7 @@ package com.polytomic.api.resources.jobs;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -59,8 +60,8 @@ public class RawJobsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/jobs")
-                .addPathSegment(type)
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(type))
+                .addPathSegment(PathSegments.validate(id));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);

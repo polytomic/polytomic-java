@@ -45,7 +45,7 @@ public final class CreateHarborContextDraftRequest {
     }
 
     /**
-     * @return Optional note stored with the draft and copied to published version 1 on promotion.
+     * @return Optional note stored with the draft and copied to published version 1 on promotion
      */
     @JsonProperty("change_note")
     public Optional<String> getChangeNote() {
@@ -132,7 +132,7 @@ public final class CreateHarborContextDraftRequest {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Optional note stored with the draft and copied to published version 1 on promotion.</p>
+         * <p>Optional note stored with the draft and copied to published version 1 on promotion</p>
          */
         _FinalStage changeNote(Optional<String> changeNote);
 
@@ -156,7 +156,6 @@ public final class CreateHarborContextDraftRequest {
 
         private Optional<String> changeNote = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -213,7 +212,7 @@ public final class CreateHarborContextDraftRequest {
         }
 
         /**
-         * <p>Optional note stored with the draft and copied to published version 1 on promotion.</p>
+         * <p>Optional note stored with the draft and copied to published version 1 on promotion</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -223,7 +222,7 @@ public final class CreateHarborContextDraftRequest {
         }
 
         /**
-         * <p>Optional note stored with the draft and copied to published version 1 on promotion.</p>
+         * <p>Optional note stored with the draft and copied to published version 1 on promotion</p>
          */
         @java.lang.Override
         @JsonSetter(value = "change_note", nulls = Nulls.SKIP)
@@ -235,6 +234,17 @@ public final class CreateHarborContextDraftRequest {
         @java.lang.Override
         public CreateHarborContextDraftRequest build() {
             return new CreateHarborContextDraftRequest(changeNote, content, description, title, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("change_note")
+                    || key.equalsIgnoreCase("content")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("title")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

@@ -5,6 +5,7 @@ package com.polytomic.api.resources.modelsync.errorhandling;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.modelsync.errorhandling.requests.UpdateSyncErrorHandlingRequest;
 import com.polytomic.api.types.SyncErrorHandlingEnvelope;
@@ -31,35 +32,73 @@ public class AsyncErrorHandlingClient {
      * Returns the error handling settings for a model sync.
      */
     public CompletableFuture<SyncErrorHandlingEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncErrorHandlingEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<SyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns the error handling settings for a model sync.
      */
     public CompletableFuture<SyncErrorHandlingEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<SyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the error handling settings for a model sync.
      */
     public CompletableFuture<SyncErrorHandlingEnvelope> update(String id) {
-        return this.rawClient.update(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncErrorHandlingEnvelope>> rawFuture = this.rawClient.update(id);
+        CompletableFuture<SyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the error handling settings for a model sync.
      */
     public CompletableFuture<SyncErrorHandlingEnvelope> update(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.update(id, requestOptions);
+        CompletableFuture<SyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates the error handling settings for a model sync.
      */
     public CompletableFuture<SyncErrorHandlingEnvelope> update(String id, UpdateSyncErrorHandlingRequest request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.update(id, request);
+        CompletableFuture<SyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -67,6 +106,14 @@ public class AsyncErrorHandlingClient {
      */
     public CompletableFuture<SyncErrorHandlingEnvelope> update(
             String id, UpdateSyncErrorHandlingRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncErrorHandlingEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<SyncErrorHandlingEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

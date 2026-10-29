@@ -41,7 +41,7 @@ public final class SearchMatchSchema {
     }
 
     /**
-     * @return Configured destination output name, when available.
+     * @return Configured destination output name, when available
      */
     @JsonProperty("output_name")
     public Optional<String> getOutputName() {
@@ -49,7 +49,7 @@ public final class SearchMatchSchema {
     }
 
     /**
-     * @return Saved source schema ID.
+     * @return Saved source schema ID
      */
     @JsonProperty("schema_id")
     public String getSchemaId() {
@@ -57,7 +57,7 @@ public final class SearchMatchSchema {
     }
 
     /**
-     * @return Source schema display name from stored metadata, when available.
+     * @return Source schema display name from stored metadata, when available
      */
     @JsonProperty("schema_name")
     public Optional<String> getSchemaName() {
@@ -97,7 +97,7 @@ public final class SearchMatchSchema {
 
     public interface SchemaIdStage {
         /**
-         * <p>Saved source schema ID.</p>
+         * <p>Saved source schema ID</p>
          */
         _FinalStage schemaId(@NotNull String schemaId);
 
@@ -112,14 +112,14 @@ public final class SearchMatchSchema {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Configured destination output name, when available.</p>
+         * <p>Configured destination output name, when available</p>
          */
         _FinalStage outputName(Optional<String> outputName);
 
         _FinalStage outputName(String outputName);
 
         /**
-         * <p>Source schema display name from stored metadata, when available.</p>
+         * <p>Source schema display name from stored metadata, when available</p>
          */
         _FinalStage schemaName(Optional<String> schemaName);
 
@@ -134,7 +134,6 @@ public final class SearchMatchSchema {
 
         private Optional<String> outputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -148,7 +147,7 @@ public final class SearchMatchSchema {
         }
 
         /**
-         * <p>Saved source schema ID.</p>
+         * <p>Saved source schema ID</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -159,7 +158,7 @@ public final class SearchMatchSchema {
         }
 
         /**
-         * <p>Source schema display name from stored metadata, when available.</p>
+         * <p>Source schema display name from stored metadata, when available</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -169,7 +168,7 @@ public final class SearchMatchSchema {
         }
 
         /**
-         * <p>Source schema display name from stored metadata, when available.</p>
+         * <p>Source schema display name from stored metadata, when available</p>
          */
         @java.lang.Override
         @JsonSetter(value = "schema_name", nulls = Nulls.SKIP)
@@ -179,7 +178,7 @@ public final class SearchMatchSchema {
         }
 
         /**
-         * <p>Configured destination output name, when available.</p>
+         * <p>Configured destination output name, when available</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -189,7 +188,7 @@ public final class SearchMatchSchema {
         }
 
         /**
-         * <p>Configured destination output name, when available.</p>
+         * <p>Configured destination output name, when available</p>
          */
         @java.lang.Override
         @JsonSetter(value = "output_name", nulls = Nulls.SKIP)
@@ -201,6 +200,16 @@ public final class SearchMatchSchema {
         @java.lang.Override
         public SearchMatchSchema build() {
             return new SearchMatchSchema(outputName, schemaId, schemaName, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("output_name")
+                    || key.equalsIgnoreCase("schema_id")
+                    || key.equalsIgnoreCase("schema_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

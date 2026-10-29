@@ -84,7 +84,7 @@ public final class UpdateBulkSchema {
     }
 
     /**
-     * @return Whether this schema is included in sync runs.
+     * @return Whether this schema is included in sync runs
      */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
@@ -100,7 +100,7 @@ public final class UpdateBulkSchema {
     }
 
     /**
-     * @return Row-level filters applied when reading from the source.
+     * @return Row-level filters applied when reading from the source
      */
     @JsonProperty("filters")
     public Optional<List<BulkFilter>> getFilters() {
@@ -116,7 +116,7 @@ public final class UpdateBulkSchema {
     }
 
     /**
-     * @return Source field used to partition rows when writing to the destination.
+     * @return Source field used to partition rows when writing to the destination
      */
     @JsonProperty("partition_key")
     public Optional<String> getPartitionKey() {
@@ -124,13 +124,16 @@ public final class UpdateBulkSchema {
     }
 
     /**
-     * @return Source field used to detect changes between incremental sync runs.
+     * @return Source field used to detect changes between incremental sync runs
      */
     @JsonProperty("tracking_field")
     public Optional<String> getTrackingField() {
         return trackingField;
     }
 
+    /**
+     * @return User-specified override for the destination object name
+     */
     @JsonProperty("user_output_name")
     public Optional<String> getUserOutputName() {
         return userOutputName;
@@ -202,7 +205,6 @@ public final class UpdateBulkSchema {
 
         private Optional<String> userOutputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -249,7 +251,7 @@ public final class UpdateBulkSchema {
         }
 
         /**
-         * <p>Whether this schema is included in sync runs.</p>
+         * <p>Whether this schema is included in sync runs</p>
          */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
@@ -277,7 +279,7 @@ public final class UpdateBulkSchema {
         }
 
         /**
-         * <p>Row-level filters applied when reading from the source.</p>
+         * <p>Row-level filters applied when reading from the source</p>
          */
         @JsonSetter(value = "filters", nulls = Nulls.SKIP)
         public Builder filters(Optional<List<BulkFilter>> filters) {
@@ -305,7 +307,7 @@ public final class UpdateBulkSchema {
         }
 
         /**
-         * <p>Source field used to partition rows when writing to the destination.</p>
+         * <p>Source field used to partition rows when writing to the destination</p>
          */
         @JsonSetter(value = "partition_key", nulls = Nulls.SKIP)
         public Builder partitionKey(Optional<String> partitionKey) {
@@ -319,7 +321,7 @@ public final class UpdateBulkSchema {
         }
 
         /**
-         * <p>Source field used to detect changes between incremental sync runs.</p>
+         * <p>Source field used to detect changes between incremental sync runs</p>
          */
         @JsonSetter(value = "tracking_field", nulls = Nulls.SKIP)
         public Builder trackingField(Optional<String> trackingField) {
@@ -332,6 +334,9 @@ public final class UpdateBulkSchema {
             return this;
         }
 
+        /**
+         * <p>User-specified override for the destination object name</p>
+         */
         @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
         public Builder userOutputName(Optional<String> userOutputName) {
             this.userOutputName = userOutputName;
@@ -355,6 +360,22 @@ public final class UpdateBulkSchema {
                     trackingField,
                     userOutputName,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data_cutoff_timestamp")
+                    || key.equalsIgnoreCase("disable_data_cutoff")
+                    || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("filters")
+                    || key.equalsIgnoreCase("history_enabled")
+                    || key.equalsIgnoreCase("partition_key")
+                    || key.equalsIgnoreCase("tracking_field")
+                    || key.equalsIgnoreCase("user_output_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

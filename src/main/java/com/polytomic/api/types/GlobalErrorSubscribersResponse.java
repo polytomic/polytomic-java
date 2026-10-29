@@ -31,7 +31,7 @@ public final class GlobalErrorSubscribersResponse {
     }
 
     /**
-     * @return Email addresses subscribed to global sync error notifications for the organization.
+     * @return Email addresses subscribed to global sync error notifications for the organization
      */
     @JsonProperty("emails")
     public Optional<List<String>> getEmails() {
@@ -71,7 +71,6 @@ public final class GlobalErrorSubscribersResponse {
     public static final class Builder {
         private Optional<List<String>> emails = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -82,7 +81,7 @@ public final class GlobalErrorSubscribersResponse {
         }
 
         /**
-         * <p>Email addresses subscribed to global sync error notifications for the organization.</p>
+         * <p>Email addresses subscribed to global sync error notifications for the organization</p>
          */
         @JsonSetter(value = "emails", nulls = Nulls.SKIP)
         public Builder emails(Optional<List<String>> emails) {
@@ -97,6 +96,14 @@ public final class GlobalErrorSubscribersResponse {
 
         public GlobalErrorSubscribersResponse build() {
             return new GlobalErrorSubscribersResponse(emails, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("emails")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

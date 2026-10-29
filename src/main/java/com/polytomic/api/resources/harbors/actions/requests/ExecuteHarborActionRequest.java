@@ -40,11 +40,17 @@ public final class ExecuteHarborActionRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
@@ -105,10 +111,16 @@ public final class ExecuteHarborActionRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession);
 
         _FinalStage polytomicHarborSession(String polytomicHarborSession);
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId);
 
         _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId);
@@ -122,7 +134,6 @@ public final class ExecuteHarborActionRequest {
 
         private Optional<String> polytomicHarborSession = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -146,24 +157,38 @@ public final class ExecuteHarborActionRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId) {
             this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(String polytomicHarborSession) {
             this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
@@ -174,6 +199,14 @@ public final class ExecuteHarborActionRequest {
         public ExecuteHarborActionRequest build() {
             return new ExecuteHarborActionRequest(
                     polytomicHarborSession, polytomicActivityRequestId, executionId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("execution_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

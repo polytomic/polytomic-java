@@ -46,7 +46,7 @@ public final class SetHarborActionConfigurationRequest {
     }
 
     /**
-     * @return Complete replacement of this Connection's action grants.
+     * @return Complete replacement of this Connection's action grants
      */
     @JsonProperty("grants")
     public Optional<List<HarborActionGrantSchema>> getGrants() {
@@ -89,7 +89,6 @@ public final class SetHarborActionConfigurationRequest {
 
         private Optional<List<HarborActionGrantSchema>> grants = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -115,7 +114,7 @@ public final class SetHarborActionConfigurationRequest {
         }
 
         /**
-         * <p>Complete replacement of this Connection's action grants.</p>
+         * <p>Complete replacement of this Connection's action grants</p>
          */
         @JsonSetter(value = "grants", nulls = Nulls.SKIP)
         public Builder grants(Optional<List<HarborActionGrantSchema>> grants) {
@@ -130,6 +129,14 @@ public final class SetHarborActionConfigurationRequest {
 
         public SetHarborActionConfigurationRequest build() {
             return new SetHarborActionConfigurationRequest(expectedRevision, grants, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("expected_revision") || key.equalsIgnoreCase("grants")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

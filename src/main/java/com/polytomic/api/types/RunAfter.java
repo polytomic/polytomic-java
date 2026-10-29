@@ -36,11 +36,17 @@ public final class RunAfter {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Bulk sync IDs this sync runs after
+     */
     @JsonProperty("bulk_sync_ids")
     public Optional<List<String>> getBulkSyncIds() {
         return bulkSyncIds;
     }
 
+    /**
+     * @return Model sync IDs this sync runs after
+     */
     @JsonProperty("sync_ids")
     public Optional<List<String>> getSyncIds() {
         return syncIds;
@@ -81,7 +87,6 @@ public final class RunAfter {
 
         private Optional<List<String>> syncIds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class RunAfter {
             return this;
         }
 
+        /**
+         * <p>Bulk sync IDs this sync runs after</p>
+         */
         @JsonSetter(value = "bulk_sync_ids", nulls = Nulls.SKIP)
         public Builder bulkSyncIds(Optional<List<String>> bulkSyncIds) {
             this.bulkSyncIds = bulkSyncIds;
@@ -103,6 +111,9 @@ public final class RunAfter {
             return this;
         }
 
+        /**
+         * <p>Model sync IDs this sync runs after</p>
+         */
         @JsonSetter(value = "sync_ids", nulls = Nulls.SKIP)
         public Builder syncIds(Optional<List<String>> syncIds) {
             this.syncIds = syncIds;
@@ -116,6 +127,14 @@ public final class RunAfter {
 
         public RunAfter build() {
             return new RunAfter(bulkSyncIds, syncIds, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("bulk_sync_ids") || key.equalsIgnoreCase("sync_ids")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -45,7 +45,7 @@ public final class SyncErrorHandling {
     }
 
     /**
-     * @return Whether records that fail are automatically retried on the next run.
+     * @return Whether records that fail are automatically retried on the next run
      */
     @JsonProperty("auto_retry_record_errors")
     public Optional<Boolean> getAutoRetryRecordErrors() {
@@ -53,7 +53,7 @@ public final class SyncErrorHandling {
     }
 
     /**
-     * @return Whether subscribers are notified when individual records fail, in addition to whole-sync failures.
+     * @return Whether subscribers are notified when individual records fail, in addition to whole-sync failures
      */
     @JsonProperty("notify_on_record_errors")
     public Optional<Boolean> getNotifyOnRecordErrors() {
@@ -61,7 +61,7 @@ public final class SyncErrorHandling {
     }
 
     /**
-     * @return Email addresses notified when this sync fails.
+     * @return Email addresses notified when this sync fails
      */
     @JsonProperty("subscribers")
     public Optional<List<String>> getSubscribers() {
@@ -69,7 +69,7 @@ public final class SyncErrorHandling {
     }
 
     /**
-     * @return Whether subscribers are notified when the sync completes with warnings.
+     * @return Whether subscribers are notified when the sync completes with warnings
      */
     @JsonProperty("warning_notifications")
     public Optional<Boolean> getWarningNotifications() {
@@ -119,7 +119,6 @@ public final class SyncErrorHandling {
 
         private Optional<Boolean> warningNotifications = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -133,7 +132,7 @@ public final class SyncErrorHandling {
         }
 
         /**
-         * <p>Whether records that fail are automatically retried on the next run.</p>
+         * <p>Whether records that fail are automatically retried on the next run</p>
          */
         @JsonSetter(value = "auto_retry_record_errors", nulls = Nulls.SKIP)
         public Builder autoRetryRecordErrors(Optional<Boolean> autoRetryRecordErrors) {
@@ -147,7 +146,7 @@ public final class SyncErrorHandling {
         }
 
         /**
-         * <p>Whether subscribers are notified when individual records fail, in addition to whole-sync failures.</p>
+         * <p>Whether subscribers are notified when individual records fail, in addition to whole-sync failures</p>
          */
         @JsonSetter(value = "notify_on_record_errors", nulls = Nulls.SKIP)
         public Builder notifyOnRecordErrors(Optional<Boolean> notifyOnRecordErrors) {
@@ -161,7 +160,7 @@ public final class SyncErrorHandling {
         }
 
         /**
-         * <p>Email addresses notified when this sync fails.</p>
+         * <p>Email addresses notified when this sync fails</p>
          */
         @JsonSetter(value = "subscribers", nulls = Nulls.SKIP)
         public Builder subscribers(Optional<List<String>> subscribers) {
@@ -175,7 +174,7 @@ public final class SyncErrorHandling {
         }
 
         /**
-         * <p>Whether subscribers are notified when the sync completes with warnings.</p>
+         * <p>Whether subscribers are notified when the sync completes with warnings</p>
          */
         @JsonSetter(value = "warning_notifications", nulls = Nulls.SKIP)
         public Builder warningNotifications(Optional<Boolean> warningNotifications) {
@@ -195,6 +194,17 @@ public final class SyncErrorHandling {
                     subscribers,
                     warningNotifications,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("auto_retry_record_errors")
+                    || key.equalsIgnoreCase("notify_on_record_errors")
+                    || key.equalsIgnoreCase("subscribers")
+                    || key.equalsIgnoreCase("warning_notifications")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

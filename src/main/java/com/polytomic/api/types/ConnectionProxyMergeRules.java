@@ -34,7 +34,7 @@ public final class ConnectionProxyMergeRules {
     }
 
     /**
-     * @return How caller-supplied headers are merged with the connection's inherited headers.
+     * @return How caller-supplied headers are merged with the connection's inherited headers
      */
     @JsonProperty("headers")
     public Optional<String> getHeaders() {
@@ -42,7 +42,7 @@ public final class ConnectionProxyMergeRules {
     }
 
     /**
-     * @return How caller-supplied query parameters are merged with the connection's inherited query parameters.
+     * @return How caller-supplied query parameters are merged with the connection's inherited query parameters
      */
     @JsonProperty("query")
     public Optional<String> getQuery() {
@@ -84,7 +84,6 @@ public final class ConnectionProxyMergeRules {
 
         private Optional<String> query = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -96,7 +95,7 @@ public final class ConnectionProxyMergeRules {
         }
 
         /**
-         * <p>How caller-supplied headers are merged with the connection's inherited headers.</p>
+         * <p>How caller-supplied headers are merged with the connection's inherited headers</p>
          */
         @JsonSetter(value = "headers", nulls = Nulls.SKIP)
         public Builder headers(Optional<String> headers) {
@@ -110,7 +109,7 @@ public final class ConnectionProxyMergeRules {
         }
 
         /**
-         * <p>How caller-supplied query parameters are merged with the connection's inherited query parameters.</p>
+         * <p>How caller-supplied query parameters are merged with the connection's inherited query parameters</p>
          */
         @JsonSetter(value = "query", nulls = Nulls.SKIP)
         public Builder query(Optional<String> query) {
@@ -125,6 +124,14 @@ public final class ConnectionProxyMergeRules {
 
         public ConnectionProxyMergeRules build() {
             return new ConnectionProxyMergeRules(headers, query, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("headers") || key.equalsIgnoreCase("query")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

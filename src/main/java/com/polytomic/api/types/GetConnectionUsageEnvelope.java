@@ -30,6 +30,9 @@ public final class GetConnectionUsageEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return API usage for the connection
+     */
     @JsonProperty("data")
     public Optional<ConnectionUsageResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class GetConnectionUsageEnvelope {
     public static final class Builder {
         private Optional<ConnectionUsageResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class GetConnectionUsageEnvelope {
             return this;
         }
 
+        /**
+         * <p>API usage for the connection</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ConnectionUsageResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class GetConnectionUsageEnvelope {
 
         public GetConnectionUsageEnvelope build() {
             return new GetConnectionUsageEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

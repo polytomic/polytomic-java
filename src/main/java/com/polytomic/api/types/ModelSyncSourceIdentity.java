@@ -31,13 +31,16 @@ public final class ModelSyncSourceIdentity {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Model field holding the value, named the same way as an identity mapping's source
+     */
     @JsonProperty("source")
     public Source getSource() {
         return source;
     }
 
     /**
-     * @return Value the field must hold.
+     * @return Value the field must hold
      */
     @JsonProperty("value")
     public String getValue() {
@@ -74,6 +77,9 @@ public final class ModelSyncSourceIdentity {
     }
 
     public interface SourceStage {
+        /**
+         * <p>Model field holding the value, named the same way as an identity mapping's source</p>
+         */
         ValueStage source(@NotNull Source source);
 
         Builder from(ModelSyncSourceIdentity other);
@@ -81,7 +87,7 @@ public final class ModelSyncSourceIdentity {
 
     public interface ValueStage {
         /**
-         * <p>Value the field must hold.</p>
+         * <p>Value the field must hold</p>
          */
         _FinalStage value(@NotNull String value);
     }
@@ -100,7 +106,6 @@ public final class ModelSyncSourceIdentity {
 
         private String value;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -112,6 +117,10 @@ public final class ModelSyncSourceIdentity {
             return this;
         }
 
+        /**
+         * <p>Model field holding the value, named the same way as an identity mapping's source</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("source")
         public ValueStage source(@NotNull Source source) {
@@ -120,7 +129,7 @@ public final class ModelSyncSourceIdentity {
         }
 
         /**
-         * <p>Value the field must hold.</p>
+         * <p>Value the field must hold</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -133,6 +142,14 @@ public final class ModelSyncSourceIdentity {
         @java.lang.Override
         public ModelSyncSourceIdentity build() {
             return new ModelSyncSourceIdentity(source, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("source") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

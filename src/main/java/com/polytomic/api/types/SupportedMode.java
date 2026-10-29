@@ -43,13 +43,16 @@ public final class SupportedMode {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Sync mode identifier
+     */
     @JsonProperty("id")
     public Optional<ModelsyncSyncTargetMode> getId() {
         return id;
     }
 
     /**
-     * @return True if the sync mode requires an identity field mapping.
+     * @return True if the sync mode requires an identity field mapping
      */
     @JsonProperty("requires_identity")
     public Optional<Boolean> getRequiresIdentity() {
@@ -57,7 +60,7 @@ public final class SupportedMode {
     }
 
     /**
-     * @return True if the target supports per-field sync modes.
+     * @return True if the target supports per-field sync modes
      */
     @JsonProperty("supports_per_field_mode")
     public Optional<Boolean> getSupportsPerFieldMode() {
@@ -65,7 +68,7 @@ public final class SupportedMode {
     }
 
     /**
-     * @return True if the sync mode supports target filters.
+     * @return True if the sync mode supports target filters
      */
     @JsonProperty("supports_target_filters")
     public Optional<Boolean> getSupportsTargetFilters() {
@@ -114,7 +117,6 @@ public final class SupportedMode {
 
         private Optional<Boolean> supportsTargetFilters = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -127,6 +129,9 @@ public final class SupportedMode {
             return this;
         }
 
+        /**
+         * <p>Sync mode identifier</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<ModelsyncSyncTargetMode> id) {
             this.id = id;
@@ -139,7 +144,7 @@ public final class SupportedMode {
         }
 
         /**
-         * <p>True if the sync mode requires an identity field mapping.</p>
+         * <p>True if the sync mode requires an identity field mapping</p>
          */
         @JsonSetter(value = "requires_identity", nulls = Nulls.SKIP)
         public Builder requiresIdentity(Optional<Boolean> requiresIdentity) {
@@ -153,7 +158,7 @@ public final class SupportedMode {
         }
 
         /**
-         * <p>True if the target supports per-field sync modes.</p>
+         * <p>True if the target supports per-field sync modes</p>
          */
         @JsonSetter(value = "supports_per_field_mode", nulls = Nulls.SKIP)
         public Builder supportsPerFieldMode(Optional<Boolean> supportsPerFieldMode) {
@@ -167,7 +172,7 @@ public final class SupportedMode {
         }
 
         /**
-         * <p>True if the sync mode supports target filters.</p>
+         * <p>True if the sync mode supports target filters</p>
          */
         @JsonSetter(value = "supports_target_filters", nulls = Nulls.SKIP)
         public Builder supportsTargetFilters(Optional<Boolean> supportsTargetFilters) {
@@ -183,6 +188,17 @@ public final class SupportedMode {
         public SupportedMode build() {
             return new SupportedMode(
                     id, requiresIdentity, supportsPerFieldMode, supportsTargetFilters, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("requires_identity")
+                    || key.equalsIgnoreCase("supports_per_field_mode")
+                    || key.equalsIgnoreCase("supports_target_filters")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

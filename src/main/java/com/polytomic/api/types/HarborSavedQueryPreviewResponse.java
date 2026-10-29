@@ -41,7 +41,7 @@ public final class HarborSavedQueryPreviewResponse {
     }
 
     /**
-     * @return Ordered preview column names.
+     * @return Ordered preview column names
      */
     @JsonProperty("columns")
     public Optional<List<String>> getColumns() {
@@ -57,7 +57,7 @@ public final class HarborSavedQueryPreviewResponse {
     }
 
     /**
-     * @return Whether validation stopped at the row or serialized-size bound.
+     * @return Whether validation stopped at the row or serialized-size bound
      */
     @JsonProperty("truncated")
     public Optional<Boolean> getTruncated() {
@@ -101,7 +101,6 @@ public final class HarborSavedQueryPreviewResponse {
 
         private Optional<Boolean> truncated = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -114,7 +113,7 @@ public final class HarborSavedQueryPreviewResponse {
         }
 
         /**
-         * <p>Ordered preview column names.</p>
+         * <p>Ordered preview column names</p>
          */
         @JsonSetter(value = "columns", nulls = Nulls.SKIP)
         public Builder columns(Optional<List<String>> columns) {
@@ -142,7 +141,7 @@ public final class HarborSavedQueryPreviewResponse {
         }
 
         /**
-         * <p>Whether validation stopped at the row or serialized-size bound.</p>
+         * <p>Whether validation stopped at the row or serialized-size bound</p>
          */
         @JsonSetter(value = "truncated", nulls = Nulls.SKIP)
         public Builder truncated(Optional<Boolean> truncated) {
@@ -157,6 +156,14 @@ public final class HarborSavedQueryPreviewResponse {
 
         public HarborSavedQueryPreviewResponse build() {
             return new HarborSavedQueryPreviewResponse(columns, rows, truncated, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("columns") || key.equalsIgnoreCase("rows") || key.equalsIgnoreCase("truncated")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

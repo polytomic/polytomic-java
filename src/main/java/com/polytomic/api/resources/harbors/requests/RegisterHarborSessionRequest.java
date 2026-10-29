@@ -60,33 +60,48 @@ public final class RegisterHarborSessionRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return ID of the key that signed the attestation
+     */
     @JsonIgnore
     public Optional<String> getPolytomicMcpKeyId() {
         return polytomicMcpKeyId;
     }
 
+    /**
+     * @return Unix time, in seconds, when the attestation was signed
+     */
     @JsonIgnore
     public Optional<Long> getPolytomicMcpTimestamp() {
         return polytomicMcpTimestamp;
     }
 
+    /**
+     * @return Single-use value of at least 16 characters included in the signature
+     */
     @JsonIgnore
     public Optional<String> getPolytomicMcpNonce() {
         return polytomicMcpNonce;
     }
 
+    /**
+     * @return Attestation signature
+     */
     @JsonIgnore
     public Optional<String> getPolytomicMcpSignature() {
         return polytomicMcpSignature;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
     /**
-     * @return MCP-observed client name.
+     * @return MCP-observed client name
      */
     @JsonProperty("client_name")
     public Optional<String> getClientName() {
@@ -94,7 +109,7 @@ public final class RegisterHarborSessionRequest {
     }
 
     /**
-     * @return MCP-observed client version.
+     * @return MCP-observed client version
      */
     @JsonProperty("client_version")
     public Optional<String> getClientVersion() {
@@ -102,7 +117,7 @@ public final class RegisterHarborSessionRequest {
     }
 
     /**
-     * @return Optional client-supplied run correlation value.
+     * @return Optional client-supplied run correlation value
      */
     @JsonProperty("external_run_id")
     public Optional<String> getExternalRunId() {
@@ -171,7 +186,6 @@ public final class RegisterHarborSessionRequest {
 
         private Optional<String> externalRunId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -188,6 +202,9 @@ public final class RegisterHarborSessionRequest {
             return this;
         }
 
+        /**
+         * <p>ID of the key that signed the attestation</p>
+         */
         public Builder polytomicMcpKeyId(Optional<String> polytomicMcpKeyId) {
             this.polytomicMcpKeyId = polytomicMcpKeyId;
             return this;
@@ -198,6 +215,9 @@ public final class RegisterHarborSessionRequest {
             return this;
         }
 
+        /**
+         * <p>Unix time, in seconds, when the attestation was signed</p>
+         */
         public Builder polytomicMcpTimestamp(Optional<Long> polytomicMcpTimestamp) {
             this.polytomicMcpTimestamp = polytomicMcpTimestamp;
             return this;
@@ -208,6 +228,9 @@ public final class RegisterHarborSessionRequest {
             return this;
         }
 
+        /**
+         * <p>Single-use value of at least 16 characters included in the signature</p>
+         */
         public Builder polytomicMcpNonce(Optional<String> polytomicMcpNonce) {
             this.polytomicMcpNonce = polytomicMcpNonce;
             return this;
@@ -218,6 +241,9 @@ public final class RegisterHarborSessionRequest {
             return this;
         }
 
+        /**
+         * <p>Attestation signature</p>
+         */
         public Builder polytomicMcpSignature(Optional<String> polytomicMcpSignature) {
             this.polytomicMcpSignature = polytomicMcpSignature;
             return this;
@@ -228,6 +254,9 @@ public final class RegisterHarborSessionRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -239,7 +268,7 @@ public final class RegisterHarborSessionRequest {
         }
 
         /**
-         * <p>MCP-observed client name.</p>
+         * <p>MCP-observed client name</p>
          */
         @JsonSetter(value = "client_name", nulls = Nulls.SKIP)
         public Builder clientName(Optional<String> clientName) {
@@ -253,7 +282,7 @@ public final class RegisterHarborSessionRequest {
         }
 
         /**
-         * <p>MCP-observed client version.</p>
+         * <p>MCP-observed client version</p>
          */
         @JsonSetter(value = "client_version", nulls = Nulls.SKIP)
         public Builder clientVersion(Optional<String> clientVersion) {
@@ -267,7 +296,7 @@ public final class RegisterHarborSessionRequest {
         }
 
         /**
-         * <p>Optional client-supplied run correlation value.</p>
+         * <p>Optional client-supplied run correlation value</p>
          */
         @JsonSetter(value = "external_run_id", nulls = Nulls.SKIP)
         public Builder externalRunId(Optional<String> externalRunId) {
@@ -291,6 +320,16 @@ public final class RegisterHarborSessionRequest {
                     clientVersion,
                     externalRunId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("client_name")
+                    || key.equalsIgnoreCase("client_version")
+                    || key.equalsIgnoreCase("external_run_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -46,7 +46,7 @@ public final class HarborActionGrantSchema {
     }
 
     /**
-     * @return Unique input field IDs for a mutating operation, or output field IDs for a read-only operation.
+     * @return Unique input field IDs for a mutating operation, or output field IDs for a read-only operation
      */
     @JsonProperty("field_ids")
     public Optional<List<String>> getFieldIds() {
@@ -62,7 +62,7 @@ public final class HarborActionGrantSchema {
     }
 
     /**
-     * @return Exact operation ID from operation discovery.
+     * @return Exact operation ID from operation discovery
      */
     @JsonProperty("operation_id")
     public String getOperationId() {
@@ -70,7 +70,7 @@ public final class HarborActionGrantSchema {
     }
 
     /**
-     * @return Exact action schema ID.
+     * @return Exact action schema ID
      */
     @JsonProperty("schema_id")
     public String getSchemaId() {
@@ -111,7 +111,7 @@ public final class HarborActionGrantSchema {
 
     public interface OperationIdStage {
         /**
-         * <p>Exact operation ID from operation discovery.</p>
+         * <p>Exact operation ID from operation discovery</p>
          */
         SchemaIdStage operationId(@NotNull String operationId);
 
@@ -120,7 +120,7 @@ public final class HarborActionGrantSchema {
 
     public interface SchemaIdStage {
         /**
-         * <p>Exact action schema ID.</p>
+         * <p>Exact action schema ID</p>
          */
         _FinalStage schemaId(@NotNull String schemaId);
     }
@@ -133,7 +133,7 @@ public final class HarborActionGrantSchema {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Unique input field IDs for a mutating operation, or output field IDs for a read-only operation.</p>
+         * <p>Unique input field IDs for a mutating operation, or output field IDs for a read-only operation</p>
          */
         _FinalStage fieldIds(Optional<List<String>> fieldIds);
 
@@ -157,7 +157,6 @@ public final class HarborActionGrantSchema {
 
         private Optional<List<String>> fieldIds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -172,7 +171,7 @@ public final class HarborActionGrantSchema {
         }
 
         /**
-         * <p>Exact operation ID from operation discovery.</p>
+         * <p>Exact operation ID from operation discovery</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -183,7 +182,7 @@ public final class HarborActionGrantSchema {
         }
 
         /**
-         * <p>Exact action schema ID.</p>
+         * <p>Exact action schema ID</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -214,7 +213,7 @@ public final class HarborActionGrantSchema {
         }
 
         /**
-         * <p>Unique input field IDs for a mutating operation, or output field IDs for a read-only operation.</p>
+         * <p>Unique input field IDs for a mutating operation, or output field IDs for a read-only operation</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -224,7 +223,7 @@ public final class HarborActionGrantSchema {
         }
 
         /**
-         * <p>Unique input field IDs for a mutating operation, or output field IDs for a read-only operation.</p>
+         * <p>Unique input field IDs for a mutating operation, or output field IDs for a read-only operation</p>
          */
         @java.lang.Override
         @JsonSetter(value = "field_ids", nulls = Nulls.SKIP)
@@ -236,6 +235,17 @@ public final class HarborActionGrantSchema {
         @java.lang.Override
         public HarborActionGrantSchema build() {
             return new HarborActionGrantSchema(fieldIds, lookupFieldIds, operationId, schemaId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("field_ids")
+                    || key.equalsIgnoreCase("lookup_field_ids")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("schema_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

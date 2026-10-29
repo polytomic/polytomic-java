@@ -29,6 +29,9 @@ public final class ConnectCardResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The Connect session
+     */
     @JsonProperty("data")
     public Optional<ConnectCardResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class ConnectCardResponseEnvelope {
     public static final class Builder {
         private Optional<ConnectCardResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class ConnectCardResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The Connect session</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ConnectCardResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class ConnectCardResponseEnvelope {
 
         public ConnectCardResponseEnvelope build() {
             return new ConnectCardResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

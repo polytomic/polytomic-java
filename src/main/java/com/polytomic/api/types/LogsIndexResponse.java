@@ -51,31 +51,49 @@ public final class LogsIndexResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Count and retrieval URL for the log of records deleted at the destination; omitted when no records were deleted
+     */
     @JsonProperty("deletes")
     public Optional<LogsIndexEntry> getDeletes() {
         return deletes;
     }
 
+    /**
+     * @return Count and retrieval URL for the log of records that failed to write; omitted when no errors were produced
+     */
     @JsonProperty("errors")
     public Optional<LogsIndexEntry> getErrors() {
         return errors;
     }
 
+    /**
+     * @return Count and retrieval URL for the log of records inserted at the destination; omitted when no records were inserted
+     */
     @JsonProperty("inserts")
     public Optional<LogsIndexEntry> getInserts() {
         return inserts;
     }
 
+    /**
+     * @return Count and retrieval URL for the log of every record processed by the execution; omitted when no records were processed
+     */
     @JsonProperty("records")
     public Optional<LogsIndexEntry> getRecords() {
         return records;
     }
 
+    /**
+     * @return Count and retrieval URL for the log of records updated at the destination; omitted when no records were updated
+     */
     @JsonProperty("updates")
     public Optional<LogsIndexEntry> getUpdates() {
         return updates;
     }
 
+    /**
+     * @return Count and retrieval URL for the log of records that produced warnings during the write; omitted when no warnings were produced
+     */
     @JsonProperty("warnings")
     public Optional<LogsIndexEntry> getWarnings() {
         return warnings;
@@ -129,7 +147,6 @@ public final class LogsIndexResponse {
 
         private Optional<LogsIndexEntry> warnings = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,6 +161,9 @@ public final class LogsIndexResponse {
             return this;
         }
 
+        /**
+         * <p>Count and retrieval URL for the log of records deleted at the destination; omitted when no records were deleted</p>
+         */
         @JsonSetter(value = "deletes", nulls = Nulls.SKIP)
         public Builder deletes(Optional<LogsIndexEntry> deletes) {
             this.deletes = deletes;
@@ -155,6 +175,9 @@ public final class LogsIndexResponse {
             return this;
         }
 
+        /**
+         * <p>Count and retrieval URL for the log of records that failed to write; omitted when no errors were produced</p>
+         */
         @JsonSetter(value = "errors", nulls = Nulls.SKIP)
         public Builder errors(Optional<LogsIndexEntry> errors) {
             this.errors = errors;
@@ -166,6 +189,9 @@ public final class LogsIndexResponse {
             return this;
         }
 
+        /**
+         * <p>Count and retrieval URL for the log of records inserted at the destination; omitted when no records were inserted</p>
+         */
         @JsonSetter(value = "inserts", nulls = Nulls.SKIP)
         public Builder inserts(Optional<LogsIndexEntry> inserts) {
             this.inserts = inserts;
@@ -177,6 +203,9 @@ public final class LogsIndexResponse {
             return this;
         }
 
+        /**
+         * <p>Count and retrieval URL for the log of every record processed by the execution; omitted when no records were processed</p>
+         */
         @JsonSetter(value = "records", nulls = Nulls.SKIP)
         public Builder records(Optional<LogsIndexEntry> records) {
             this.records = records;
@@ -188,6 +217,9 @@ public final class LogsIndexResponse {
             return this;
         }
 
+        /**
+         * <p>Count and retrieval URL for the log of records updated at the destination; omitted when no records were updated</p>
+         */
         @JsonSetter(value = "updates", nulls = Nulls.SKIP)
         public Builder updates(Optional<LogsIndexEntry> updates) {
             this.updates = updates;
@@ -199,6 +231,9 @@ public final class LogsIndexResponse {
             return this;
         }
 
+        /**
+         * <p>Count and retrieval URL for the log of records that produced warnings during the write; omitted when no warnings were produced</p>
+         */
         @JsonSetter(value = "warnings", nulls = Nulls.SKIP)
         public Builder warnings(Optional<LogsIndexEntry> warnings) {
             this.warnings = warnings;
@@ -212,6 +247,19 @@ public final class LogsIndexResponse {
 
         public LogsIndexResponse build() {
             return new LogsIndexResponse(deletes, errors, inserts, records, updates, warnings, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("deletes")
+                    || key.equalsIgnoreCase("errors")
+                    || key.equalsIgnoreCase("inserts")
+                    || key.equalsIgnoreCase("records")
+                    || key.equalsIgnoreCase("updates")
+                    || key.equalsIgnoreCase("warnings")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

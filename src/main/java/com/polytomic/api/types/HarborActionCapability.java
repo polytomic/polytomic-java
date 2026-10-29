@@ -64,46 +64,73 @@ public final class HarborActionCapability {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Description of the operation
+     */
     @JsonProperty("description")
     public Optional<String> getDescription() {
         return description;
     }
 
+    /**
+     * @return Whether the operation only reads records (read_only) or changes them (mutating)
+     */
     @JsonProperty("effect")
     public Optional<String> getEffect() {
         return effect;
     }
 
+    /**
+     * @return Provider deduplication guarantee for repeated executions; null when the operation has none and an uncertain outcome must not be retried
+     */
     @JsonProperty("idempotency")
     public Optional<SchemaOperationIdempotency> getIdempotency() {
         return idempotency;
     }
 
+    /**
+     * @return Fields the operation accepts as input
+     */
     @JsonProperty("input_fields")
     public Optional<List<HarborActionField>> getInputFields() {
         return inputFields;
     }
 
+    /**
+     * @return Fields that can identify the record to act on
+     */
     @JsonProperty("lookup_fields")
     public Optional<List<HarborActionField>> getLookupFields() {
         return lookupFields;
     }
 
+    /**
+     * @return Display name of the operation
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Operation ID
+     */
     @JsonProperty("operation_id")
     public Optional<String> getOperationId() {
         return operationId;
     }
 
+    /**
+     * @return Fields the operation returns
+     */
     @JsonProperty("output_fields")
     public Optional<List<HarborActionField>> getOutputFields() {
         return outputFields;
     }
 
+    /**
+     * @return Schema ID
+     */
     @JsonProperty("schema_id")
     public Optional<String> getSchemaId() {
         return schemaId;
@@ -175,7 +202,6 @@ public final class HarborActionCapability {
 
         private Optional<String> schemaId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -193,6 +219,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Description of the operation</p>
+         */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
             this.description = description;
@@ -204,6 +233,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Whether the operation only reads records (read_only) or changes them (mutating)</p>
+         */
         @JsonSetter(value = "effect", nulls = Nulls.SKIP)
         public Builder effect(Optional<String> effect) {
             this.effect = effect;
@@ -215,6 +247,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Provider deduplication guarantee for repeated executions; null when the operation has none and an uncertain outcome must not be retried</p>
+         */
         @JsonSetter(value = "idempotency", nulls = Nulls.SKIP)
         public Builder idempotency(Optional<SchemaOperationIdempotency> idempotency) {
             this.idempotency = idempotency;
@@ -226,6 +261,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Fields the operation accepts as input</p>
+         */
         @JsonSetter(value = "input_fields", nulls = Nulls.SKIP)
         public Builder inputFields(Optional<List<HarborActionField>> inputFields) {
             this.inputFields = inputFields;
@@ -237,6 +275,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Fields that can identify the record to act on</p>
+         */
         @JsonSetter(value = "lookup_fields", nulls = Nulls.SKIP)
         public Builder lookupFields(Optional<List<HarborActionField>> lookupFields) {
             this.lookupFields = lookupFields;
@@ -248,6 +289,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Display name of the operation</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -259,6 +303,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Operation ID</p>
+         */
         @JsonSetter(value = "operation_id", nulls = Nulls.SKIP)
         public Builder operationId(Optional<String> operationId) {
             this.operationId = operationId;
@@ -270,6 +317,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Fields the operation returns</p>
+         */
         @JsonSetter(value = "output_fields", nulls = Nulls.SKIP)
         public Builder outputFields(Optional<List<HarborActionField>> outputFields) {
             this.outputFields = outputFields;
@@ -281,6 +331,9 @@ public final class HarborActionCapability {
             return this;
         }
 
+        /**
+         * <p>Schema ID</p>
+         */
         @JsonSetter(value = "schema_id", nulls = Nulls.SKIP)
         public Builder schemaId(Optional<String> schemaId) {
             this.schemaId = schemaId;
@@ -304,6 +357,22 @@ public final class HarborActionCapability {
                     outputFields,
                     schemaId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("effect")
+                    || key.equalsIgnoreCase("idempotency")
+                    || key.equalsIgnoreCase("input_fields")
+                    || key.equalsIgnoreCase("lookup_fields")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("operation_id")
+                    || key.equalsIgnoreCase("output_fields")
+                    || key.equalsIgnoreCase("schema_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

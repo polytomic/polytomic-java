@@ -5,10 +5,12 @@ package com.polytomic.api.resources.bulksync;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.bulksync.errorhandling.AsyncErrorHandlingClient;
 import com.polytomic.api.resources.bulksync.executions.AsyncExecutionsClient;
+import com.polytomic.api.resources.bulksync.requests.ActivateBulkSyncInput;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
@@ -19,7 +21,6 @@ import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.schedules.AsyncSchedulesClient;
 import com.polytomic.api.resources.bulksync.schemas.AsyncSchemasClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.BulkSyncDestEnvelope;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
 import com.polytomic.api.types.BulkSyncListEnvelope;
@@ -73,7 +74,14 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncListEnvelope> list() {
-        return this.rawClient.list().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncListEnvelope>> rawFuture = this.rawClient.list();
+        CompletableFuture<BulkSyncListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -90,7 +98,14 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncListEnvelope> list(RequestOptions requestOptions) {
-        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncListEnvelope>> rawFuture = this.rawClient.list(requestOptions);
+        CompletableFuture<BulkSyncListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -107,7 +122,14 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncListEnvelope> list(BulkSyncListRequest request) {
-        return this.rawClient.list(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncListEnvelope>> rawFuture = this.rawClient.list(request);
+        CompletableFuture<BulkSyncListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -124,7 +146,15 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncListEnvelope> list(BulkSyncListRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncListEnvelope>> rawFuture =
+                this.rawClient.list(request, requestOptions);
+        CompletableFuture<BulkSyncListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -163,7 +193,14 @@ public class AsyncBulkSyncClient {
      * </ul>
      */
     public CompletableFuture<BulkSyncResponseEnvelope> create(CreateBulkSyncRequest request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture = this.rawClient.create(request);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -203,7 +240,15 @@ public class AsyncBulkSyncClient {
      */
     public CompletableFuture<BulkSyncResponseEnvelope> create(
             CreateBulkSyncRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -218,7 +263,14 @@ public class AsyncBulkSyncClient {
      * </ul>
      */
     public CompletableFuture<BulkSyncResponseEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -233,7 +285,15 @@ public class AsyncBulkSyncClient {
      * </ul>
      */
     public CompletableFuture<BulkSyncResponseEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -248,7 +308,14 @@ public class AsyncBulkSyncClient {
      * </ul>
      */
     public CompletableFuture<BulkSyncResponseEnvelope> get(String id, BulkSyncGetRequest request) {
-        return this.rawClient.get(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture = this.rawClient.get(id, request);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -264,14 +331,23 @@ public class AsyncBulkSyncClient {
      */
     public CompletableFuture<BulkSyncResponseEnvelope> get(
             String id, BulkSyncGetRequest request, RequestOptions requestOptions) {
-        return this.rawClient.get(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, request, requestOptions);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates an existing bulk sync's top-level configuration.
      * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
      * configuration. Every field in the request body is written to the sync; any
-     * field you omit is cleared or reset to its default value.</p>
+     * field you omit is cleared or reset to its default value. An empty or omitted
+     * <code>policies</code> list leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
      * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
@@ -303,14 +379,23 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncResponseEnvelope> update(String id, UpdateBulkSyncRequest request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates an existing bulk sync's top-level configuration.
      * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
      * configuration. Every field in the request body is written to the sync; any
-     * field you omit is cleared or reset to its default value.</p>
+     * field you omit is cleared or reset to its default value. An empty or omitted
+     * <code>policies</code> list leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
      * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
@@ -343,7 +428,15 @@ public class AsyncBulkSyncClient {
      */
     public CompletableFuture<BulkSyncResponseEnvelope> update(
             String id, UpdateBulkSyncRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<BulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -356,7 +449,14 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id) {
-        return this.rawClient.delete(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -369,7 +469,14 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -382,7 +489,14 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id, BulkSyncDeleteRequest request) {
-        return this.rawClient.delete(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -396,7 +510,14 @@ public class AsyncBulkSyncClient {
      */
     public CompletableFuture<Void> delete(
             String id, BulkSyncDeleteRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -411,8 +532,15 @@ public class AsyncBulkSyncClient {
      * <a href="../../../../../api-reference/bulk-sync/cancel"><code>POST /api/bulk/syncs/{id}/cancel</code></a>.</p>
      * </blockquote>
      */
-    public CompletableFuture<ActivateSyncEnvelope> activate(String id, ActivateSyncInput request) {
-        return this.rawClient.activate(id, request).thenApply(response -> response.body());
+    public CompletableFuture<ActivateSyncEnvelope> activate(String id, ActivateBulkSyncInput request) {
+        CompletableFuture<PolytomicHttpResponse<ActivateSyncEnvelope>> rawFuture = this.rawClient.activate(id, request);
+        CompletableFuture<ActivateSyncEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -428,8 +556,16 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<ActivateSyncEnvelope> activate(
-            String id, ActivateSyncInput request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.activate(id, request, requestOptions).thenApply(response -> response.body());
+            String id, ActivateBulkSyncInput request, IdempotentRequestOptions requestOptions) {
+        CompletableFuture<PolytomicHttpResponse<ActivateSyncEnvelope>> rawFuture =
+                this.rawClient.activate(id, request, requestOptions);
+        CompletableFuture<ActivateSyncEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -441,7 +577,14 @@ public class AsyncBulkSyncClient {
      * cancellation has taken effect.</p>
      */
     public CompletableFuture<CancelBulkSyncResponseEnvelope> cancel(String id) {
-        return this.rawClient.cancel(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelBulkSyncResponseEnvelope>> rawFuture = this.rawClient.cancel(id);
+        CompletableFuture<CancelBulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -454,7 +597,15 @@ public class AsyncBulkSyncClient {
      */
     public CompletableFuture<CancelBulkSyncResponseEnvelope> cancel(
             String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.cancel(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelBulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.cancel(id, requestOptions);
+        CompletableFuture<CancelBulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -473,7 +624,14 @@ public class AsyncBulkSyncClient {
      * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
      */
     public CompletableFuture<BulkSyncExecutionEnvelope> start(String id) {
-        return this.rawClient.start(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncExecutionEnvelope>> rawFuture = this.rawClient.start(id);
+        CompletableFuture<BulkSyncExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -492,7 +650,15 @@ public class AsyncBulkSyncClient {
      * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
      */
     public CompletableFuture<BulkSyncExecutionEnvelope> start(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.start(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncExecutionEnvelope>> rawFuture =
+                this.rawClient.start(id, requestOptions);
+        CompletableFuture<BulkSyncExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -511,7 +677,15 @@ public class AsyncBulkSyncClient {
      * <p>If another execution is already running, the endpoint returns <code>409 Conflict</code>.</p>
      */
     public CompletableFuture<BulkSyncExecutionEnvelope> start(String id, StartBulkSyncRequest request) {
-        return this.rawClient.start(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncExecutionEnvelope>> rawFuture =
+                this.rawClient.start(id, request);
+        CompletableFuture<BulkSyncExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -531,7 +705,15 @@ public class AsyncBulkSyncClient {
      */
     public CompletableFuture<BulkSyncExecutionEnvelope> start(
             String id, StartBulkSyncRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.start(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncExecutionEnvelope>> rawFuture =
+                this.rawClient.start(id, request, requestOptions);
+        CompletableFuture<BulkSyncExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -546,7 +728,14 @@ public class AsyncBulkSyncClient {
      * <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public CompletableFuture<BulkSyncStatusEnvelope> getStatus(String id) {
-        return this.rawClient.getStatus(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncStatusEnvelope>> rawFuture = this.rawClient.getStatus(id);
+        CompletableFuture<BulkSyncStatusEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -561,7 +750,15 @@ public class AsyncBulkSyncClient {
      * <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public CompletableFuture<BulkSyncStatusEnvelope> getStatus(String id, RequestOptions requestOptions) {
-        return this.rawClient.getStatus(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncStatusEnvelope>> rawFuture =
+                this.rawClient.getStatus(id, requestOptions);
+        CompletableFuture<BulkSyncStatusEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -578,7 +775,14 @@ public class AsyncBulkSyncClient {
      * large sources.</p>
      */
     public CompletableFuture<BulkSyncSourceEnvelope> getSource(String id) {
-        return this.rawClient.getSource(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceEnvelope>> rawFuture = this.rawClient.getSource(id);
+        CompletableFuture<BulkSyncSourceEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -595,7 +799,15 @@ public class AsyncBulkSyncClient {
      * large sources.</p>
      */
     public CompletableFuture<BulkSyncSourceEnvelope> getSource(String id, RequestOptions requestOptions) {
-        return this.rawClient.getSource(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceEnvelope>> rawFuture =
+                this.rawClient.getSource(id, requestOptions);
+        CompletableFuture<BulkSyncSourceEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -612,7 +824,15 @@ public class AsyncBulkSyncClient {
      * large sources.</p>
      */
     public CompletableFuture<BulkSyncSourceEnvelope> getSource(String id, BulkSyncGetSourceRequest request) {
-        return this.rawClient.getSource(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceEnvelope>> rawFuture =
+                this.rawClient.getSource(id, request);
+        CompletableFuture<BulkSyncSourceEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -630,7 +850,15 @@ public class AsyncBulkSyncClient {
      */
     public CompletableFuture<BulkSyncSourceEnvelope> getSource(
             String id, BulkSyncGetSourceRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getSource(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceEnvelope>> rawFuture =
+                this.rawClient.getSource(id, request, requestOptions);
+        CompletableFuture<BulkSyncSourceEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -647,7 +875,14 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncDestEnvelope> getDestination(String id) {
-        return this.rawClient.getDestination(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncDestEnvelope>> rawFuture = this.rawClient.getDestination(id);
+        CompletableFuture<BulkSyncDestEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -664,7 +899,15 @@ public class AsyncBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncDestEnvelope> getDestination(String id, RequestOptions requestOptions) {
-        return this.rawClient.getDestination(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncDestEnvelope>> rawFuture =
+                this.rawClient.getDestination(id, requestOptions);
+        CompletableFuture<BulkSyncDestEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public AsyncExecutionsClient executions() {

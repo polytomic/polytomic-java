@@ -129,11 +129,17 @@ public final class CreateBulkSyncRequest {
         return additionalSchedules;
     }
 
+    /**
+     * @return Controls whether Polytomic automatically enables newly discovered fields on existing objects. Valid values depend on the source backend.
+     */
     @JsonProperty("automatically_add_new_fields")
     public Optional<BulkDiscover> getAutomaticallyAddNewFields() {
         return automaticallyAddNewFields;
     }
 
+    /**
+     * @return Controls whether Polytomic automatically enables newly discovered source objects (tables). Valid values depend on the source backend.
+     */
     @JsonProperty("automatically_add_new_objects")
     public Optional<BulkDiscover> getAutomaticallyAddNewObjects() {
         return automaticallyAddNewObjects;
@@ -155,6 +161,9 @@ public final class CreateBulkSyncRequest {
         return dataCutoffTimestamp;
     }
 
+    /**
+     * @return The default bulk sync schedule. This schedule applies to all fields and schemas. Schedules are interpreted in UTC.
+     */
     @JsonProperty("default_schedule")
     public BulkSyncDefaultScheduleRequest getDefaultSchedule() {
         return defaultSchedule;
@@ -169,7 +178,7 @@ public final class CreateBulkSyncRequest {
     }
 
     /**
-     * @return Unique identifier of the connection rows are written to.
+     * @return Unique identifier of the connection rows are written to
      */
     @JsonProperty("destination_connection_id")
     public String getDestinationConnectionId() {
@@ -184,26 +193,32 @@ public final class CreateBulkSyncRequest {
         return disableRecordTimestamps;
     }
 
+    /**
+     * @return How source data is written to the destination. replicate keeps the destination in sync with the source; snapshot writes a timestamped copy per execution; append adds every delivered record, including full reads, without updating existing rows.
+     */
     @JsonProperty("mode")
     public Optional<BulkSyncTargetMode> getMode() {
         return mode;
     }
 
     /**
-     * @return Human-readable name for the bulk sync.
+     * @return Human-readable name for the bulk sync
      */
     @JsonProperty("name")
     public String getName() {
         return name;
     }
 
+    /**
+     * @return Controls whether destination object and field names are normalized (e.g. lowercased, special characters replaced). Valid values depend on the destination backend.
+     */
     @JsonProperty("normalize_names")
     public Optional<BulkNormalizeNames> getNormalizeNames() {
         return normalizeNames;
     }
 
     /**
-     * @return Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.
+     * @return Ignored for user and organization-scoped API keys, which always act in their own organization
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -211,7 +226,7 @@ public final class CreateBulkSyncRequest {
     }
 
     /**
-     * @return Identifiers of permissions policies applied to the bulk sync.
+     * @return Permissions policy IDs applied to the bulk sync. On update, a non-empty list replaces the bulk sync's policies and an empty or omitted list leaves them unchanged.
      */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
@@ -243,7 +258,7 @@ public final class CreateBulkSyncRequest {
     }
 
     /**
-     * @return Unique identifier of the connection rows are read from.
+     * @return Unique identifier of the connection rows are read from
      */
     @JsonProperty("source_connection_id")
     public String getSourceConnectionId() {
@@ -317,6 +332,9 @@ public final class CreateBulkSyncRequest {
     }
 
     public interface DefaultScheduleStage {
+        /**
+         * <p>The default bulk sync schedule. This schedule applies to all fields and schemas. Schedules are interpreted in UTC.</p>
+         */
         DestinationConnectionIdStage defaultSchedule(@NotNull BulkSyncDefaultScheduleRequest defaultSchedule);
 
         Builder from(CreateBulkSyncRequest other);
@@ -324,21 +342,21 @@ public final class CreateBulkSyncRequest {
 
     public interface DestinationConnectionIdStage {
         /**
-         * <p>Unique identifier of the connection rows are written to.</p>
+         * <p>Unique identifier of the connection rows are written to</p>
          */
         NameStage destinationConnectionId(@NotNull String destinationConnectionId);
     }
 
     public interface NameStage {
         /**
-         * <p>Human-readable name for the bulk sync.</p>
+         * <p>Human-readable name for the bulk sync</p>
          */
         SourceConnectionIdStage name(@NotNull String name);
     }
 
     public interface SourceConnectionIdStage {
         /**
-         * <p>Unique identifier of the connection rows are read from.</p>
+         * <p>Unique identifier of the connection rows are read from</p>
          */
         _FinalStage sourceConnectionId(@NotNull String sourceConnectionId);
     }
@@ -364,10 +382,16 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage additionalSchedules(List<BulkSyncAdditionalScheduleRequest> additionalSchedules);
 
+        /**
+         * <p>Controls whether Polytomic automatically enables newly discovered fields on existing objects. Valid values depend on the source backend.</p>
+         */
         _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields);
 
         _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields);
 
+        /**
+         * <p>Controls whether Polytomic automatically enables newly discovered source objects (tables). Valid values depend on the source backend.</p>
+         */
         _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects);
 
         _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects);
@@ -402,23 +426,29 @@ public final class CreateBulkSyncRequest {
 
         _FinalStage disableRecordTimestamps(Boolean disableRecordTimestamps);
 
+        /**
+         * <p>How source data is written to the destination. replicate keeps the destination in sync with the source; snapshot writes a timestamped copy per execution; append adds every delivered record, including full reads, without updating existing rows.</p>
+         */
         _FinalStage mode(Optional<BulkSyncTargetMode> mode);
 
         _FinalStage mode(BulkSyncTargetMode mode);
 
+        /**
+         * <p>Controls whether destination object and field names are normalized (e.g. lowercased, special characters replaced). Valid values depend on the destination backend.</p>
+         */
         _FinalStage normalizeNames(Optional<BulkNormalizeNames> normalizeNames);
 
         _FinalStage normalizeNames(BulkNormalizeNames normalizeNames);
 
         /**
-         * <p>Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.</p>
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
          */
         _FinalStage organizationId(Optional<String> organizationId);
 
         _FinalStage organizationId(String organizationId);
 
         /**
-         * <p>Identifiers of permissions policies applied to the bulk sync.</p>
+         * <p>Permissions policy IDs applied to the bulk sync. On update, a non-empty list replaces the bulk sync's policies and an empty or omitted list leaves them unchanged.</p>
          */
         _FinalStage policies(Optional<List<String>> policies);
 
@@ -491,7 +521,6 @@ public final class CreateBulkSyncRequest {
 
         private Optional<Boolean> active = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -520,6 +549,10 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>The default bulk sync schedule. This schedule applies to all fields and schemas. Schedules are interpreted in UTC.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("default_schedule")
         public DestinationConnectionIdStage defaultSchedule(@NotNull BulkSyncDefaultScheduleRequest defaultSchedule) {
@@ -528,7 +561,7 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Unique identifier of the connection rows are written to.</p>
+         * <p>Unique identifier of the connection rows are written to</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -539,7 +572,7 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Human-readable name for the bulk sync.</p>
+         * <p>Human-readable name for the bulk sync</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -550,7 +583,7 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Unique identifier of the connection rows are read from.</p>
+         * <p>Unique identifier of the connection rows are read from</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -621,7 +654,7 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Identifiers of permissions policies applied to the bulk sync.</p>
+         * <p>Permissions policy IDs applied to the bulk sync. On update, a non-empty list replaces the bulk sync's policies and an empty or omitted list leaves them unchanged.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -631,7 +664,7 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Identifiers of permissions policies applied to the bulk sync.</p>
+         * <p>Permissions policy IDs applied to the bulk sync. On update, a non-empty list replaces the bulk sync's policies and an empty or omitted list leaves them unchanged.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
@@ -641,7 +674,7 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.</p>
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -651,7 +684,7 @@ public final class CreateBulkSyncRequest {
         }
 
         /**
-         * <p>Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.</p>
+         * <p>Ignored for user and organization-scoped API keys, which always act in their own organization</p>
          */
         @java.lang.Override
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
@@ -660,12 +693,19 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Controls whether destination object and field names are normalized (e.g. lowercased, special characters replaced). Valid values depend on the destination backend.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage normalizeNames(BulkNormalizeNames normalizeNames) {
             this.normalizeNames = Optional.ofNullable(normalizeNames);
             return this;
         }
 
+        /**
+         * <p>Controls whether destination object and field names are normalized (e.g. lowercased, special characters replaced). Valid values depend on the destination backend.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "normalize_names", nulls = Nulls.SKIP)
         public _FinalStage normalizeNames(Optional<BulkNormalizeNames> normalizeNames) {
@@ -673,12 +713,19 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>How source data is written to the destination. replicate keeps the destination in sync with the source; snapshot writes a timestamped copy per execution; append adds every delivered record, including full reads, without updating existing rows.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage mode(BulkSyncTargetMode mode) {
             this.mode = Optional.ofNullable(mode);
             return this;
         }
 
+        /**
+         * <p>How source data is written to the destination. replicate keeps the destination in sync with the source; snapshot writes a timestamped copy per execution; append adds every delivered record, including full reads, without updating existing rows.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public _FinalStage mode(Optional<BulkSyncTargetMode> mode) {
@@ -781,12 +828,19 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Controls whether Polytomic automatically enables newly discovered source objects (tables). Valid values depend on the source backend.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage automaticallyAddNewObjects(BulkDiscover automaticallyAddNewObjects) {
             this.automaticallyAddNewObjects = Optional.ofNullable(automaticallyAddNewObjects);
             return this;
         }
 
+        /**
+         * <p>Controls whether Polytomic automatically enables newly discovered source objects (tables). Valid values depend on the source backend.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "automatically_add_new_objects", nulls = Nulls.SKIP)
         public _FinalStage automaticallyAddNewObjects(Optional<BulkDiscover> automaticallyAddNewObjects) {
@@ -794,12 +848,19 @@ public final class CreateBulkSyncRequest {
             return this;
         }
 
+        /**
+         * <p>Controls whether Polytomic automatically enables newly discovered fields on existing objects. Valid values depend on the source backend.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage automaticallyAddNewFields(BulkDiscover automaticallyAddNewFields) {
             this.automaticallyAddNewFields = Optional.ofNullable(automaticallyAddNewFields);
             return this;
         }
 
+        /**
+         * <p>Controls whether Polytomic automatically enables newly discovered fields on existing objects. Valid values depend on the source backend.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "automatically_add_new_fields", nulls = Nulls.SKIP)
         public _FinalStage automaticallyAddNewFields(Optional<BulkDiscover> automaticallyAddNewFields) {
@@ -870,6 +931,32 @@ public final class CreateBulkSyncRequest {
                     sourceConfiguration,
                     sourceConnectionId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("active")
+                    || key.equalsIgnoreCase("additional_schedules")
+                    || key.equalsIgnoreCase("automatically_add_new_fields")
+                    || key.equalsIgnoreCase("automatically_add_new_objects")
+                    || key.equalsIgnoreCase("concurrency_limit")
+                    || key.equalsIgnoreCase("data_cutoff_timestamp")
+                    || key.equalsIgnoreCase("default_schedule")
+                    || key.equalsIgnoreCase("destination_configuration")
+                    || key.equalsIgnoreCase("destination_connection_id")
+                    || key.equalsIgnoreCase("disable_record_timestamps")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("normalize_names")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("resync_concurrency_limit")
+                    || key.equalsIgnoreCase("schemas")
+                    || key.equalsIgnoreCase("source_configuration")
+                    || key.equalsIgnoreCase("source_connection_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

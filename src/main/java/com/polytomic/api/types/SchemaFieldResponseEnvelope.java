@@ -29,6 +29,9 @@ public final class SchemaFieldResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The updated schema field
+     */
     @JsonProperty("data")
     public Optional<SchemaField> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class SchemaFieldResponseEnvelope {
     public static final class Builder {
         private Optional<SchemaField> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class SchemaFieldResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The updated schema field</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<SchemaField> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class SchemaFieldResponseEnvelope {
 
         public SchemaFieldResponseEnvelope build() {
             return new SchemaFieldResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

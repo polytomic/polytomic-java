@@ -40,16 +40,25 @@ public final class SyncStatusResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The execution in progress
+     */
     @JsonProperty("current_execution")
     public Optional<GetExecutionResponseSchema> getCurrentExecution() {
         return currentExecution;
     }
 
+    /**
+     * @return The most recent finished execution
+     */
     @JsonProperty("last_execution")
     public Optional<GetExecutionResponseSchema> getLastExecution() {
         return lastExecution;
     }
 
+    /**
+     * @return When the sync is next scheduled to run
+     */
     @JsonProperty("next_execution_time")
     public Optional<OffsetDateTime> getNextExecutionTime() {
         return nextExecutionTime;
@@ -94,7 +103,6 @@ public final class SyncStatusResponse {
 
         private Optional<OffsetDateTime> nextExecutionTime = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -106,6 +114,9 @@ public final class SyncStatusResponse {
             return this;
         }
 
+        /**
+         * <p>The execution in progress</p>
+         */
         @JsonSetter(value = "current_execution", nulls = Nulls.SKIP)
         public Builder currentExecution(Optional<GetExecutionResponseSchema> currentExecution) {
             this.currentExecution = currentExecution;
@@ -117,6 +128,9 @@ public final class SyncStatusResponse {
             return this;
         }
 
+        /**
+         * <p>The most recent finished execution</p>
+         */
         @JsonSetter(value = "last_execution", nulls = Nulls.SKIP)
         public Builder lastExecution(Optional<GetExecutionResponseSchema> lastExecution) {
             this.lastExecution = lastExecution;
@@ -128,6 +142,9 @@ public final class SyncStatusResponse {
             return this;
         }
 
+        /**
+         * <p>When the sync is next scheduled to run</p>
+         */
         @JsonSetter(value = "next_execution_time", nulls = Nulls.SKIP)
         public Builder nextExecutionTime(Optional<OffsetDateTime> nextExecutionTime) {
             this.nextExecutionTime = nextExecutionTime;
@@ -141,6 +158,16 @@ public final class SyncStatusResponse {
 
         public SyncStatusResponse build() {
             return new SyncStatusResponse(currentExecution, lastExecution, nextExecutionTime, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("current_execution")
+                    || key.equalsIgnoreCase("last_execution")
+                    || key.equalsIgnoreCase("next_execution_time")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

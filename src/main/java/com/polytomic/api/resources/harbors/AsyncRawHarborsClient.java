@@ -4,10 +4,12 @@
 package com.polytomic.api.resources.harbors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -191,7 +193,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborConnectionListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -218,6 +221,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -257,7 +265,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbor/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -302,7 +310,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSchemaListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -328,6 +337,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -375,9 +389,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbor/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId);
+                .addPathSegment(PathSegments.validate(schemaId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -413,7 +427,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborConnectionSchemaEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -440,6 +455,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -484,7 +504,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -532,7 +554,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<RegisterHarborSessionEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -577,6 +600,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -611,7 +639,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbor/sessions")
-                .addPathSegment(sessionId);
+                .addPathSegment(PathSegments.validate(sessionId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -619,7 +647,10 @@ public class AsyncRawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicMcpKeyId().isPresent()) {
@@ -665,7 +696,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<CloseHarborSessionEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -708,6 +740,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -779,7 +816,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -828,6 +866,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -866,7 +909,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -891,7 +936,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<CreateHarborEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -945,6 +991,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -965,7 +1016,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId);
+                .addPathSegment(PathSegments.validate(harborId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -991,7 +1042,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1040,6 +1092,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1067,7 +1124,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId);
+                .addPathSegment(PathSegments.validate(harborId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1076,7 +1133,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -1101,7 +1160,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1160,6 +1220,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1192,7 +1257,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId);
+                .addPathSegment(PathSegments.validate(harborId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1200,7 +1265,10 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -1218,7 +1286,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<DeletedHarborEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1272,6 +1341,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1309,7 +1383,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1336,7 +1410,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1399,6 +1474,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1440,7 +1520,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1449,7 +1529,10 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -1467,7 +1550,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1532,6 +1616,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1569,7 +1658,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration")
                 .addPathSegments("connections");
         if (requestOptions != null) {
@@ -1598,7 +1687,8 @@ public class AsyncRawHarborsClient {
         }
         CompletableFuture<PolytomicHttpResponse<HarborActionSourceConnectionsEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1661,6 +1751,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1776,9 +1871,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId);
+                .addPathSegment(PathSegments.validate(connectionId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -1787,7 +1882,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -1812,7 +1909,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1877,6 +1975,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1915,9 +2018,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId);
+                .addPathSegment(PathSegments.validate(connectionId));
         QueryStringMapper.addQueryParameter(httpUrl, "expected_revision", request.getExpectedRevision(), false);
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1926,7 +2029,10 @@ public class AsyncRawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -1944,7 +2050,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2007,6 +2114,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -2092,9 +2204,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas");
         if (request.getSearch().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -2134,7 +2246,8 @@ public class AsyncRawHarborsClient {
         }
         CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationSchemasEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2199,6 +2312,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -2239,11 +2357,11 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("action-configuration/connections")
-                .addPathSegment(connectionId)
+                .addPathSegment(PathSegments.validate(connectionId))
                 .addPathSegments("schemas")
-                .addPathSegment(schemaId)
+                .addPathSegment(PathSegments.validate(schemaId))
                 .addPathSegments("operations");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -2271,7 +2389,8 @@ public class AsyncRawHarborsClient {
         }
         CompletableFuture<PolytomicHttpResponse<HarborActionConfigurationOperationsEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2336,6 +2455,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -2386,7 +2510,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -2431,7 +2555,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2486,6 +2611,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -2507,7 +2637,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -2517,7 +2647,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -2542,7 +2674,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2594,6 +2727,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -2656,7 +2794,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
                 .addPathSegments("drafts");
         if (request.getLimit().isPresent()) {
@@ -2692,7 +2830,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextDraftListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2747,6 +2886,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -2780,7 +2924,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
                 .addPathSegments("drafts");
         if (requestOptions != null) {
@@ -2791,7 +2935,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -2816,7 +2962,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextDraftEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -2869,6 +3016,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -2924,9 +3076,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId);
+                .addPathSegment(PathSegments.validate(contextId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -2962,7 +3114,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -3011,6 +3164,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -3039,9 +3197,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId);
+                .addPathSegment(PathSegments.validate(contextId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -3050,7 +3208,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -3085,7 +3245,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -3139,6 +3300,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -3183,9 +3349,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId);
+                .addPathSegment(PathSegments.validate(contextId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -3193,7 +3359,10 @@ public class AsyncRawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicHarborSession().isPresent()) {
@@ -3221,7 +3390,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<DeletedHarborContextEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -3269,6 +3439,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -3324,9 +3499,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -3363,7 +3538,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextDraftEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -3413,6 +3589,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -3451,9 +3632,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -3463,7 +3644,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -3498,7 +3681,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextDraftEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -3553,6 +3737,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -3605,9 +3794,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -3616,7 +3805,10 @@ public class AsyncRawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicHarborSession().isPresent()) {
@@ -3644,7 +3836,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<DeletedHarborContextDraftEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -3692,6 +3885,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -3758,9 +3956,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("draft")
                 .addPathSegments("promote");
         if (requestOptions != null) {
@@ -3770,7 +3968,11 @@ public class AsyncRawHarborsClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         if (request.getPolytomicHarborSession().isPresent()) {
@@ -3798,7 +4000,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextVersionEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -3851,6 +4054,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -3933,9 +4141,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("versions");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -3980,7 +4188,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextVersionListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -4033,6 +4242,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -4099,11 +4313,11 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("contexts")
-                .addPathSegment(contextId)
+                .addPathSegment(PathSegments.validate(contextId))
                 .addPathSegments("versions")
-                .addPathSegment(versionId);
+                .addPathSegment(PathSegments.validate(versionId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -4139,7 +4353,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborContextVersionEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -4189,6 +4404,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -4227,7 +4447,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("keys");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -4262,7 +4482,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborKeyListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -4316,6 +4537,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -4336,7 +4562,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("keys");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -4345,7 +4571,11 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -4363,7 +4593,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborKeyEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -4412,6 +4643,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -4432,9 +4668,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("keys")
-                .addPathSegment(keyId);
+                .addPathSegment(PathSegments.validate(keyId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -4442,7 +4678,10 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -4460,7 +4699,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<RevokedHarborKeyEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -4509,6 +4749,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -4548,7 +4793,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("query");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -4558,7 +4803,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -4593,7 +4840,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -4655,6 +4903,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -4765,7 +5018,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -4810,7 +5063,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSavedQueryListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -4880,6 +5134,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -4937,7 +5196,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -4947,7 +5206,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -4972,7 +5233,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSavedQueryDraftEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -5032,6 +5294,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -5081,7 +5348,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
                 .addPathSegments("drafts");
         if (request.getLimit().isPresent()) {
@@ -5117,7 +5384,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSavedQueryDraftListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -5170,6 +5438,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -5277,9 +5550,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId);
+                .addPathSegment(PathSegments.validate(savedQueryId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -5315,7 +5588,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSavedQueryEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -5384,6 +5658,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -5417,9 +5696,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId);
+                .addPathSegment(PathSegments.validate(savedQueryId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -5427,7 +5706,10 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -5445,7 +5727,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<DeletedHarborSavedQueryEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -5500,6 +5783,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -5548,9 +5836,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -5560,7 +5848,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -5585,7 +5875,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSavedQueryDraftEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -5645,6 +5936,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -5670,9 +5966,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -5681,7 +5977,10 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -5700,7 +5999,8 @@ public class AsyncRawHarborsClient {
         }
         CompletableFuture<PolytomicHttpResponse<DeletedHarborSavedQueryDraftEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -5760,6 +6060,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -5799,9 +6104,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft")
                 .addPathSegments("publish");
         if (requestOptions != null) {
@@ -5811,7 +6116,11 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -5829,7 +6138,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSavedQueryEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -5888,6 +6198,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -5921,9 +6236,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("draft")
                 .addPathSegments("validate");
         if (requestOptions != null) {
@@ -5933,7 +6248,11 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -5951,7 +6270,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborSavedQueryValidationEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -6004,6 +6324,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -6258,9 +6583,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("saved-queries")
-                .addPathSegment(savedQueryId)
+                .addPathSegment(PathSegments.validate(savedQueryId))
                 .addPathSegments("execute");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -6270,7 +6595,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -6305,7 +6632,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<ExecuteHarborSavedQueryEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -6375,6 +6703,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -6412,7 +6745,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("source-mappings")
                 .addPathSegments("resolve");
         if (requestOptions != null) {
@@ -6423,7 +6756,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -6449,7 +6784,8 @@ public class AsyncRawHarborsClient {
         }
         CompletableFuture<PolytomicHttpResponse<ResolveHarborSourceMappingsEnvelope>> future =
                 new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -6502,6 +6838,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -6582,7 +6923,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("status");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -6609,7 +6950,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborStatusEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -6658,6 +7000,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -6696,7 +7043,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -6731,7 +7078,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborUserListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -6785,6 +7133,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -6806,7 +7159,7 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -6816,7 +7169,9 @@ public class AsyncRawHarborsClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -6841,7 +7196,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborUserEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -6900,6 +7256,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -6920,9 +7281,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users")
-                .addPathSegment(userId);
+                .addPathSegment(PathSegments.validate(userId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -6930,7 +7291,11 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("PUT", RequestBody.create("", null))
+                .method(
+                        "PUT",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -6948,7 +7313,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<HarborUserEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -7002,6 +7368,11 @@ public class AsyncRawHarborsClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -7023,9 +7394,9 @@ public class AsyncRawHarborsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/harbors")
-                .addPathSegment(harborId)
+                .addPathSegment(PathSegments.validate(harborId))
                 .addPathSegments("users")
-                .addPathSegment(userId);
+                .addPathSegment(PathSegments.validate(userId));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -7033,7 +7404,10 @@ public class AsyncRawHarborsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -7051,7 +7425,8 @@ public class AsyncRawHarborsClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<UnassignedHarborUserEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -7104,6 +7479,11 @@ public class AsyncRawHarborsClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;

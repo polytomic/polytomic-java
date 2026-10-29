@@ -87,7 +87,6 @@ public final class ModelFilters {
 
         private Optional<String> logic = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -128,6 +127,14 @@ public final class ModelFilters {
 
         public ModelFilters build() {
             return new ModelFilters(conditions, logic, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("conditions") || key.equalsIgnoreCase("logic")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

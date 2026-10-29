@@ -40,16 +40,25 @@ public final class BulkSyncSourceStatus {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return State of the connection schema cache: uninitialized, initializing, cached, refreshing or errors
+     */
     @JsonProperty("cache_status")
     public Optional<String> getCacheStatus() {
         return cacheStatus;
     }
 
+    /**
+     * @return When the most recent schema refresh finished
+     */
     @JsonProperty("last_refresh_finished")
     public Optional<OffsetDateTime> getLastRefreshFinished() {
         return lastRefreshFinished;
     }
 
+    /**
+     * @return When the most recent schema refresh started
+     */
     @JsonProperty("last_refresh_started")
     public Optional<OffsetDateTime> getLastRefreshStarted() {
         return lastRefreshStarted;
@@ -94,7 +103,6 @@ public final class BulkSyncSourceStatus {
 
         private Optional<OffsetDateTime> lastRefreshStarted = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -106,6 +114,9 @@ public final class BulkSyncSourceStatus {
             return this;
         }
 
+        /**
+         * <p>State of the connection schema cache: uninitialized, initializing, cached, refreshing or errors</p>
+         */
         @JsonSetter(value = "cache_status", nulls = Nulls.SKIP)
         public Builder cacheStatus(Optional<String> cacheStatus) {
             this.cacheStatus = cacheStatus;
@@ -117,6 +128,9 @@ public final class BulkSyncSourceStatus {
             return this;
         }
 
+        /**
+         * <p>When the most recent schema refresh finished</p>
+         */
         @JsonSetter(value = "last_refresh_finished", nulls = Nulls.SKIP)
         public Builder lastRefreshFinished(Optional<OffsetDateTime> lastRefreshFinished) {
             this.lastRefreshFinished = lastRefreshFinished;
@@ -128,6 +142,9 @@ public final class BulkSyncSourceStatus {
             return this;
         }
 
+        /**
+         * <p>When the most recent schema refresh started</p>
+         */
         @JsonSetter(value = "last_refresh_started", nulls = Nulls.SKIP)
         public Builder lastRefreshStarted(Optional<OffsetDateTime> lastRefreshStarted) {
             this.lastRefreshStarted = lastRefreshStarted;
@@ -141,6 +158,16 @@ public final class BulkSyncSourceStatus {
 
         public BulkSyncSourceStatus build() {
             return new BulkSyncSourceStatus(cacheStatus, lastRefreshFinished, lastRefreshStarted, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("cache_status")
+                    || key.equalsIgnoreCase("last_refresh_finished")
+                    || key.equalsIgnoreCase("last_refresh_started")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

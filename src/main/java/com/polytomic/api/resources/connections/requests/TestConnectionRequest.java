@@ -42,7 +42,7 @@ public final class TestConnectionRequest {
     }
 
     /**
-     * @return Connection configuration to test.
+     * @return Connection configuration to test
      */
     @JsonProperty("configuration")
     public Map<String, Object> getConfiguration() {
@@ -58,7 +58,7 @@ public final class TestConnectionRequest {
     }
 
     /**
-     * @return The type of connection to test.
+     * @return The type of connection to test
      */
     @JsonProperty("type")
     public String getType() {
@@ -98,7 +98,7 @@ public final class TestConnectionRequest {
 
     public interface TypeStage {
         /**
-         * <p>The type of connection to test.</p>
+         * <p>The type of connection to test</p>
          */
         _FinalStage type(@NotNull String type);
 
@@ -113,7 +113,7 @@ public final class TestConnectionRequest {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Connection configuration to test.</p>
+         * <p>Connection configuration to test</p>
          */
         _FinalStage configuration(Map<String, Object> configuration);
 
@@ -137,7 +137,6 @@ public final class TestConnectionRequest {
 
         private Map<String, Object> configuration = new LinkedHashMap<>();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -151,7 +150,7 @@ public final class TestConnectionRequest {
         }
 
         /**
-         * <p>The type of connection to test.</p>
+         * <p>The type of connection to test</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -182,7 +181,7 @@ public final class TestConnectionRequest {
         }
 
         /**
-         * <p>Connection configuration to test.</p>
+         * <p>Connection configuration to test</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -192,7 +191,7 @@ public final class TestConnectionRequest {
         }
 
         /**
-         * <p>Connection configuration to test.</p>
+         * <p>Connection configuration to test</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -204,7 +203,7 @@ public final class TestConnectionRequest {
         }
 
         /**
-         * <p>Connection configuration to test.</p>
+         * <p>Connection configuration to test</p>
          */
         @java.lang.Override
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
@@ -219,6 +218,16 @@ public final class TestConnectionRequest {
         @java.lang.Override
         public TestConnectionRequest build() {
             return new TestConnectionRequest(configuration, connectionId, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

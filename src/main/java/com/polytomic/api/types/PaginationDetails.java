@@ -29,6 +29,9 @@ public final class PaginationDetails {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Token for fetching the next page of results
+     */
     @JsonProperty("next_page_token")
     public Optional<String> getNextPageToken() {
         return nextPageToken;
@@ -67,7 +70,6 @@ public final class PaginationDetails {
     public static final class Builder {
         private Optional<String> nextPageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class PaginationDetails {
             return this;
         }
 
+        /**
+         * <p>Token for fetching the next page of results</p>
+         */
         @JsonSetter(value = "next_page_token", nulls = Nulls.SKIP)
         public Builder nextPageToken(Optional<String> nextPageToken) {
             this.nextPageToken = nextPageToken;
@@ -90,6 +95,14 @@ public final class PaginationDetails {
 
         public PaginationDetails build() {
             return new PaginationDetails(nextPageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("next_page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

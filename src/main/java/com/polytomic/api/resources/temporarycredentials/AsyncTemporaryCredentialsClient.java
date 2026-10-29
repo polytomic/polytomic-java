@@ -5,6 +5,7 @@ package com.polytomic.api.resources.temporarycredentials;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.resources.temporarycredentials.requests.CreateTemporaryCredentialRequest;
 import com.polytomic.api.types.TemporaryCredentialResponseEnvelope;
 import java.util.concurrent.CompletableFuture;
@@ -62,7 +63,16 @@ public class AsyncTemporaryCredentialsClient {
      * keeps its credential ID according to the normal API usage retention period.</p>
      */
     public CompletableFuture<TemporaryCredentialResponseEnvelope> create(CreateTemporaryCredentialRequest request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TemporaryCredentialResponseEnvelope>> rawFuture =
+                this.rawClient.create(request);
+        CompletableFuture<TemporaryCredentialResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -102,6 +112,15 @@ public class AsyncTemporaryCredentialsClient {
      */
     public CompletableFuture<TemporaryCredentialResponseEnvelope> create(
             CreateTemporaryCredentialRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<TemporaryCredentialResponseEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<TemporaryCredentialResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

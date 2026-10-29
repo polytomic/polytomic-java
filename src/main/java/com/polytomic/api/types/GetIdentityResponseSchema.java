@@ -67,13 +67,16 @@ public final class GetIdentityResponseSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Metadata about the credential that authenticated the request
+     */
     @JsonProperty("credential")
     public Optional<IdentityCredentialSchema> getCredential() {
         return credential;
     }
 
     /**
-     * @return The email of the caller.
+     * @return The email of the caller
      */
     @JsonProperty("email")
     public Optional<String> getEmail() {
@@ -89,7 +92,7 @@ public final class GetIdentityResponseSchema {
     }
 
     /**
-     * @return Whether the caller is using an organization key.
+     * @return Whether the caller is using an organization key
      */
     @JsonProperty("is_organization")
     public Optional<Boolean> getIsOrganization() {
@@ -97,7 +100,7 @@ public final class GetIdentityResponseSchema {
     }
 
     /**
-     * @return Whether the caller is using a partner key.
+     * @return Whether the caller is using a partner key
      */
     @JsonProperty("is_partner")
     public Optional<Boolean> getIsPartner() {
@@ -105,7 +108,7 @@ public final class GetIdentityResponseSchema {
     }
 
     /**
-     * @return Whether the caller is a system actor.
+     * @return Whether the caller is a system actor
      */
     @JsonProperty("is_system")
     public Optional<Boolean> getIsSystem() {
@@ -113,7 +116,7 @@ public final class GetIdentityResponseSchema {
     }
 
     /**
-     * @return Whether the caller is a user.
+     * @return Whether the caller is a user
      */
     @JsonProperty("is_user")
     public Optional<Boolean> getIsUser() {
@@ -121,7 +124,7 @@ public final class GetIdentityResponseSchema {
     }
 
     /**
-     * @return The ID of the organization the caller belongs to.
+     * @return The ID of the organization the caller belongs to
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -129,7 +132,7 @@ public final class GetIdentityResponseSchema {
     }
 
     /**
-     * @return The name of the organization the caller belongs to.
+     * @return The name of the organization the caller belongs to
      */
     @JsonProperty("organization_name")
     public Optional<String> getOrganizationName() {
@@ -214,7 +217,6 @@ public final class GetIdentityResponseSchema {
 
         private Optional<String> role = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -233,6 +235,9 @@ public final class GetIdentityResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Metadata about the credential that authenticated the request</p>
+         */
         @JsonSetter(value = "credential", nulls = Nulls.SKIP)
         public Builder credential(Optional<IdentityCredentialSchema> credential) {
             this.credential = credential;
@@ -245,7 +250,7 @@ public final class GetIdentityResponseSchema {
         }
 
         /**
-         * <p>The email of the caller.</p>
+         * <p>The email of the caller</p>
          */
         @JsonSetter(value = "email", nulls = Nulls.SKIP)
         public Builder email(Optional<String> email) {
@@ -273,7 +278,7 @@ public final class GetIdentityResponseSchema {
         }
 
         /**
-         * <p>Whether the caller is using an organization key.</p>
+         * <p>Whether the caller is using an organization key</p>
          */
         @JsonSetter(value = "is_organization", nulls = Nulls.SKIP)
         public Builder isOrganization(Optional<Boolean> isOrganization) {
@@ -287,7 +292,7 @@ public final class GetIdentityResponseSchema {
         }
 
         /**
-         * <p>Whether the caller is using a partner key.</p>
+         * <p>Whether the caller is using a partner key</p>
          */
         @JsonSetter(value = "is_partner", nulls = Nulls.SKIP)
         public Builder isPartner(Optional<Boolean> isPartner) {
@@ -301,7 +306,7 @@ public final class GetIdentityResponseSchema {
         }
 
         /**
-         * <p>Whether the caller is a system actor.</p>
+         * <p>Whether the caller is a system actor</p>
          */
         @JsonSetter(value = "is_system", nulls = Nulls.SKIP)
         public Builder isSystem(Optional<Boolean> isSystem) {
@@ -315,7 +320,7 @@ public final class GetIdentityResponseSchema {
         }
 
         /**
-         * <p>Whether the caller is a user.</p>
+         * <p>Whether the caller is a user</p>
          */
         @JsonSetter(value = "is_user", nulls = Nulls.SKIP)
         public Builder isUser(Optional<Boolean> isUser) {
@@ -329,7 +334,7 @@ public final class GetIdentityResponseSchema {
         }
 
         /**
-         * <p>The ID of the organization the caller belongs to.</p>
+         * <p>The ID of the organization the caller belongs to</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -343,7 +348,7 @@ public final class GetIdentityResponseSchema {
         }
 
         /**
-         * <p>The name of the organization the caller belongs to.</p>
+         * <p>The name of the organization the caller belongs to</p>
          */
         @JsonSetter(value = "organization_name", nulls = Nulls.SKIP)
         public Builder organizationName(Optional<String> organizationName) {
@@ -383,6 +388,23 @@ public final class GetIdentityResponseSchema {
                     organizationName,
                     role,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("credential")
+                    || key.equalsIgnoreCase("email")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("is_organization")
+                    || key.equalsIgnoreCase("is_partner")
+                    || key.equalsIgnoreCase("is_system")
+                    || key.equalsIgnoreCase("is_user")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("organization_name")
+                    || key.equalsIgnoreCase("role")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

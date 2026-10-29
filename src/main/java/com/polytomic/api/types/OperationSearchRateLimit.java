@@ -34,7 +34,7 @@ public final class OperationSearchRateLimit {
     }
 
     /**
-     * @return The exhausted question budget.
+     * @return The exhausted question budget
      */
     @JsonProperty("reason")
     public OperationSearchRateLimitReason getReason() {
@@ -42,7 +42,7 @@ public final class OperationSearchRateLimit {
     }
 
     /**
-     * @return UTC time when this exhausted budget resets.
+     * @return UTC time when this exhausted budget resets
      */
     @JsonProperty("reset_at")
     public OffsetDateTime getResetAt() {
@@ -80,7 +80,7 @@ public final class OperationSearchRateLimit {
 
     public interface ReasonStage {
         /**
-         * <p>The exhausted question budget.</p>
+         * <p>The exhausted question budget</p>
          */
         ResetAtStage reason(@NotNull OperationSearchRateLimitReason reason);
 
@@ -89,7 +89,7 @@ public final class OperationSearchRateLimit {
 
     public interface ResetAtStage {
         /**
-         * <p>UTC time when this exhausted budget resets.</p>
+         * <p>UTC time when this exhausted budget resets</p>
          */
         _FinalStage resetAt(@NotNull OffsetDateTime resetAt);
     }
@@ -108,7 +108,6 @@ public final class OperationSearchRateLimit {
 
         private OffsetDateTime resetAt;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -121,7 +120,7 @@ public final class OperationSearchRateLimit {
         }
 
         /**
-         * <p>The exhausted question budget.</p>
+         * <p>The exhausted question budget</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -132,7 +131,7 @@ public final class OperationSearchRateLimit {
         }
 
         /**
-         * <p>UTC time when this exhausted budget resets.</p>
+         * <p>UTC time when this exhausted budget resets</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -145,6 +144,14 @@ public final class OperationSearchRateLimit {
         @java.lang.Override
         public OperationSearchRateLimit build() {
             return new OperationSearchRateLimit(reason, resetAt, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("reason") || key.equalsIgnoreCase("reset_at")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

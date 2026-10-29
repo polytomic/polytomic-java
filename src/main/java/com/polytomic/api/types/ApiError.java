@@ -43,21 +43,33 @@ public final class ApiError {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Machine-readable error key, when the error has one
+     */
     @JsonProperty("key")
     public Optional<String> getKey() {
         return key;
     }
 
+    /**
+     * @return Error message
+     */
     @JsonProperty("message")
     public Optional<String> getMessage() {
         return message;
     }
 
+    /**
+     * @return Structured details about the error, when available
+     */
     @JsonProperty("metadata")
     public Optional<Map<String, Object>> getMetadata() {
         return metadata;
     }
 
+    /**
+     * @return HTTP status code
+     */
     @JsonProperty("status")
     public Optional<Integer> getStatus() {
         return status;
@@ -105,7 +117,6 @@ public final class ApiError {
 
         private Optional<Integer> status = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -118,6 +129,9 @@ public final class ApiError {
             return this;
         }
 
+        /**
+         * <p>Machine-readable error key, when the error has one</p>
+         */
         @JsonSetter(value = "key", nulls = Nulls.SKIP)
         public Builder key(Optional<String> key) {
             this.key = key;
@@ -129,6 +143,9 @@ public final class ApiError {
             return this;
         }
 
+        /**
+         * <p>Error message</p>
+         */
         @JsonSetter(value = "message", nulls = Nulls.SKIP)
         public Builder message(Optional<String> message) {
             this.message = message;
@@ -140,6 +157,9 @@ public final class ApiError {
             return this;
         }
 
+        /**
+         * <p>Structured details about the error, when available</p>
+         */
         @JsonSetter(value = "metadata", nulls = Nulls.SKIP)
         public Builder metadata(Optional<Map<String, Object>> metadata) {
             this.metadata = metadata;
@@ -151,6 +171,9 @@ public final class ApiError {
             return this;
         }
 
+        /**
+         * <p>HTTP status code</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<Integer> status) {
             this.status = status;
@@ -164,6 +187,17 @@ public final class ApiError {
 
         public ApiError build() {
             return new ApiError(key, message, metadata, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("key")
+                    || key.equalsIgnoreCase("message")
+                    || key.equalsIgnoreCase("metadata")
+                    || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

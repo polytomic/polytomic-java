@@ -44,11 +44,17 @@ public final class HarborsListContextVersionsRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
@@ -63,7 +69,7 @@ public final class HarborsListContextVersionsRequest {
     }
 
     /**
-     * @return Opaque pagination cursor returned by the previous request.
+     * @return Opaque pagination cursor returned by the previous request
      */
     @JsonProperty("page_token")
     public Optional<String> getPageToken() {
@@ -112,7 +118,6 @@ public final class HarborsListContextVersionsRequest {
 
         private Optional<String> pageToken = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -125,6 +130,9 @@ public final class HarborsListContextVersionsRequest {
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         public Builder polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
             return this;
@@ -135,6 +143,9 @@ public final class HarborsListContextVersionsRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         public Builder polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
@@ -160,7 +171,7 @@ public final class HarborsListContextVersionsRequest {
         }
 
         /**
-         * <p>Opaque pagination cursor returned by the previous request.</p>
+         * <p>Opaque pagination cursor returned by the previous request</p>
          */
         @JsonSetter(value = "page_token", nulls = Nulls.SKIP)
         public Builder pageToken(Optional<String> pageToken) {
@@ -176,6 +187,14 @@ public final class HarborsListContextVersionsRequest {
         public HarborsListContextVersionsRequest build() {
             return new HarborsListContextVersionsRequest(
                     polytomicHarborSession, polytomicActivityRequestId, limit, pageToken, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("page_token")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

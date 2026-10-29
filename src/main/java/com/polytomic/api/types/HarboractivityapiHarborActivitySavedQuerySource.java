@@ -47,26 +47,41 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Saved query ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Saved query name when the query was submitted
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Whether the name snapshot was truncated
+     */
     @JsonProperty("name_truncated")
     public Optional<Boolean> getNameTruncated() {
         return nameTruncated;
     }
 
+    /**
+     * @return Saved query revision ID that was submitted
+     */
     @JsonProperty("revision_id")
     public Optional<String> getRevisionId() {
         return revisionId;
     }
 
+    /**
+     * @return Saved query version that was submitted
+     */
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
         return version;
@@ -118,7 +133,6 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
 
         private Optional<Integer> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -132,6 +146,9 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
             return this;
         }
 
+        /**
+         * <p>Saved query ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -143,6 +160,9 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
             return this;
         }
 
+        /**
+         * <p>Saved query name when the query was submitted</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -154,6 +174,9 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
             return this;
         }
 
+        /**
+         * <p>Whether the name snapshot was truncated</p>
+         */
         @JsonSetter(value = "name_truncated", nulls = Nulls.SKIP)
         public Builder nameTruncated(Optional<Boolean> nameTruncated) {
             this.nameTruncated = nameTruncated;
@@ -165,6 +188,9 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
             return this;
         }
 
+        /**
+         * <p>Saved query revision ID that was submitted</p>
+         */
         @JsonSetter(value = "revision_id", nulls = Nulls.SKIP)
         public Builder revisionId(Optional<String> revisionId) {
             this.revisionId = revisionId;
@@ -176,6 +202,9 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
             return this;
         }
 
+        /**
+         * <p>Saved query version that was submitted</p>
+         */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
             this.version = version;
@@ -190,6 +219,18 @@ public final class HarboractivityapiHarborActivitySavedQuerySource {
         public HarboractivityapiHarborActivitySavedQuerySource build() {
             return new HarboractivityapiHarborActivitySavedQuerySource(
                     id, name, nameTruncated, revisionId, version, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("name_truncated")
+                    || key.equalsIgnoreCase("revision_id")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

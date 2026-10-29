@@ -5,6 +5,7 @@ package com.polytomic.api.resources.schemas;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.schemas.requests.PatchSchemaFieldRequest;
 import com.polytomic.api.resources.schemas.requests.SetPrimaryKeysRequest;
@@ -43,7 +44,14 @@ public class AsyncSchemasClient {
      * the whole batch was applied uniformly.</p>
      */
     public CompletableFuture<Void> upsertField(String connectionId, String schemaId) {
-        return this.rawClient.upsertField(connectionId, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.upsertField(connectionId, schemaId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -58,9 +66,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<Void> upsertField(
             String connectionId, String schemaId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .upsertField(connectionId, schemaId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.upsertField(connectionId, schemaId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -74,7 +88,15 @@ public class AsyncSchemasClient {
      * the whole batch was applied uniformly.</p>
      */
     public CompletableFuture<Void> upsertField(String connectionId, String schemaId, UpsertSchemaFieldRequest request) {
-        return this.rawClient.upsertField(connectionId, schemaId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.upsertField(connectionId, schemaId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -92,9 +114,15 @@ public class AsyncSchemasClient {
             String schemaId,
             UpsertSchemaFieldRequest request,
             IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .upsertField(connectionId, schemaId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.upsertField(connectionId, schemaId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -110,7 +138,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<Void> deleteField(String connectionId, String schemaId, String fieldId) {
-        return this.rawClient.deleteField(connectionId, schemaId, fieldId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteField(connectionId, schemaId, fieldId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -127,9 +163,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<Void> deleteField(
             String connectionId, String schemaId, String fieldId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .deleteField(connectionId, schemaId, fieldId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.deleteField(connectionId, schemaId, fieldId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -137,7 +179,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<SchemaFieldResponseEnvelope> patchField(
             String connectionId, String schemaId, String fieldId) {
-        return this.rawClient.patchField(connectionId, schemaId, fieldId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchemaFieldResponseEnvelope>> rawFuture =
+                this.rawClient.patchField(connectionId, schemaId, fieldId);
+        CompletableFuture<SchemaFieldResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -145,9 +195,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<SchemaFieldResponseEnvelope> patchField(
             String connectionId, String schemaId, String fieldId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .patchField(connectionId, schemaId, fieldId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchemaFieldResponseEnvelope>> rawFuture =
+                this.rawClient.patchField(connectionId, schemaId, fieldId, requestOptions);
+        CompletableFuture<SchemaFieldResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -155,9 +211,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<SchemaFieldResponseEnvelope> patchField(
             String connectionId, String schemaId, String fieldId, PatchSchemaFieldRequest request) {
-        return this.rawClient
-                .patchField(connectionId, schemaId, fieldId, request)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchemaFieldResponseEnvelope>> rawFuture =
+                this.rawClient.patchField(connectionId, schemaId, fieldId, request);
+        CompletableFuture<SchemaFieldResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -169,9 +231,15 @@ public class AsyncSchemasClient {
             String fieldId,
             PatchSchemaFieldRequest request,
             IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .patchField(connectionId, schemaId, fieldId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchemaFieldResponseEnvelope>> rawFuture =
+                this.rawClient.patchField(connectionId, schemaId, fieldId, request, requestOptions);
+        CompletableFuture<SchemaFieldResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -188,7 +256,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<Void> setPrimaryKeys(String connectionId, String schemaId) {
-        return this.rawClient.setPrimaryKeys(connectionId, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.setPrimaryKeys(connectionId, schemaId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -206,9 +282,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<Void> setPrimaryKeys(
             String connectionId, String schemaId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .setPrimaryKeys(connectionId, schemaId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.setPrimaryKeys(connectionId, schemaId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -225,7 +307,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<Void> setPrimaryKeys(String connectionId, String schemaId, SetPrimaryKeysRequest request) {
-        return this.rawClient.setPrimaryKeys(connectionId, schemaId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.setPrimaryKeys(connectionId, schemaId, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -246,9 +336,15 @@ public class AsyncSchemasClient {
             String schemaId,
             SetPrimaryKeysRequest request,
             IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .setPrimaryKeys(connectionId, schemaId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.setPrimaryKeys(connectionId, schemaId, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -258,7 +354,15 @@ public class AsyncSchemasClient {
      * instead.</p>
      */
     public CompletableFuture<Void> resetPrimaryKeys(String connectionId, String schemaId) {
-        return this.rawClient.resetPrimaryKeys(connectionId, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.resetPrimaryKeys(connectionId, schemaId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -269,9 +373,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<Void> resetPrimaryKeys(
             String connectionId, String schemaId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .resetPrimaryKeys(connectionId, schemaId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.resetPrimaryKeys(connectionId, schemaId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -294,7 +404,14 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<Void> refresh(String id) {
-        return this.rawClient.refresh(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.refresh(id);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -317,7 +434,14 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<Void> refresh(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.refresh(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.refresh(id, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -338,7 +462,14 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncSourceStatusEnvelope> getStatus(String id) {
-        return this.rawClient.getStatus(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceStatusEnvelope>> rawFuture = this.rawClient.getStatus(id);
+        CompletableFuture<BulkSyncSourceStatusEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -359,7 +490,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncSourceStatusEnvelope> getStatus(String id, RequestOptions requestOptions) {
-        return this.rawClient.getStatus(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceStatusEnvelope>> rawFuture =
+                this.rawClient.getStatus(id, requestOptions);
+        CompletableFuture<BulkSyncSourceStatusEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -374,7 +513,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSyncSourceSchemaEnvelope> get(String id, String schemaId) {
-        return this.rawClient.get(id, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceSchemaEnvelope>> rawFuture =
+                this.rawClient.get(id, schemaId);
+        CompletableFuture<BulkSyncSourceSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -390,7 +537,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<BulkSyncSourceSchemaEnvelope> get(
             String id, String schemaId, RequestOptions requestOptions) {
-        return this.rawClient.get(id, schemaId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSyncSourceSchemaEnvelope>> rawFuture =
+                this.rawClient.get(id, schemaId, requestOptions);
+        CompletableFuture<BulkSyncSourceSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -409,7 +564,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<SchemaRecordsResponseEnvelope> getRecords(String id, String schemaId) {
-        return this.rawClient.getRecords(id, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchemaRecordsResponseEnvelope>> rawFuture =
+                this.rawClient.getRecords(id, schemaId);
+        CompletableFuture<SchemaRecordsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -429,6 +592,14 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<SchemaRecordsResponseEnvelope> getRecords(
             String id, String schemaId, RequestOptions requestOptions) {
-        return this.rawClient.getRecords(id, schemaId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchemaRecordsResponseEnvelope>> rawFuture =
+                this.rawClient.getRecords(id, schemaId, requestOptions);
+        CompletableFuture<SchemaRecordsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

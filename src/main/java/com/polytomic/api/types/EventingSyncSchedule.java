@@ -29,6 +29,9 @@ public final class EventingSyncSchedule {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Frequency of the schedule
+     */
     @JsonProperty("frequency")
     public Optional<String> getFrequency() {
         return frequency;
@@ -67,7 +70,6 @@ public final class EventingSyncSchedule {
     public static final class Builder {
         private Optional<String> frequency = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class EventingSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Frequency of the schedule</p>
+         */
         @JsonSetter(value = "frequency", nulls = Nulls.SKIP)
         public Builder frequency(Optional<String> frequency) {
             this.frequency = frequency;
@@ -90,6 +95,14 @@ public final class EventingSyncSchedule {
 
         public EventingSyncSchedule build() {
             return new EventingSyncSchedule(frequency, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("frequency")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

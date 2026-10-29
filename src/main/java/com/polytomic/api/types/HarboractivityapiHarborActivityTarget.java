@@ -51,31 +51,49 @@ public final class HarboractivityapiHarborActivityTarget {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Target resource ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Label snapshot of the target resource
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Whether the label snapshot was truncated
+     */
     @JsonProperty("label_truncated")
     public Optional<Boolean> getLabelTruncated() {
         return labelTruncated;
     }
 
+    /**
+     * @return Saved query revision ID, for saved query targets
+     */
     @JsonProperty("revision_id")
     public Optional<String> getRevisionId() {
         return revisionId;
     }
 
+    /**
+     * @return Type of the target resource: connection, schema, context, context_revision, or saved_query
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return Saved query version, for saved query targets
+     */
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
         return version;
@@ -130,7 +148,6 @@ public final class HarboractivityapiHarborActivityTarget {
 
         private Optional<Integer> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -145,6 +162,9 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
+        /**
+         * <p>Target resource ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -156,6 +176,9 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
+        /**
+         * <p>Label snapshot of the target resource</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -167,6 +190,9 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
+        /**
+         * <p>Whether the label snapshot was truncated</p>
+         */
         @JsonSetter(value = "label_truncated", nulls = Nulls.SKIP)
         public Builder labelTruncated(Optional<Boolean> labelTruncated) {
             this.labelTruncated = labelTruncated;
@@ -178,6 +204,9 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
+        /**
+         * <p>Saved query revision ID, for saved query targets</p>
+         */
         @JsonSetter(value = "revision_id", nulls = Nulls.SKIP)
         public Builder revisionId(Optional<String> revisionId) {
             this.revisionId = revisionId;
@@ -189,6 +218,9 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
+        /**
+         * <p>Type of the target resource: connection, schema, context, context_revision, or saved_query</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -200,6 +232,9 @@ public final class HarboractivityapiHarborActivityTarget {
             return this;
         }
 
+        /**
+         * <p>Saved query version, for saved query targets</p>
+         */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
             this.version = version;
@@ -214,6 +249,19 @@ public final class HarboractivityapiHarborActivityTarget {
         public HarboractivityapiHarborActivityTarget build() {
             return new HarboractivityapiHarborActivityTarget(
                     id, label, labelTruncated, revisionId, type, version, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("label_truncated")
+                    || key.equalsIgnoreCase("revision_id")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

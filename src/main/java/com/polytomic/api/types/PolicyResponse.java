@@ -118,7 +118,6 @@ public final class PolicyResponse {
 
         private Optional<Boolean> system = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -189,6 +188,18 @@ public final class PolicyResponse {
 
         public PolicyResponse build() {
             return new PolicyResponse(id, name, organizationId, policyActions, system, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policy_actions")
+                    || key.equalsIgnoreCase("system")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

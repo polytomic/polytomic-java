@@ -30,6 +30,9 @@ public final class GetRecordViewCapabilitiesEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Record-view link capabilities for the schema
+     */
     @JsonProperty("data")
     public Optional<RecordviewCapabilities> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class GetRecordViewCapabilitiesEnvelope {
     public static final class Builder {
         private Optional<RecordviewCapabilities> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class GetRecordViewCapabilitiesEnvelope {
             return this;
         }
 
+        /**
+         * <p>Record-view link capabilities for the schema</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<RecordviewCapabilities> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class GetRecordViewCapabilitiesEnvelope {
 
         public GetRecordViewCapabilitiesEnvelope build() {
             return new GetRecordViewCapabilitiesEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

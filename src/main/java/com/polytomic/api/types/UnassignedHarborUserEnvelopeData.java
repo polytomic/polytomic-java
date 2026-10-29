@@ -30,7 +30,7 @@ public final class UnassignedHarborUserEnvelopeData {
     }
 
     /**
-     * @return Unique identifier of the unassigned user.
+     * @return Unique identifier of the unassigned user
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -70,7 +70,6 @@ public final class UnassignedHarborUserEnvelopeData {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -81,7 +80,7 @@ public final class UnassignedHarborUserEnvelopeData {
         }
 
         /**
-         * <p>Unique identifier of the unassigned user.</p>
+         * <p>Unique identifier of the unassigned user</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -96,6 +95,14 @@ public final class UnassignedHarborUserEnvelopeData {
 
         public UnassignedHarborUserEnvelopeData build() {
             return new UnassignedHarborUserEnvelopeData(id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

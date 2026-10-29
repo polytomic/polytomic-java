@@ -26,23 +26,27 @@ public final class HarborSourceReference {
 
     private final Optional<List<String>> fields;
 
-    private final String schemaId;
+    private final Optional<String> modelId;
+
+    private final Optional<String> schemaId;
 
     private final Map<String, Object> additionalProperties;
 
     private HarborSourceReference(
             String connectionId,
             Optional<List<String>> fields,
-            String schemaId,
+            Optional<String> modelId,
+            Optional<String> schemaId,
             Map<String, Object> additionalProperties) {
         this.connectionId = connectionId;
         this.fields = fields;
+        this.modelId = modelId;
         this.schemaId = schemaId;
         this.additionalProperties = additionalProperties;
     }
 
     /**
-     * @return Source Connection the documented table belongs to.
+     * @return Source Connection the documented table belongs to: the bulk sync's source, or the model's Connection
      */
     @JsonProperty("connection_id")
     public String getConnectionId() {
@@ -58,10 +62,18 @@ public final class HarborSourceReference {
     }
 
     /**
-     * @return Source schema identifier, exactly as source schema discovery reports it.
+     * @return Model identifier for a table a model sync delivers. Fields are then model field identifiers. Exactly one of schema_id and model_id is required.
+     */
+    @JsonProperty("model_id")
+    public Optional<String> getModelId() {
+        return modelId;
+    }
+
+    /**
+     * @return Source schema identifier, exactly as source schema discovery reports it, for a table a bulk sync delivers. Exactly one of schema_id and model_id is required.
      */
     @JsonProperty("schema_id")
-    public String getSchemaId() {
+    public Optional<String> getSchemaId() {
         return schemaId;
     }
 
@@ -79,12 +91,13 @@ public final class HarborSourceReference {
     private boolean equalTo(HarborSourceReference other) {
         return connectionId.equals(other.connectionId)
                 && fields.equals(other.fields)
+                && modelId.equals(other.modelId)
                 && schemaId.equals(other.schemaId);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.connectionId, this.fields, this.schemaId);
+        return Objects.hash(this.connectionId, this.fields, this.modelId, this.schemaId);
     }
 
     @java.lang.Override
@@ -98,18 +111,11 @@ public final class HarborSourceReference {
 
     public interface ConnectionIdStage {
         /**
-         * <p>Source Connection the documented table belongs to.</p>
+         * <p>Source Connection the documented table belongs to: the bulk sync's source, or the model's Connection</p>
          */
-        SchemaIdStage connectionId(@NotNull String connectionId);
+        _FinalStage connectionId(@NotNull String connectionId);
 
         Builder from(HarborSourceReference other);
-    }
-
-    public interface SchemaIdStage {
-        /**
-         * <p>Source schema identifier, exactly as source schema discovery reports it.</p>
-         */
-        _FinalStage schemaId(@NotNull String schemaId);
     }
 
     public interface _FinalStage {
@@ -125,17 +131,32 @@ public final class HarborSourceReference {
         _FinalStage fields(Optional<List<String>> fields);
 
         _FinalStage fields(List<String> fields);
+
+        /**
+         * <p>Model identifier for a table a model sync delivers. Fields are then model field identifiers. Exactly one of schema_id and model_id is required.</p>
+         */
+        _FinalStage modelId(Optional<String> modelId);
+
+        _FinalStage modelId(String modelId);
+
+        /**
+         * <p>Source schema identifier, exactly as source schema discovery reports it, for a table a bulk sync delivers. Exactly one of schema_id and model_id is required.</p>
+         */
+        _FinalStage schemaId(Optional<String> schemaId);
+
+        _FinalStage schemaId(String schemaId);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements ConnectionIdStage, SchemaIdStage, _FinalStage {
+    public static final class Builder implements ConnectionIdStage, _FinalStage {
         private String connectionId;
 
-        private String schemaId;
+        private Optional<String> schemaId = Optional.empty();
+
+        private Optional<String> modelId = Optional.empty();
 
         private Optional<List<String>> fields = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,29 +165,59 @@ public final class HarborSourceReference {
         public Builder from(HarborSourceReference other) {
             connectionId(other.getConnectionId());
             fields(other.getFields());
+            modelId(other.getModelId());
             schemaId(other.getSchemaId());
             return this;
         }
 
         /**
-         * <p>Source Connection the documented table belongs to.</p>
+         * <p>Source Connection the documented table belongs to: the bulk sync's source, or the model's Connection</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
         @JsonSetter("connection_id")
-        public SchemaIdStage connectionId(@NotNull String connectionId) {
+        public _FinalStage connectionId(@NotNull String connectionId) {
             this.connectionId = connectionId;
             return this;
         }
 
         /**
-         * <p>Source schema identifier, exactly as source schema discovery reports it.</p>
+         * <p>Source schema identifier, exactly as source schema discovery reports it, for a table a bulk sync delivers. Exactly one of schema_id and model_id is required.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
-        @JsonSetter("schema_id")
-        public _FinalStage schemaId(@NotNull String schemaId) {
+        public _FinalStage schemaId(String schemaId) {
+            this.schemaId = Optional.ofNullable(schemaId);
+            return this;
+        }
+
+        /**
+         * <p>Source schema identifier, exactly as source schema discovery reports it, for a table a bulk sync delivers. Exactly one of schema_id and model_id is required.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "schema_id", nulls = Nulls.SKIP)
+        public _FinalStage schemaId(Optional<String> schemaId) {
             this.schemaId = schemaId;
+            return this;
+        }
+
+        /**
+         * <p>Model identifier for a table a model sync delivers. Fields are then model field identifiers. Exactly one of schema_id and model_id is required.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage modelId(String modelId) {
+            this.modelId = Optional.ofNullable(modelId);
+            return this;
+        }
+
+        /**
+         * <p>Model identifier for a table a model sync delivers. Fields are then model field identifiers. Exactly one of schema_id and model_id is required.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "model_id", nulls = Nulls.SKIP)
+        public _FinalStage modelId(Optional<String> modelId) {
+            this.modelId = modelId;
             return this;
         }
 
@@ -192,7 +243,18 @@ public final class HarborSourceReference {
 
         @java.lang.Override
         public HarborSourceReference build() {
-            return new HarborSourceReference(connectionId, fields, schemaId, additionalProperties);
+            return new HarborSourceReference(connectionId, fields, modelId, schemaId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("model_id")
+                    || key.equalsIgnoreCase("schema_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

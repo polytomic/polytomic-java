@@ -30,6 +30,9 @@ public final class ScheduleOptionResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Available schedule options
+     */
     @JsonProperty("data")
     public Optional<ScheduleOptionResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class ScheduleOptionResponseEnvelope {
     public static final class Builder {
         private Optional<ScheduleOptionResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class ScheduleOptionResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Available schedule options</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ScheduleOptionResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class ScheduleOptionResponseEnvelope {
 
         public ScheduleOptionResponseEnvelope build() {
             return new ScheduleOptionResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

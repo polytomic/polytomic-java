@@ -39,16 +39,25 @@ public final class OutputActor {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return ID of the actor, such as the user ID for a user
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Display name of the actor
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Kind of actor, such as user
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
@@ -91,7 +100,6 @@ public final class OutputActor {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -103,6 +111,9 @@ public final class OutputActor {
             return this;
         }
 
+        /**
+         * <p>ID of the actor, such as the user ID for a user</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -114,6 +125,9 @@ public final class OutputActor {
             return this;
         }
 
+        /**
+         * <p>Display name of the actor</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -125,6 +139,9 @@ public final class OutputActor {
             return this;
         }
 
+        /**
+         * <p>Kind of actor, such as user</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -138,6 +155,14 @@ public final class OutputActor {
 
         public OutputActor build() {
             return new OutputActor(id, name, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id") || key.equalsIgnoreCase("name") || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

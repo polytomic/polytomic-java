@@ -21,7 +21,7 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = HarborConnectionResponse.Builder.class)
 public final class HarborConnectionResponse {
-    private final Optional<List<String>> capabilities;
+    private final Optional<List<HarborConnectionCapability>> capabilities;
 
     private final Optional<String> id;
 
@@ -32,7 +32,7 @@ public final class HarborConnectionResponse {
     private final Map<String, Object> additionalProperties;
 
     private HarborConnectionResponse(
-            Optional<List<String>> capabilities,
+            Optional<List<HarborConnectionCapability>> capabilities,
             Optional<String> id,
             Optional<String> name,
             Optional<String> type,
@@ -44,21 +44,33 @@ public final class HarborConnectionResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Operations the credential can perform on the connection: schemas, query, or record_view_links
+     */
     @JsonProperty("capabilities")
-    public Optional<List<String>> getCapabilities() {
+    public Optional<List<HarborConnectionCapability>> getCapabilities() {
         return capabilities;
     }
 
+    /**
+     * @return Connection ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Connection name
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Connection type
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
@@ -98,7 +110,7 @@ public final class HarborConnectionResponse {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<List<String>> capabilities = Optional.empty();
+        private Optional<List<HarborConnectionCapability>> capabilities = Optional.empty();
 
         private Optional<String> id = Optional.empty();
 
@@ -106,7 +118,6 @@ public final class HarborConnectionResponse {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -119,17 +130,23 @@ public final class HarborConnectionResponse {
             return this;
         }
 
+        /**
+         * <p>Operations the credential can perform on the connection: schemas, query, or record_view_links</p>
+         */
         @JsonSetter(value = "capabilities", nulls = Nulls.SKIP)
-        public Builder capabilities(Optional<List<String>> capabilities) {
+        public Builder capabilities(Optional<List<HarborConnectionCapability>> capabilities) {
             this.capabilities = capabilities;
             return this;
         }
 
-        public Builder capabilities(List<String> capabilities) {
+        public Builder capabilities(List<HarborConnectionCapability> capabilities) {
             this.capabilities = Optional.ofNullable(capabilities);
             return this;
         }
 
+        /**
+         * <p>Connection ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -141,6 +158,9 @@ public final class HarborConnectionResponse {
             return this;
         }
 
+        /**
+         * <p>Connection name</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -152,6 +172,9 @@ public final class HarborConnectionResponse {
             return this;
         }
 
+        /**
+         * <p>Connection type</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -165,6 +188,17 @@ public final class HarborConnectionResponse {
 
         public HarborConnectionResponse build() {
             return new HarborConnectionResponse(capabilities, id, name, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("capabilities")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

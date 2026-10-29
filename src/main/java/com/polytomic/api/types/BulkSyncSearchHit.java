@@ -69,54 +69,81 @@ public final class BulkSyncSearchHit {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Bulk sync ID
+     */
     @JsonProperty("bulk_sync_id")
     public String getBulkSyncId() {
         return bulkSyncId;
     }
 
+    /**
+     * @return Bulk sync name
+     */
     @JsonProperty("bulk_sync_name")
     public String getBulkSyncName() {
         return bulkSyncName;
     }
 
+    /**
+     * @return API paths of the bulk sync and its source and target connections
+     */
     @JsonProperty("links")
     public SearchResultLinks getLinks() {
         return links;
     }
 
     /**
-     * @return Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata.
+     * @return Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata
      */
     @JsonProperty("matches")
     public Optional<List<SearchMatch>> getMatches() {
         return matches;
     }
 
+    /**
+     * @return Source connection ID
+     */
     @JsonProperty("source_connection_id")
     public String getSourceConnectionId() {
         return sourceConnectionId;
     }
 
+    /**
+     * @return Source connection name
+     */
     @JsonProperty("source_connection_name")
     public String getSourceConnectionName() {
         return sourceConnectionName;
     }
 
+    /**
+     * @return Source connection type
+     */
     @JsonProperty("source_connection_type")
     public String getSourceConnectionType() {
         return sourceConnectionType;
     }
 
+    /**
+     * @return Target connection ID
+     */
     @JsonProperty("target_connection_id")
     public String getTargetConnectionId() {
         return targetConnectionId;
     }
 
+    /**
+     * @return Target connection name
+     */
     @JsonProperty("target_connection_name")
     public String getTargetConnectionName() {
         return targetConnectionName;
     }
 
+    /**
+     * @return Target connection type
+     */
     @JsonProperty("target_connection_type")
     public String getTargetConnectionType() {
         return targetConnectionType;
@@ -171,40 +198,67 @@ public final class BulkSyncSearchHit {
     }
 
     public interface BulkSyncIdStage {
+        /**
+         * <p>Bulk sync ID</p>
+         */
         BulkSyncNameStage bulkSyncId(@NotNull String bulkSyncId);
 
         Builder from(BulkSyncSearchHit other);
     }
 
     public interface BulkSyncNameStage {
+        /**
+         * <p>Bulk sync name</p>
+         */
         LinksStage bulkSyncName(@NotNull String bulkSyncName);
     }
 
     public interface LinksStage {
+        /**
+         * <p>API paths of the bulk sync and its source and target connections</p>
+         */
         SourceConnectionIdStage links(@NotNull SearchResultLinks links);
     }
 
     public interface SourceConnectionIdStage {
+        /**
+         * <p>Source connection ID</p>
+         */
         SourceConnectionNameStage sourceConnectionId(@NotNull String sourceConnectionId);
     }
 
     public interface SourceConnectionNameStage {
+        /**
+         * <p>Source connection name</p>
+         */
         SourceConnectionTypeStage sourceConnectionName(@NotNull String sourceConnectionName);
     }
 
     public interface SourceConnectionTypeStage {
+        /**
+         * <p>Source connection type</p>
+         */
         TargetConnectionIdStage sourceConnectionType(@NotNull String sourceConnectionType);
     }
 
     public interface TargetConnectionIdStage {
+        /**
+         * <p>Target connection ID</p>
+         */
         TargetConnectionNameStage targetConnectionId(@NotNull String targetConnectionId);
     }
 
     public interface TargetConnectionNameStage {
+        /**
+         * <p>Target connection name</p>
+         */
         TargetConnectionTypeStage targetConnectionName(@NotNull String targetConnectionName);
     }
 
     public interface TargetConnectionTypeStage {
+        /**
+         * <p>Target connection type</p>
+         */
         _FinalStage targetConnectionType(@NotNull String targetConnectionType);
     }
 
@@ -216,7 +270,7 @@ public final class BulkSyncSearchHit {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata</p>
          */
         _FinalStage matches(Optional<List<SearchMatch>> matches);
 
@@ -255,7 +309,6 @@ public final class BulkSyncSearchHit {
 
         private Optional<List<SearchMatch>> matches = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -275,6 +328,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Bulk sync ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("bulk_sync_id")
         public BulkSyncNameStage bulkSyncId(@NotNull String bulkSyncId) {
@@ -282,6 +339,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Bulk sync name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("bulk_sync_name")
         public LinksStage bulkSyncName(@NotNull String bulkSyncName) {
@@ -289,6 +350,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>API paths of the bulk sync and its source and target connections</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("links")
         public SourceConnectionIdStage links(@NotNull SearchResultLinks links) {
@@ -296,6 +361,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Source connection ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("source_connection_id")
         public SourceConnectionNameStage sourceConnectionId(@NotNull String sourceConnectionId) {
@@ -303,6 +372,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Source connection name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("source_connection_name")
         public SourceConnectionTypeStage sourceConnectionName(@NotNull String sourceConnectionName) {
@@ -310,6 +383,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Source connection type</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("source_connection_type")
         public TargetConnectionIdStage sourceConnectionType(@NotNull String sourceConnectionType) {
@@ -317,6 +394,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Target connection ID</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target_connection_id")
         public TargetConnectionNameStage targetConnectionId(@NotNull String targetConnectionId) {
@@ -324,6 +405,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Target connection name</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target_connection_name")
         public TargetConnectionTypeStage targetConnectionName(@NotNull String targetConnectionName) {
@@ -331,6 +416,10 @@ public final class BulkSyncSearchHit {
             return this;
         }
 
+        /**
+         * <p>Target connection type</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("target_connection_type")
         public _FinalStage targetConnectionType(@NotNull String targetConnectionType) {
@@ -339,7 +428,7 @@ public final class BulkSyncSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -349,7 +438,7 @@ public final class BulkSyncSearchHit {
         }
 
         /**
-         * <p>Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata.</p>
+         * <p>Contributing attributes grouped by saved mapping or schema context, with one group for resource metadata</p>
          */
         @java.lang.Override
         @JsonSetter(value = "matches", nulls = Nulls.SKIP)
@@ -372,6 +461,23 @@ public final class BulkSyncSearchHit {
                     targetConnectionName,
                     targetConnectionType,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("bulk_sync_id")
+                    || key.equalsIgnoreCase("bulk_sync_name")
+                    || key.equalsIgnoreCase("links")
+                    || key.equalsIgnoreCase("matches")
+                    || key.equalsIgnoreCase("source_connection_id")
+                    || key.equalsIgnoreCase("source_connection_name")
+                    || key.equalsIgnoreCase("source_connection_type")
+                    || key.equalsIgnoreCase("target_connection_id")
+                    || key.equalsIgnoreCase("target_connection_name")
+                    || key.equalsIgnoreCase("target_connection_type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

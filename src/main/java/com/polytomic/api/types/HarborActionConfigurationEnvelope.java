@@ -32,7 +32,7 @@ public final class HarborActionConfigurationEnvelope {
     }
 
     /**
-     * @return All configured action Connections after this request.
+     * @return All configured action Connections after this request
      */
     @JsonProperty("data")
     public Optional<List<HarborActionConfigurationResponse>> getData() {
@@ -72,7 +72,6 @@ public final class HarborActionConfigurationEnvelope {
     public static final class Builder {
         private Optional<List<HarborActionConfigurationResponse>> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -83,7 +82,7 @@ public final class HarborActionConfigurationEnvelope {
         }
 
         /**
-         * <p>All configured action Connections after this request.</p>
+         * <p>All configured action Connections after this request</p>
          */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<HarborActionConfigurationResponse>> data) {
@@ -98,6 +97,14 @@ public final class HarborActionConfigurationEnvelope {
 
         public HarborActionConfigurationEnvelope build() {
             return new HarborActionConfigurationEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

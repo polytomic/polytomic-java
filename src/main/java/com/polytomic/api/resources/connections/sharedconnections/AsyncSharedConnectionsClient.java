@@ -5,6 +5,7 @@ package com.polytomic.api.resources.connections.sharedconnections;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.connections.sharedconnections.requests.PartnerCreateSharedConnectionRequestSchema;
 import com.polytomic.api.types.ConnectionListResponseEnvelope;
@@ -55,7 +56,15 @@ public class AsyncSharedConnectionsClient {
      * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public CompletableFuture<ConnectionListResponseEnvelope> listSharedConnections(String id) {
-        return this.rawClient.listSharedConnections(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> rawFuture =
+                this.rawClient.listSharedConnections(id);
+        CompletableFuture<ConnectionListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -86,7 +95,15 @@ public class AsyncSharedConnectionsClient {
      */
     public CompletableFuture<ConnectionListResponseEnvelope> listSharedConnections(
             String id, RequestOptions requestOptions) {
-        return this.rawClient.listSharedConnections(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> rawFuture =
+                this.rawClient.listSharedConnections(id, requestOptions);
+        CompletableFuture<ConnectionListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -117,9 +134,15 @@ public class AsyncSharedConnectionsClient {
      */
     public CompletableFuture<ConnectionListResponseEnvelope> listSharedConnectionsForPartner(
             String orgId, String connectionId) {
-        return this.rawClient
-                .listSharedConnectionsForPartner(orgId, connectionId)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> rawFuture =
+                this.rawClient.listSharedConnectionsForPartner(orgId, connectionId);
+        CompletableFuture<ConnectionListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -150,9 +173,15 @@ public class AsyncSharedConnectionsClient {
      */
     public CompletableFuture<ConnectionListResponseEnvelope> listSharedConnectionsForPartner(
             String orgId, String connectionId, RequestOptions requestOptions) {
-        return this.rawClient
-                .listSharedConnectionsForPartner(orgId, connectionId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> rawFuture =
+                this.rawClient.listSharedConnectionsForPartner(orgId, connectionId, requestOptions);
+        CompletableFuture<ConnectionListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -160,9 +189,16 @@ public class AsyncSharedConnectionsClient {
      */
     public CompletableFuture<CreateSharedConnectionResponseEnvelope> createSharedConnection(
             String orgId, String connectionId, PartnerCreateSharedConnectionRequestSchema request) {
-        return this.rawClient
-                .createSharedConnection(orgId, connectionId, request)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateSharedConnectionResponseEnvelope>> rawFuture =
+                this.rawClient.createSharedConnection(orgId, connectionId, request);
+        CompletableFuture<CreateSharedConnectionResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -173,8 +209,15 @@ public class AsyncSharedConnectionsClient {
             String connectionId,
             PartnerCreateSharedConnectionRequestSchema request,
             IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .createSharedConnection(orgId, connectionId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateSharedConnectionResponseEnvelope>> rawFuture =
+                this.rawClient.createSharedConnection(orgId, connectionId, request, requestOptions);
+        CompletableFuture<CreateSharedConnectionResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

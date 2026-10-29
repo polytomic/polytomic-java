@@ -46,7 +46,7 @@ public final class BulkSyncExecutionStatus {
     }
 
     /**
-     * @return Next scheduled execution time, if the sync has a schedule configured.
+     * @return Next scheduled execution time, if the sync has a schedule configured
      */
     @JsonProperty("nextExecutionTime")
     public Optional<OffsetDateTime> getNextExecutionTime() {
@@ -54,20 +54,23 @@ public final class BulkSyncExecutionStatus {
     }
 
     /**
-     * @return Most recent execution status for each enabled schema in the sync.
+     * @return Most recent execution status for each enabled schema in the sync
      */
     @JsonProperty("schemas")
     public Optional<List<BulkSyncSchemaExecutionStatus>> getSchemas() {
         return schemas;
     }
 
+    /**
+     * @return Sync execution status across all schemas
+     */
     @JsonProperty("status")
     public Optional<BulkExecutionStatus> getStatus() {
         return status;
     }
 
     /**
-     * @return Unique identifier of the bulk sync.
+     * @return Unique identifier of the bulk sync
      */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
@@ -116,7 +119,6 @@ public final class BulkSyncExecutionStatus {
 
         private Optional<String> syncId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -130,7 +132,7 @@ public final class BulkSyncExecutionStatus {
         }
 
         /**
-         * <p>Next scheduled execution time, if the sync has a schedule configured.</p>
+         * <p>Next scheduled execution time, if the sync has a schedule configured</p>
          */
         @JsonSetter(value = "nextExecutionTime", nulls = Nulls.SKIP)
         public Builder nextExecutionTime(Optional<OffsetDateTime> nextExecutionTime) {
@@ -144,7 +146,7 @@ public final class BulkSyncExecutionStatus {
         }
 
         /**
-         * <p>Most recent execution status for each enabled schema in the sync.</p>
+         * <p>Most recent execution status for each enabled schema in the sync</p>
          */
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public Builder schemas(Optional<List<BulkSyncSchemaExecutionStatus>> schemas) {
@@ -157,6 +159,9 @@ public final class BulkSyncExecutionStatus {
             return this;
         }
 
+        /**
+         * <p>Sync execution status across all schemas</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<BulkExecutionStatus> status) {
             this.status = status;
@@ -169,7 +174,7 @@ public final class BulkSyncExecutionStatus {
         }
 
         /**
-         * <p>Unique identifier of the bulk sync.</p>
+         * <p>Unique identifier of the bulk sync</p>
          */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
@@ -184,6 +189,17 @@ public final class BulkSyncExecutionStatus {
 
         public BulkSyncExecutionStatus build() {
             return new BulkSyncExecutionStatus(nextExecutionTime, schemas, status, syncId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("nextExecutionTime")
+                    || key.equalsIgnoreCase("schemas")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("sync_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

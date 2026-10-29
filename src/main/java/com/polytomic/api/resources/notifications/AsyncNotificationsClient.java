@@ -5,6 +5,7 @@ package com.polytomic.api.resources.notifications;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.notifications.requests.GlobalErrorSubscribersRequest;
 import com.polytomic.api.types.GlobalErrorSubscribersResponse;
@@ -33,7 +34,15 @@ public class AsyncNotificationsClient {
      * <a href="../../../api-reference/notifications/set-global-error-subscribers"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
      */
     public CompletableFuture<GlobalErrorSubscribersResponse> getGlobalErrorSubscribers() {
-        return this.rawClient.getGlobalErrorSubscribers().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GlobalErrorSubscribersResponse>> rawFuture =
+                this.rawClient.getGlobalErrorSubscribers();
+        CompletableFuture<GlobalErrorSubscribersResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -42,7 +51,15 @@ public class AsyncNotificationsClient {
      * <a href="../../../api-reference/notifications/set-global-error-subscribers"><code>PUT /api/notifications/global-error-subscribers</code></a>.</p>
      */
     public CompletableFuture<GlobalErrorSubscribersResponse> getGlobalErrorSubscribers(RequestOptions requestOptions) {
-        return this.rawClient.getGlobalErrorSubscribers(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GlobalErrorSubscribersResponse>> rawFuture =
+                this.rawClient.getGlobalErrorSubscribers(requestOptions);
+        CompletableFuture<GlobalErrorSubscribersResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -54,7 +71,15 @@ public class AsyncNotificationsClient {
      * and send the modified list back.</p>
      */
     public CompletableFuture<GlobalErrorSubscribersResponse> setGlobalErrorSubscribers() {
-        return this.rawClient.setGlobalErrorSubscribers().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GlobalErrorSubscribersResponse>> rawFuture =
+                this.rawClient.setGlobalErrorSubscribers();
+        CompletableFuture<GlobalErrorSubscribersResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -67,7 +92,15 @@ public class AsyncNotificationsClient {
      */
     public CompletableFuture<GlobalErrorSubscribersResponse> setGlobalErrorSubscribers(
             IdempotentRequestOptions requestOptions) {
-        return this.rawClient.setGlobalErrorSubscribers(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GlobalErrorSubscribersResponse>> rawFuture =
+                this.rawClient.setGlobalErrorSubscribers(requestOptions);
+        CompletableFuture<GlobalErrorSubscribersResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -80,7 +113,15 @@ public class AsyncNotificationsClient {
      */
     public CompletableFuture<GlobalErrorSubscribersResponse> setGlobalErrorSubscribers(
             GlobalErrorSubscribersRequest request) {
-        return this.rawClient.setGlobalErrorSubscribers(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GlobalErrorSubscribersResponse>> rawFuture =
+                this.rawClient.setGlobalErrorSubscribers(request);
+        CompletableFuture<GlobalErrorSubscribersResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -93,6 +134,14 @@ public class AsyncNotificationsClient {
      */
     public CompletableFuture<GlobalErrorSubscribersResponse> setGlobalErrorSubscribers(
             GlobalErrorSubscribersRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.setGlobalErrorSubscribers(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GlobalErrorSubscribersResponse>> rawFuture =
+                this.rawClient.setGlobalErrorSubscribers(request, requestOptions);
+        CompletableFuture<GlobalErrorSubscribersResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

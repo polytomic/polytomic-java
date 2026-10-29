@@ -29,6 +29,9 @@ public final class ModelSyncV5ResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The model sync
+     */
     @JsonProperty("data")
     public Optional<ModelSyncV5Response> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class ModelSyncV5ResponseEnvelope {
     public static final class Builder {
         private Optional<ModelSyncV5Response> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class ModelSyncV5ResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The model sync</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ModelSyncV5Response> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class ModelSyncV5ResponseEnvelope {
 
         public ModelSyncV5ResponseEnvelope build() {
             return new ModelSyncV5ResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

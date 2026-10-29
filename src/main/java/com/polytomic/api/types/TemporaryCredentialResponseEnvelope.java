@@ -30,6 +30,9 @@ public final class TemporaryCredentialResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The issued temporary credential
+     */
     @JsonProperty("data")
     public Optional<TemporaryCredentialResponse> getData() {
         return data;
@@ -69,7 +72,6 @@ public final class TemporaryCredentialResponseEnvelope {
     public static final class Builder {
         private Optional<TemporaryCredentialResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -79,6 +81,9 @@ public final class TemporaryCredentialResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The issued temporary credential</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<TemporaryCredentialResponse> data) {
             this.data = data;
@@ -92,6 +97,14 @@ public final class TemporaryCredentialResponseEnvelope {
 
         public TemporaryCredentialResponseEnvelope build() {
             return new TemporaryCredentialResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

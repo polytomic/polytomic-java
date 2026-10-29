@@ -5,6 +5,7 @@ package com.polytomic.api.resources.queryrunner;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.queryrunner.requests.QueryRunnerGetQueryRequest;
 import com.polytomic.api.resources.queryrunner.requests.RunQueryRequest;
@@ -41,7 +42,14 @@ public class AsyncQueryRunnerClient {
      * endpoint to understand how long they remain available.</p>
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(String connectionId) {
-        return this.rawClient.runQuery(connectionId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> rawFuture = this.rawClient.runQuery(connectionId);
+        CompletableFuture<RunQueryEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -56,7 +64,15 @@ public class AsyncQueryRunnerClient {
      * endpoint to understand how long they remain available.</p>
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(String connectionId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.runQuery(connectionId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> rawFuture =
+                this.rawClient.runQuery(connectionId, requestOptions);
+        CompletableFuture<RunQueryEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -71,7 +87,15 @@ public class AsyncQueryRunnerClient {
      * endpoint to understand how long they remain available.</p>
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(String connectionId, RunQueryRequest request) {
-        return this.rawClient.runQuery(connectionId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> rawFuture =
+                this.rawClient.runQuery(connectionId, request);
+        CompletableFuture<RunQueryEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -87,7 +111,15 @@ public class AsyncQueryRunnerClient {
      */
     public CompletableFuture<RunQueryEnvelope> runQuery(
             String connectionId, RunQueryRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.runQuery(connectionId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<RunQueryEnvelope>> rawFuture =
+                this.rawClient.runQuery(connectionId, request, requestOptions);
+        CompletableFuture<RunQueryEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -106,7 +138,14 @@ public class AsyncQueryRunnerClient {
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(String id) {
-        return this.rawClient.getQuery(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> rawFuture = this.rawClient.getQuery(id);
+        CompletableFuture<QueryResultsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -125,7 +164,15 @@ public class AsyncQueryRunnerClient {
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(String id, RequestOptions requestOptions) {
-        return this.rawClient.getQuery(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> rawFuture =
+                this.rawClient.getQuery(id, requestOptions);
+        CompletableFuture<QueryResultsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -144,7 +191,14 @@ public class AsyncQueryRunnerClient {
      * the endpoint returns <code>404</code>.</p>
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(String id, QueryRunnerGetQueryRequest request) {
-        return this.rawClient.getQuery(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> rawFuture = this.rawClient.getQuery(id, request);
+        CompletableFuture<QueryResultsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -164,6 +218,14 @@ public class AsyncQueryRunnerClient {
      */
     public CompletableFuture<QueryResultsEnvelope> getQuery(
             String id, QueryRunnerGetQueryRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getQuery(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<QueryResultsEnvelope>> rawFuture =
+                this.rawClient.getQuery(id, request, requestOptions);
+        CompletableFuture<QueryResultsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

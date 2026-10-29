@@ -41,18 +41,24 @@ public final class SearchMatch {
     }
 
     /**
-     * @return Indexed attributes contributing to this result, with matching query terms.
+     * @return Indexed attributes contributing to this result, with matching query terms
      */
     @JsonProperty("attributes")
     public Optional<List<SearchMatchAttribute>> getAttributes() {
         return attributes;
     }
 
+    /**
+     * @return Saved mapping context shared by these attributes; absent for resource metadata
+     */
     @JsonProperty("mapping")
     public Optional<SearchMatchMapping> getMapping() {
         return mapping;
     }
 
+    /**
+     * @return Enabled Bulk Sync schema context shared by these attributes; absent for resource metadata
+     */
     @JsonProperty("schema")
     public Optional<SearchMatchSchema> getSchema() {
         return schema;
@@ -95,7 +101,6 @@ public final class SearchMatch {
 
         private Optional<SearchMatchSchema> schema = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -108,7 +113,7 @@ public final class SearchMatch {
         }
 
         /**
-         * <p>Indexed attributes contributing to this result, with matching query terms.</p>
+         * <p>Indexed attributes contributing to this result, with matching query terms</p>
          */
         @JsonSetter(value = "attributes", nulls = Nulls.SKIP)
         public Builder attributes(Optional<List<SearchMatchAttribute>> attributes) {
@@ -121,6 +126,9 @@ public final class SearchMatch {
             return this;
         }
 
+        /**
+         * <p>Saved mapping context shared by these attributes; absent for resource metadata</p>
+         */
         @JsonSetter(value = "mapping", nulls = Nulls.SKIP)
         public Builder mapping(Optional<SearchMatchMapping> mapping) {
             this.mapping = mapping;
@@ -132,6 +140,9 @@ public final class SearchMatch {
             return this;
         }
 
+        /**
+         * <p>Enabled Bulk Sync schema context shared by these attributes; absent for resource metadata</p>
+         */
         @JsonSetter(value = "schema", nulls = Nulls.SKIP)
         public Builder schema(Optional<SearchMatchSchema> schema) {
             this.schema = schema;
@@ -145,6 +156,16 @@ public final class SearchMatch {
 
         public SearchMatch build() {
             return new SearchMatch(attributes, mapping, schema, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("attributes")
+                    || key.equalsIgnoreCase("mapping")
+                    || key.equalsIgnoreCase("schema")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

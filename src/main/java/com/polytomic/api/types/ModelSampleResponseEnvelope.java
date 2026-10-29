@@ -33,11 +33,17 @@ public final class ModelSampleResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The sampled records
+     */
     @JsonProperty("data")
     public Optional<ModelSample> getData() {
         return data;
     }
 
+    /**
+     * @return Background job running the request when async is true
+     */
     @JsonProperty("job")
     public Optional<JobResponse> getJob() {
         return job;
@@ -78,7 +84,6 @@ public final class ModelSampleResponseEnvelope {
 
         private Optional<JobResponse> job = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -89,6 +94,9 @@ public final class ModelSampleResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>The sampled records</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ModelSample> data) {
             this.data = data;
@@ -100,6 +108,9 @@ public final class ModelSampleResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Background job running the request when async is true</p>
+         */
         @JsonSetter(value = "job", nulls = Nulls.SKIP)
         public Builder job(Optional<JobResponse> job) {
             this.job = job;
@@ -113,6 +124,14 @@ public final class ModelSampleResponseEnvelope {
 
         public ModelSampleResponseEnvelope build() {
             return new ModelSampleResponseEnvelope(data, job, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("job")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -30,6 +30,9 @@ public final class ModelFieldResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Fields the source connection provides for the given configuration
+     */
     @JsonProperty("data")
     public Optional<List<ModelField>> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class ModelFieldResponse {
     public static final class Builder {
         private Optional<List<ModelField>> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class ModelFieldResponse {
             return this;
         }
 
+        /**
+         * <p>Fields the source connection provides for the given configuration</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<ModelField>> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class ModelFieldResponse {
 
         public ModelFieldResponse build() {
             return new ModelFieldResponse(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

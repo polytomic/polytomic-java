@@ -64,7 +64,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Field description.
+     * @return Field description
      */
     @JsonProperty("description")
     public Optional<String> getDescription() {
@@ -72,7 +72,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Stable configurable field ID.
+     * @return Stable configurable field ID
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -80,7 +80,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Maximum input size in bytes, when constrained.
+     * @return Maximum input size in bytes, when constrained
      */
     @JsonProperty("max_bytes")
     public Optional<Integer> getMaxBytes() {
@@ -88,7 +88,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Field name.
+     * @return Field name
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -96,7 +96,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Whether a nonblank value is required.
+     * @return Whether a nonblank value is required
      */
     @JsonProperty("non_blank")
     public Optional<Boolean> getNonBlank() {
@@ -104,7 +104,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Whether this input field accepts null.
+     * @return Whether this input field accepts null
      */
     @JsonProperty("nullable")
     public Optional<Boolean> getNullable() {
@@ -112,7 +112,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Validation pattern, when constrained.
+     * @return Validation pattern, when constrained
      */
     @JsonProperty("pattern")
     public Optional<String> getPattern() {
@@ -120,7 +120,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Whether the operation requires this input field.
+     * @return Whether the operation requires this input field
      */
     @JsonProperty("required")
     public Optional<Boolean> getRequired() {
@@ -128,7 +128,7 @@ public final class HarborActionConfigurationFieldResponse {
     }
 
     /**
-     * @return Scalar field type.
+     * @return Scalar field type
      */
     @JsonProperty("type")
     public Optional<String> getType() {
@@ -202,7 +202,6 @@ public final class HarborActionConfigurationFieldResponse {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -221,7 +220,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Field description.</p>
+         * <p>Field description</p>
          */
         @JsonSetter(value = "description", nulls = Nulls.SKIP)
         public Builder description(Optional<String> description) {
@@ -235,7 +234,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Stable configurable field ID.</p>
+         * <p>Stable configurable field ID</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -249,7 +248,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Maximum input size in bytes, when constrained.</p>
+         * <p>Maximum input size in bytes, when constrained</p>
          */
         @JsonSetter(value = "max_bytes", nulls = Nulls.SKIP)
         public Builder maxBytes(Optional<Integer> maxBytes) {
@@ -263,7 +262,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Field name.</p>
+         * <p>Field name</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -277,7 +276,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Whether a nonblank value is required.</p>
+         * <p>Whether a nonblank value is required</p>
          */
         @JsonSetter(value = "non_blank", nulls = Nulls.SKIP)
         public Builder nonBlank(Optional<Boolean> nonBlank) {
@@ -291,7 +290,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Whether this input field accepts null.</p>
+         * <p>Whether this input field accepts null</p>
          */
         @JsonSetter(value = "nullable", nulls = Nulls.SKIP)
         public Builder nullable(Optional<Boolean> nullable) {
@@ -305,7 +304,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Validation pattern, when constrained.</p>
+         * <p>Validation pattern, when constrained</p>
          */
         @JsonSetter(value = "pattern", nulls = Nulls.SKIP)
         public Builder pattern(Optional<String> pattern) {
@@ -319,7 +318,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Whether the operation requires this input field.</p>
+         * <p>Whether the operation requires this input field</p>
          */
         @JsonSetter(value = "required", nulls = Nulls.SKIP)
         public Builder required(Optional<Boolean> required) {
@@ -333,7 +332,7 @@ public final class HarborActionConfigurationFieldResponse {
         }
 
         /**
-         * <p>Scalar field type.</p>
+         * <p>Scalar field type</p>
          */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
@@ -349,6 +348,22 @@ public final class HarborActionConfigurationFieldResponse {
         public HarborActionConfigurationFieldResponse build() {
             return new HarborActionConfigurationFieldResponse(
                     description, id, maxBytes, name, nonBlank, nullable, pattern, required, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("max_bytes")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("non_blank")
+                    || key.equalsIgnoreCase("nullable")
+                    || key.equalsIgnoreCase("pattern")
+                    || key.equalsIgnoreCase("required")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

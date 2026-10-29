@@ -94,7 +94,7 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Whether the sync runs on its schedule.
+     * @return Whether the sync runs on its schedule
      */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
@@ -102,20 +102,23 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Timestamp the sync was created.
+     * @return Timestamp the sync was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Actor that created the sync
+     */
     @JsonProperty("created_by")
     public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
     /**
-     * @return Unique identifier of the sync.
+     * @return Unique identifier of the sync
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -123,7 +126,7 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return How source records are written to the target (e.g. create, updateOrCreate, enrich).
+     * @return How source records are written to the target (e.g. create, updateOrCreate, enrich)
      */
     @JsonProperty("mode")
     public Optional<String> getMode() {
@@ -131,7 +134,7 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Model IDs used in the sync.
+     * @return Model IDs used in the sync
      */
     @JsonProperty("model_ids")
     public Optional<List<String>> getModelIds() {
@@ -139,7 +142,7 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Human-readable name of the sync.
+     * @return Human-readable name of the sync
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -155,13 +158,16 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Organization the sync belongs to.
+     * @return Organization the sync belongs to
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Schedule that controls when the sync runs
+     */
     @JsonProperty("schedule")
     public Optional<Schedule> getSchedule() {
         return schedule;
@@ -184,7 +190,7 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Connection the sync writes to.
+     * @return Connection the sync writes to
      */
     @JsonProperty("target_connection_id")
     public Optional<String> getTargetConnectionId() {
@@ -192,7 +198,7 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Destination object (e.g. table, SaaS object) the sync writes to.
+     * @return Destination object (e.g. table, SaaS object) the sync writes to
      */
     @JsonProperty("target_object")
     public Optional<String> getTargetObject() {
@@ -200,13 +206,16 @@ public final class ListSyncItem {
     }
 
     /**
-     * @return Timestamp the sync was last updated.
+     * @return Timestamp the sync was last updated
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * @return Actor that most recently updated the sync
+     */
     @JsonProperty("updated_by")
     public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
@@ -306,7 +315,6 @@ public final class ListSyncItem {
 
         private Optional<OutputActor> updatedBy = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -332,7 +340,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Whether the sync runs on its schedule.</p>
+         * <p>Whether the sync runs on its schedule</p>
          */
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public Builder active(Optional<Boolean> active) {
@@ -346,7 +354,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Timestamp the sync was created.</p>
+         * <p>Timestamp the sync was created</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -359,6 +367,9 @@ public final class ListSyncItem {
             return this;
         }
 
+        /**
+         * <p>Actor that created the sync</p>
+         */
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
         public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
@@ -371,7 +382,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Unique identifier of the sync.</p>
+         * <p>Unique identifier of the sync</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -385,7 +396,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>How source records are written to the target (e.g. create, updateOrCreate, enrich).</p>
+         * <p>How source records are written to the target (e.g. create, updateOrCreate, enrich)</p>
          */
         @JsonSetter(value = "mode", nulls = Nulls.SKIP)
         public Builder mode(Optional<String> mode) {
@@ -399,7 +410,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Model IDs used in the sync.</p>
+         * <p>Model IDs used in the sync</p>
          */
         @JsonSetter(value = "model_ids", nulls = Nulls.SKIP)
         public Builder modelIds(Optional<List<String>> modelIds) {
@@ -413,7 +424,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Human-readable name of the sync.</p>
+         * <p>Human-readable name of the sync</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -441,7 +452,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Organization the sync belongs to.</p>
+         * <p>Organization the sync belongs to</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -454,6 +465,9 @@ public final class ListSyncItem {
             return this;
         }
 
+        /**
+         * <p>Schedule that controls when the sync runs</p>
+         */
         @JsonSetter(value = "schedule", nulls = Nulls.SKIP)
         public Builder schedule(Optional<Schedule> schedule) {
             this.schedule = schedule;
@@ -494,7 +508,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Connection the sync writes to.</p>
+         * <p>Connection the sync writes to</p>
          */
         @JsonSetter(value = "target_connection_id", nulls = Nulls.SKIP)
         public Builder targetConnectionId(Optional<String> targetConnectionId) {
@@ -508,7 +522,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Destination object (e.g. table, SaaS object) the sync writes to.</p>
+         * <p>Destination object (e.g. table, SaaS object) the sync writes to</p>
          */
         @JsonSetter(value = "target_object", nulls = Nulls.SKIP)
         public Builder targetObject(Optional<String> targetObject) {
@@ -522,7 +536,7 @@ public final class ListSyncItem {
         }
 
         /**
-         * <p>Timestamp the sync was last updated.</p>
+         * <p>Timestamp the sync was last updated</p>
          */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
@@ -535,6 +549,9 @@ public final class ListSyncItem {
             return this;
         }
 
+        /**
+         * <p>Actor that most recently updated the sync</p>
+         */
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
         public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
@@ -565,6 +582,29 @@ public final class ListSyncItem {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("active")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("model_ids")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("only_enrich_updates")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("schedule")
+                    || key.equalsIgnoreCase("skip_initial_backfill")
+                    || key.equalsIgnoreCase("sync_all_records")
+                    || key.equalsIgnoreCase("target_connection_id")
+                    || key.equalsIgnoreCase("target_object")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

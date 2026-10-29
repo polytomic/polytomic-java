@@ -48,13 +48,16 @@ public final class PatchSchemaFieldRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Detailed type of the field, such as &quot;bigint&quot; or [&quot;decimal&quot;, {&quot;precision&quot;: 10, &quot;scale&quot;: 2}]; it must be consistent with the field's type.
+     */
     @JsonProperty("definition")
     public Optional<TypesDefinition> getDefinition() {
         return definition;
     }
 
     /**
-     * @return Sample value surfaced in the UI.
+     * @return Sample value surfaced in the UI
      */
     @JsonProperty("example")
     public Optional<Object> getExample() {
@@ -62,7 +65,7 @@ public final class PatchSchemaFieldRequest {
     }
 
     /**
-     * @return Human-readable label for the field.
+     * @return Human-readable label for the field
      */
     @JsonProperty("label")
     public Optional<String> getLabel() {
@@ -130,7 +133,6 @@ public final class PatchSchemaFieldRequest {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -144,6 +146,9 @@ public final class PatchSchemaFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Detailed type of the field, such as &quot;bigint&quot; or [&quot;decimal&quot;, {&quot;precision&quot;: 10, &quot;scale&quot;: 2}]; it must be consistent with the field's type.</p>
+         */
         @JsonSetter(value = "definition", nulls = Nulls.SKIP)
         public Builder definition(Optional<TypesDefinition> definition) {
             this.definition = definition;
@@ -156,7 +161,7 @@ public final class PatchSchemaFieldRequest {
         }
 
         /**
-         * <p>Sample value surfaced in the UI.</p>
+         * <p>Sample value surfaced in the UI</p>
          */
         @JsonSetter(value = "example", nulls = Nulls.SKIP)
         public Builder example(Optional<Object> example) {
@@ -170,7 +175,7 @@ public final class PatchSchemaFieldRequest {
         }
 
         /**
-         * <p>Human-readable label for the field.</p>
+         * <p>Human-readable label for the field</p>
          */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
@@ -213,6 +218,18 @@ public final class PatchSchemaFieldRequest {
 
         public PatchSchemaFieldRequest build() {
             return new PatchSchemaFieldRequest(definition, example, label, path, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("definition")
+                    || key.equalsIgnoreCase("example")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("path")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

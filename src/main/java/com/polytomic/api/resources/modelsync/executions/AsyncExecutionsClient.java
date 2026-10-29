@@ -5,6 +5,7 @@ package com.polytomic.api.resources.modelsync.executions;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsGetConsoleLogsRequest;
 import com.polytomic.api.resources.modelsync.executions.requests.ExecutionsListRequest;
@@ -45,7 +46,14 @@ public class AsyncExecutionsClient {
      * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public CompletableFuture<ListExecutionResponseEnvelope> list(String syncId) {
-        return this.rawClient.list(syncId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListExecutionResponseEnvelope>> rawFuture = this.rawClient.list(syncId);
+        CompletableFuture<ListExecutionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -59,7 +67,15 @@ public class AsyncExecutionsClient {
      * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public CompletableFuture<ListExecutionResponseEnvelope> list(String syncId, RequestOptions requestOptions) {
-        return this.rawClient.list(syncId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListExecutionResponseEnvelope>> rawFuture =
+                this.rawClient.list(syncId, requestOptions);
+        CompletableFuture<ListExecutionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -73,7 +89,15 @@ public class AsyncExecutionsClient {
      * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public CompletableFuture<ListExecutionResponseEnvelope> list(String syncId, ExecutionsListRequest request) {
-        return this.rawClient.list(syncId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListExecutionResponseEnvelope>> rawFuture =
+                this.rawClient.list(syncId, request);
+        CompletableFuture<ListExecutionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -88,7 +112,15 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<ListExecutionResponseEnvelope> list(
             String syncId, ExecutionsListRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(syncId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListExecutionResponseEnvelope>> rawFuture =
+                this.rawClient.list(syncId, request, requestOptions);
+        CompletableFuture<ListExecutionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -98,7 +130,15 @@ public class AsyncExecutionsClient {
      * signed URLs grouped by log category.</p>
      */
     public CompletableFuture<GetExecutionResponseEnvelope> get(String syncId, String id) {
-        return this.rawClient.get(syncId, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetExecutionResponseEnvelope>> rawFuture =
+                this.rawClient.get(syncId, id);
+        CompletableFuture<GetExecutionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -109,14 +149,31 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<GetExecutionResponseEnvelope> get(
             String syncId, String id, RequestOptions requestOptions) {
-        return this.rawClient.get(syncId, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetExecutionResponseEnvelope>> rawFuture =
+                this.rawClient.get(syncId, id, requestOptions);
+        CompletableFuture<GetExecutionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Requests cancellation of a model sync execution.
      */
     public CompletableFuture<CancelSyncExecutionResponseEnvelope> cancel(String syncId, String id) {
-        return this.rawClient.cancel(syncId, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelSyncExecutionResponseEnvelope>> rawFuture =
+                this.rawClient.cancel(syncId, id);
+        CompletableFuture<CancelSyncExecutionResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -124,14 +181,32 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<CancelSyncExecutionResponseEnvelope> cancel(
             String syncId, String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.cancel(syncId, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelSyncExecutionResponseEnvelope>> rawFuture =
+                this.rawClient.cancel(syncId, id, requestOptions);
+        CompletableFuture<CancelSyncExecutionResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Fetch the latest console log entries for a sync execution. Returns the most recent 50 entries.
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(String syncId, String id) {
-        return this.rawClient.getConsoleLogs(syncId, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> rawFuture =
+                this.rawClient.getConsoleLogs(syncId, id);
+        CompletableFuture<ExecutionConsoleLogsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -139,7 +214,16 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String id, RequestOptions requestOptions) {
-        return this.rawClient.getConsoleLogs(syncId, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> rawFuture =
+                this.rawClient.getConsoleLogs(syncId, id, requestOptions);
+        CompletableFuture<ExecutionConsoleLogsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -147,7 +231,16 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String id, ExecutionsGetConsoleLogsRequest request) {
-        return this.rawClient.getConsoleLogs(syncId, id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> rawFuture =
+                this.rawClient.getConsoleLogs(syncId, id, request);
+        CompletableFuture<ExecutionConsoleLogsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -155,16 +248,31 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<ExecutionConsoleLogsResponseEnvelope> getConsoleLogs(
             String syncId, String id, ExecutionsGetConsoleLogsRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .getConsoleLogs(syncId, id, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> rawFuture =
+                this.rawClient.getConsoleLogs(syncId, id, request, requestOptions);
+        CompletableFuture<ExecutionConsoleLogsResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Returns an index of the record-log types produced by this model sync execution, with the per-type endpoint to retrieve signed URLs for each type's segment files.
      */
     public CompletableFuture<LogsIndexResponseEnvelope> getLogsIndex(String syncId, String id) {
-        return this.rawClient.getLogsIndex(syncId, id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<LogsIndexResponseEnvelope>> rawFuture =
+                this.rawClient.getLogsIndex(syncId, id);
+        CompletableFuture<LogsIndexResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -172,7 +280,15 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<LogsIndexResponseEnvelope> getLogsIndex(
             String syncId, String id, RequestOptions requestOptions) {
-        return this.rawClient.getLogsIndex(syncId, id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<LogsIndexResponseEnvelope>> rawFuture =
+                this.rawClient.getLogsIndex(syncId, id, requestOptions);
+        CompletableFuture<LogsIndexResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -187,7 +303,15 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<ExecutionLogsResponseEnvelope> getLogUrls(
             String syncId, String id, ExecutionLogType type) {
-        return this.rawClient.getLogUrls(syncId, id, type).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecutionLogsResponseEnvelope>> rawFuture =
+                this.rawClient.getLogUrls(syncId, id, type);
+        CompletableFuture<ExecutionLogsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -202,7 +326,15 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<ExecutionLogsResponseEnvelope> getLogUrls(
             String syncId, String id, ExecutionLogType type, RequestOptions requestOptions) {
-        return this.rawClient.getLogUrls(syncId, id, type, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecutionLogsResponseEnvelope>> rawFuture =
+                this.rawClient.getLogUrls(syncId, id, type, requestOptions);
+        CompletableFuture<ExecutionLogsResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -213,7 +345,14 @@ public class AsyncExecutionsClient {
      * expires before you download the file.</p>
      */
     public CompletableFuture<Void> getLogs(String syncId, String id, ExecutionLogType type, String filename) {
-        return this.rawClient.getLogs(syncId, id, type, filename).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.getLogs(syncId, id, type, filename);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -225,8 +364,14 @@ public class AsyncExecutionsClient {
      */
     public CompletableFuture<Void> getLogs(
             String syncId, String id, ExecutionLogType type, String filename, RequestOptions requestOptions) {
-        return this.rawClient
-                .getLogs(syncId, id, type, filename, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.getLogs(syncId, id, type, filename, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

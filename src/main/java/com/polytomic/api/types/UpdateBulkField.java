@@ -43,21 +43,33 @@ public final class UpdateBulkField {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether this field is synced. Primary-key fields are always enabled while their schema is enabled, and a false value for them is ignored.
+     */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
     }
 
+    /**
+     * @return Source field ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Whether the field's values are written to the destination as SHA-256 hashes
+     */
     @JsonProperty("obfuscated")
     public Optional<Boolean> getObfuscated() {
         return obfuscated;
     }
 
+    /**
+     * @return User-specified override for the field's destination name
+     */
     @JsonProperty("user_output_name")
     public Optional<String> getUserOutputName() {
         return userOutputName;
@@ -105,7 +117,6 @@ public final class UpdateBulkField {
 
         private Optional<String> userOutputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -118,6 +129,9 @@ public final class UpdateBulkField {
             return this;
         }
 
+        /**
+         * <p>Whether this field is synced. Primary-key fields are always enabled while their schema is enabled, and a false value for them is ignored.</p>
+         */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
             this.enabled = enabled;
@@ -129,6 +143,9 @@ public final class UpdateBulkField {
             return this;
         }
 
+        /**
+         * <p>Source field ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -140,6 +157,9 @@ public final class UpdateBulkField {
             return this;
         }
 
+        /**
+         * <p>Whether the field's values are written to the destination as SHA-256 hashes</p>
+         */
         @JsonSetter(value = "obfuscated", nulls = Nulls.SKIP)
         public Builder obfuscated(Optional<Boolean> obfuscated) {
             this.obfuscated = obfuscated;
@@ -151,6 +171,9 @@ public final class UpdateBulkField {
             return this;
         }
 
+        /**
+         * <p>User-specified override for the field's destination name</p>
+         */
         @JsonSetter(value = "user_output_name", nulls = Nulls.SKIP)
         public Builder userOutputName(Optional<String> userOutputName) {
             this.userOutputName = userOutputName;
@@ -164,6 +187,17 @@ public final class UpdateBulkField {
 
         public UpdateBulkField build() {
             return new UpdateBulkField(enabled, id, obfuscated, userOutputName, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("obfuscated")
+                    || key.equalsIgnoreCase("user_output_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

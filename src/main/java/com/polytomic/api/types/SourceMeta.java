@@ -49,7 +49,7 @@ public final class SourceMeta {
     }
 
     /**
-     * @return Valid values the caller may choose for this configuration item.
+     * @return Valid values the caller may choose for this configuration item
      */
     @JsonProperty("items")
     public Optional<List<Object>> getItems() {
@@ -103,7 +103,6 @@ public final class SourceMeta {
 
         private Optional<List<String>> requiresOneOf = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -130,7 +129,7 @@ public final class SourceMeta {
         }
 
         /**
-         * <p>Valid values the caller may choose for this configuration item.</p>
+         * <p>Valid values the caller may choose for this configuration item</p>
          */
         @JsonSetter(value = "items", nulls = Nulls.SKIP)
         public Builder items(Optional<List<Object>> items) {
@@ -159,6 +158,16 @@ public final class SourceMeta {
 
         public SourceMeta build() {
             return new SourceMeta(hasItems, items, requiresOneOf, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("has_items")
+                    || key.equalsIgnoreCase("items")
+                    || key.equalsIgnoreCase("requires_one_of")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

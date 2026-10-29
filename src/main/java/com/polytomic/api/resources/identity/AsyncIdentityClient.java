@@ -4,6 +4,7 @@
 package com.polytomic.api.resources.identity;
 
 import com.polytomic.api.core.ClientOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.types.GetIdentityResponseEnvelope;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +37,14 @@ public class AsyncIdentityClient {
      * accepted or rejected by endpoints that are limited to particular caller types.</p>
      */
     public CompletableFuture<GetIdentityResponseEnvelope> get() {
-        return this.rawClient.get().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetIdentityResponseEnvelope>> rawFuture = this.rawClient.get();
+        CompletableFuture<GetIdentityResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -50,6 +58,14 @@ public class AsyncIdentityClient {
      * accepted or rejected by endpoints that are limited to particular caller types.</p>
      */
     public CompletableFuture<GetIdentityResponseEnvelope> get(RequestOptions requestOptions) {
-        return this.rawClient.get(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetIdentityResponseEnvelope>> rawFuture =
+                this.rawClient.get(requestOptions);
+        CompletableFuture<GetIdentityResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

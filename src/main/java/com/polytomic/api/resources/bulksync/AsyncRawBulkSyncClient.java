@@ -4,10 +4,12 @@
 package com.polytomic.api.resources.bulksync;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.MediaTypes;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -20,6 +22,7 @@ import com.polytomic.api.errors.ForbiddenError;
 import com.polytomic.api.errors.InternalServerError;
 import com.polytomic.api.errors.NotFoundError;
 import com.polytomic.api.errors.UnprocessableEntityError;
+import com.polytomic.api.resources.bulksync.requests.ActivateBulkSyncInput;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
@@ -28,7 +31,6 @@ import com.polytomic.api.resources.bulksync.requests.CreateBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.StartBulkSyncRequest;
 import com.polytomic.api.resources.bulksync.requests.UpdateBulkSyncRequest;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.ApiError;
 import com.polytomic.api.types.BulkSyncDestEnvelope;
 import com.polytomic.api.types.BulkSyncExecutionEnvelope;
@@ -155,7 +157,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncListEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -190,6 +193,11 @@ public class AsyncRawBulkSyncClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -282,7 +290,9 @@ public class AsyncRawBulkSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -307,7 +317,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -359,6 +370,11 @@ public class AsyncRawBulkSyncClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -427,7 +443,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(id));
         if (request.getRefreshSchemas().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "refresh_schemas", request.getRefreshSchemas().get(), false);
@@ -457,7 +473,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -494,6 +511,11 @@ public class AsyncRawBulkSyncClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -501,7 +523,8 @@ public class AsyncRawBulkSyncClient {
      * Updates an existing bulk sync's top-level configuration.
      * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
      * configuration. Every field in the request body is written to the sync; any
-     * field you omit is cleared or reset to its default value.</p>
+     * field you omit is cleared or reset to its default value. An empty or omitted
+     * <code>policies</code> list leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
      * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
@@ -541,7 +564,8 @@ public class AsyncRawBulkSyncClient {
      * Updates an existing bulk sync's top-level configuration.
      * <p>Updating a bulk sync is a <strong>full replacement</strong> of the sync's top-level
      * configuration. Every field in the request body is written to the sync; any
-     * field you omit is cleared or reset to its default value.</p>
+     * field you omit is cleared or reset to its default value. An empty or omitted
+     * <code>policies</code> list leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or swapping a
      * schedule — fetch the current sync with
      * <a href="../../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>,
@@ -577,7 +601,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(id));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -586,7 +610,9 @@ public class AsyncRawBulkSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -611,7 +637,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -670,6 +697,11 @@ public class AsyncRawBulkSyncClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -726,7 +758,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(id));
         if (request.getRefreshSchemas().isPresent()) {
             QueryStringMapper.addQueryParameter(
                     httpUrl, "refresh_schemas", request.getRefreshSchemas().get(), false);
@@ -738,7 +770,10 @@ public class AsyncRawBulkSyncClient {
         }
         Request.Builder _requestBuilder = new Request.Builder()
                 .url(httpUrl.build())
-                .method("DELETE", null)
+                .method(
+                        "DELETE",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null, null))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json");
         Request okhttpRequest = _requestBuilder.build();
@@ -756,7 +791,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<Void>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -803,6 +839,11 @@ public class AsyncRawBulkSyncClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -819,7 +860,7 @@ public class AsyncRawBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<PolytomicHttpResponse<ActivateSyncEnvelope>> activate(
-            String id, ActivateSyncInput request) {
+            String id, ActivateBulkSyncInput request) {
         return activate(id, request, null);
     }
 
@@ -836,11 +877,11 @@ public class AsyncRawBulkSyncClient {
      * </blockquote>
      */
     public CompletableFuture<PolytomicHttpResponse<ActivateSyncEnvelope>> activate(
-            String id, ActivateSyncInput request, IdempotentRequestOptions requestOptions) {
+            String id, ActivateBulkSyncInput request, IdempotentRequestOptions requestOptions) {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("activate");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -850,7 +891,9 @@ public class AsyncRawBulkSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -875,7 +918,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<ActivateSyncEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -929,6 +973,11 @@ public class AsyncRawBulkSyncClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -957,7 +1006,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("cancel");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -966,7 +1015,11 @@ public class AsyncRawBulkSyncClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -984,7 +1037,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<CancelBulkSyncResponseEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1032,6 +1086,11 @@ public class AsyncRawBulkSyncClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1116,7 +1175,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("executions");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1126,7 +1185,9 @@ public class AsyncRawBulkSyncClient {
         RequestBody body;
         try {
             body = RequestBody.create(
-                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(request), MediaTypes.APPLICATION_JSON);
+                    ObjectMappers.JSON_MAPPER.writeValueAsBytes(BodyProperties.merge(
+                            request, requestOptions != null ? requestOptions.getBodyProperties() : null)),
+                    MediaTypes.APPLICATION_JSON);
         } catch (JsonProcessingException e) {
             throw new PolytomicException("Failed to serialize request", e);
         }
@@ -1151,7 +1212,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncExecutionEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1196,6 +1258,11 @@ public class AsyncRawBulkSyncClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1230,7 +1297,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/bulk/syncs")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("status");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -1257,7 +1324,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncStatusEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1299,6 +1367,11 @@ public class AsyncRawBulkSyncClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;
@@ -1375,7 +1448,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("bulksync")
                 .addPathSegments("source");
         if (request.getIncludeFields().isPresent()) {
@@ -1407,7 +1480,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncSourceEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1456,6 +1530,11 @@ public class AsyncRawBulkSyncClient {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
             }
         });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
+            }
+        });
         return future;
     }
 
@@ -1494,7 +1573,7 @@ public class AsyncRawBulkSyncClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/connections")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("bulksync")
                 .addPathSegments("target");
         if (requestOptions != null) {
@@ -1522,7 +1601,8 @@ public class AsyncRawBulkSyncClient {
                     .build();
         }
         CompletableFuture<PolytomicHttpResponse<BulkSyncDestEnvelope>> future = new CompletableFuture<>();
-        client.newCall(okhttpRequest).enqueue(new Callback() {
+        RetryInterceptor.AsyncCall okhttpCall = RetryInterceptor.newAsyncCall(client, okhttpRequest);
+        okhttpCall.enqueue(new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
@@ -1569,6 +1649,11 @@ public class AsyncRawBulkSyncClient {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 future.completeExceptionally(new PolytomicException("Network error executing HTTP request", e));
+            }
+        });
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                okhttpCall.cancel();
             }
         });
         return future;

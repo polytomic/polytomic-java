@@ -33,11 +33,17 @@ public final class ActivateSyncOutput {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Whether the sync is active
+     */
     @JsonProperty("active")
     public Optional<Boolean> getActive() {
         return active;
     }
 
+    /**
+     * @return Model sync or bulk sync ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
@@ -78,7 +84,6 @@ public final class ActivateSyncOutput {
 
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -89,6 +94,9 @@ public final class ActivateSyncOutput {
             return this;
         }
 
+        /**
+         * <p>Whether the sync is active</p>
+         */
         @JsonSetter(value = "active", nulls = Nulls.SKIP)
         public Builder active(Optional<Boolean> active) {
             this.active = active;
@@ -100,6 +108,9 @@ public final class ActivateSyncOutput {
             return this;
         }
 
+        /**
+         * <p>Model sync or bulk sync ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -113,6 +124,14 @@ public final class ActivateSyncOutput {
 
         public ActivateSyncOutput build() {
             return new ActivateSyncOutput(active, id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("active") || key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

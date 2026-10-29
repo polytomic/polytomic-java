@@ -31,6 +31,9 @@ public final class GetEnrichmentInputFieldsResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Sets of enricher input fields, any one of which satisfies the configuration
+     */
     @JsonProperty("data")
     public Optional<List<List<String>>> getData() {
         return data;
@@ -70,7 +73,6 @@ public final class GetEnrichmentInputFieldsResponseEnvelope {
     public static final class Builder {
         private Optional<List<List<String>>> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -80,6 +82,9 @@ public final class GetEnrichmentInputFieldsResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Sets of enricher input fields, any one of which satisfies the configuration</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<List<String>>> data) {
             this.data = data;
@@ -93,6 +98,14 @@ public final class GetEnrichmentInputFieldsResponseEnvelope {
 
         public GetEnrichmentInputFieldsResponseEnvelope build() {
             return new GetEnrichmentInputFieldsResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

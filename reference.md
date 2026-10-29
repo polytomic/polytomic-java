@@ -186,7 +186,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**automaticallyAddNewFields:** `Optional<BulkDiscover>` 
+**automaticallyAddNewFields:** `Optional<BulkDiscover>` — Controls whether Polytomic automatically enables newly discovered fields on existing objects. Valid values depend on the source backend.
     
 </dd>
 </dl>
@@ -194,7 +194,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**automaticallyAddNewObjects:** `Optional<BulkDiscover>` 
+**automaticallyAddNewObjects:** `Optional<BulkDiscover>` — Controls whether Polytomic automatically enables newly discovered source objects (tables). Valid values depend on the source backend.
     
 </dd>
 </dl>
@@ -218,7 +218,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**defaultSchedule:** `BulkSyncDefaultScheduleRequest` 
+**defaultSchedule:** `BulkSyncDefaultScheduleRequest` — The default bulk sync schedule. This schedule applies to all fields and schemas. Schedules are interpreted in UTC.
     
 </dd>
 </dl>
@@ -234,7 +234,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**destinationConnectionId:** `String` — Unique identifier of the connection rows are written to.
+**destinationConnectionId:** `String` — Unique identifier of the connection rows are written to
     
 </dd>
 </dl>
@@ -250,7 +250,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**mode:** `Optional<BulkSyncTargetMode>` 
+**mode:** `Optional<BulkSyncTargetMode>` — How source data is written to the destination. replicate keeps the destination in sync with the source; snapshot writes a timestamped copy per execution; append adds every delivered record, including full reads, without updating existing rows.
     
 </dd>
 </dl>
@@ -258,7 +258,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**name:** `String` — Human-readable name for the bulk sync.
+**name:** `String` — Human-readable name for the bulk sync
     
 </dd>
 </dl>
@@ -266,7 +266,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**normalizeNames:** `Optional<BulkNormalizeNames>` 
+**normalizeNames:** `Optional<BulkNormalizeNames>` — Controls whether destination object and field names are normalized (e.g. lowercased, special characters replaced). Valid values depend on the destination backend.
     
 </dd>
 </dl>
@@ -274,7 +274,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` — Organization the sync is created in. Only used by partner callers; normal callers always create syncs in their own organization.
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -282,7 +282,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**policies:** `Optional<List<String>>` — Identifiers of permissions policies applied to the bulk sync.
+**policies:** `Optional<List<String>>` — Permissions policy IDs applied to the bulk sync. On update, a non-empty list replaces the bulk sync's policies and an empty or omitted list leaves them unchanged.
     
 </dd>
 </dl>
@@ -314,7 +314,7 @@ client.bulkSync().create(
 <dl>
 <dd>
 
-**sourceConnectionId:** `String` — Unique identifier of the connection rows are read from.
+**sourceConnectionId:** `String` — Unique identifier of the connection rows are read from
     
 </dd>
 </dl>
@@ -382,7 +382,7 @@ client.bulkSync().get(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Bulk sync ID
     
 </dd>
 </dl>
@@ -390,7 +390,7 @@ client.bulkSync().get(
 <dl>
 <dd>
 
-**refreshSchemas:** `Optional<Boolean>` 
+**refreshSchemas:** `Optional<Boolean>` — Deprecated; has no effect
     
 </dd>
 </dl>
@@ -418,7 +418,8 @@ Updates an existing bulk sync's top-level configuration.
 
 Updating a bulk sync is a **full replacement** of the sync's top-level
 configuration. Every field in the request body is written to the sync; any
-field you omit is cleared or reset to its default value.
+field you omit is cleared or reset to its default value. An empty or omitted
+`policies` list leaves the sync's current policies unchanged.
 
 To make a partial change — for example, toggling `active` or swapping a
 schedule — fetch the current sync with
@@ -499,7 +500,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync to update.
+**id:** `String` — Unique identifier of the bulk sync to update
     
 </dd>
 </dl>
@@ -523,7 +524,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**automaticallyAddNewFields:** `Optional<BulkDiscover>` 
+**automaticallyAddNewFields:** `Optional<BulkDiscover>` — Controls whether Polytomic automatically enables newly discovered fields on existing objects. Valid values depend on the source backend.
     
 </dd>
 </dl>
@@ -531,7 +532,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**automaticallyAddNewObjects:** `Optional<BulkDiscover>` 
+**automaticallyAddNewObjects:** `Optional<BulkDiscover>` — Controls whether Polytomic automatically enables newly discovered source objects (tables). Valid values depend on the source backend.
     
 </dd>
 </dl>
@@ -555,7 +556,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**defaultSchedule:** `BulkSyncDefaultScheduleRequest` 
+**defaultSchedule:** `BulkSyncDefaultScheduleRequest` — The default bulk sync schedule. This schedule applies to all fields and schemas. Schedules are interpreted in UTC.
     
 </dd>
 </dl>
@@ -571,7 +572,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**destinationConnectionId:** `String` — Unique identifier of the connection rows are written to.
+**destinationConnectionId:** `String` — Unique identifier of the connection rows are written to
     
 </dd>
 </dl>
@@ -587,7 +588,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**mode:** `Optional<BulkSyncTargetMode>` 
+**mode:** `Optional<BulkSyncTargetMode>` — How source data is written to the destination. replicate keeps the destination in sync with the source; snapshot writes a timestamped copy per execution; append adds every delivered record, including full reads, without updating existing rows.
     
 </dd>
 </dl>
@@ -595,7 +596,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**name:** `String` — Human-readable name for the bulk sync.
+**name:** `String` — Human-readable name for the bulk sync
     
 </dd>
 </dl>
@@ -603,7 +604,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**normalizeNames:** `Optional<BulkNormalizeNames>` 
+**normalizeNames:** `Optional<BulkNormalizeNames>` — Controls whether destination object and field names are normalized (e.g. lowercased, special characters replaced). Valid values depend on the destination backend.
     
 </dd>
 </dl>
@@ -611,7 +612,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` — Organization the sync belongs to. Only used by partner callers; normal callers are always scoped to their own organization.
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -619,7 +620,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**policies:** `Optional<List<String>>` — Identifiers of permissions policies applied to the bulk sync.
+**policies:** `Optional<List<String>>` — Permissions policy IDs applied to the bulk sync. On update, a non-empty list replaces the bulk sync's policies and an empty or omitted list leaves them unchanged.
     
 </dd>
 </dl>
@@ -651,7 +652,7 @@ client.bulkSync().update(
 <dl>
 <dd>
 
-**sourceConnectionId:** `String` — Unique identifier of the connection rows are read from.
+**sourceConnectionId:** `String` — Unique identifier of the connection rows are read from
     
 </dd>
 </dl>
@@ -717,7 +718,7 @@ client.bulkSync().delete(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Bulk sync ID
     
 </dd>
 </dl>
@@ -725,7 +726,7 @@ client.bulkSync().delete(
 <dl>
 <dd>
 
-**refreshSchemas:** `Optional<Boolean>` 
+**refreshSchemas:** `Optional<Boolean>` — Deprecated; has no effect
     
 </dd>
 </dl>
@@ -775,7 +776,7 @@ any execution that is currently in progress.
 ```java
 client.bulkSync().activate(
     "248df4b7-aa70-47b8-a036-33ac447e668d",
-    ActivateSyncInput
+    ActivateBulkSyncInput
         .builder()
         .active(true)
         .build()
@@ -794,7 +795,7 @@ client.bulkSync().activate(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Bulk sync ID
     
 </dd>
 </dl>
@@ -802,7 +803,7 @@ client.bulkSync().activate(
 <dl>
 <dd>
 
-**request:** `ActivateSyncInput` 
+**active:** `Boolean` — Whether the bulk sync should be active
     
 </dd>
 </dl>
@@ -936,7 +937,7 @@ client.bulkSync().start(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -944,7 +945,7 @@ client.bulkSync().start(
 <dl>
 <dd>
 
-**fetchMode:** `Optional<BulkFetchMode>` 
+**fetchMode:** `Optional<BulkFetchMode>` — Selective fetch mode. Controls whether the execution runs a full fetch, only incremental fields, or only non-incremental fields.
     
 </dd>
 </dl>
@@ -952,7 +953,7 @@ client.bulkSync().start(
 <dl>
 <dd>
 
-**resyncMode:** `Optional<BulkResyncMode>` 
+**resyncMode:** `Optional<BulkResyncMode>` — Controls how the destination is handled during a resync. Valid values: refetch (retain destination data), resync (truncate destination data), rebuild (drop and recreate destination tables).
     
 </dd>
 </dl>
@@ -1032,7 +1033,7 @@ client.bulkSync().getStatus("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -1105,7 +1106,7 @@ client.bulkSync().getSource(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection.
+**id:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -1177,7 +1178,7 @@ client.bulkSync().getDestination("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -1285,7 +1286,7 @@ client.connections().getConnectionTypeSchema("postgresql");
 <dl>
 <dd>
 
-**id:** `String` — Connection type identifier (e.g. postgresql, salesforce, hubspot).
+**id:** `String` — Connection type identifier (e.g. postgresql, salesforce, hubspot)
     
 </dd>
 </dl>
@@ -1353,7 +1354,7 @@ client.connections().getTypeParameterValues(
 <dl>
 <dd>
 
-**type:** `String` 
+**type:** `String` — Connection type ID
     
 </dd>
 </dl>
@@ -1385,7 +1386,7 @@ client.connections().getTypeParameterValues(
 <dl>
 <dd>
 
-**query:** `Optional<String>` 
+**query:** `Optional<String>` — Has no effect on the values returned.
     
 </dd>
 </dl>
@@ -1541,7 +1542,7 @@ client.connections().create(
 <dl>
 <dd>
 
-**healthcheckInterval:** `Optional<String>` — Override interval for connection health checking.
+**healthcheckInterval:** `Optional<String>` — Override interval for connection health checking
     
 </dd>
 </dl>
@@ -1557,7 +1558,7 @@ client.connections().create(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -1565,7 +1566,7 @@ client.connections().create(
 <dl>
 <dd>
 
-**policies:** `Optional<List<String>>` 
+**policies:** `Optional<List<String>>` — Permissions policy IDs applied to the connection
     
 </dd>
 </dl>
@@ -1573,7 +1574,7 @@ client.connections().create(
 <dl>
 <dd>
 
-**redirectUrl:** `Optional<String>` — URL to redirect to after completing OAuth flow.
+**redirectUrl:** `Optional<String>` — URL to redirect to after completing OAuth flow
     
 </dd>
 </dl>
@@ -1642,7 +1643,6 @@ client.connections().connect(
     ConnectCardRequest
         .builder()
         .name("Salesforce Connection")
-        .redirectUrl("redirect_url")
         .build()
 );
 ```
@@ -1659,7 +1659,7 @@ client.connections().connect(
 <dl>
 <dd>
 
-**connection:** `Optional<String>` — The id of an existing connection to update.
+**connection:** `Optional<String>` — The id of an existing connection to update
     
 </dd>
 </dl>
@@ -1667,7 +1667,7 @@ client.connections().connect(
 <dl>
 <dd>
 
-**dark:** `Optional<Boolean>` — Whether to use the dark theme for the Connect modal.
+**dark:** `Optional<Boolean>` — Whether to use the dark theme for the Connect modal
     
 </dd>
 </dl>
@@ -1683,7 +1683,7 @@ client.connections().connect(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -1691,7 +1691,7 @@ client.connections().connect(
 <dl>
 <dd>
 
-**redirectUrl:** `String` — URL to redirect to after connection is created.
+**redirectUrl:** `Optional<String>` — URL to redirect to after the hosted Connect flow finishes. Required for hosted Connect; omit it to mint a session for the embedded form (@polytomic/connect-react).
     
 </dd>
 </dl>
@@ -1707,7 +1707,7 @@ client.connections().connect(
 <dl>
 <dd>
 
-**type:** `Optional<String>` — Connection type to create.
+**type:** `Optional<String>` — Connection type to create
     
 </dd>
 </dl>
@@ -1845,7 +1845,7 @@ client.connections().testConnection(
 <dl>
 <dd>
 
-**configuration:** `Map<String, Object>` — Connection configuration to test.
+**configuration:** `Map<String, Object>` — Connection configuration to test
     
 </dd>
 </dl>
@@ -1861,7 +1861,7 @@ client.connections().testConnection(
 <dl>
 <dd>
 
-**type:** `String` — The type of connection to test.
+**type:** `String` — The type of connection to test
     
 </dd>
 </dl>
@@ -1941,7 +1941,7 @@ client.connections().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -2027,7 +2027,7 @@ client.connections().update(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -2043,7 +2043,7 @@ client.connections().update(
 <dl>
 <dd>
 
-**healthcheckInterval:** `Optional<String>` — Override interval for connection health checking.
+**healthcheckInterval:** `Optional<String>` — Override interval for connection health checking
     
 </dd>
 </dl>
@@ -2059,7 +2059,7 @@ client.connections().update(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -2067,7 +2067,7 @@ client.connections().update(
 <dl>
 <dd>
 
-**policies:** `Optional<List<String>>` 
+**policies:** `Optional<List<String>>` — Permissions policy IDs applied to the connection. A non-empty list replaces the connection's policies and an empty or omitted list leaves them unchanged.
     
 </dd>
 </dl>
@@ -2083,7 +2083,7 @@ client.connections().update(
 <dl>
 <dd>
 
-**type:** `Optional<String>` 
+**type:** `Optional<String>` — Ignored. A connection's type is fixed at creation.
     
 </dd>
 </dl>
@@ -2162,7 +2162,7 @@ client.connections().delete(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -2170,7 +2170,7 @@ client.connections().delete(
 <dl>
 <dd>
 
-**force:** `Optional<Boolean>` 
+**force:** `Optional<Boolean>` — Delete the connection with the models and syncs that depend on it.
     
 </dd>
 </dl>
@@ -2233,7 +2233,7 @@ client.connections().getParameterValues("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -2301,7 +2301,7 @@ client.connections().getUsage("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection whose API consumption should be returned.
+**id:** `String` — Unique identifier of the connection whose API consumption should be returned
     
 </dd>
 </dl>
@@ -2372,7 +2372,7 @@ client.queryRunner().runQuery(
 <dl>
 <dd>
 
-**connectionId:** `String` — Unique identifier of the connection to run the query against.
+**connectionId:** `String` — Unique identifier of the connection to run the query against
     
 </dd>
 </dl>
@@ -2380,7 +2380,7 @@ client.queryRunner().runQuery(
 <dl>
 <dd>
 
-**query:** `Optional<String>` — The query to execute against the connection.
+**query:** `Optional<String>` — The query to execute against the connection
     
 </dd>
 </dl>
@@ -2388,7 +2388,7 @@ client.queryRunner().runQuery(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -2396,7 +2396,7 @@ client.queryRunner().runQuery(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -2472,7 +2472,7 @@ client.queryRunner().getQuery(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the query task, as returned by POST /api/connections/{connection_id}/query.
+**id:** `String` — Unique identifier of the query task, as returned by POST /api/connections/{connection_id}/query
     
 </dd>
 </dl>
@@ -2480,7 +2480,7 @@ client.queryRunner().getQuery(
 <dl>
 <dd>
 
-**page:** `Optional<String>` — Opaque pagination token returned in the links.next or links.previous URL of the previous response.
+**page:** `Optional<String>` — Opaque pagination token returned in the links.next or links.previous URL of the previous response
     
 </dd>
 </dl>
@@ -2488,7 +2488,7 @@ client.queryRunner().getQuery(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -2496,7 +2496,7 @@ client.queryRunner().getQuery(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -2567,7 +2567,7 @@ client.schemas().upsertField(
 <dl>
 <dd>
 
-**connectionId:** `String` — Unique identifier of the connection.
+**connectionId:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -2575,7 +2575,7 @@ client.schemas().upsertField(
 <dl>
 <dd>
 
-**schemaId:** `String` — Identifier of the schema the fields belong to.
+**schemaId:** `String` — Identifier of the schema the fields belong to
     
 </dd>
 </dl>
@@ -2646,7 +2646,7 @@ client.schemas().deleteField("248df4b7-aa70-47b8-a036-33ac447e668d", "public.use
 <dl>
 <dd>
 
-**connectionId:** `String` — Unique identifier of the connection.
+**connectionId:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -2654,7 +2654,7 @@ client.schemas().deleteField("248df4b7-aa70-47b8-a036-33ac447e668d", "public.use
 <dl>
 <dd>
 
-**schemaId:** `String` — Identifier of the schema the field belongs to.
+**schemaId:** `String` — Identifier of the schema the field belongs to
     
 </dd>
 </dl>
@@ -2662,7 +2662,7 @@ client.schemas().deleteField("248df4b7-aa70-47b8-a036-33ac447e668d", "public.use
 <dl>
 <dd>
 
-**fieldId:** `String` — Identifier of the user-defined field to delete.
+**fieldId:** `String` — Identifier of the user-defined field to delete
     
 </dd>
 </dl>
@@ -2723,7 +2723,7 @@ client.schemas().patchField(
 <dl>
 <dd>
 
-**connectionId:** `String` — Connection holding the schema.
+**connectionId:** `String` — Connection holding the schema
     
 </dd>
 </dl>
@@ -2731,7 +2731,7 @@ client.schemas().patchField(
 <dl>
 <dd>
 
-**schemaId:** `String` — Schema identifier.
+**schemaId:** `String` — Schema identifier
     
 </dd>
 </dl>
@@ -2739,7 +2739,7 @@ client.schemas().patchField(
 <dl>
 <dd>
 
-**fieldId:** `String` — Field identifier within the schema.
+**fieldId:** `String` — Field identifier within the schema
     
 </dd>
 </dl>
@@ -2747,7 +2747,7 @@ client.schemas().patchField(
 <dl>
 <dd>
 
-**definition:** `Optional<TypesDefinition>` 
+**definition:** `Optional<TypesDefinition>` — Detailed type of the field, such as "bigint" or ["decimal", {"precision": 10, "scale": 2}]; it must be consistent with the field's type.
     
 </dd>
 </dl>
@@ -2755,7 +2755,7 @@ client.schemas().patchField(
 <dl>
 <dd>
 
-**example:** `Optional<Object>` — Sample value surfaced in the UI.
+**example:** `Optional<Object>` — Sample value surfaced in the UI
     
 </dd>
 </dl>
@@ -2763,7 +2763,7 @@ client.schemas().patchField(
 <dl>
 <dd>
 
-**label:** `Optional<String>` — Human-readable label for the field.
+**label:** `Optional<String>` — Human-readable label for the field
     
 </dd>
 </dl>
@@ -2850,7 +2850,7 @@ client.schemas().setPrimaryKeys(
 <dl>
 <dd>
 
-**connectionId:** `String` — Unique identifier of the connection.
+**connectionId:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -2858,7 +2858,7 @@ client.schemas().setPrimaryKeys(
 <dl>
 <dd>
 
-**schemaId:** `String` — Identifier of the schema whose primary keys are being overridden.
+**schemaId:** `String` — Identifier of the schema whose primary keys are being overridden
     
 </dd>
 </dl>
@@ -2924,7 +2924,7 @@ client.schemas().resetPrimaryKeys("248df4b7-aa70-47b8-a036-33ac447e668d", "publi
 <dl>
 <dd>
 
-**connectionId:** `String` — Unique identifier of the connection.
+**connectionId:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -2932,7 +2932,7 @@ client.schemas().resetPrimaryKeys("248df4b7-aa70-47b8-a036-33ac447e668d", "publi
 <dl>
 <dd>
 
-**schemaId:** `String` — Identifier of the schema whose primary key override should be cleared.
+**schemaId:** `String` — Identifier of the schema whose primary key override should be cleared
     
 </dd>
 </dl>
@@ -3005,7 +3005,7 @@ client.schemas().refresh("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection whose schema cache should be refreshed.
+**id:** `String` — Unique identifier of the connection whose schema cache should be refreshed
     
 </dd>
 </dl>
@@ -3075,7 +3075,7 @@ client.schemas().getStatus("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection whose schema cache status should be returned.
+**id:** `String` — Unique identifier of the connection whose schema cache status should be returned
     
 </dd>
 </dl>
@@ -3137,7 +3137,7 @@ client.schemas().get("248df4b7-aa70-47b8-a036-33ac447e668d", "public.users");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection.
+**id:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -3210,7 +3210,7 @@ client.schemas().getRecords("248df4b7-aa70-47b8-a036-33ac447e668d", "public.user
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection.
+**id:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -3218,7 +3218,7 @@ client.schemas().getRecords("248df4b7-aa70-47b8-a036-33ac447e668d", "public.user
 <dl>
 <dd>
 
-**schemaId:** `String` — Identifier of the schema within the connection.
+**schemaId:** `String` — Identifier of the schema within the connection
     
 </dd>
 </dl>
@@ -3290,7 +3290,7 @@ client.models().getEnrichmentSource(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection.
+**id:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -3363,7 +3363,7 @@ client.models().post(
 <dl>
 <dd>
 
-**connectionId:** `String` 
+**connectionId:** `String` — Enrichment connection ID
     
 </dd>
 </dl>
@@ -3371,7 +3371,7 @@ client.models().post(
 <dl>
 <dd>
 
-**configuration:** `Optional<Map<String, Object>>` 
+**configuration:** `Optional<Map<String, Object>>` — Enricher configuration to list valid input fields for
     
 </dd>
 </dl>
@@ -3395,12 +3395,15 @@ client.models().post(
 <dl>
 <dd>
 
-Submits a job that previews the fields a model would expose without persisting it.
+Previews the fields a model exposes without saving the model.
 
-The response contains a job ID that resolves to the list of fields the model
-would expose. Poll the job until it completes to retrieve the field list. The
-model is not persisted — this endpoint is useful for validating a query or
-configuration before calling [`POST /api/models`](../../api-reference/models/create) to save it.
+The response contains the previewed model, including the fields it exposes.
+With `async=true`, the response contains a job instead; poll the job until it
+completes to retrieve the field list.
+
+The model is not saved, and `policies` and `labels` are ignored. Use this
+endpoint to validate a query or configuration before calling
+[`POST /api/models`](../../api-reference/models/create) to save it.
 </dd>
 </dl>
 </dd>
@@ -3447,7 +3450,7 @@ client.models().preview(
 <dl>
 <dd>
 
-**async:** `Optional<Boolean>` 
+**async:** `Optional<Boolean>` — Run in the background and return a job instead of the result.
     
 </dd>
 </dl>
@@ -3582,7 +3585,7 @@ client.models().create(
 <dl>
 <dd>
 
-**async:** `Optional<Boolean>` 
+**async:** `Optional<Boolean>` — Run in the background and return a job instead of the result.
     
 </dd>
 </dl>
@@ -3654,7 +3657,7 @@ client.models().get(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model ID
     
 </dd>
 </dl>
@@ -3662,7 +3665,7 @@ client.models().get(
 <dl>
 <dd>
 
-**async:** `Optional<Boolean>` 
+**async:** `Optional<Boolean>` — Deprecated; has no effect
     
 </dd>
 </dl>
@@ -3690,7 +3693,8 @@ Updates a model's configuration.
 
 Updating a model is a **full replacement** of its configuration. Every field in
 the request body is written to the model; any field you omit is cleared or reset
-to its default value.
+to its default value. An empty or omitted `policies` list leaves the model's
+current policies unchanged.
 
 To make a partial change, fetch the current model with
 [`GET /api/models/{id}`](../../../api-reference/models/get), modify the fields you want to change, and send
@@ -3740,7 +3744,7 @@ client.models().update(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model ID
     
 </dd>
 </dl>
@@ -3748,7 +3752,7 @@ client.models().update(
 <dl>
 <dd>
 
-**async:** `Optional<Boolean>` 
+**async:** `Optional<Boolean>` — Run in the background and return a job instead of the result.
     
 </dd>
 </dl>
@@ -3756,7 +3760,7 @@ client.models().update(
 <dl>
 <dd>
 
-**additionalFields:** `Optional<List<ModelModelFieldRequest>>` 
+**additionalFields:** `Optional<List<ModelModelFieldRequest>>` — User-defined fields to add to the model alongside its source fields
     
 </dd>
 </dl>
@@ -3764,7 +3768,7 @@ client.models().update(
 <dl>
 <dd>
 
-**configuration:** `Map<String, Object>` 
+**configuration:** `Map<String, Object>` — Model configuration for the source connection type
     
 </dd>
 </dl>
@@ -3772,7 +3776,7 @@ client.models().update(
 <dl>
 <dd>
 
-**connectionId:** `String` 
+**connectionId:** `String` — Connection ID of the model's source, which cannot be changed after the model is created
     
 </dd>
 </dl>
@@ -3780,7 +3784,7 @@ client.models().update(
 <dl>
 <dd>
 
-**enricher:** `Optional<Enrichment>` 
+**enricher:** `Optional<Enrichment>` — Enrichment to apply to the model
     
 </dd>
 </dl>
@@ -3796,7 +3800,7 @@ client.models().update(
 <dl>
 <dd>
 
-**identifier:** `Optional<String>` 
+**identifier:** `Optional<String>` — Source field name of the model's unique identifier
     
 </dd>
 </dl>
@@ -3804,7 +3808,7 @@ client.models().update(
 <dl>
 <dd>
 
-**labels:** `Optional<List<String>>` 
+**labels:** `Optional<List<String>>` — Deprecated; ignored
     
 </dd>
 </dl>
@@ -3812,7 +3816,7 @@ client.models().update(
 <dl>
 <dd>
 
-**name:** `String` 
+**name:** `String` — Model name
     
 </dd>
 </dl>
@@ -3820,7 +3824,7 @@ client.models().update(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -3828,7 +3832,7 @@ client.models().update(
 <dl>
 <dd>
 
-**policies:** `Optional<List<String>>` 
+**policies:** `Optional<List<String>>` — Permissions policy IDs applied to the model. On update, a non-empty list replaces the model's policies and an empty or omitted list leaves them unchanged.
     
 </dd>
 </dl>
@@ -3836,7 +3840,7 @@ client.models().update(
 <dl>
 <dd>
 
-**refresh:** `Optional<Boolean>` 
+**refresh:** `Optional<Boolean>` — Whether to refresh the enricher's fields and example values
     
 </dd>
 </dl>
@@ -3844,7 +3848,7 @@ client.models().update(
 <dl>
 <dd>
 
-**relations:** `Optional<List<ModelRelation>>` 
+**relations:** `Optional<List<ModelRelation>>` — Joins from this model's fields to fields on other models
     
 </dd>
 </dl>
@@ -3852,7 +3856,7 @@ client.models().update(
 <dl>
 <dd>
 
-**trackingColumns:** `Optional<List<String>>` 
+**trackingColumns:** `Optional<List<String>>` — Source field names used to detect changed records
     
 </dd>
 </dl>
@@ -3915,7 +3919,7 @@ client.models().delete(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model ID
     
 </dd>
 </dl>
@@ -3923,7 +3927,7 @@ client.models().delete(
 <dl>
 <dd>
 
-**async:** `Optional<Boolean>` 
+**async:** `Optional<Boolean>` — Deprecated; has no effect
     
 </dd>
 </dl>
@@ -3987,7 +3991,7 @@ client.models().sample(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model ID
     
 </dd>
 </dl>
@@ -3995,7 +3999,7 @@ client.models().sample(
 <dl>
 <dd>
 
-**async:** `Optional<Boolean>` 
+**async:** `Optional<Boolean>` — Run in the background and return a job instead of the result.
     
 </dd>
 </dl>
@@ -4060,7 +4064,7 @@ client.modelSync().getSource(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection.
+**id:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -4162,7 +4166,7 @@ client.modelSync().getSourceFields(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection.
+**id:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -4170,7 +4174,7 @@ client.modelSync().getSourceFields(
 <dl>
 <dd>
 
-**params:** `Optional<Map<String, Optional<String>>>` — Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for.
+**params:** `Optional<Map<String, Optional<String>>>` — Source configuration, matching the params used with GET /api/connections/{id}/modelsync/source, that selects the specific source to return fields for
     
 </dd>
 </dl>
@@ -4414,7 +4418,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**active:** `Optional<Boolean>` — Whether the sync is enabled and scheduled.
+**active:** `Optional<Boolean>` — Whether the sync is enabled and scheduled
     
 </dd>
 </dl>
@@ -4422,7 +4426,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**encryptionPassphrase:** `Optional<String>` — Passphrase for encrypting the sync data.
+**encryptionPassphrase:** `Optional<String>` — Passphrase for encrypting the sync data
     
 </dd>
 </dl>
@@ -4430,7 +4434,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**fields:** `List<SyncField>` — Fields to sync from source to destination.
+**fields:** `List<SyncField>` — Fields to sync from source to destination
     
 </dd>
 </dl>
@@ -4470,7 +4474,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**mode:** `ModelsyncSyncTargetMode` 
+**mode:** `ModelsyncSyncTargetMode` — How source records are written to the target
     
 </dd>
 </dl>
@@ -4478,7 +4482,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**modelFilters:** `Optional<ModelFilters>` 
+**modelFilters:** `Optional<ModelFilters>` — Filters narrowing the records read from the source. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.
     
 </dd>
 </dl>
@@ -4486,7 +4490,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**name:** `String` 
+**name:** `String` — Name of the model sync
     
 </dd>
 </dl>
@@ -4502,7 +4506,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` — Organization ID for the sync; read-only with a partner key.
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -4510,7 +4514,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**overrideFields:** `Optional<List<OverrideFieldInput>>` — Target fields which are set to a fixed value for every record, rather than mapped from a model field.
+**overrideFields:** `Optional<List<OverrideFieldInput>>` — Target fields which are set to a fixed value for every record, rather than mapped from a model field
     
 </dd>
 </dl>
@@ -4518,7 +4522,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**overrides:** `Optional<List<Override>>` — Conditional value replacement for fields.
+**overrides:** `Optional<List<Override>>` — Conditional value replacement for fields
     
 </dd>
 </dl>
@@ -4526,7 +4530,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**policies:** `Optional<List<String>>` 
+**policies:** `Optional<List<String>>` — Permissions policy IDs applied to the sync. On update, a non-empty list replaces the sync's policies and an empty or omitted list leaves them unchanged.
     
 </dd>
 </dl>
@@ -4534,7 +4538,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**schedule:** `Schedule` 
+**schedule:** `Schedule` — Sync schedule. Schedule times are interpreted in UTC.
     
 </dd>
 </dl>
@@ -4550,7 +4554,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**syncAllRecords:** `Optional<Boolean>` — Whether to sync all records from the source, regardless of whether they've changed since the previous execution.
+**syncAllRecords:** `Optional<Boolean>` — Whether to sync all records from the source, regardless of whether they've changed since the previous execution
     
 </dd>
 </dl>
@@ -4558,7 +4562,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**target:** `ModelSyncV5Target` 
+**target:** `ModelSyncV5Target` — Sync destination configuration
     
 </dd>
 </dl>
@@ -4566,7 +4570,7 @@ client.modelSync().create(
 <dl>
 <dd>
 
-**targetFilters:** `Optional<TargetFilters>` 
+**targetFilters:** `Optional<TargetFilters>` — Filters narrowing the records written to the destination. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.
     
 </dd>
 </dl>
@@ -4667,7 +4671,7 @@ client.modelSync().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -4695,7 +4699,8 @@ Updates a model sync's configuration.
 
 Updating a model sync is a **full replacement** of the sync's configuration.
 Every field in the request body is written to the sync; any field you omit is
-cleared or reset to its default value.
+cleared or reset to its default value. An empty or omitted `policies` list
+leaves the sync's current policies unchanged.
 
 To make a partial change — for example, toggling `active` or adjusting a
 single field mapping — fetch the current sync with
@@ -4761,7 +4766,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -4769,7 +4774,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**active:** `Optional<Boolean>` — Whether the sync is enabled and scheduled.
+**active:** `Optional<Boolean>` — Whether the sync is enabled and scheduled
     
 </dd>
 </dl>
@@ -4777,7 +4782,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**encryptionPassphrase:** `Optional<String>` — Passphrase for encrypting the sync data.
+**encryptionPassphrase:** `Optional<String>` — Passphrase for encrypting the sync data
     
 </dd>
 </dl>
@@ -4785,7 +4790,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**fields:** `List<SyncField>` — Fields to sync from source to destination.
+**fields:** `List<SyncField>` — Fields to sync from source to destination
     
 </dd>
 </dl>
@@ -4825,7 +4830,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**mode:** `ModelsyncSyncTargetMode` 
+**mode:** `ModelsyncSyncTargetMode` — How source records are written to the target
     
 </dd>
 </dl>
@@ -4833,7 +4838,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**modelFilters:** `Optional<ModelFilters>` 
+**modelFilters:** `Optional<ModelFilters>` — Filters narrowing the records read from the source. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.
     
 </dd>
 </dl>
@@ -4841,7 +4846,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**name:** `String` 
+**name:** `String` — Name of the model sync
     
 </dd>
 </dl>
@@ -4857,7 +4862,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` — Organization ID for the sync; read-only with a partner key.
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -4865,7 +4870,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**overrideFields:** `Optional<List<OverrideFieldInput>>` — Target fields which are set to a fixed value for every record, rather than mapped from a model field.
+**overrideFields:** `Optional<List<OverrideFieldInput>>` — Target fields which are set to a fixed value for every record, rather than mapped from a model field
     
 </dd>
 </dl>
@@ -4873,7 +4878,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**overrides:** `Optional<List<Override>>` — Conditional value replacement for fields.
+**overrides:** `Optional<List<Override>>` — Conditional value replacement for fields
     
 </dd>
 </dl>
@@ -4881,7 +4886,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**policies:** `Optional<List<String>>` 
+**policies:** `Optional<List<String>>` — Permissions policy IDs applied to the sync. On update, a non-empty list replaces the sync's policies and an empty or omitted list leaves them unchanged.
     
 </dd>
 </dl>
@@ -4889,7 +4894,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**schedule:** `Schedule` 
+**schedule:** `Schedule` — Sync schedule. Schedule times are interpreted in UTC.
     
 </dd>
 </dl>
@@ -4905,7 +4910,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**syncAllRecords:** `Optional<Boolean>` — Whether to sync all records from the source, regardless of whether they've changed since the previous execution.
+**syncAllRecords:** `Optional<Boolean>` — Whether to sync all records from the source, regardless of whether they've changed since the previous execution
     
 </dd>
 </dl>
@@ -4913,7 +4918,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**target:** `ModelSyncV5Target` 
+**target:** `ModelSyncV5Target` — Sync destination configuration
     
 </dd>
 </dl>
@@ -4921,7 +4926,7 @@ client.modelSync().update(
 <dl>
 <dd>
 
-**targetFilters:** `Optional<TargetFilters>` 
+**targetFilters:** `Optional<TargetFilters>` — Filters narrowing the records written to the destination. When either filter object is present it governs both kinds, and an absent object means that kind has no filters.
     
 </dd>
 </dl>
@@ -4979,7 +4984,7 @@ client.modelSync().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -5046,7 +5051,7 @@ client.modelSync().activate(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -5054,7 +5059,7 @@ client.modelSync().activate(
 <dl>
 <dd>
 
-**request:** `ActivateSyncInput` 
+**active:** `Boolean` — Whether the model sync should be active
     
 </dd>
 </dl>
@@ -5177,7 +5182,7 @@ client.modelSync().start(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -5185,7 +5190,7 @@ client.modelSync().start(
 <dl>
 <dd>
 
-**identities:** `Optional<List<String>>` — Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead.
+**identities:** `Optional<List<String>>` — Values of the sync's identity source field naming the records to sync. A sync with more than one identity mapping requires 'source_identities' instead. Cannot be combined with 'resync'.
     
 </dd>
 </dl>
@@ -5193,7 +5198,7 @@ client.modelSync().start(
 <dl>
 <dd>
 
-**resync:** `Optional<Boolean>` 
+**resync:** `Optional<Boolean>` — Whether the execution ignores change tracking and syncs every record; on a sync that skips the initial backfill, it instead restarts change tracking from the current position without syncing existing records
     
 </dd>
 </dl>
@@ -5201,7 +5206,7 @@ client.modelSync().start(
 <dl>
 <dd>
 
-**sourceIdentities:** `Optional<List<List<ModelSyncSourceIdentity>>>` — Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities'; at most 1000 entries.
+**sourceIdentities:** `Optional<List<List<ModelSyncSourceIdentity>>>` — Records to sync, each identified by every source and value its entry lists. The sources of an entry are identity mapping sources of one model, and an entry for a sync whose identities strategy is 'and' lists all of them. Cannot be combined with 'identities' or 'resync'; at most 1000 entries.
     
 </dd>
 </dl>
@@ -5209,7 +5214,7 @@ client.modelSync().start(
 <dl>
 <dd>
 
-**test:** `Optional<Boolean>` 
+**test:** `Optional<Boolean>` — Whether the execution is a test that syncs at most 5 records. Cannot be combined with 'resync'.
     
 </dd>
 </dl>
@@ -5267,7 +5272,7 @@ client.modelSync().getStatus("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -5376,7 +5381,7 @@ client.entities().search(
 <dl>
 <dd>
 
-**search:** `String` — Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization.
+**search:** `String` — Search term matched, by word prefix, against models, model fields, model syncs, bulk syncs, and connections in the caller's organization
     
 </dd>
 </dl>
@@ -5484,7 +5489,7 @@ client.entities().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — UUID of the entity to resolve.
+**id:** `String` — UUID of the entity to resolve
     
 </dd>
 </dl>
@@ -5581,7 +5586,7 @@ client.entities().getForPartner("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — UUID of the entity to resolve.
+**id:** `String` — UUID of the entity to resolve
     
 </dd>
 </dl>
@@ -5791,7 +5796,7 @@ client.harbors().listAuthorizedConnections(
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` 
+**limit:** `Optional<Integer>` — Maximum number of results to return
     
 </dd>
 </dl>
@@ -5799,7 +5804,7 @@ client.harbors().listAuthorizedConnections(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` 
+**pageToken:** `Optional<String>` — Token from the previous page
     
 </dd>
 </dl>
@@ -5807,7 +5812,7 @@ client.harbors().listAuthorizedConnections(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -5815,7 +5820,7 @@ client.harbors().listAuthorizedConnections(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -5876,7 +5881,7 @@ client.harbors().listAuthorizedSchemas(
 <dl>
 <dd>
 
-**connectionId:** `String` 
+**connectionId:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -5884,7 +5889,7 @@ client.harbors().listAuthorizedSchemas(
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` 
+**limit:** `Optional<Integer>` — Maximum number of results to return
     
 </dd>
 </dl>
@@ -5892,7 +5897,7 @@ client.harbors().listAuthorizedSchemas(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` 
+**pageToken:** `Optional<String>` — Token from the previous page
     
 </dd>
 </dl>
@@ -5900,7 +5905,7 @@ client.harbors().listAuthorizedSchemas(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -5908,7 +5913,7 @@ client.harbors().listAuthorizedSchemas(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -5968,7 +5973,7 @@ client.harbors().getAuthorizedSchema(
 <dl>
 <dd>
 
-**connectionId:** `String` 
+**connectionId:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -5976,7 +5981,7 @@ client.harbors().getAuthorizedSchema(
 <dl>
 <dd>
 
-**schemaId:** `String` 
+**schemaId:** `String` — Schema ID
     
 </dd>
 </dl>
@@ -5984,7 +5989,7 @@ client.harbors().getAuthorizedSchema(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -5992,7 +5997,7 @@ client.harbors().getAuthorizedSchema(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -6050,7 +6055,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**polytomicMcpKeyId:** `Optional<String>` 
+**polytomicMcpKeyId:** `Optional<String>` — ID of the key that signed the attestation
     
 </dd>
 </dl>
@@ -6058,7 +6063,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**polytomicMcpTimestamp:** `Optional<Long>` 
+**polytomicMcpTimestamp:** `Optional<Long>` — Unix time, in seconds, when the attestation was signed
     
 </dd>
 </dl>
@@ -6066,7 +6071,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**polytomicMcpNonce:** `Optional<String>` 
+**polytomicMcpNonce:** `Optional<String>` — Single-use value of at least 16 characters included in the signature
     
 </dd>
 </dl>
@@ -6074,7 +6079,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**polytomicMcpSignature:** `Optional<String>` 
+**polytomicMcpSignature:** `Optional<String>` — Attestation signature
     
 </dd>
 </dl>
@@ -6082,7 +6087,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -6090,7 +6095,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**clientName:** `Optional<String>` — MCP-observed client name.
+**clientName:** `Optional<String>` — MCP-observed client name
     
 </dd>
 </dl>
@@ -6098,7 +6103,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**clientVersion:** `Optional<String>` — MCP-observed client version.
+**clientVersion:** `Optional<String>` — MCP-observed client version
     
 </dd>
 </dl>
@@ -6106,7 +6111,7 @@ client.harbors().registerSession(
 <dl>
 <dd>
 
-**externalRunId:** `Optional<String>` — Optional client-supplied run correlation value.
+**externalRunId:** `Optional<String>` — Optional client-supplied run correlation value
     
 </dd>
 </dl>
@@ -6165,7 +6170,7 @@ client.harbors().closeSession(
 <dl>
 <dd>
 
-**sessionId:** `String` 
+**sessionId:** `String` — Harbor session ID
     
 </dd>
 </dl>
@@ -6173,7 +6178,7 @@ client.harbors().closeSession(
 <dl>
 <dd>
 
-**polytomicMcpKeyId:** `Optional<String>` 
+**polytomicMcpKeyId:** `Optional<String>` — ID of the key that signed the attestation
     
 </dd>
 </dl>
@@ -6181,7 +6186,7 @@ client.harbors().closeSession(
 <dl>
 <dd>
 
-**polytomicMcpTimestamp:** `Optional<Long>` 
+**polytomicMcpTimestamp:** `Optional<Long>` — Unix time, in seconds, when the attestation was signed
     
 </dd>
 </dl>
@@ -6189,7 +6194,7 @@ client.harbors().closeSession(
 <dl>
 <dd>
 
-**polytomicMcpNonce:** `Optional<String>` 
+**polytomicMcpNonce:** `Optional<String>` — Single-use value of at least 16 characters included in the signature
     
 </dd>
 </dl>
@@ -6197,7 +6202,7 @@ client.harbors().closeSession(
 <dl>
 <dd>
 
-**polytomicMcpSignature:** `Optional<String>` 
+**polytomicMcpSignature:** `Optional<String>` — Attestation signature
     
 </dd>
 </dl>
@@ -6205,7 +6210,7 @@ client.harbors().closeSession(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -6213,7 +6218,7 @@ client.harbors().closeSession(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Token issued when the session was registered
     
 </dd>
 </dl>
@@ -6283,7 +6288,7 @@ client.harbors().list(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -6384,7 +6389,7 @@ client.harbors().create(
 <dl>
 <dd>
 
-**name:** `String` — Human-readable Harbor name.
+**name:** `String` — Human-readable Harbor name
     
 </dd>
 </dl>
@@ -6440,7 +6445,7 @@ client.harbors().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6506,7 +6511,7 @@ client.harbors().update(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6522,7 +6527,7 @@ client.harbors().update(
 <dl>
 <dd>
 
-**name:** `String` — Human-readable Harbor name.
+**name:** `String` — Human-readable Harbor name
     
 </dd>
 </dl>
@@ -6584,7 +6589,7 @@ client.harbors().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6650,7 +6655,7 @@ client.harbors().getActionConfiguration("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6716,7 +6721,7 @@ client.harbors().disableActionConfiguration("248df4b7-aa70-47b8-a036-33ac447e668
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6782,7 +6787,7 @@ client.harbors().listActionSourceConnections("248df4b7-aa70-47b8-a036-33ac447e66
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6864,7 +6869,7 @@ client.harbors().setActionConfiguration(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6872,7 +6877,7 @@ client.harbors().setActionConfiguration(
 <dl>
 <dd>
 
-**connectionId:** `String` — Source Connection whose action grants you want to manage.
+**connectionId:** `String` — Source Connection whose action grants you want to manage
     
 </dd>
 </dl>
@@ -6888,7 +6893,7 @@ client.harbors().setActionConfiguration(
 <dl>
 <dd>
 
-**grants:** `Optional<List<HarborActionGrantSchema>>` — Complete replacement of this Connection's action grants.
+**grants:** `Optional<List<HarborActionGrantSchema>>` — Complete replacement of this Connection's action grants
     
 </dd>
 </dl>
@@ -6960,7 +6965,7 @@ client.harbors().removeActionConfiguration(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -6968,7 +6973,7 @@ client.harbors().removeActionConfiguration(
 <dl>
 <dd>
 
-**connectionId:** `String` — Source Connection whose action grants you want to manage.
+**connectionId:** `String` — Source Connection whose action grants you want to manage
     
 </dd>
 </dl>
@@ -6976,7 +6981,7 @@ client.harbors().removeActionConfiguration(
 <dl>
 <dd>
 
-**expectedRevision:** `String` — Current revision of the Connection's action grants.
+**expectedRevision:** `String` — Current revision of the Connection's action grants
     
 </dd>
 </dl>
@@ -7051,7 +7056,7 @@ client.harbors().listActionConfigurationSchemas(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7059,7 +7064,7 @@ client.harbors().listActionConfigurationSchemas(
 <dl>
 <dd>
 
-**connectionId:** `String` — Source Connection whose action grants you want to manage.
+**connectionId:** `String` — Source Connection whose action grants you want to manage
     
 </dd>
 </dl>
@@ -7075,7 +7080,7 @@ client.harbors().listActionConfigurationSchemas(
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` — Maximum number of schemas to return.
+**limit:** `Optional<Integer>` — Maximum number of schemas to return
     
 </dd>
 </dl>
@@ -7083,7 +7088,7 @@ client.harbors().listActionConfigurationSchemas(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque cursor returned by the previous request
     
 </dd>
 </dl>
@@ -7150,7 +7155,7 @@ client.harbors().listActionConfigurationOperations("248df4b7-aa70-47b8-a036-33ac
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7158,7 +7163,7 @@ client.harbors().listActionConfigurationOperations("248df4b7-aa70-47b8-a036-33ac
 <dl>
 <dd>
 
-**connectionId:** `String` — Source Connection whose action grants you want to manage.
+**connectionId:** `String` — Source Connection whose action grants you want to manage
     
 </dd>
 </dl>
@@ -7166,7 +7171,7 @@ client.harbors().listActionConfigurationOperations("248df4b7-aa70-47b8-a036-33ac
 <dl>
 <dd>
 
-**schemaId:** `String` — Exact action schema ID returned by schema discovery.
+**schemaId:** `String` — Exact action schema ID returned by schema discovery
     
 </dd>
 </dl>
@@ -7233,7 +7238,7 @@ client.harbors().listContexts(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7249,7 +7254,7 @@ client.harbors().listContexts(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -7257,7 +7262,7 @@ client.harbors().listContexts(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -7265,7 +7270,7 @@ client.harbors().listContexts(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -7328,7 +7333,7 @@ client.harbors().createContext(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7421,7 +7426,7 @@ client.harbors().listContextDrafts(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7437,7 +7442,7 @@ client.harbors().listContextDrafts(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -7507,7 +7512,7 @@ client.harbors().createContextDraft(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7515,7 +7520,7 @@ client.harbors().createContextDraft(
 <dl>
 <dd>
 
-**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to published version 1 on promotion.
+**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to published version 1 on promotion
     
 </dd>
 </dl>
@@ -7605,7 +7610,7 @@ client.harbors().getContext(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7613,7 +7618,7 @@ client.harbors().getContext(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -7621,7 +7626,7 @@ client.harbors().getContext(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -7629,7 +7634,7 @@ client.harbors().getContext(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -7696,7 +7701,7 @@ client.harbors().updateContext(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7704,7 +7709,7 @@ client.harbors().updateContext(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -7712,7 +7717,7 @@ client.harbors().updateContext(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -7720,7 +7725,7 @@ client.harbors().updateContext(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -7728,7 +7733,7 @@ client.harbors().updateContext(
 <dl>
 <dd>
 
-**changeNote:** `Optional<String>` — Optional note describing this published change.
+**changeNote:** `Optional<String>` — Optional note describing this published change
     
 </dd>
 </dl>
@@ -7814,7 +7819,7 @@ client.harbors().deleteContext(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7822,7 +7827,7 @@ client.harbors().deleteContext(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -7830,7 +7835,7 @@ client.harbors().deleteContext(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -7838,7 +7843,7 @@ client.harbors().deleteContext(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -7903,7 +7908,7 @@ client.harbors().getContextDraft(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -7911,7 +7916,7 @@ client.harbors().getContextDraft(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -7919,7 +7924,7 @@ client.harbors().getContextDraft(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -7927,7 +7932,7 @@ client.harbors().getContextDraft(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -7999,7 +8004,7 @@ client.harbors().saveContextDraft(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8007,7 +8012,7 @@ client.harbors().saveContextDraft(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -8015,7 +8020,7 @@ client.harbors().saveContextDraft(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -8023,7 +8028,7 @@ client.harbors().saveContextDraft(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -8031,7 +8036,7 @@ client.harbors().saveContextDraft(
 <dl>
 <dd>
 
-**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to the published version on promotion.
+**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to the published version on promotion
     
 </dd>
 </dl>
@@ -8119,7 +8124,7 @@ client.harbors().deleteContextDraft(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8127,7 +8132,7 @@ client.harbors().deleteContextDraft(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -8135,7 +8140,7 @@ client.harbors().deleteContextDraft(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -8143,7 +8148,7 @@ client.harbors().deleteContextDraft(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -8211,7 +8216,7 @@ client.harbors().promoteContextDraft(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8219,7 +8224,7 @@ client.harbors().promoteContextDraft(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -8227,7 +8232,7 @@ client.harbors().promoteContextDraft(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -8235,7 +8240,7 @@ client.harbors().promoteContextDraft(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -8310,7 +8315,7 @@ client.harbors().listContextVersions(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8318,7 +8323,7 @@ client.harbors().listContextVersions(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -8334,7 +8339,7 @@ client.harbors().listContextVersions(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -8342,7 +8347,7 @@ client.harbors().listContextVersions(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -8350,7 +8355,7 @@ client.harbors().listContextVersions(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -8417,7 +8422,7 @@ client.harbors().getContextVersion(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8425,7 +8430,7 @@ client.harbors().getContextVersion(
 <dl>
 <dd>
 
-**contextId:** `String` — Unique identifier of the context document.
+**contextId:** `String` — Unique identifier of the context document
     
 </dd>
 </dl>
@@ -8433,7 +8438,7 @@ client.harbors().getContextVersion(
 <dl>
 <dd>
 
-**versionId:** `String` — Unique identifier of the published context version.
+**versionId:** `String` — Unique identifier of the published context version
     
 </dd>
 </dl>
@@ -8441,7 +8446,7 @@ client.harbors().getContextVersion(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -8449,7 +8454,7 @@ client.harbors().getContextVersion(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -8512,7 +8517,7 @@ client.harbors().listKeys(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8528,7 +8533,7 @@ client.harbors().listKeys(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -8584,7 +8589,7 @@ client.harbors().createKey("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8640,7 +8645,7 @@ client.harbors().deleteKey("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa7
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8648,7 +8653,7 @@ client.harbors().deleteKey("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa7
 <dl>
 <dd>
 
-**keyId:** `String` — Unique identifier of the Harbor credential.
+**keyId:** `String` — Unique identifier of the Harbor credential
     
 </dd>
 </dl>
@@ -8720,7 +8725,7 @@ client.harbors().runQuery(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor whose backing connection runs the query.
+**harborId:** `String` — Unique identifier of the Harbor whose backing connection runs the query
     
 </dd>
 </dl>
@@ -8728,7 +8733,7 @@ client.harbors().runQuery(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -8736,7 +8741,7 @@ client.harbors().runQuery(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -8744,7 +8749,7 @@ client.harbors().runQuery(
 <dl>
 <dd>
 
-**query:** `String` — SQL query to execute against the Harbor backing connection.
+**query:** `String` — SQL query to execute against the Harbor backing connection
     
 </dd>
 </dl>
@@ -8829,7 +8834,7 @@ client.harbors().listSavedQueries(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8837,7 +8842,7 @@ client.harbors().listSavedQueries(
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` — Maximum number of saved queries to return.
+**limit:** `Optional<Integer>` — Maximum number of saved queries to return
     
 </dd>
 </dl>
@@ -8845,7 +8850,7 @@ client.harbors().listSavedQueries(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -8853,7 +8858,7 @@ client.harbors().listSavedQueries(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -8861,7 +8866,7 @@ client.harbors().listSavedQueries(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -8949,7 +8954,7 @@ client.harbors().createSavedQueryDraft(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -8957,7 +8962,7 @@ client.harbors().createSavedQueryDraft(
 <dl>
 <dd>
 
-**changeNote:** `Optional<String>` — Optional note copied to the immutable published version.
+**changeNote:** `Optional<String>` — Optional note copied to the immutable published version
     
 </dd>
 </dl>
@@ -8989,7 +8994,7 @@ client.harbors().createSavedQueryDraft(
 <dl>
 <dd>
 
-**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations.
+**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations
     
 </dd>
 </dl>
@@ -8997,7 +9002,7 @@ client.harbors().createSavedQueryDraft(
 <dl>
 <dd>
 
-**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters.
+**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters
     
 </dd>
 </dl>
@@ -9005,7 +9010,7 @@ client.harbors().createSavedQueryDraft(
 <dl>
 <dd>
 
-**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft.
+**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft
     
 </dd>
 </dl>
@@ -9070,7 +9075,7 @@ client.harbors().listSavedQueryDrafts(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9078,7 +9083,7 @@ client.harbors().listSavedQueryDrafts(
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` — Maximum number of saved-query drafts to return.
+**limit:** `Optional<Integer>` — Maximum number of saved-query drafts to return
     
 </dd>
 </dl>
@@ -9086,7 +9091,7 @@ client.harbors().listSavedQueryDrafts(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -9169,7 +9174,7 @@ client.harbors().getSavedQuery(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9177,7 +9182,7 @@ client.harbors().getSavedQuery(
 <dl>
 <dd>
 
-**savedQueryId:** `String` — Unique stable identifier of the saved query.
+**savedQueryId:** `String` — Unique stable identifier of the saved query
     
 </dd>
 </dl>
@@ -9185,7 +9190,7 @@ client.harbors().getSavedQuery(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -9193,7 +9198,7 @@ client.harbors().getSavedQuery(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -9256,7 +9261,7 @@ client.harbors().deleteSavedQuery("248df4b7-aa70-47b8-a036-33ac447e668d", "248df
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9264,7 +9269,7 @@ client.harbors().deleteSavedQuery("248df4b7-aa70-47b8-a036-33ac447e668d", "248df
 <dl>
 <dd>
 
-**savedQueryId:** `String` — Unique stable identifier of the saved query.
+**savedQueryId:** `String` — Unique stable identifier of the saved query
     
 </dd>
 </dl>
@@ -9345,7 +9350,7 @@ client.harbors().saveSavedQueryDraft(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9353,7 +9358,7 @@ client.harbors().saveSavedQueryDraft(
 <dl>
 <dd>
 
-**savedQueryId:** `String` — Unique stable identifier of the saved query.
+**savedQueryId:** `String` — Unique stable identifier of the saved query
     
 </dd>
 </dl>
@@ -9361,7 +9366,7 @@ client.harbors().saveSavedQueryDraft(
 <dl>
 <dd>
 
-**changeNote:** `Optional<String>` — Optional note copied to the immutable published version.
+**changeNote:** `Optional<String>` — Optional note copied to the immutable published version
     
 </dd>
 </dl>
@@ -9393,7 +9398,7 @@ client.harbors().saveSavedQueryDraft(
 <dl>
 <dd>
 
-**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations.
+**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations
     
 </dd>
 </dl>
@@ -9401,7 +9406,7 @@ client.harbors().saveSavedQueryDraft(
 <dl>
 <dd>
 
-**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters.
+**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters
     
 </dd>
 </dl>
@@ -9409,7 +9414,7 @@ client.harbors().saveSavedQueryDraft(
 <dl>
 <dd>
 
-**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft.
+**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft
     
 </dd>
 </dl>
@@ -9467,7 +9472,7 @@ client.harbors().deleteSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9475,7 +9480,7 @@ client.harbors().deleteSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "
 <dl>
 <dd>
 
-**savedQueryId:** `String` — Unique stable identifier of the saved query.
+**savedQueryId:** `String` — Unique stable identifier of the saved query
     
 </dd>
 </dl>
@@ -9541,7 +9546,7 @@ client.harbors().publishSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d", 
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9549,7 +9554,7 @@ client.harbors().publishSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d", 
 <dl>
 <dd>
 
-**savedQueryId:** `String` — Unique stable identifier of the saved query.
+**savedQueryId:** `String` — Unique stable identifier of the saved query
     
 </dd>
 </dl>
@@ -9612,7 +9617,7 @@ client.harbors().validateSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d",
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9620,7 +9625,7 @@ client.harbors().validateSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d",
 <dl>
 <dd>
 
-**savedQueryId:** `String` — Unique stable identifier of the saved query.
+**savedQueryId:** `String` — Unique stable identifier of the saved query
     
 </dd>
 </dl>
@@ -9746,7 +9751,7 @@ client.harbors().executeSavedQuery(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9754,7 +9759,7 @@ client.harbors().executeSavedQuery(
 <dl>
 <dd>
 
-**savedQueryId:** `String` — Unique stable identifier of the saved query.
+**savedQueryId:** `String` — Unique stable identifier of the saved query
     
 </dd>
 </dl>
@@ -9762,7 +9767,7 @@ client.harbors().executeSavedQuery(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -9770,7 +9775,7 @@ client.harbors().executeSavedQuery(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -9837,7 +9842,7 @@ client.harbors().resolveSourceMappings(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9931,7 +9936,7 @@ client.harbors().getStatus("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -9994,7 +9999,7 @@ client.harbors().listUsers(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -10010,7 +10015,7 @@ client.harbors().listUsers(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request.
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
     
 </dd>
 </dl>
@@ -10072,7 +10077,7 @@ client.harbors().inviteUser(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -10080,7 +10085,7 @@ client.harbors().inviteUser(
 <dl>
 <dd>
 
-**email:** `String` — Email address used to invite the Harbor-only user.
+**email:** `String` — Email address used to invite the Harbor-only user
     
 </dd>
 </dl>
@@ -10136,7 +10141,7 @@ client.harbors().assignUser("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -10144,7 +10149,7 @@ client.harbors().assignUser("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa
 <dl>
 <dd>
 
-**userId:** `String` — Unique identifier of the Harbor-only user.
+**userId:** `String` — Unique identifier of the Harbor-only user
     
 </dd>
 </dl>
@@ -10200,7 +10205,7 @@ client.harbors().unassignUser("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -10208,7 +10213,7 @@ client.harbors().unassignUser("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-
 <dl>
 <dd>
 
-**userId:** `String` — Unique identifier of the Harbor-only user.
+**userId:** `String` — Unique identifier of the Harbor-only user
     
 </dd>
 </dl>
@@ -10281,7 +10286,7 @@ client.jobs().get("createmodel", "248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the job (usually returned by whichever endpoint started the job).
+**id:** `String` — Unique identifier of the job (usually returned by whichever endpoint started the job)
     
 </dd>
 </dl>
@@ -10537,7 +10542,7 @@ client.operations().search(
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` — Maximum operations per task, from 1 to 10; defaults to 5.
+**limit:** `Optional<Integer>` — Maximum operations per task, from 1 to 10; defaults to 5
     
 </dd>
 </dl>
@@ -10545,7 +10550,7 @@ client.operations().search(
 <dl>
 <dd>
 
-**operationIds:** `Optional<List<String>>` — Optional nonempty list of unique stable operation IDs to rank; omitted to rank the full catalog.
+**operationIds:** `Optional<List<String>>` — Optional nonempty list of unique stable operation IDs to rank; omitted to rank the full catalog
     
 </dd>
 </dl>
@@ -10553,7 +10558,7 @@ client.operations().search(
 <dl>
 <dd>
 
-**queries:** `List<String>` — One to three plain-language tasks to find API operations for.
+**queries:** `List<String>` — One to three plain-language tasks to find API operations for
     
 </dd>
 </dl>
@@ -10771,7 +10776,7 @@ client.organization().updateRecordLogging(
 <dl>
 <dd>
 
-**enabled:** `Boolean` — Whether record logging is enabled for the organization.
+**enabled:** `Boolean` — Whether record logging is enabled for the organization
     
 </dd>
 </dl>
@@ -10886,7 +10891,7 @@ client.organization().create(
 <dl>
 <dd>
 
-**clientId:** `Optional<String>` — OIDC client ID issued by the identity provider.
+**clientId:** `Optional<String>` — OIDC client ID issued by the identity provider
     
 </dd>
 </dl>
@@ -10902,7 +10907,7 @@ client.organization().create(
 <dl>
 <dd>
 
-**issuer:** `Optional<String>` — OIDC issuer URL for organizations using OpenID Connect single sign-on.
+**issuer:** `Optional<String>` — OIDC issuer URL for organizations using OpenID Connect single sign-on
     
 </dd>
 </dl>
@@ -10918,7 +10923,7 @@ client.organization().create(
 <dl>
 <dd>
 
-**ssoDomain:** `Optional<String>` — Email domain used to match users to this organization during SSO sign-in.
+**ssoDomain:** `Optional<String>` — Email domain used to match users to this organization during SSO sign-in
     
 </dd>
 </dl>
@@ -10926,7 +10931,7 @@ client.organization().create(
 <dl>
 <dd>
 
-**ssoOrgId:** `Optional<String>` — WorkOS organization identifier linking this organization to its SAML/SSO configuration.
+**ssoOrgId:** `Optional<String>` — WorkOS organization identifier linking this organization to its SAML/SSO configuration
     
 </dd>
 </dl>
@@ -10986,7 +10991,7 @@ client.organization().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the organization.
+**id:** `String` — Unique identifier of the organization
     
 </dd>
 </dl>
@@ -11053,7 +11058,7 @@ client.organization().update(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the organization to update.
+**id:** `String` — Unique identifier of the organization to update
     
 </dd>
 </dl>
@@ -11061,7 +11066,7 @@ client.organization().update(
 <dl>
 <dd>
 
-**clientId:** `Optional<String>` — OIDC client ID issued by the identity provider.
+**clientId:** `Optional<String>` — OIDC client ID issued by the identity provider
     
 </dd>
 </dl>
@@ -11077,7 +11082,7 @@ client.organization().update(
 <dl>
 <dd>
 
-**issuer:** `Optional<String>` — OIDC issuer URL for organizations using OpenID Connect single sign-on.
+**issuer:** `Optional<String>` — OIDC issuer URL for organizations using OpenID Connect single sign-on
     
 </dd>
 </dl>
@@ -11093,7 +11098,7 @@ client.organization().update(
 <dl>
 <dd>
 
-**ssoDomain:** `Optional<String>` — Email domain used to match users to this organization during SSO sign-in.
+**ssoDomain:** `Optional<String>` — Email domain used to match users to this organization during SSO sign-in
     
 </dd>
 </dl>
@@ -11101,7 +11106,7 @@ client.organization().update(
 <dl>
 <dd>
 
-**ssoOrgId:** `Optional<String>` — WorkOS organization identifier linking this organization to its SAML/SSO configuration.
+**ssoOrgId:** `Optional<String>` — WorkOS organization identifier linking this organization to its SAML/SSO configuration
     
 </dd>
 </dl>
@@ -11157,7 +11162,7 @@ client.organization().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the organization.
+**id:** `String` — Unique identifier of the organization
     
 </dd>
 </dl>
@@ -11229,10 +11234,10 @@ client.activity().list(
             Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
         )
         .eventType(
-            Arrays.asList("event_type")
+            Arrays.asList(HarboractivityEventType.ACTION_LOOKED_UP)
         )
         .outcome(
-            Arrays.asList("outcome")
+            Arrays.asList(HarboractivityOutcome.SUCCEEDED)
         )
         .operationId(
             Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
@@ -11268,7 +11273,7 @@ client.activity().list(
 <dl>
 <dd>
 
-**startTime:** `OffsetDateTime` — Inclusive start of the event recorded-time range.
+**startTime:** `OffsetDateTime` — Inclusive start of the event recorded-time range
     
 </dd>
 </dl>
@@ -11316,7 +11321,7 @@ client.activity().list(
 <dl>
 <dd>
 
-**eventType:** `Optional<String>` — Return events with these event types. Repeat the parameter to filter by multiple types.
+**eventType:** `Optional<HarboractivityEventType>` — Return events with these event types. Repeat the parameter to filter by multiple types.
     
 </dd>
 </dl>
@@ -11324,7 +11329,7 @@ client.activity().list(
 <dl>
 <dd>
 
-**outcome:** `Optional<String>` — Return events with these outcomes. Repeat the parameter to filter by multiple outcomes.
+**outcome:** `Optional<HarboractivityOutcome>` — Return events with these outcomes. Repeat the parameter to filter by multiple outcomes.
     
 </dd>
 </dl>
@@ -11447,7 +11452,7 @@ client.activity().getSession(
 <dl>
 <dd>
 
-**sessionId:** `String` — Harbor Activity session ID.
+**sessionId:** `String` — Harbor Activity session ID
     
 </dd>
 </dl>
@@ -11537,7 +11542,7 @@ client.activity().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**eventId:** `String` — Activity event ID.
+**eventId:** `String` — Activity event ID
     
 </dd>
 </dl>
@@ -11641,7 +11646,7 @@ client.users().createCurrentOrgUser(
 <dl>
 <dd>
 
-**email:** `String` — Email address used to sign the user in and receive notifications.
+**email:** `String` — Email address used to sign the user in and receive notifications
     
 </dd>
 </dl>
@@ -11711,7 +11716,7 @@ client.users().getCurrentOrgUser("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the user.
+**id:** `String` — Unique identifier of the user
     
 </dd>
 </dl>
@@ -11773,7 +11778,7 @@ client.users().updateCurrentOrgUser(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the user to update.
+**id:** `String` — Unique identifier of the user to update
     
 </dd>
 </dl>
@@ -11847,7 +11852,7 @@ client.users().deleteCurrentOrgUser("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the user.
+**id:** `String` — Unique identifier of the user
     
 </dd>
 </dl>
@@ -11907,7 +11912,7 @@ client.users().list("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization whose users should be listed.
+**orgId:** `String` — Unique identifier of the organization whose users should be listed
     
 </dd>
 </dl>
@@ -11974,7 +11979,7 @@ client.users().create(
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization the user belongs to.
+**orgId:** `String` — Unique identifier of the organization the user belongs to
     
 </dd>
 </dl>
@@ -11982,7 +11987,7 @@ client.users().create(
 <dl>
 <dd>
 
-**email:** `String` — Email address used to sign the user in and receive notifications.
+**email:** `String` — Email address used to sign the user in and receive notifications
     
 </dd>
 </dl>
@@ -12056,7 +12061,7 @@ client.users().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization the user belongs to.
+**orgId:** `String` — Unique identifier of the organization the user belongs to
     
 </dd>
 </dl>
@@ -12064,7 +12069,7 @@ client.users().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the user.
+**id:** `String` — Unique identifier of the user
     
 </dd>
 </dl>
@@ -12132,7 +12137,7 @@ client.users().update(
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization the user belongs to.
+**orgId:** `String` — Unique identifier of the organization the user belongs to
     
 </dd>
 </dl>
@@ -12140,7 +12145,7 @@ client.users().update(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the user to update.
+**id:** `String` — Unique identifier of the user to update
     
 </dd>
 </dl>
@@ -12148,7 +12153,7 @@ client.users().update(
 <dl>
 <dd>
 
-**email:** `String` — Email address used to sign the user in and receive notifications.
+**email:** `String` — Email address used to sign the user in and receive notifications
     
 </dd>
 </dl>
@@ -12226,7 +12231,7 @@ client.users().delete("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization the user belongs to.
+**orgId:** `String` — Unique identifier of the organization the user belongs to
     
 </dd>
 </dl>
@@ -12234,7 +12239,7 @@ client.users().delete("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the user.
+**id:** `String` — Unique identifier of the user
     
 </dd>
 </dl>
@@ -12298,7 +12303,7 @@ client.users().createApiKey(
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization the user belongs to.
+**orgId:** `String` — Unique identifier of the organization the user belongs to
     
 </dd>
 </dl>
@@ -12306,7 +12311,7 @@ client.users().createApiKey(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the user the key will be issued for.
+**id:** `String` — Unique identifier of the user the key will be issued for
     
 </dd>
 </dl>
@@ -12377,7 +12382,7 @@ client.recordViewLinks().create(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -12385,7 +12390,7 @@ client.recordViewLinks().create(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -12393,7 +12398,7 @@ client.recordViewLinks().create(
 <dl>
 <dd>
 
-**connectionId:** `String` — Connection containing the record.
+**connectionId:** `String` — Connection containing the record
     
 </dd>
 </dl>
@@ -12425,7 +12430,7 @@ client.recordViewLinks().create(
 <dl>
 <dd>
 
-**lookupKeyValue:** `String` — The lookup-key value for the record.
+**lookupKeyValue:** `String` — The lookup-key value for the record
     
 </dd>
 </dl>
@@ -12433,7 +12438,7 @@ client.recordViewLinks().create(
 <dl>
 <dd>
 
-**schemaId:** `String` — Schema containing the record.
+**schemaId:** `String` — Schema containing the record
     
 </dd>
 </dl>
@@ -12441,7 +12446,7 @@ client.recordViewLinks().create(
 <dl>
 <dd>
 
-**source:** `Optional<String>` — Optional creator/source label.
+**source:** `Optional<String>` — Optional creator/source label
     
 </dd>
 </dl>
@@ -12501,7 +12506,7 @@ client.recordViewLinks().getCapabilities(
 <dl>
 <dd>
 
-**connectionId:** `String` — Connection to check for record-view link support.
+**connectionId:** `String` — Connection to check for record-view link support
     
 </dd>
 </dl>
@@ -12509,7 +12514,7 @@ client.recordViewLinks().getCapabilities(
 <dl>
 <dd>
 
-**schemaId:** `String` — Schema to check for record-view link support.
+**schemaId:** `String` — Schema to check for record-view link support
     
 </dd>
 </dl>
@@ -12517,7 +12522,7 @@ client.recordViewLinks().getCapabilities(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -12525,7 +12530,7 @@ client.recordViewLinks().getCapabilities(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -12646,7 +12651,7 @@ client.temporaryCredentials().create(
 <dl>
 <dd>
 
-**subject:** `TemporaryCredentialSubject` 
+**subject:** `TemporaryCredentialSubject` — User or Harbor authority the temporary credential will assume
     
 </dd>
 </dl>
@@ -12768,7 +12773,7 @@ client.webhooks().create(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -12837,7 +12842,7 @@ client.webhooks().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Webhook ID
     
 </dd>
 </dl>
@@ -12905,7 +12910,7 @@ client.webhooks().update(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Webhook ID
     
 </dd>
 </dl>
@@ -12921,7 +12926,7 @@ client.webhooks().update(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -12994,7 +12999,7 @@ client.webhooks().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Webhook ID
     
 </dd>
 </dl>
@@ -13064,7 +13069,7 @@ client.webhooks().listDeliveries(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Webhook ID
     
 </dd>
 </dl>
@@ -13080,7 +13085,7 @@ client.webhooks().listDeliveries(
 <dl>
 <dd>
 
-**eventId:** `Optional<String>` 
+**eventId:** `Optional<String>` — Return only attempts to deliver this event.
     
 </dd>
 </dl>
@@ -13104,7 +13109,7 @@ client.webhooks().listDeliveries(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` — Token from the previous page.
+**pageToken:** `Optional<String>` — Token from the previous page
     
 </dd>
 </dl>
@@ -13170,7 +13175,7 @@ client.webhooks().disable("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Webhook ID
     
 </dd>
 </dl>
@@ -13234,7 +13239,7 @@ client.webhooks().enable("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Webhook ID
     
 </dd>
 </dl>
@@ -13403,7 +13408,7 @@ client.bulkSync().executions().list(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -13494,7 +13499,7 @@ client.bulkSync().executions().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248d
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -13502,7 +13507,7 @@ client.bulkSync().executions().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248d
 <dl>
 <dd>
 
-**execId:** `String` — Unique identifier of the execution.
+**execId:** `String` — Unique identifier of the execution
     
 </dd>
 </dl>
@@ -13562,7 +13567,7 @@ client.bulkSync().executions().cancel("248df4b7-aa70-47b8-a036-33ac447e668d", "2
 <dl>
 <dd>
 
-**id:** `String` — The bulk sync ID.
+**id:** `String` — The bulk sync ID
     
 </dd>
 </dl>
@@ -13570,7 +13575,7 @@ client.bulkSync().executions().cancel("248df4b7-aa70-47b8-a036-33ac447e668d", "2
 <dl>
 <dd>
 
-**execId:** `String` — The execution ID to cancel.
+**execId:** `String` — The execution ID to cancel
     
 </dd>
 </dl>
@@ -13632,7 +13637,7 @@ client.bulkSync().executions().getConsoleLogs(
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Bulk sync ID
     
 </dd>
 </dl>
@@ -13640,7 +13645,7 @@ client.bulkSync().executions().getConsoleLogs(
 <dl>
 <dd>
 
-**executionId:** `String` 
+**executionId:** `String` — Bulk sync execution ID
     
 </dd>
 </dl>
@@ -13719,7 +13724,7 @@ client.bulkSync().executions().getLogs("248df4b7-aa70-47b8-a036-33ac447e668d", "
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the bulk sync.
+**syncId:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -13727,7 +13732,7 @@ client.bulkSync().executions().getLogs("248df4b7-aa70-47b8-a036-33ac447e668d", "
 <dl>
 <dd>
 
-**executionId:** `String` — Unique identifier of the execution whose log files should be listed.
+**executionId:** `String` — Unique identifier of the execution whose log files should be listed
     
 </dd>
 </dl>
@@ -13800,7 +13805,7 @@ client.bulkSync().executions().exportLogs(
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the bulk sync.
+**syncId:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -13808,7 +13813,7 @@ client.bulkSync().executions().exportLogs(
 <dl>
 <dd>
 
-**executionId:** `String` — Unique identifier of the execution whose logs should be exported.
+**executionId:** `String` — Unique identifier of the execution whose logs should be exported
     
 </dd>
 </dl>
@@ -13879,7 +13884,7 @@ client.bulkSync().executions().getSchemaConsoleLogs(
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Bulk sync ID
     
 </dd>
 </dl>
@@ -13887,7 +13892,7 @@ client.bulkSync().executions().getSchemaConsoleLogs(
 <dl>
 <dd>
 
-**executionId:** `String` 
+**executionId:** `String` — Bulk sync execution ID
     
 </dd>
 </dl>
@@ -13895,7 +13900,7 @@ client.bulkSync().executions().getSchemaConsoleLogs(
 <dl>
 <dd>
 
-**schemaId:** `String` — Schema identifier for schema-scoped console logs.
+**schemaId:** `String` — Schema identifier for schema-scoped console logs
     
 </dd>
 </dl>
@@ -13973,7 +13978,7 @@ client.bulkSync().executions().getIngestConsoleLogs(
 <dl>
 <dd>
 
-**connectionId:** `String` 
+**connectionId:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -13981,7 +13986,7 @@ client.bulkSync().executions().getIngestConsoleLogs(
 <dl>
 <dd>
 
-**syncId:** `Optional<String>` — Optional bulk sync ID for sync-scoped ingestion logs.
+**syncId:** `Optional<String>` — Optional bulk sync ID for sync-scoped ingestion logs
     
 </dd>
 </dl>
@@ -14052,7 +14057,7 @@ client.bulkSync().errorHandling().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14111,7 +14116,7 @@ client.bulkSync().errorHandling().update(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14198,7 +14203,7 @@ client.bulkSync().schemas().list(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14239,7 +14244,16 @@ sync's schema configuration.
 
 Within each provided schema, omitting `fields` enables all available fields on
 that schema. To control which fields are enabled, include the `fields` array
-with explicit `enabled` values for each field.
+with explicit `enabled` values for each field. Primary-key fields stay enabled
+while their schema is enabled, even when the request sets `enabled: false` for
+them.
+
+`output_name` and `destination_history_output_name` on a schema, and
+`output_name` on a field, are computed by Polytomic and ignored on input. Set
+`user_output_name` to rename a destination object or field.
+
+The response contains every schema on the bulk sync after the update, not only
+the schemas included in the request.
 
 > 📘 To replace a single schema's configuration in full (clearing any fields you
 > omit), use
@@ -14279,7 +14293,7 @@ client.bulkSync().schemas().patch(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14350,7 +14364,7 @@ client.bulkSync().schemas().get("248df4b7-aa70-47b8-a036-33ac447e668d", "Contact
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14358,7 +14372,7 @@ client.bulkSync().schemas().get("248df4b7-aa70-47b8-a036-33ac447e668d", "Contact
 <dl>
 <dd>
 
-**schemaId:** `String` — Source-side schema identifier.
+**schemaId:** `String` — Source-side schema identifier
     
 </dd>
 </dl>
@@ -14392,6 +14406,8 @@ first if you want to preserve existing settings while changing only a subset.
 
 Omitting `fields` enables all available fields on the schema. To control which
 fields are enabled, include the `fields` array with explicit `enabled` values.
+Primary-key fields stay enabled while the schema is enabled, even when the
+request sets `enabled: false` for them.
 
 > 📘 To update multiple schemas in a single request without affecting others,
 > use the partial-update endpoint
@@ -14432,7 +14448,7 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the bulk sync.
+**id:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14440,7 +14456,7 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
-**schemaId:** `String` — Source-side schema identifier.
+**schemaId:** `String` — Source-side schema identifier
     
 </dd>
 </dl>
@@ -14464,7 +14480,7 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
-**enabled:** `Optional<Boolean>` — Whether this schema is included in sync runs.
+**enabled:** `Optional<Boolean>` — Whether this schema is included in sync runs
     
 </dd>
 </dl>
@@ -14480,7 +14496,7 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
-**filters:** `Optional<List<BulkFilter>>` — Row-level filters applied when reading from the source.
+**filters:** `Optional<List<BulkFilter>>` — Row-level filters applied when reading from the source
     
 </dd>
 </dl>
@@ -14496,7 +14512,7 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
-**partitionKey:** `Optional<String>` — Source field used to partition rows when writing to the destination.
+**partitionKey:** `Optional<String>` — Source field used to partition rows when writing to the destination
     
 </dd>
 </dl>
@@ -14504,7 +14520,7 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
-**trackingField:** `Optional<String>` — Source field used to detect changes between incremental sync runs.
+**trackingField:** `Optional<String>` — Source field used to detect changes between incremental sync runs
     
 </dd>
 </dl>
@@ -14512,7 +14528,7 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
-**userOutputName:** `Optional<String>` 
+**userOutputName:** `Optional<String>` — User-specified override for the destination object name
     
 </dd>
 </dl>
@@ -14573,7 +14589,7 @@ client.bulkSync().schemas().cancel("248df4b7-aa70-47b8-a036-33ac447e668d", "sche
 <dl>
 <dd>
 
-**id:** `String` — The bulk sync ID.
+**id:** `String` — The bulk sync ID
     
 </dd>
 </dl>
@@ -14581,7 +14597,7 @@ client.bulkSync().schemas().cancel("248df4b7-aa70-47b8-a036-33ac447e668d", "sche
 <dl>
 <dd>
 
-**schemaId:** `String` — The schema ID to cancel for the bulk sync.
+**schemaId:** `String` — The schema ID to cancel for the bulk sync
     
 </dd>
 </dl>
@@ -14639,7 +14655,7 @@ client.bulkSync().schedules().list("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the bulk sync whose schedules should be returned.
+**syncId:** `String` — Unique identifier of the bulk sync whose schedules should be returned
     
 </dd>
 </dl>
@@ -14711,7 +14727,7 @@ client.bulkSync().schedules().create(
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the bulk sync to add a schedule to.
+**syncId:** `String` — Unique identifier of the bulk sync to add a schedule to
     
 </dd>
 </dl>
@@ -14719,7 +14735,7 @@ client.bulkSync().schedules().create(
 <dl>
 <dd>
 
-**schedule:** `BulkSyncScheduleApi` 
+**schedule:** `BulkSyncScheduleApi` — Bulk sync schedule. Schedule times are interpreted in UTC.
     
 </dd>
 </dl>
@@ -14780,7 +14796,7 @@ client.bulkSync().schedules().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248df
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the bulk sync.
+**syncId:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14788,7 +14804,7 @@ client.bulkSync().schedules().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248df
 <dl>
 <dd>
 
-**scheduleId:** `String` — Unique identifier of the schedule.
+**scheduleId:** `String` — Unique identifier of the schedule
     
 </dd>
 </dl>
@@ -14858,7 +14874,7 @@ client.bulkSync().schedules().update(
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the bulk sync.
+**syncId:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14866,7 +14882,7 @@ client.bulkSync().schedules().update(
 <dl>
 <dd>
 
-**scheduleId:** `String` — Unique identifier of the schedule to update.
+**scheduleId:** `String` — Unique identifier of the schedule to update
     
 </dd>
 </dl>
@@ -14874,7 +14890,7 @@ client.bulkSync().schedules().update(
 <dl>
 <dd>
 
-**schedule:** `BulkSyncScheduleApi` 
+**schedule:** `BulkSyncScheduleApi` — Bulk sync schedule. Schedule times are interpreted in UTC.
     
 </dd>
 </dl>
@@ -14931,7 +14947,7 @@ client.bulkSync().schedules().delete("248df4b7-aa70-47b8-a036-33ac447e668d", "24
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the bulk sync.
+**syncId:** `String` — Unique identifier of the bulk sync
     
 </dd>
 </dl>
@@ -14939,7 +14955,7 @@ client.bulkSync().schedules().delete("248df4b7-aa70-47b8-a036-33ac447e668d", "24
 <dl>
 <dd>
 
-**scheduleId:** `String` — Unique identifier of the schedule to delete.
+**scheduleId:** `String` — Unique identifier of the schedule to delete
     
 </dd>
 </dl>
@@ -15044,7 +15060,7 @@ client.connections().proxy().executeProxy(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection to proxy the request through.
+**id:** `String` — Unique identifier of the connection to proxy the request through
     
 </dd>
 </dl>
@@ -15052,7 +15068,7 @@ client.connections().proxy().executeProxy(
 <dl>
 <dd>
 
-**async:** `Optional<Boolean>` — When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response.
+**async:** `Optional<Boolean>` — When true, submits a GET request for asynchronous execution and returns a job handle instead of a synchronous upstream response
     
 </dd>
 </dl>
@@ -15060,7 +15076,7 @@ client.connections().proxy().executeProxy(
 <dl>
 <dd>
 
-**request:** `ConnectionProxyCall` 
+**request:** `ConnectionProxyCall` — Details of the upstream HTTP request to perform
     
 </dd>
 </dl>
@@ -15134,7 +15150,7 @@ client.connections().proxy().getProxyInfo("248df4b7-aa70-47b8-a036-33ac447e668d"
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection whose proxy contract should be returned.
+**id:** `String` — Unique identifier of the connection whose proxy contract should be returned
     
 </dd>
 </dl>
@@ -15193,7 +15209,7 @@ client.connections().proxy().getProxySettings("248df4b7-aa70-47b8-a036-33ac447e6
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection whose proxy settings should be returned.
+**id:** `String` — Unique identifier of the connection whose proxy settings should be returned
     
 </dd>
 </dl>
@@ -15263,7 +15279,7 @@ client.connections().proxy().updateProxySettings(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection whose proxy settings should be updated.
+**id:** `String` — Unique identifier of the connection whose proxy settings should be updated
     
 </dd>
 </dl>
@@ -15271,7 +15287,7 @@ client.connections().proxy().updateProxySettings(
 <dl>
 <dd>
 
-**enabled:** `Boolean` — Whether the connection can be used through the Connection Proxy API.
+**enabled:** `Boolean` — Whether the connection can be used through the Connection Proxy API
     
 </dd>
 </dl>
@@ -15355,7 +15371,7 @@ client.connections().sharedConnections().listSharedConnections("248df4b7-aa70-47
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the parent connection whose shared copies should be listed.
+**id:** `String` — Unique identifier of the parent connection whose shared copies should be listed
     
 </dd>
 </dl>
@@ -15438,7 +15454,7 @@ client.connections().sharedConnections().listSharedConnectionsForPartner("248df4
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization that owns the parent connection.
+**orgId:** `String` — Unique identifier of the organization that owns the parent connection
     
 </dd>
 </dl>
@@ -15446,7 +15462,7 @@ client.connections().sharedConnections().listSharedConnectionsForPartner("248df4
 <dl>
 <dd>
 
-**connectionId:** `String` — Unique identifier of the parent connection whose shared copies should be listed.
+**connectionId:** `String` — Unique identifier of the parent connection whose shared copies should be listed
     
 </dd>
 </dl>
@@ -15507,7 +15523,7 @@ client.connections().sharedConnections().createSharedConnection(
 <dl>
 <dd>
 
-**orgId:** `String` — Unique identifier of the organization that owns the parent connection.
+**orgId:** `String` — Unique identifier of the organization that owns the parent connection
     
 </dd>
 </dl>
@@ -15515,7 +15531,7 @@ client.connections().sharedConnections().createSharedConnection(
 <dl>
 <dd>
 
-**connectionId:** `String` — Unique identifier of the parent connection to share.
+**connectionId:** `String` — Unique identifier of the parent connection to share
     
 </dd>
 </dl>
@@ -15523,7 +15539,7 @@ client.connections().sharedConnections().createSharedConnection(
 <dl>
 <dd>
 
-**childOrganizationId:** `String` — Unique identifier of the child organization that should receive the shared connection.
+**childOrganizationId:** `String` — Unique identifier of the child organization that should receive the shared connection
     
 </dd>
 </dl>
@@ -15611,7 +15627,7 @@ client.harbors().actions().getExecution(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -15619,7 +15635,7 @@ client.harbors().actions().getExecution(
 <dl>
 <dd>
 
-**executionId:** `String` 
+**executionId:** `String` — Action execution ID
     
 </dd>
 </dl>
@@ -15627,7 +15643,7 @@ client.harbors().actions().getExecution(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -15635,7 +15651,7 @@ client.harbors().actions().getExecution(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -15729,7 +15745,7 @@ client.harbors().actions().list(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -15753,7 +15769,7 @@ client.harbors().actions().list(
 <dl>
 <dd>
 
-**limit:** `Optional<Integer>` 
+**limit:** `Optional<Integer>` — Maximum number of actions to return
     
 </dd>
 </dl>
@@ -15761,7 +15777,7 @@ client.harbors().actions().list(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -15769,7 +15785,7 @@ client.harbors().actions().list(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -15864,7 +15880,7 @@ client.harbors().actions().describe(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -15872,7 +15888,7 @@ client.harbors().actions().describe(
 <dl>
 <dd>
 
-**connectionId:** `String` 
+**connectionId:** `String` — Connection ID of the action
     
 </dd>
 </dl>
@@ -15880,7 +15896,7 @@ client.harbors().actions().describe(
 <dl>
 <dd>
 
-**schemaId:** `String` 
+**schemaId:** `String` — Schema ID of the action
     
 </dd>
 </dl>
@@ -15888,7 +15904,7 @@ client.harbors().actions().describe(
 <dl>
 <dd>
 
-**operationId:** `String` 
+**operationId:** `String` — Operation ID of the action
     
 </dd>
 </dl>
@@ -15896,7 +15912,7 @@ client.harbors().actions().describe(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -15904,7 +15920,7 @@ client.harbors().actions().describe(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -16016,7 +16032,7 @@ client.harbors().actions().execute(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -16024,7 +16040,7 @@ client.harbors().actions().execute(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -16032,7 +16048,7 @@ client.harbors().actions().execute(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -16140,7 +16156,7 @@ client.harbors().actions().lookup(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -16148,7 +16164,7 @@ client.harbors().actions().lookup(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -16156,7 +16172,7 @@ client.harbors().actions().lookup(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -16164,7 +16180,7 @@ client.harbors().actions().lookup(
 <dl>
 <dd>
 
-**connectionId:** `String` — Connection ID from Harbor action discovery.
+**connectionId:** `String` — Connection ID from Harbor action discovery
     
 </dd>
 </dl>
@@ -16180,7 +16196,7 @@ client.harbors().actions().lookup(
 <dl>
 <dd>
 
-**lookup:** `ActionLookup` 
+**lookup:** `ActionLookup` — One granted lookup field and exact scalar value
     
 </dd>
 </dl>
@@ -16188,7 +16204,7 @@ client.harbors().actions().lookup(
 <dl>
 <dd>
 
-**operationId:** `String` — Exact read-only operation ID from action discovery.
+**operationId:** `String` — Exact read-only operation ID from action discovery
     
 </dd>
 </dl>
@@ -16196,7 +16212,7 @@ client.harbors().actions().lookup(
 <dl>
 <dd>
 
-**schemaId:** `String` — Exact schema ID from action discovery.
+**schemaId:** `String` — Exact schema ID from action discovery
     
 </dd>
 </dl>
@@ -16311,7 +16327,7 @@ client.harbors().actions().prepare(
 <dl>
 <dd>
 
-**harborId:** `String` — Unique identifier of the Harbor.
+**harborId:** `String` — Unique identifier of the Harbor
     
 </dd>
 </dl>
@@ -16319,7 +16335,7 @@ client.harbors().actions().prepare(
 <dl>
 <dd>
 
-**polytomicHarborSession:** `Optional<String>` 
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
     
 </dd>
 </dl>
@@ -16327,7 +16343,7 @@ client.harbors().actions().prepare(
 <dl>
 <dd>
 
-**polytomicActivityRequestId:** `Optional<String>` 
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
     
 </dd>
 </dl>
@@ -16343,7 +16359,7 @@ client.harbors().actions().prepare(
 <dl>
 <dd>
 
-**input:** `Map<String, Object>` 
+**input:** `Map<String, Object>` — Nonempty map of enabled input fields to JSON scalars. Omission leaves fields unchanged; null requires advertised nullability; empty strings follow field constraints. Numbers must use integer JSON notation (no decimal point or exponent) within +/-9007199254740991; opaque IDs remain strings. Arrays, objects, and coercion are unsupported.
     
 </dd>
 </dl>
@@ -16351,7 +16367,7 @@ client.harbors().actions().prepare(
 <dl>
 <dd>
 
-**lookup:** `Optional<ActionLookup>` 
+**lookup:** `Optional<ActionLookup>` — One advertised lookup field and exact scalar value. Required when lookup_fields is nonempty; otherwise omit.
     
 </dd>
 </dl>
@@ -16359,7 +16375,7 @@ client.harbors().actions().prepare(
 <dl>
 <dd>
 
-**operationId:** `String` — Exact operation_id from action discovery.
+**operationId:** `String` — Exact operation_id from action discovery
     
 </dd>
 </dl>
@@ -16367,7 +16383,7 @@ client.harbors().actions().prepare(
 <dl>
 <dd>
 
-**schemaId:** `String` — Exact schema_id from action discovery.
+**schemaId:** `String` — Exact schema_id from action discovery
     
 </dd>
 </dl>
@@ -16470,7 +16486,7 @@ client.modelSync().targets().getTargetFields(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the connection.
+**id:** `String` — Unique identifier of the connection
     
 </dd>
 </dl>
@@ -16572,7 +16588,7 @@ client.modelSync().targets().list(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -16665,7 +16681,7 @@ client.modelSync().targets().getCreateProperty("248df4b7-aa70-47b8-a036-33ac447e
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Connection ID
     
 </dd>
 </dl>
@@ -16673,7 +16689,7 @@ client.modelSync().targets().getCreateProperty("248df4b7-aa70-47b8-a036-33ac447e
 <dl>
 <dd>
 
-**property:** `String` 
+**property:** `String` — Target-creation property ID
     
 </dd>
 </dl>
@@ -16728,7 +16744,7 @@ client.modelSync().errorHandling().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the model sync.
+**id:** `String` — Unique identifier of the model sync
     
 </dd>
 </dl>
@@ -16787,7 +16803,7 @@ client.modelSync().errorHandling().update(
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the model sync.
+**id:** `String` — Unique identifier of the model sync
     
 </dd>
 </dl>
@@ -16892,7 +16908,7 @@ client.modelSync().executions().list(
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -16900,7 +16916,7 @@ client.modelSync().executions().list(
 <dl>
 <dd>
 
-**pageToken:** `Optional<String>` 
+**pageToken:** `Optional<String>` — Token from the previous page
     
 </dd>
 </dl>
@@ -16908,7 +16924,7 @@ client.modelSync().executions().list(
 <dl>
 <dd>
 
-**onlyCompleted:** `Optional<Boolean>` 
+**onlyCompleted:** `Optional<Boolean>` — Return only completed executions.
     
 </dd>
 </dl>
@@ -16916,7 +16932,7 @@ client.modelSync().executions().list(
 <dl>
 <dd>
 
-**ascending:** `Optional<Boolean>` 
+**ascending:** `Optional<Boolean>` — Return executions oldest first.
     
 </dd>
 </dl>
@@ -16974,7 +16990,7 @@ client.modelSync().executions().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -16982,7 +16998,7 @@ client.modelSync().executions().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Execution ID
     
 </dd>
 </dl>
@@ -17036,7 +17052,7 @@ client.modelSync().executions().cancel("248df4b7-aa70-47b8-a036-33ac447e668d", "
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -17044,7 +17060,7 @@ client.modelSync().executions().cancel("248df4b7-aa70-47b8-a036-33ac447e668d", "
 <dl>
 <dd>
 
-**id:** `String` — The ID of the execution to cancel.
+**id:** `String` — The ID of the execution to cancel
     
 </dd>
 </dl>
@@ -17106,7 +17122,7 @@ client.modelSync().executions().getConsoleLogs(
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -17114,7 +17130,7 @@ client.modelSync().executions().getConsoleLogs(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Execution ID
     
 </dd>
 </dl>
@@ -17184,7 +17200,7 @@ client.modelSync().executions().getLogsIndex("248df4b7-aa70-47b8-a036-33ac447e66
 <dl>
 <dd>
 
-**syncId:** `String` — Unique identifier of the model sync.
+**syncId:** `String` — Unique identifier of the model sync
     
 </dd>
 </dl>
@@ -17192,7 +17208,7 @@ client.modelSync().executions().getLogsIndex("248df4b7-aa70-47b8-a036-33ac447e66
 <dl>
 <dd>
 
-**id:** `String` — Unique identifier of the execution whose logs are being indexed.
+**id:** `String` — Unique identifier of the execution whose logs are being indexed
     
 </dd>
 </dl>
@@ -17253,7 +17269,7 @@ client.modelSync().executions().getLogUrls("248df4b7-aa70-47b8-a036-33ac447e668d
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -17261,7 +17277,7 @@ client.modelSync().executions().getLogUrls("248df4b7-aa70-47b8-a036-33ac447e668d
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Execution ID
     
 </dd>
 </dl>
@@ -17269,7 +17285,7 @@ client.modelSync().executions().getLogUrls("248df4b7-aa70-47b8-a036-33ac447e668d
 <dl>
 <dd>
 
-**type:** `ExecutionLogType` 
+**type:** `ExecutionLogType` — Log category
     
 </dd>
 </dl>
@@ -17328,7 +17344,7 @@ client.modelSync().executions().getLogs("248df4b7-aa70-47b8-a036-33ac447e668d", 
 <dl>
 <dd>
 
-**syncId:** `String` 
+**syncId:** `String` — Model sync ID
     
 </dd>
 </dl>
@@ -17336,7 +17352,7 @@ client.modelSync().executions().getLogs("248df4b7-aa70-47b8-a036-33ac447e668d", 
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Execution ID
     
 </dd>
 </dl>
@@ -17344,7 +17360,7 @@ client.modelSync().executions().getLogs("248df4b7-aa70-47b8-a036-33ac447e668d", 
 <dl>
 <dd>
 
-**type:** `ExecutionLogType` 
+**type:** `ExecutionLogType` — Log category
     
 </dd>
 </dl>
@@ -17352,7 +17368,7 @@ client.modelSync().executions().getLogs("248df4b7-aa70-47b8-a036-33ac447e668d", 
 <dl>
 <dd>
 
-**filename:** `String` 
+**filename:** `String` — Log file name
     
 </dd>
 </dl>
@@ -17470,7 +17486,7 @@ client.permissions().policies().create(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -17535,7 +17551,7 @@ client.permissions().policies().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Policy ID
     
 </dd>
 </dl>
@@ -17601,7 +17617,7 @@ client.permissions().policies().update(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Policy ID
     
 </dd>
 </dl>
@@ -17617,7 +17633,7 @@ client.permissions().policies().update(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -17682,7 +17698,7 @@ client.permissions().policies().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Policy ID
     
 </dd>
 </dl>
@@ -17802,7 +17818,7 @@ client.permissions().roles().create(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -17858,7 +17874,7 @@ client.permissions().roles().get("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Role ID
     
 </dd>
 </dl>
@@ -17923,7 +17939,7 @@ client.permissions().roles().update(
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Role ID
     
 </dd>
 </dl>
@@ -17939,7 +17955,7 @@ client.permissions().roles().update(
 <dl>
 <dd>
 
-**organizationId:** `Optional<String>` 
+**organizationId:** `Optional<String>` — Ignored for user and organization-scoped API keys, which always act in their own organization
     
 </dd>
 </dl>
@@ -18001,7 +18017,7 @@ client.permissions().roles().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dl>
 <dd>
 
-**id:** `String` 
+**id:** `String` — Role ID
     
 </dd>
 </dl>

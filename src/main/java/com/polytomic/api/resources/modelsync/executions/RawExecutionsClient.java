@@ -4,9 +4,11 @@
 package com.polytomic.api.resources.modelsync.executions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.polytomic.api.core.BodyProperties;
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.core.PathSegments;
 import com.polytomic.api.core.PolytomicApiException;
 import com.polytomic.api.core.PolytomicException;
 import com.polytomic.api.core.PolytomicHttpResponse;
@@ -101,7 +103,7 @@ public class RawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions");
         if (request.getPageToken().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -186,9 +188,9 @@ public class RawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(id);
+                .addPathSegment(PathSegments.validate(id));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -258,9 +260,9 @@ public class RawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("cancel");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -269,7 +271,11 @@ public class RawExecutionsClient {
         }
         Request okhttpRequest = new Request.Builder()
                 .url(httpUrl.build())
-                .method("POST", RequestBody.create("", null))
+                .method(
+                        "POST",
+                        BodyProperties.toRequestBody(
+                                requestOptions != null ? requestOptions.getBodyProperties() : null,
+                                RequestBody.create("", null)))
                 .headers(Headers.of(clientOptions.headers(requestOptions)))
                 .addHeader("Accept", "application/json")
                 .build();
@@ -356,9 +362,9 @@ public class RawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("consolelog");
         if (request.getLimit().isPresent()) {
             QueryStringMapper.addQueryParameter(
@@ -444,9 +450,9 @@ public class RawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(id)
+                .addPathSegment(PathSegments.validate(id))
                 .addPathSegments("logs");
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
@@ -532,10 +538,10 @@ public class RawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegment(type.toString());
+                .addPathSegment(PathSegments.validate(id))
+                .addPathSegment(PathSegments.validate(type.toString()));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);
@@ -616,11 +622,11 @@ public class RawExecutionsClient {
         HttpUrl.Builder httpUrl = HttpUrl.parse(this.clientOptions.environment().getUrl())
                 .newBuilder()
                 .addPathSegments("api/syncs")
-                .addPathSegment(syncId)
+                .addPathSegment(PathSegments.validate(syncId))
                 .addPathSegments("executions")
-                .addPathSegment(id)
-                .addPathSegment(type.toString())
-                .addPathSegment(filename);
+                .addPathSegment(PathSegments.validate(id))
+                .addPathSegment(PathSegments.validate(type.toString()))
+                .addPathSegment(PathSegments.validate(filename));
         if (requestOptions != null) {
             requestOptions.getQueryParameters().forEach((_key, _value) -> {
                 httpUrl.addQueryParameter(_key, _value);

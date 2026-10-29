@@ -56,7 +56,7 @@ public final class UpdateRecordLoggingSettingsRequest {
     }
 
     /**
-     * @return Whether record logging is enabled for the organization.
+     * @return Whether record logging is enabled for the organization
      */
     @JsonProperty("enabled")
     public boolean getEnabled() {
@@ -97,7 +97,7 @@ public final class UpdateRecordLoggingSettingsRequest {
 
     public interface EnabledStage {
         /**
-         * <p>Whether record logging is enabled for the organization.</p>
+         * <p>Whether record logging is enabled for the organization</p>
          */
         _FinalStage enabled(boolean enabled);
 
@@ -134,7 +134,6 @@ public final class UpdateRecordLoggingSettingsRequest {
 
         private Optional<String> deliveryConnectionId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -148,7 +147,7 @@ public final class UpdateRecordLoggingSettingsRequest {
         }
 
         /**
-         * <p>Whether record logging is enabled for the organization.</p>
+         * <p>Whether record logging is enabled for the organization</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -202,6 +201,16 @@ public final class UpdateRecordLoggingSettingsRequest {
         public UpdateRecordLoggingSettingsRequest build() {
             return new UpdateRecordLoggingSettingsRequest(
                     deliveryConnectionId, deliveryPrefix, enabled, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("deliveryConnectionId")
+                    || key.equalsIgnoreCase("deliveryPrefix")
+                    || key.equalsIgnoreCase("enabled")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

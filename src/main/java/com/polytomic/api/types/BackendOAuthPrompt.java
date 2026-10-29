@@ -39,16 +39,25 @@ public final class BackendOAuthPrompt {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Configuration field that decides whether the connection uses OAuth
+     */
     @JsonProperty("key")
     public Optional<String> getKey() {
         return key;
     }
 
+    /**
+     * @return Value of that configuration field that requires OAuth
+     */
     @JsonProperty("value")
     public Optional<String> getValue() {
         return value;
     }
 
+    /**
+     * @return When the connection requires OAuth authorization: NEVER, CONDITIONAL, or ALWAYS
+     */
     @JsonProperty("when")
     public Optional<String> getWhen() {
         return when;
@@ -91,7 +100,6 @@ public final class BackendOAuthPrompt {
 
         private Optional<String> when = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -103,6 +111,9 @@ public final class BackendOAuthPrompt {
             return this;
         }
 
+        /**
+         * <p>Configuration field that decides whether the connection uses OAuth</p>
+         */
         @JsonSetter(value = "key", nulls = Nulls.SKIP)
         public Builder key(Optional<String> key) {
             this.key = key;
@@ -114,6 +125,9 @@ public final class BackendOAuthPrompt {
             return this;
         }
 
+        /**
+         * <p>Value of that configuration field that requires OAuth</p>
+         */
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public Builder value(Optional<String> value) {
             this.value = value;
@@ -125,6 +139,9 @@ public final class BackendOAuthPrompt {
             return this;
         }
 
+        /**
+         * <p>When the connection requires OAuth authorization: NEVER, CONDITIONAL, or ALWAYS</p>
+         */
         @JsonSetter(value = "when", nulls = Nulls.SKIP)
         public Builder when(Optional<String> when) {
             this.when = when;
@@ -138,6 +155,14 @@ public final class BackendOAuthPrompt {
 
         public BackendOAuthPrompt build() {
             return new BackendOAuthPrompt(key, value, when, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("key") || key.equalsIgnoreCase("value") || key.equalsIgnoreCase("when")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

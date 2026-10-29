@@ -5,6 +5,7 @@ package com.polytomic.api.resources.bulksync.schedules;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.schedules.requests.CreateScheduleRequest;
 import com.polytomic.api.resources.bulksync.schedules.requests.UpdateScheduleRequest;
@@ -35,7 +36,14 @@ public class AsyncSchedulesClient {
      * of them. Schedule times are returned in UTC.</p>
      */
     public CompletableFuture<SchedulesEnvelope> list(String syncId) {
-        return this.rawClient.list(syncId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchedulesEnvelope>> rawFuture = this.rawClient.list(syncId);
+        CompletableFuture<SchedulesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -44,7 +52,15 @@ public class AsyncSchedulesClient {
      * of them. Schedule times are returned in UTC.</p>
      */
     public CompletableFuture<SchedulesEnvelope> list(String syncId, RequestOptions requestOptions) {
-        return this.rawClient.list(syncId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SchedulesEnvelope>> rawFuture =
+                this.rawClient.list(syncId, requestOptions);
+        CompletableFuture<SchedulesEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -56,7 +72,14 @@ public class AsyncSchedulesClient {
      * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>.</p>
      */
     public CompletableFuture<ScheduleEnvelope> create(String syncId, CreateScheduleRequest request) {
-        return this.rawClient.create(syncId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> rawFuture = this.rawClient.create(syncId, request);
+        CompletableFuture<ScheduleEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -69,7 +92,15 @@ public class AsyncSchedulesClient {
      */
     public CompletableFuture<ScheduleEnvelope> create(
             String syncId, CreateScheduleRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(syncId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> rawFuture =
+                this.rawClient.create(syncId, request, requestOptions);
+        CompletableFuture<ScheduleEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -81,7 +112,14 @@ public class AsyncSchedulesClient {
      * <a href="../../../../../../api-reference/bulk-sync/schedules/update"><code>PUT /api/bulk/syncs/{sync_id}/schedules/{schedule_id}</code></a>.</p>
      */
     public CompletableFuture<ScheduleEnvelope> get(String syncId, String scheduleId) {
-        return this.rawClient.get(syncId, scheduleId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> rawFuture = this.rawClient.get(syncId, scheduleId);
+        CompletableFuture<ScheduleEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -93,7 +131,15 @@ public class AsyncSchedulesClient {
      * <a href="../../../../../../api-reference/bulk-sync/schedules/update"><code>PUT /api/bulk/syncs/{sync_id}/schedules/{schedule_id}</code></a>.</p>
      */
     public CompletableFuture<ScheduleEnvelope> get(String syncId, String scheduleId, RequestOptions requestOptions) {
-        return this.rawClient.get(syncId, scheduleId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> rawFuture =
+                this.rawClient.get(syncId, scheduleId, requestOptions);
+        CompletableFuture<ScheduleEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -103,7 +149,15 @@ public class AsyncSchedulesClient {
      * interpreted in UTC.</p>
      */
     public CompletableFuture<ScheduleEnvelope> update(String syncId, String scheduleId, UpdateScheduleRequest request) {
-        return this.rawClient.update(syncId, scheduleId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> rawFuture =
+                this.rawClient.update(syncId, scheduleId, request);
+        CompletableFuture<ScheduleEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -114,9 +168,15 @@ public class AsyncSchedulesClient {
      */
     public CompletableFuture<ScheduleEnvelope> update(
             String syncId, String scheduleId, UpdateScheduleRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .update(syncId, scheduleId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> rawFuture =
+                this.rawClient.update(syncId, scheduleId, request, requestOptions);
+        CompletableFuture<ScheduleEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -125,7 +185,14 @@ public class AsyncSchedulesClient {
      * cancel an execution that is already running.</p>
      */
     public CompletableFuture<Void> delete(String syncId, String scheduleId) {
-        return this.rawClient.delete(syncId, scheduleId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(syncId, scheduleId);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -134,6 +201,14 @@ public class AsyncSchedulesClient {
      * cancel an execution that is already running.</p>
      */
     public CompletableFuture<Void> delete(String syncId, String scheduleId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(syncId, scheduleId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.delete(syncId, scheduleId, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

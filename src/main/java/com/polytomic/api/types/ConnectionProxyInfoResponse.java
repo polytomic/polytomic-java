@@ -65,7 +65,7 @@ public final class ConnectionProxyInfoResponse {
     }
 
     /**
-     * @return Connection backend identifier (e.g. hubspot, salesforce).
+     * @return Connection backend identifier (e.g. hubspot, salesforce)
      */
     @JsonProperty("backendType")
     public Optional<String> getBackendType() {
@@ -73,28 +73,40 @@ public final class ConnectionProxyInfoResponse {
     }
 
     /**
-     * @return Unique identifier of the connection the proxy contract applies to.
+     * @return Unique identifier of the connection the proxy contract applies to
      */
     @JsonProperty("connectionId")
     public Optional<String> getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Base URL, query parameters, and headers that the proxy automatically applies to every outbound request. For connections that expose more than one API, this describes the default API.
+     */
     @JsonProperty("inheritedBase")
     public Optional<ConnectionProxyInheritedBase> getInheritedBase() {
         return inheritedBase;
     }
 
+    /**
+     * @return Rules describing how inherited query parameters and headers are merged with caller-supplied values
+     */
     @JsonProperty("mergeRules")
     public Optional<ConnectionProxyMergeRules> getMergeRules() {
         return mergeRules;
     }
 
+    /**
+     * @return Allowed request shapes, limits, and rate limits enforced by the proxy
+     */
     @JsonProperty("requestContract")
     public Optional<ConnectionProxyContract> getRequestContract() {
         return requestContract;
     }
 
+    /**
+     * @return Usage statistics for the connection over the last 24 hours
+     */
     @JsonProperty("stats")
     public Optional<ConnectionProxyStats> getStats() {
         return stats;
@@ -158,7 +170,6 @@ public final class ConnectionProxyInfoResponse {
 
         private Optional<ConnectionProxyStats> stats = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -189,7 +200,7 @@ public final class ConnectionProxyInfoResponse {
         }
 
         /**
-         * <p>Connection backend identifier (e.g. hubspot, salesforce).</p>
+         * <p>Connection backend identifier (e.g. hubspot, salesforce)</p>
          */
         @JsonSetter(value = "backendType", nulls = Nulls.SKIP)
         public Builder backendType(Optional<String> backendType) {
@@ -203,7 +214,7 @@ public final class ConnectionProxyInfoResponse {
         }
 
         /**
-         * <p>Unique identifier of the connection the proxy contract applies to.</p>
+         * <p>Unique identifier of the connection the proxy contract applies to</p>
          */
         @JsonSetter(value = "connectionId", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
@@ -216,6 +227,9 @@ public final class ConnectionProxyInfoResponse {
             return this;
         }
 
+        /**
+         * <p>Base URL, query parameters, and headers that the proxy automatically applies to every outbound request. For connections that expose more than one API, this describes the default API.</p>
+         */
         @JsonSetter(value = "inheritedBase", nulls = Nulls.SKIP)
         public Builder inheritedBase(Optional<ConnectionProxyInheritedBase> inheritedBase) {
             this.inheritedBase = inheritedBase;
@@ -227,6 +241,9 @@ public final class ConnectionProxyInfoResponse {
             return this;
         }
 
+        /**
+         * <p>Rules describing how inherited query parameters and headers are merged with caller-supplied values</p>
+         */
         @JsonSetter(value = "mergeRules", nulls = Nulls.SKIP)
         public Builder mergeRules(Optional<ConnectionProxyMergeRules> mergeRules) {
             this.mergeRules = mergeRules;
@@ -238,6 +255,9 @@ public final class ConnectionProxyInfoResponse {
             return this;
         }
 
+        /**
+         * <p>Allowed request shapes, limits, and rate limits enforced by the proxy</p>
+         */
         @JsonSetter(value = "requestContract", nulls = Nulls.SKIP)
         public Builder requestContract(Optional<ConnectionProxyContract> requestContract) {
             this.requestContract = requestContract;
@@ -249,6 +269,9 @@ public final class ConnectionProxyInfoResponse {
             return this;
         }
 
+        /**
+         * <p>Usage statistics for the connection over the last 24 hours</p>
+         */
         @JsonSetter(value = "stats", nulls = Nulls.SKIP)
         public Builder stats(Optional<ConnectionProxyStats> stats) {
             this.stats = stats;
@@ -270,6 +293,20 @@ public final class ConnectionProxyInfoResponse {
                     requestContract,
                     stats,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("apis")
+                    || key.equalsIgnoreCase("backendType")
+                    || key.equalsIgnoreCase("connectionId")
+                    || key.equalsIgnoreCase("inheritedBase")
+                    || key.equalsIgnoreCase("mergeRules")
+                    || key.equalsIgnoreCase("requestContract")
+                    || key.equalsIgnoreCase("stats")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

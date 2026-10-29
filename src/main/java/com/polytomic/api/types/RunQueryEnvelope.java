@@ -29,6 +29,9 @@ public final class RunQueryEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The submitted query
+     */
     @JsonProperty("data")
     public Optional<RunQueryResult> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class RunQueryEnvelope {
     public static final class Builder {
         private Optional<RunQueryResult> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class RunQueryEnvelope {
             return this;
         }
 
+        /**
+         * <p>The submitted query</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<RunQueryResult> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class RunQueryEnvelope {
 
         public RunQueryEnvelope build() {
             return new RunQueryEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

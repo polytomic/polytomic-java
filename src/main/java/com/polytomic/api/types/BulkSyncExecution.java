@@ -101,94 +101,145 @@ public final class BulkSyncExecution {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return When the execution finished
+     */
     @JsonProperty("completed_at")
     public Optional<OffsetDateTime> getCompletedAt() {
         return completedAt;
     }
 
+    /**
+     * @return When the execution was created
+     */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Total errors across all schemas
+     */
     @JsonProperty("error_count")
     public Optional<Long> getErrorCount() {
         return errorCount;
     }
 
+    /**
+     * @return Selective fetch mode the execution runs with
+     */
     @JsonProperty("fetch_mode")
     public Optional<BulkFetchMode> getFetchMode() {
         return fetchMode;
     }
 
+    /**
+     * @return Bulk sync execution ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Whether the execution syncs only a selected subset of schemas
+     */
     @JsonProperty("is_partial")
     public Optional<Boolean> getIsPartial() {
         return isPartial;
     }
 
+    /**
+     * @return Whether the execution is a resync
+     */
     @JsonProperty("is_resync")
     public Optional<Boolean> getIsResync() {
         return isResync;
     }
 
+    /**
+     * @return Whether the execution is a test execution
+     */
     @JsonProperty("is_test")
     public Optional<Boolean> getIsTest() {
         return isTest;
     }
 
+    /**
+     * @return How the destination was handled during this execution (retain, truncate, rebuild)
+     */
     @JsonProperty("output_disposition")
     public Optional<BulkOutputDisposition> getOutputDisposition() {
         return outputDisposition;
     }
 
+    /**
+     * @return Total records processed across all schemas
+     */
     @JsonProperty("record_count")
     public Optional<Long> getRecordCount() {
         return recordCount;
     }
 
+    /**
+     * @return Per-schema executions within this execution
+     */
     @JsonProperty("schemas")
     public Optional<List<BulkSyncSchemaExecution>> getSchemas() {
         return schemas;
     }
 
+    /**
+     * @return When the execution started
+     */
     @JsonProperty("started_at")
     public Optional<OffsetDateTime> getStartedAt() {
         return startedAt;
     }
 
+    /**
+     * @return Status of the execution
+     */
     @JsonProperty("status")
     public Optional<BulkExecutionStatus> getStatus() {
         return status;
     }
 
+    /**
+     * @return Detail about the execution's status, such as an error message
+     */
     @JsonProperty("status_message")
     public Optional<String> getStatusMessage() {
         return statusMessage;
     }
 
+    /**
+     * @return What triggered the execution
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return When the execution was last updated
+     */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
     /**
-     * @return Polytomic version which last ran this execution.
+     * @return Polytomic version which last ran this execution
      */
     @JsonProperty("version")
     public Optional<String> getVersion() {
         return version;
     }
 
+    /**
+     * @return Total warnings across all schemas
+     */
     @JsonProperty("warning_count")
     public Optional<Long> getWarningCount() {
         return warningCount;
@@ -296,7 +347,6 @@ public final class BulkSyncExecution {
 
         private Optional<Long> warningCount = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -323,6 +373,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>When the execution finished</p>
+         */
         @JsonSetter(value = "completed_at", nulls = Nulls.SKIP)
         public Builder completedAt(Optional<OffsetDateTime> completedAt) {
             this.completedAt = completedAt;
@@ -334,6 +387,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>When the execution was created</p>
+         */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
             this.createdAt = createdAt;
@@ -345,6 +401,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Total errors across all schemas</p>
+         */
         @JsonSetter(value = "error_count", nulls = Nulls.SKIP)
         public Builder errorCount(Optional<Long> errorCount) {
             this.errorCount = errorCount;
@@ -356,6 +415,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Selective fetch mode the execution runs with</p>
+         */
         @JsonSetter(value = "fetch_mode", nulls = Nulls.SKIP)
         public Builder fetchMode(Optional<BulkFetchMode> fetchMode) {
             this.fetchMode = fetchMode;
@@ -367,6 +429,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Bulk sync execution ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -378,6 +443,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Whether the execution syncs only a selected subset of schemas</p>
+         */
         @JsonSetter(value = "is_partial", nulls = Nulls.SKIP)
         public Builder isPartial(Optional<Boolean> isPartial) {
             this.isPartial = isPartial;
@@ -389,6 +457,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Whether the execution is a resync</p>
+         */
         @JsonSetter(value = "is_resync", nulls = Nulls.SKIP)
         public Builder isResync(Optional<Boolean> isResync) {
             this.isResync = isResync;
@@ -400,6 +471,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Whether the execution is a test execution</p>
+         */
         @JsonSetter(value = "is_test", nulls = Nulls.SKIP)
         public Builder isTest(Optional<Boolean> isTest) {
             this.isTest = isTest;
@@ -411,6 +485,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>How the destination was handled during this execution (retain, truncate, rebuild)</p>
+         */
         @JsonSetter(value = "output_disposition", nulls = Nulls.SKIP)
         public Builder outputDisposition(Optional<BulkOutputDisposition> outputDisposition) {
             this.outputDisposition = outputDisposition;
@@ -422,6 +499,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Total records processed across all schemas</p>
+         */
         @JsonSetter(value = "record_count", nulls = Nulls.SKIP)
         public Builder recordCount(Optional<Long> recordCount) {
             this.recordCount = recordCount;
@@ -433,6 +513,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Per-schema executions within this execution</p>
+         */
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public Builder schemas(Optional<List<BulkSyncSchemaExecution>> schemas) {
             this.schemas = schemas;
@@ -444,6 +527,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>When the execution started</p>
+         */
         @JsonSetter(value = "started_at", nulls = Nulls.SKIP)
         public Builder startedAt(Optional<OffsetDateTime> startedAt) {
             this.startedAt = startedAt;
@@ -455,6 +541,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Status of the execution</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<BulkExecutionStatus> status) {
             this.status = status;
@@ -466,6 +555,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Detail about the execution's status, such as an error message</p>
+         */
         @JsonSetter(value = "status_message", nulls = Nulls.SKIP)
         public Builder statusMessage(Optional<String> statusMessage) {
             this.statusMessage = statusMessage;
@@ -477,6 +569,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>What triggered the execution</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -488,6 +583,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>When the execution was last updated</p>
+         */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
             this.updatedAt = updatedAt;
@@ -500,7 +598,7 @@ public final class BulkSyncExecution {
         }
 
         /**
-         * <p>Polytomic version which last ran this execution.</p>
+         * <p>Polytomic version which last ran this execution</p>
          */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<String> version) {
@@ -513,6 +611,9 @@ public final class BulkSyncExecution {
             return this;
         }
 
+        /**
+         * <p>Total warnings across all schemas</p>
+         */
         @JsonSetter(value = "warning_count", nulls = Nulls.SKIP)
         public Builder warningCount(Optional<Long> warningCount) {
             this.warningCount = warningCount;
@@ -545,6 +646,31 @@ public final class BulkSyncExecution {
                     version,
                     warningCount,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("completed_at")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("error_count")
+                    || key.equalsIgnoreCase("fetch_mode")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("is_partial")
+                    || key.equalsIgnoreCase("is_resync")
+                    || key.equalsIgnoreCase("is_test")
+                    || key.equalsIgnoreCase("output_disposition")
+                    || key.equalsIgnoreCase("record_count")
+                    || key.equalsIgnoreCase("schemas")
+                    || key.equalsIgnoreCase("started_at")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("status_message")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("version")
+                    || key.equalsIgnoreCase("warning_count")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

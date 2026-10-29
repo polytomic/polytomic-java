@@ -36,11 +36,17 @@ public final class ModelSample {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Up to ten records sampled from the model
+     */
     @JsonProperty("records")
     public Optional<List<Map<String, Map<String, Object>>>> getRecords() {
         return records;
     }
 
+    /**
+     * @return Warnings raised while enriching the sampled records
+     */
     @JsonProperty("warnings")
     public Optional<List<String>> getWarnings() {
         return warnings;
@@ -81,7 +87,6 @@ public final class ModelSample {
 
         private Optional<List<String>> warnings = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class ModelSample {
             return this;
         }
 
+        /**
+         * <p>Up to ten records sampled from the model</p>
+         */
         @JsonSetter(value = "records", nulls = Nulls.SKIP)
         public Builder records(Optional<List<Map<String, Map<String, Object>>>> records) {
             this.records = records;
@@ -103,6 +111,9 @@ public final class ModelSample {
             return this;
         }
 
+        /**
+         * <p>Warnings raised while enriching the sampled records</p>
+         */
         @JsonSetter(value = "warnings", nulls = Nulls.SKIP)
         public Builder warnings(Optional<List<String>> warnings) {
             this.warnings = warnings;
@@ -116,6 +127,14 @@ public final class ModelSample {
 
         public ModelSample build() {
             return new ModelSample(records, warnings, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("records") || key.equalsIgnoreCase("warnings")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

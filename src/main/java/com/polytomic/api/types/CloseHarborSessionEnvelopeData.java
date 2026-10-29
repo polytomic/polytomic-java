@@ -33,11 +33,17 @@ public final class CloseHarborSessionEnvelopeData {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session ID
+     */
     @JsonProperty("session_id")
     public Optional<String> getSessionId() {
         return sessionId;
     }
 
+    /**
+     * @return Session status after the request
+     */
     @JsonProperty("status")
     public Optional<String> getStatus() {
         return status;
@@ -78,7 +84,6 @@ public final class CloseHarborSessionEnvelopeData {
 
         private Optional<String> status = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -89,6 +94,9 @@ public final class CloseHarborSessionEnvelopeData {
             return this;
         }
 
+        /**
+         * <p>Harbor session ID</p>
+         */
         @JsonSetter(value = "session_id", nulls = Nulls.SKIP)
         public Builder sessionId(Optional<String> sessionId) {
             this.sessionId = sessionId;
@@ -100,6 +108,9 @@ public final class CloseHarborSessionEnvelopeData {
             return this;
         }
 
+        /**
+         * <p>Session status after the request</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<String> status) {
             this.status = status;
@@ -113,6 +124,14 @@ public final class CloseHarborSessionEnvelopeData {
 
         public CloseHarborSessionEnvelopeData build() {
             return new CloseHarborSessionEnvelopeData(sessionId, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("session_id") || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -33,7 +33,7 @@ public final class LogsIndexEntry {
     }
 
     /**
-     * @return Number of records reported for this log type across all segment files.
+     * @return Number of records reported for this log type across all segment files
      */
     @JsonProperty("count")
     public Optional<Long> getCount() {
@@ -41,7 +41,7 @@ public final class LogsIndexEntry {
     }
 
     /**
-     * @return Endpoint that returns signed URLs for this log type's segment files.
+     * @return Endpoint that returns signed URLs for this log type's segment files
      */
     @JsonProperty("url")
     public Optional<String> getUrl() {
@@ -83,7 +83,6 @@ public final class LogsIndexEntry {
 
         private Optional<String> url = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -95,7 +94,7 @@ public final class LogsIndexEntry {
         }
 
         /**
-         * <p>Number of records reported for this log type across all segment files.</p>
+         * <p>Number of records reported for this log type across all segment files</p>
          */
         @JsonSetter(value = "count", nulls = Nulls.SKIP)
         public Builder count(Optional<Long> count) {
@@ -109,7 +108,7 @@ public final class LogsIndexEntry {
         }
 
         /**
-         * <p>Endpoint that returns signed URLs for this log type's segment files.</p>
+         * <p>Endpoint that returns signed URLs for this log type's segment files</p>
          */
         @JsonSetter(value = "url", nulls = Nulls.SKIP)
         public Builder url(Optional<String> url) {
@@ -124,6 +123,14 @@ public final class LogsIndexEntry {
 
         public LogsIndexEntry build() {
             return new LogsIndexEntry(count, url, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("count") || key.equalsIgnoreCase("url")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

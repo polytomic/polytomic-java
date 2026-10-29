@@ -44,20 +44,23 @@ public final class FieldConfiguration {
     }
 
     /**
-     * @return Whether the field is enabled for syncing.
+     * @return Whether the field is enabled for syncing
      */
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
     }
 
+    /**
+     * @return Field ID within the schema
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
     /**
-     * @return Whether the field should be obfuscated.
+     * @return Whether the field should be obfuscated
      */
     @JsonProperty("obfuscate")
     public Optional<Boolean> getObfuscate() {
@@ -114,7 +117,6 @@ public final class FieldConfiguration {
 
         private Optional<String> userOutputName = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -128,7 +130,7 @@ public final class FieldConfiguration {
         }
 
         /**
-         * <p>Whether the field is enabled for syncing.</p>
+         * <p>Whether the field is enabled for syncing</p>
          */
         @JsonSetter(value = "enabled", nulls = Nulls.SKIP)
         public Builder enabled(Optional<Boolean> enabled) {
@@ -141,6 +143,9 @@ public final class FieldConfiguration {
             return this;
         }
 
+        /**
+         * <p>Field ID within the schema</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -153,7 +158,7 @@ public final class FieldConfiguration {
         }
 
         /**
-         * <p>Whether the field should be obfuscated.</p>
+         * <p>Whether the field should be obfuscated</p>
          */
         @JsonSetter(value = "obfuscate", nulls = Nulls.SKIP)
         public Builder obfuscate(Optional<Boolean> obfuscate) {
@@ -182,6 +187,17 @@ public final class FieldConfiguration {
 
         public FieldConfiguration build() {
             return new FieldConfiguration(enabled, id, obfuscate, userOutputName, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("obfuscate")
+                    || key.equalsIgnoreCase("user_output_name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

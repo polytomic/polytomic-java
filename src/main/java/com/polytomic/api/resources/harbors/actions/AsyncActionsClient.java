@@ -5,6 +5,7 @@ package com.polytomic.api.resources.harbors.actions;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.harbors.actions.requests.ActionsDescribeRequest;
 import com.polytomic.api.resources.harbors.actions.requests.ActionsGetExecutionRequest;
@@ -55,7 +56,15 @@ public class AsyncActionsClient {
      * to the same credential and Harbor.</p>
      */
     public CompletableFuture<HarborActionExecutionEnvelope> getExecution(String harborId, String executionId) {
-        return this.rawClient.getExecution(harborId, executionId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionExecutionEnvelope>> rawFuture =
+                this.rawClient.getExecution(harborId, executionId);
+        CompletableFuture<HarborActionExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -78,9 +87,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionExecutionEnvelope> getExecution(
             String harborId, String executionId, RequestOptions requestOptions) {
-        return this.rawClient
-                .getExecution(harborId, executionId, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionExecutionEnvelope>> rawFuture =
+                this.rawClient.getExecution(harborId, executionId, requestOptions);
+        CompletableFuture<HarborActionExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -103,7 +118,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionExecutionEnvelope> getExecution(
             String harborId, String executionId, ActionsGetExecutionRequest request) {
-        return this.rawClient.getExecution(harborId, executionId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionExecutionEnvelope>> rawFuture =
+                this.rawClient.getExecution(harborId, executionId, request);
+        CompletableFuture<HarborActionExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -126,9 +149,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionExecutionEnvelope> getExecution(
             String harborId, String executionId, ActionsGetExecutionRequest request, RequestOptions requestOptions) {
-        return this.rawClient
-                .getExecution(harborId, executionId, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionExecutionEnvelope>> rawFuture =
+                this.rawClient.getExecution(harborId, executionId, request, requestOptions);
+        CompletableFuture<HarborActionExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -162,7 +191,14 @@ public class AsyncActionsClient {
      * <code>action.listed</code>; no response is returned if that event cannot be recorded.</p>
      */
     public CompletableFuture<HarborActionListEnvelope> list(String harborId) {
-        return this.rawClient.list(harborId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionListEnvelope>> rawFuture = this.rawClient.list(harborId);
+        CompletableFuture<HarborActionListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -196,7 +232,15 @@ public class AsyncActionsClient {
      * <code>action.listed</code>; no response is returned if that event cannot be recorded.</p>
      */
     public CompletableFuture<HarborActionListEnvelope> list(String harborId, RequestOptions requestOptions) {
-        return this.rawClient.list(harborId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionListEnvelope>> rawFuture =
+                this.rawClient.list(harborId, requestOptions);
+        CompletableFuture<HarborActionListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -230,7 +274,15 @@ public class AsyncActionsClient {
      * <code>action.listed</code>; no response is returned if that event cannot be recorded.</p>
      */
     public CompletableFuture<HarborActionListEnvelope> list(String harborId, ActionsListRequest request) {
-        return this.rawClient.list(harborId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionListEnvelope>> rawFuture =
+                this.rawClient.list(harborId, request);
+        CompletableFuture<HarborActionListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -265,7 +317,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionListEnvelope> list(
             String harborId, ActionsListRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(harborId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionListEnvelope>> rawFuture =
+                this.rawClient.list(harborId, request, requestOptions);
+        CompletableFuture<HarborActionListEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -298,7 +358,15 @@ public class AsyncActionsClient {
      * Harbor. Successful description is recorded as <code>action.listed</code>.</p>
      */
     public CompletableFuture<HarborActionDescribeEnvelope> describe(String harborId, ActionsDescribeRequest request) {
-        return this.rawClient.describe(harborId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionDescribeEnvelope>> rawFuture =
+                this.rawClient.describe(harborId, request);
+        CompletableFuture<HarborActionDescribeEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -332,7 +400,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionDescribeEnvelope> describe(
             String harborId, ActionsDescribeRequest request, RequestOptions requestOptions) {
-        return this.rawClient.describe(harborId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionDescribeEnvelope>> rawFuture =
+                this.rawClient.describe(harborId, request, requestOptions);
+        CompletableFuture<HarborActionDescribeEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -384,7 +460,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionExecutionEnvelope> execute(
             String harborId, ExecuteHarborActionRequest request) {
-        return this.rawClient.execute(harborId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionExecutionEnvelope>> rawFuture =
+                this.rawClient.execute(harborId, request);
+        CompletableFuture<HarborActionExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -436,7 +520,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionExecutionEnvelope> execute(
             String harborId, ExecuteHarborActionRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.execute(harborId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionExecutionEnvelope>> rawFuture =
+                this.rawClient.execute(harborId, request, requestOptions);
+        CompletableFuture<HarborActionExecutionEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -470,7 +562,15 @@ public class AsyncActionsClient {
      * session must be active and bound to your credential and Harbor.</p>
      */
     public CompletableFuture<HarborActionLookupEnvelope> lookup(String harborId, LookupHarborActionRequest request) {
-        return this.rawClient.lookup(harborId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionLookupEnvelope>> rawFuture =
+                this.rawClient.lookup(harborId, request);
+        CompletableFuture<HarborActionLookupEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -505,7 +605,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionLookupEnvelope> lookup(
             String harborId, LookupHarborActionRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.lookup(harborId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionLookupEnvelope>> rawFuture =
+                this.rawClient.lookup(harborId, request, requestOptions);
+        CompletableFuture<HarborActionLookupEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -554,7 +662,15 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionPreparationEnvelope> prepare(
             String harborId, PrepareHarborActionRequest request) {
-        return this.rawClient.prepare(harborId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionPreparationEnvelope>> rawFuture =
+                this.rawClient.prepare(harborId, request);
+        CompletableFuture<HarborActionPreparationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -603,6 +719,14 @@ public class AsyncActionsClient {
      */
     public CompletableFuture<HarborActionPreparationEnvelope> prepare(
             String harborId, PrepareHarborActionRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.prepare(harborId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<HarborActionPreparationEnvelope>> rawFuture =
+                this.rawClient.prepare(harborId, request, requestOptions);
+        CompletableFuture<HarborActionPreparationEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

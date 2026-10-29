@@ -5,6 +5,7 @@ package com.polytomic.api.resources.connections.proxy;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.connections.proxy.requests.ExecuteConnectionProxyRequest;
 import com.polytomic.api.resources.connections.proxy.requests.UpdateConnectionProxySettingsRequest;
@@ -69,7 +70,15 @@ public class AsyncProxyClient {
      */
     public CompletableFuture<ExecuteConnectionProxyEnvelope> executeProxy(
             String id, ExecuteConnectionProxyRequest request) {
-        return this.rawClient.executeProxy(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecuteConnectionProxyEnvelope>> rawFuture =
+                this.rawClient.executeProxy(id, request);
+        CompletableFuture<ExecuteConnectionProxyEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -111,7 +120,15 @@ public class AsyncProxyClient {
      */
     public CompletableFuture<ExecuteConnectionProxyEnvelope> executeProxy(
             String id, ExecuteConnectionProxyRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.executeProxy(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ExecuteConnectionProxyEnvelope>> rawFuture =
+                this.rawClient.executeProxy(id, request, requestOptions);
+        CompletableFuture<ExecuteConnectionProxyEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -136,7 +153,15 @@ public class AsyncProxyClient {
      * connection, even though their raw values are not exposed.</p>
      */
     public CompletableFuture<GetConnectionProxyInfoEnvelope> getProxyInfo(String id) {
-        return this.rawClient.getProxyInfo(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetConnectionProxyInfoEnvelope>> rawFuture =
+                this.rawClient.getProxyInfo(id);
+        CompletableFuture<GetConnectionProxyInfoEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -161,7 +186,15 @@ public class AsyncProxyClient {
      * connection, even though their raw values are not exposed.</p>
      */
     public CompletableFuture<GetConnectionProxyInfoEnvelope> getProxyInfo(String id, RequestOptions requestOptions) {
-        return this.rawClient.getProxyInfo(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetConnectionProxyInfoEnvelope>> rawFuture =
+                this.rawClient.getProxyInfo(id, requestOptions);
+        CompletableFuture<GetConnectionProxyInfoEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -172,7 +205,15 @@ public class AsyncProxyClient {
      * <code>parentConnectionId</code> is omitted.</p>
      */
     public CompletableFuture<ConnectionProxySettingsEnvelope> getProxySettings(String id) {
-        return this.rawClient.getProxySettings(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionProxySettingsEnvelope>> rawFuture =
+                this.rawClient.getProxySettings(id);
+        CompletableFuture<ConnectionProxySettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -184,7 +225,15 @@ public class AsyncProxyClient {
      */
     public CompletableFuture<ConnectionProxySettingsEnvelope> getProxySettings(
             String id, RequestOptions requestOptions) {
-        return this.rawClient.getProxySettings(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionProxySettingsEnvelope>> rawFuture =
+                this.rawClient.getProxySettings(id, requestOptions);
+        CompletableFuture<ConnectionProxySettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -199,7 +248,15 @@ public class AsyncProxyClient {
      */
     public CompletableFuture<ConnectionProxySettingsEnvelope> updateProxySettings(
             String id, UpdateConnectionProxySettingsRequest request) {
-        return this.rawClient.updateProxySettings(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionProxySettingsEnvelope>> rawFuture =
+                this.rawClient.updateProxySettings(id, request);
+        CompletableFuture<ConnectionProxySettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -214,6 +271,14 @@ public class AsyncProxyClient {
      */
     public CompletableFuture<ConnectionProxySettingsEnvelope> updateProxySettings(
             String id, UpdateConnectionProxySettingsRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.updateProxySettings(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionProxySettingsEnvelope>> rawFuture =
+                this.rawClient.updateProxySettings(id, request, requestOptions);
+        CompletableFuture<ConnectionProxySettingsEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

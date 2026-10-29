@@ -133,7 +133,6 @@ public final class ModelSyncListRequest {
 
         private Optional<Integer> limit = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -219,6 +218,18 @@ public final class ModelSyncListRequest {
 
         public ModelSyncListRequest build() {
             return new ModelSyncListRequest(active, mode, targetConnectionId, pageToken, limit, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("active")
+                    || key.equalsIgnoreCase("mode")
+                    || key.equalsIgnoreCase("target_connection_id")
+                    || key.equalsIgnoreCase("page_token")
+                    || key.equalsIgnoreCase("limit")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

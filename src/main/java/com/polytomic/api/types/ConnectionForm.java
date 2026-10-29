@@ -78,7 +78,6 @@ public final class ConnectionForm {
 
         private Optional<Object> uischema = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -113,6 +112,14 @@ public final class ConnectionForm {
 
         public ConnectionForm build() {
             return new ConnectionForm(jsonschema, uischema, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("jsonschema") || key.equalsIgnoreCase("uischema")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

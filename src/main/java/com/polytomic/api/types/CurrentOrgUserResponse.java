@@ -57,7 +57,7 @@ public final class CurrentOrgUserResponse {
     }
 
     /**
-     * @return Email address used to sign in and receive notifications.
+     * @return Email address used to sign in and receive notifications
      */
     @JsonProperty("email")
     public Optional<String> getEmail() {
@@ -65,7 +65,7 @@ public final class CurrentOrgUserResponse {
     }
 
     /**
-     * @return Identifiers of the Harbors assigned to this user.
+     * @return Identifiers of the Harbors assigned to this user
      */
     @JsonProperty("harbor_ids")
     public Optional<List<String>> getHarborIds() {
@@ -73,7 +73,7 @@ public final class CurrentOrgUserResponse {
     }
 
     /**
-     * @return Whether the account is restricted to assigned Harbors.
+     * @return Whether the account is restricted to assigned Harbors
      */
     @JsonProperty("harbor_only")
     public Optional<Boolean> getHarborOnly() {
@@ -81,7 +81,7 @@ public final class CurrentOrgUserResponse {
     }
 
     /**
-     * @return Unique identifier of the user.
+     * @return Unique identifier of the user
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -89,7 +89,7 @@ public final class CurrentOrgUserResponse {
     }
 
     /**
-     * @return Unique identifier of the organization the user belongs to.
+     * @return Unique identifier of the organization the user belongs to
      */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
@@ -105,7 +105,7 @@ public final class CurrentOrgUserResponse {
     }
 
     /**
-     * @return Identifiers of the permissions roles assigned to the user.
+     * @return Identifiers of the permissions roles assigned to the user
      */
     @JsonProperty("role_ids")
     public Optional<List<String>> getRoleIds() {
@@ -164,7 +164,6 @@ public final class CurrentOrgUserResponse {
 
         private Optional<List<String>> roleIds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -181,7 +180,7 @@ public final class CurrentOrgUserResponse {
         }
 
         /**
-         * <p>Email address used to sign in and receive notifications.</p>
+         * <p>Email address used to sign in and receive notifications</p>
          */
         @JsonSetter(value = "email", nulls = Nulls.SKIP)
         public Builder email(Optional<String> email) {
@@ -195,7 +194,7 @@ public final class CurrentOrgUserResponse {
         }
 
         /**
-         * <p>Identifiers of the Harbors assigned to this user.</p>
+         * <p>Identifiers of the Harbors assigned to this user</p>
          */
         @JsonSetter(value = "harbor_ids", nulls = Nulls.SKIP)
         public Builder harborIds(Optional<List<String>> harborIds) {
@@ -209,7 +208,7 @@ public final class CurrentOrgUserResponse {
         }
 
         /**
-         * <p>Whether the account is restricted to assigned Harbors.</p>
+         * <p>Whether the account is restricted to assigned Harbors</p>
          */
         @JsonSetter(value = "harbor_only", nulls = Nulls.SKIP)
         public Builder harborOnly(Optional<Boolean> harborOnly) {
@@ -223,7 +222,7 @@ public final class CurrentOrgUserResponse {
         }
 
         /**
-         * <p>Unique identifier of the user.</p>
+         * <p>Unique identifier of the user</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -237,7 +236,7 @@ public final class CurrentOrgUserResponse {
         }
 
         /**
-         * <p>Unique identifier of the organization the user belongs to.</p>
+         * <p>Unique identifier of the organization the user belongs to</p>
          */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
@@ -265,7 +264,7 @@ public final class CurrentOrgUserResponse {
         }
 
         /**
-         * <p>Identifiers of the permissions roles assigned to the user.</p>
+         * <p>Identifiers of the permissions roles assigned to the user</p>
          */
         @JsonSetter(value = "role_ids", nulls = Nulls.SKIP)
         public Builder roleIds(Optional<List<String>> roleIds) {
@@ -281,6 +280,20 @@ public final class CurrentOrgUserResponse {
         public CurrentOrgUserResponse build() {
             return new CurrentOrgUserResponse(
                     email, harborIds, harborOnly, id, organizationId, role, roleIds, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("email")
+                    || key.equalsIgnoreCase("harbor_ids")
+                    || key.equalsIgnoreCase("harbor_only")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("role")
+                    || key.equalsIgnoreCase("role_ids")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

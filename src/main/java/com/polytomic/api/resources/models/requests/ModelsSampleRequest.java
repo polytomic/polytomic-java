@@ -29,6 +29,9 @@ public final class ModelsSampleRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Run in the background and return a job instead of the result.
+     */
     @JsonProperty("async")
     public Optional<Boolean> getAsync() {
         return async;
@@ -67,7 +70,6 @@ public final class ModelsSampleRequest {
     public static final class Builder {
         private Optional<Boolean> async = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class ModelsSampleRequest {
             return this;
         }
 
+        /**
+         * <p>Run in the background and return a job instead of the result.</p>
+         */
         @JsonSetter(value = "async", nulls = Nulls.SKIP)
         public Builder async(Optional<Boolean> async) {
             this.async = async;
@@ -90,6 +95,14 @@ public final class ModelsSampleRequest {
 
         public ModelsSampleRequest build() {
             return new ModelsSampleRequest(async, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("async")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

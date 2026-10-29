@@ -5,6 +5,7 @@ package com.polytomic.api.resources.bulksync.schemas;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.resources.bulksync.schemas.requests.SchemasListRequest;
 import com.polytomic.api.resources.bulksync.schemas.requests.UpdateBulkSchema;
@@ -45,7 +46,14 @@ public class AsyncSchemasClient {
      * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
      */
     public CompletableFuture<ListBulkSchemaEnvelope> list(String id) {
-        return this.rawClient.list(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListBulkSchemaEnvelope>> rawFuture = this.rawClient.list(id);
+        CompletableFuture<ListBulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -61,7 +69,15 @@ public class AsyncSchemasClient {
      * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
      */
     public CompletableFuture<ListBulkSchemaEnvelope> list(String id, RequestOptions requestOptions) {
-        return this.rawClient.list(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListBulkSchemaEnvelope>> rawFuture =
+                this.rawClient.list(id, requestOptions);
+        CompletableFuture<ListBulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -77,7 +93,14 @@ public class AsyncSchemasClient {
      * <a href="../../../../../api-reference/bulk-sync/schemas/update"><code>PUT /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>.</p>
      */
     public CompletableFuture<ListBulkSchemaEnvelope> list(String id, SchemasListRequest request) {
-        return this.rawClient.list(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListBulkSchemaEnvelope>> rawFuture = this.rawClient.list(id, request);
+        CompletableFuture<ListBulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -94,7 +117,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<ListBulkSchemaEnvelope> list(
             String id, SchemasListRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListBulkSchemaEnvelope>> rawFuture =
+                this.rawClient.list(id, request, requestOptions);
+        CompletableFuture<ListBulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -105,7 +136,14 @@ public class AsyncSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -114,7 +152,14 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<UpdateBulkSyncSchemasEnvelope> patch(String id) {
-        return this.rawClient.patch(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UpdateBulkSyncSchemasEnvelope>> rawFuture = this.rawClient.patch(id);
+        CompletableFuture<UpdateBulkSyncSchemasEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -125,7 +170,14 @@ public class AsyncSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -134,7 +186,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<UpdateBulkSyncSchemasEnvelope> patch(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.patch(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UpdateBulkSyncSchemasEnvelope>> rawFuture =
+                this.rawClient.patch(id, requestOptions);
+        CompletableFuture<UpdateBulkSyncSchemasEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -145,7 +205,14 @@ public class AsyncSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -154,7 +221,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<UpdateBulkSyncSchemasEnvelope> patch(String id, UpdateBulkSyncSchemasRequest request) {
-        return this.rawClient.patch(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UpdateBulkSyncSchemasEnvelope>> rawFuture =
+                this.rawClient.patch(id, request);
+        CompletableFuture<UpdateBulkSyncSchemasEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -165,7 +240,14 @@ public class AsyncSchemasClient {
      * sync's schema configuration.</p>
      * <p>Within each provided schema, omitting <code>fields</code> enables all available fields on
      * that schema. To control which fields are enabled, include the <code>fields</code> array
-     * with explicit <code>enabled</code> values for each field.</p>
+     * with explicit <code>enabled</code> values for each field. Primary-key fields stay enabled
+     * while their schema is enabled, even when the request sets <code>enabled: false</code> for
+     * them.</p>
+     * <p><code>output_name</code> and <code>destination_history_output_name</code> on a schema, and
+     * <code>output_name</code> on a field, are computed by Polytomic and ignored on input. Set
+     * <code>user_output_name</code> to rename a destination object or field.</p>
+     * <p>The response contains every schema on the bulk sync after the update, not only
+     * the schemas included in the request.</p>
      * <blockquote>
      * <p>📘 To replace a single schema's configuration in full (clearing any fields you
      * omit), use
@@ -175,7 +257,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<UpdateBulkSyncSchemasEnvelope> patch(
             String id, UpdateBulkSyncSchemasRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.patch(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<UpdateBulkSyncSchemasEnvelope>> rawFuture =
+                this.rawClient.patch(id, request, requestOptions);
+        CompletableFuture<UpdateBulkSyncSchemasEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -189,7 +279,14 @@ public class AsyncSchemasClient {
      * to fully replace this schema's configuration.</p>
      */
     public CompletableFuture<BulkSchemaEnvelope> get(String id, String schemaId) {
-        return this.rawClient.get(id, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSchemaEnvelope>> rawFuture = this.rawClient.get(id, schemaId);
+        CompletableFuture<BulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -203,7 +300,15 @@ public class AsyncSchemasClient {
      * to fully replace this schema's configuration.</p>
      */
     public CompletableFuture<BulkSchemaEnvelope> get(String id, String schemaId, RequestOptions requestOptions) {
-        return this.rawClient.get(id, schemaId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSchemaEnvelope>> rawFuture =
+                this.rawClient.get(id, schemaId, requestOptions);
+        CompletableFuture<BulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -214,7 +319,9 @@ public class AsyncSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -223,7 +330,14 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSchemaEnvelope> update(String id, String schemaId) {
-        return this.rawClient.update(id, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSchemaEnvelope>> rawFuture = this.rawClient.update(id, schemaId);
+        CompletableFuture<BulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -234,7 +348,9 @@ public class AsyncSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -244,7 +360,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<BulkSchemaEnvelope> update(
             String id, String schemaId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, schemaId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSchemaEnvelope>> rawFuture =
+                this.rawClient.update(id, schemaId, requestOptions);
+        CompletableFuture<BulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -255,7 +379,9 @@ public class AsyncSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -264,7 +390,15 @@ public class AsyncSchemasClient {
      * </blockquote>
      */
     public CompletableFuture<BulkSchemaEnvelope> update(String id, String schemaId, UpdateBulkSchema request) {
-        return this.rawClient.update(id, schemaId, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSchemaEnvelope>> rawFuture =
+                this.rawClient.update(id, schemaId, request);
+        CompletableFuture<BulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -275,7 +409,9 @@ public class AsyncSchemasClient {
      * <a href="../../../../../../api-reference/bulk-sync/schemas/get"><code>GET /api/bulk/syncs/{id}/schemas/{schema_id}</code></a>
      * first if you want to preserve existing settings while changing only a subset.</p>
      * <p>Omitting <code>fields</code> enables all available fields on the schema. To control which
-     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.</p>
+     * fields are enabled, include the <code>fields</code> array with explicit <code>enabled</code> values.
+     * Primary-key fields stay enabled while the schema is enabled, even when the
+     * request sets <code>enabled: false</code> for them.</p>
      * <blockquote>
      * <p>📘 To update multiple schemas in a single request without affecting others,
      * use the partial-update endpoint
@@ -285,7 +421,15 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<BulkSchemaEnvelope> update(
             String id, String schemaId, UpdateBulkSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, schemaId, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<BulkSchemaEnvelope>> rawFuture =
+                this.rawClient.update(id, schemaId, request, requestOptions);
+        CompletableFuture<BulkSchemaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -298,7 +442,15 @@ public class AsyncSchemasClient {
      * state.</p>
      */
     public CompletableFuture<CancelBulkSyncResponseEnvelope> cancel(String id, String schemaId) {
-        return this.rawClient.cancel(id, schemaId).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelBulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.cancel(id, schemaId);
+        CompletableFuture<CancelBulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -312,6 +464,14 @@ public class AsyncSchemasClient {
      */
     public CompletableFuture<CancelBulkSyncResponseEnvelope> cancel(
             String id, String schemaId, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.cancel(id, schemaId, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelBulkSyncResponseEnvelope>> rawFuture =
+                this.rawClient.cancel(id, schemaId, requestOptions);
+        CompletableFuture<CancelBulkSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 }

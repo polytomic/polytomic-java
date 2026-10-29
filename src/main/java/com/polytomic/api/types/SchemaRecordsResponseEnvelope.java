@@ -31,6 +31,9 @@ public final class SchemaRecordsResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Sample records from the schema
+     */
     @JsonProperty("data")
     public Optional<List<Map<String, Object>>> getData() {
         return data;
@@ -69,7 +72,6 @@ public final class SchemaRecordsResponseEnvelope {
     public static final class Builder {
         private Optional<List<Map<String, Object>>> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -79,6 +81,9 @@ public final class SchemaRecordsResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Sample records from the schema</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<Map<String, Object>>> data) {
             this.data = data;
@@ -92,6 +97,14 @@ public final class SchemaRecordsResponseEnvelope {
 
         public SchemaRecordsResponseEnvelope build() {
             return new SchemaRecordsResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

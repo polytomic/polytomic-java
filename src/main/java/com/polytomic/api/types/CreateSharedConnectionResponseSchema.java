@@ -29,6 +29,9 @@ public final class CreateSharedConnectionResponseSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Shared connection ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
@@ -68,7 +71,6 @@ public final class CreateSharedConnectionResponseSchema {
     public static final class Builder {
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class CreateSharedConnectionResponseSchema {
             return this;
         }
 
+        /**
+         * <p>Shared connection ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -91,6 +96,14 @@ public final class CreateSharedConnectionResponseSchema {
 
         public CreateSharedConnectionResponseSchema build() {
             return new CreateSharedConnectionResponseSchema(id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

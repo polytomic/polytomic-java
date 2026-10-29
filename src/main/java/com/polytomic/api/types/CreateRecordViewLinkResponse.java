@@ -45,7 +45,7 @@ public final class CreateRecordViewLinkResponse {
     }
 
     /**
-     * @return Link creation timestamp.
+     * @return Link creation timestamp
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
@@ -53,7 +53,7 @@ public final class CreateRecordViewLinkResponse {
     }
 
     /**
-     * @return Link expiry timestamp.
+     * @return Link expiry timestamp
      */
     @JsonProperty("expires_at")
     public Optional<OffsetDateTime> getExpiresAt() {
@@ -61,7 +61,7 @@ public final class CreateRecordViewLinkResponse {
     }
 
     /**
-     * @return Record-view link identifier.
+     * @return Record-view link identifier
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -69,7 +69,7 @@ public final class CreateRecordViewLinkResponse {
     }
 
     /**
-     * @return One-time returned viewer URL containing the raw bearer token.
+     * @return One-time returned viewer URL containing the raw bearer token
      */
     @JsonProperty("url")
     public Optional<String> getUrl() {
@@ -118,7 +118,6 @@ public final class CreateRecordViewLinkResponse {
 
         private Optional<String> url = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -132,7 +131,7 @@ public final class CreateRecordViewLinkResponse {
         }
 
         /**
-         * <p>Link creation timestamp.</p>
+         * <p>Link creation timestamp</p>
          */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
@@ -146,7 +145,7 @@ public final class CreateRecordViewLinkResponse {
         }
 
         /**
-         * <p>Link expiry timestamp.</p>
+         * <p>Link expiry timestamp</p>
          */
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
@@ -160,7 +159,7 @@ public final class CreateRecordViewLinkResponse {
         }
 
         /**
-         * <p>Record-view link identifier.</p>
+         * <p>Record-view link identifier</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -174,7 +173,7 @@ public final class CreateRecordViewLinkResponse {
         }
 
         /**
-         * <p>One-time returned viewer URL containing the raw bearer token.</p>
+         * <p>One-time returned viewer URL containing the raw bearer token</p>
          */
         @JsonSetter(value = "url", nulls = Nulls.SKIP)
         public Builder url(Optional<String> url) {
@@ -189,6 +188,17 @@ public final class CreateRecordViewLinkResponse {
 
         public CreateRecordViewLinkResponse build() {
             return new CreateRecordViewLinkResponse(createdAt, expiresAt, id, url, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("url")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

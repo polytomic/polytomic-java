@@ -30,6 +30,9 @@ public final class ExecutionConsoleLogsResponseEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Console log entries and the cursor for newer entries
+     */
     @JsonProperty("data")
     public Optional<ExecutionConsoleLogsResponse> getData() {
         return data;
@@ -69,7 +72,6 @@ public final class ExecutionConsoleLogsResponseEnvelope {
     public static final class Builder {
         private Optional<ExecutionConsoleLogsResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -79,6 +81,9 @@ public final class ExecutionConsoleLogsResponseEnvelope {
             return this;
         }
 
+        /**
+         * <p>Console log entries and the cursor for newer entries</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ExecutionConsoleLogsResponse> data) {
             this.data = data;
@@ -92,6 +97,14 @@ public final class ExecutionConsoleLogsResponseEnvelope {
 
         public ExecutionConsoleLogsResponseEnvelope build() {
             return new ExecutionConsoleLogsResponseEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

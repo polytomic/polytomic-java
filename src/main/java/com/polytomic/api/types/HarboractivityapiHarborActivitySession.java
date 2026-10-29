@@ -89,79 +89,121 @@ public final class HarboractivityapiHarborActivitySession {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return MCP-observed client name
+     */
     @JsonProperty("client_name")
     public Optional<String> getClientName() {
         return clientName;
     }
 
+    /**
+     * @return MCP-observed client version
+     */
     @JsonProperty("client_version")
     public Optional<String> getClientVersion() {
         return clientVersion;
     }
 
+    /**
+     * @return Harbor credential that registered the session
+     */
     @JsonProperty("credential")
     public Optional<HarboractivityapiHarborActivityIdentitySnapshot> getCredential() {
         return credential;
     }
 
+    /**
+     * @return When the session closed or expired
+     */
     @JsonProperty("ended_at")
     public Optional<OffsetDateTime> getEndedAt() {
         return endedAt;
     }
 
+    /**
+     * @return Session events on this page
+     */
     @JsonProperty("events")
     public Optional<List<HarboractivityapiHarborActivityEvent>> getEvents() {
         return events;
     }
 
+    /**
+     * @return When the session expires
+     */
     @JsonProperty("expires_at")
     public Optional<OffsetDateTime> getExpiresAt() {
         return expiresAt;
     }
 
+    /**
+     * @return Client-supplied run correlation value
+     */
     @JsonProperty("external_run_id")
     public Optional<String> getExternalRunId() {
         return externalRunId;
     }
 
+    /**
+     * @return Harbor ID of the session
+     */
     @JsonProperty("harbor_id")
     public Optional<String> getHarborId() {
         return harborId;
     }
 
     /**
-     * @return Whether retention removed events from the beginning of the session.
+     * @return Whether retention removed events from the beginning of the session
      */
     @JsonProperty("history_truncated")
     public Optional<Boolean> getHistoryTruncated() {
         return historyTruncated;
     }
 
+    /**
+     * @return Harbor session ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Harbor profile of the session's credential
+     */
     @JsonProperty("profile")
     public Optional<HarboractivityapiHarborActivityIdentitySnapshot> getProfile() {
         return profile;
     }
 
+    /**
+     * @return When the session started
+     */
     @JsonProperty("started_at")
     public Optional<OffsetDateTime> getStartedAt() {
         return startedAt;
     }
 
+    /**
+     * @return ID of the session.started event
+     */
     @JsonProperty("started_event_id")
     public Optional<String> getStartedEventId() {
         return startedEventId;
     }
 
+    /**
+     * @return Session status
+     */
     @JsonProperty("status")
     public Optional<HarboractivityapiHarborActivitySessionStatus> getStatus() {
         return status;
     }
 
+    /**
+     * @return ID of the event that closed or expired the session
+     */
     @JsonProperty("terminal_event_id")
     public Optional<String> getTerminalEventId() {
         return terminalEventId;
@@ -258,7 +300,6 @@ public final class HarboractivityapiHarborActivitySession {
 
         private Optional<String> terminalEventId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -282,6 +323,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>MCP-observed client name</p>
+         */
         @JsonSetter(value = "client_name", nulls = Nulls.SKIP)
         public Builder clientName(Optional<String> clientName) {
             this.clientName = clientName;
@@ -293,6 +337,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>MCP-observed client version</p>
+         */
         @JsonSetter(value = "client_version", nulls = Nulls.SKIP)
         public Builder clientVersion(Optional<String> clientVersion) {
             this.clientVersion = clientVersion;
@@ -304,6 +351,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>Harbor credential that registered the session</p>
+         */
         @JsonSetter(value = "credential", nulls = Nulls.SKIP)
         public Builder credential(Optional<HarboractivityapiHarborActivityIdentitySnapshot> credential) {
             this.credential = credential;
@@ -315,6 +365,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>When the session closed or expired</p>
+         */
         @JsonSetter(value = "ended_at", nulls = Nulls.SKIP)
         public Builder endedAt(Optional<OffsetDateTime> endedAt) {
             this.endedAt = endedAt;
@@ -326,6 +379,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>Session events on this page</p>
+         */
         @JsonSetter(value = "events", nulls = Nulls.SKIP)
         public Builder events(Optional<List<HarboractivityapiHarborActivityEvent>> events) {
             this.events = events;
@@ -337,6 +393,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>When the session expires</p>
+         */
         @JsonSetter(value = "expires_at", nulls = Nulls.SKIP)
         public Builder expiresAt(Optional<OffsetDateTime> expiresAt) {
             this.expiresAt = expiresAt;
@@ -348,6 +407,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>Client-supplied run correlation value</p>
+         */
         @JsonSetter(value = "external_run_id", nulls = Nulls.SKIP)
         public Builder externalRunId(Optional<String> externalRunId) {
             this.externalRunId = externalRunId;
@@ -359,6 +421,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>Harbor ID of the session</p>
+         */
         @JsonSetter(value = "harbor_id", nulls = Nulls.SKIP)
         public Builder harborId(Optional<String> harborId) {
             this.harborId = harborId;
@@ -371,7 +436,7 @@ public final class HarboractivityapiHarborActivitySession {
         }
 
         /**
-         * <p>Whether retention removed events from the beginning of the session.</p>
+         * <p>Whether retention removed events from the beginning of the session</p>
          */
         @JsonSetter(value = "history_truncated", nulls = Nulls.SKIP)
         public Builder historyTruncated(Optional<Boolean> historyTruncated) {
@@ -384,6 +449,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>Harbor session ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -395,6 +463,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>Harbor profile of the session's credential</p>
+         */
         @JsonSetter(value = "profile", nulls = Nulls.SKIP)
         public Builder profile(Optional<HarboractivityapiHarborActivityIdentitySnapshot> profile) {
             this.profile = profile;
@@ -406,6 +477,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>When the session started</p>
+         */
         @JsonSetter(value = "started_at", nulls = Nulls.SKIP)
         public Builder startedAt(Optional<OffsetDateTime> startedAt) {
             this.startedAt = startedAt;
@@ -417,6 +491,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>ID of the session.started event</p>
+         */
         @JsonSetter(value = "started_event_id", nulls = Nulls.SKIP)
         public Builder startedEventId(Optional<String> startedEventId) {
             this.startedEventId = startedEventId;
@@ -428,6 +505,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>Session status</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<HarboractivityapiHarborActivitySessionStatus> status) {
             this.status = status;
@@ -439,6 +519,9 @@ public final class HarboractivityapiHarborActivitySession {
             return this;
         }
 
+        /**
+         * <p>ID of the event that closed or expired the session</p>
+         */
         @JsonSetter(value = "terminal_event_id", nulls = Nulls.SKIP)
         public Builder terminalEventId(Optional<String> terminalEventId) {
             this.terminalEventId = terminalEventId;
@@ -468,6 +551,28 @@ public final class HarboractivityapiHarborActivitySession {
                     status,
                     terminalEventId,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("client_name")
+                    || key.equalsIgnoreCase("client_version")
+                    || key.equalsIgnoreCase("credential")
+                    || key.equalsIgnoreCase("ended_at")
+                    || key.equalsIgnoreCase("events")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("external_run_id")
+                    || key.equalsIgnoreCase("harbor_id")
+                    || key.equalsIgnoreCase("history_truncated")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("profile")
+                    || key.equalsIgnoreCase("started_at")
+                    || key.equalsIgnoreCase("started_event_id")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("terminal_event_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

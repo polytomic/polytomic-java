@@ -36,7 +36,7 @@ public final class BulkSyncExecutionLogs {
     }
 
     /**
-     * @return Timestamp at which the signed URLs in URLs stop working.
+     * @return Timestamp at which the signed URLs in URLs stop working
      */
     @JsonProperty("Expires")
     public Optional<OffsetDateTime> getExpires() {
@@ -86,7 +86,6 @@ public final class BulkSyncExecutionLogs {
 
         private Optional<List<String>> urLs = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -98,7 +97,7 @@ public final class BulkSyncExecutionLogs {
         }
 
         /**
-         * <p>Timestamp at which the signed URLs in URLs stop working.</p>
+         * <p>Timestamp at which the signed URLs in URLs stop working</p>
          */
         @JsonSetter(value = "Expires", nulls = Nulls.SKIP)
         public Builder expires(Optional<OffsetDateTime> expires) {
@@ -127,6 +126,14 @@ public final class BulkSyncExecutionLogs {
 
         public BulkSyncExecutionLogs build() {
             return new BulkSyncExecutionLogs(expires, urLs, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("Expires") || key.equalsIgnoreCase("URLs")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

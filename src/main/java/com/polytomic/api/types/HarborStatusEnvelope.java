@@ -28,6 +28,9 @@ public final class HarborStatusEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The Harbor status
+     */
     @JsonProperty("data")
     public HarborStatusResponse getData() {
         return data;
@@ -63,6 +66,9 @@ public final class HarborStatusEnvelope {
     }
 
     public interface DataStage {
+        /**
+         * <p>The Harbor status</p>
+         */
         _FinalStage data(@NotNull HarborStatusResponse data);
 
         Builder from(HarborStatusEnvelope other);
@@ -80,7 +86,6 @@ public final class HarborStatusEnvelope {
     public static final class Builder implements DataStage, _FinalStage {
         private HarborStatusResponse data;
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -91,6 +96,10 @@ public final class HarborStatusEnvelope {
             return this;
         }
 
+        /**
+         * <p>The Harbor status</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("data")
         public _FinalStage data(@NotNull HarborStatusResponse data) {
@@ -101,6 +110,14 @@ public final class HarborStatusEnvelope {
         @java.lang.Override
         public HarborStatusEnvelope build() {
             return new HarborStatusEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

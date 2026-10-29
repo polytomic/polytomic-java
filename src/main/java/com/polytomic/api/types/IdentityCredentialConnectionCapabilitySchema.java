@@ -32,7 +32,7 @@ public final class IdentityCredentialConnectionCapabilitySchema {
     }
 
     /**
-     * @return Connection IDs enabled for this capability.
+     * @return Connection IDs enabled for this capability
      */
     @JsonProperty("connection_ids")
     public Optional<List<String>> getConnectionIds() {
@@ -73,7 +73,6 @@ public final class IdentityCredentialConnectionCapabilitySchema {
     public static final class Builder {
         private Optional<List<String>> connectionIds = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -84,7 +83,7 @@ public final class IdentityCredentialConnectionCapabilitySchema {
         }
 
         /**
-         * <p>Connection IDs enabled for this capability.</p>
+         * <p>Connection IDs enabled for this capability</p>
          */
         @JsonSetter(value = "connection_ids", nulls = Nulls.SKIP)
         public Builder connectionIds(Optional<List<String>> connectionIds) {
@@ -99,6 +98,14 @@ public final class IdentityCredentialConnectionCapabilitySchema {
 
         public IdentityCredentialConnectionCapabilitySchema build() {
             return new IdentityCredentialConnectionCapabilitySchema(connectionIds, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_ids")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -29,6 +29,9 @@ public final class SyncErrorHandlingEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Error handling settings for the model sync
+     */
     @JsonProperty("data")
     public Optional<SyncErrorHandling> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class SyncErrorHandlingEnvelope {
     public static final class Builder {
         private Optional<SyncErrorHandling> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class SyncErrorHandlingEnvelope {
             return this;
         }
 
+        /**
+         * <p>Error handling settings for the model sync</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<SyncErrorHandling> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class SyncErrorHandlingEnvelope {
 
         public SyncErrorHandlingEnvelope build() {
             return new SyncErrorHandlingEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -101,91 +101,145 @@ public final class ModelResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Model configuration for the source connection type
+     */
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
     }
 
+    /**
+     * @return Connection ID of the model's source
+     */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return When the model was created
+     */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Actor that created the model
+     */
     @JsonProperty("created_by")
     public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * @return Enrichment applied to the model
+     */
     @JsonProperty("enricher")
     public Optional<Enrichment> getEnricher() {
         return enricher;
     }
 
+    /**
+     * @return Fields published by the model
+     */
     @JsonProperty("fields")
     public Optional<List<ModelField>> getFields() {
         return fields;
     }
 
+    /**
+     * @return Model ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Source field name of the model's unique identifier
+     */
     @JsonProperty("identifier")
     public Optional<String> getIdentifier() {
         return identifier;
     }
 
+    /**
+     * @return Deprecated; never returned
+     */
     @JsonProperty("labels")
     public Optional<List<Map<String, Object>>> getLabels() {
         return labels;
     }
 
+    /**
+     * @return Model name
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
     }
 
+    /**
+     * @return Organization ID of the model
+     */
     @JsonProperty("organization_id")
     public Optional<String> getOrganizationId() {
         return organizationId;
     }
 
+    /**
+     * @return Permissions policy IDs applied to the model
+     */
     @JsonProperty("policies")
     public Optional<List<String>> getPolicies() {
         return policies;
     }
 
+    /**
+     * @return Joins from this model's fields to fields on other models
+     */
     @JsonProperty("relations")
     public Optional<List<Relation>> getRelations() {
         return relations;
     }
 
+    /**
+     * @return Source field names used to detect changed records
+     */
     @JsonProperty("tracking_columns")
     public Optional<List<String>> getTrackingColumns() {
         return trackingColumns;
     }
 
+    /**
+     * @return Connection type of the model's source
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
     }
 
+    /**
+     * @return When the model was last updated
+     */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * @return Actor that most recently updated the model
+     */
     @JsonProperty("updated_by")
     public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
     }
 
+    /**
+     * @return Model version; increments when the configuration or field structure changes
+     */
     @JsonProperty("version")
     public Optional<Integer> getVersion() {
         return version;
@@ -293,7 +347,6 @@ public final class ModelResponse {
 
         private Optional<Integer> version = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -320,6 +373,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Model configuration for the source connection type</p>
+         */
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public Builder configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
@@ -331,6 +387,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the model's source</p>
+         */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
             this.connectionId = connectionId;
@@ -342,6 +401,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>When the model was created</p>
+         */
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
         public Builder createdAt(Optional<OffsetDateTime> createdAt) {
             this.createdAt = createdAt;
@@ -353,6 +415,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Actor that created the model</p>
+         */
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
         public Builder createdBy(Optional<OutputActor> createdBy) {
             this.createdBy = createdBy;
@@ -364,6 +429,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Enrichment applied to the model</p>
+         */
         @JsonSetter(value = "enricher", nulls = Nulls.SKIP)
         public Builder enricher(Optional<Enrichment> enricher) {
             this.enricher = enricher;
@@ -375,6 +443,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Fields published by the model</p>
+         */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<List<ModelField>> fields) {
             this.fields = fields;
@@ -386,6 +457,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Model ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -397,6 +471,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Source field name of the model's unique identifier</p>
+         */
         @JsonSetter(value = "identifier", nulls = Nulls.SKIP)
         public Builder identifier(Optional<String> identifier) {
             this.identifier = identifier;
@@ -408,6 +485,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Deprecated; never returned</p>
+         */
         @JsonSetter(value = "labels", nulls = Nulls.SKIP)
         public Builder labels(Optional<List<Map<String, Object>>> labels) {
             this.labels = labels;
@@ -419,6 +499,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Model name</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -430,6 +513,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Organization ID of the model</p>
+         */
         @JsonSetter(value = "organization_id", nulls = Nulls.SKIP)
         public Builder organizationId(Optional<String> organizationId) {
             this.organizationId = organizationId;
@@ -441,6 +527,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Permissions policy IDs applied to the model</p>
+         */
         @JsonSetter(value = "policies", nulls = Nulls.SKIP)
         public Builder policies(Optional<List<String>> policies) {
             this.policies = policies;
@@ -452,6 +541,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Joins from this model's fields to fields on other models</p>
+         */
         @JsonSetter(value = "relations", nulls = Nulls.SKIP)
         public Builder relations(Optional<List<Relation>> relations) {
             this.relations = relations;
@@ -463,6 +555,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Source field names used to detect changed records</p>
+         */
         @JsonSetter(value = "tracking_columns", nulls = Nulls.SKIP)
         public Builder trackingColumns(Optional<List<String>> trackingColumns) {
             this.trackingColumns = trackingColumns;
@@ -474,6 +569,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Connection type of the model's source</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -485,6 +583,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>When the model was last updated</p>
+         */
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
         public Builder updatedAt(Optional<OffsetDateTime> updatedAt) {
             this.updatedAt = updatedAt;
@@ -496,6 +597,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Actor that most recently updated the model</p>
+         */
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
         public Builder updatedBy(Optional<OutputActor> updatedBy) {
             this.updatedBy = updatedBy;
@@ -507,6 +611,9 @@ public final class ModelResponse {
             return this;
         }
 
+        /**
+         * <p>Model version; increments when the configuration or field structure changes</p>
+         */
         @JsonSetter(value = "version", nulls = Nulls.SKIP)
         public Builder version(Optional<Integer> version) {
             this.version = version;
@@ -539,6 +646,31 @@ public final class ModelResponse {
                     updatedBy,
                     version,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("enricher")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("identifier")
+                    || key.equalsIgnoreCase("labels")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("organization_id")
+                    || key.equalsIgnoreCase("policies")
+                    || key.equalsIgnoreCase("relations")
+                    || key.equalsIgnoreCase("tracking_columns")
+                    || key.equalsIgnoreCase("type")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")
+                    || key.equalsIgnoreCase("version")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

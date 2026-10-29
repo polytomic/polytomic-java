@@ -55,36 +55,57 @@ public final class ExecutionCounts {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Records deleted
+     */
     @JsonProperty("delete")
     public Optional<Long> getDelete() {
         return delete;
     }
 
+    /**
+     * @return Records that failed with an error
+     */
     @JsonProperty("error")
     public Optional<Long> getError() {
         return error;
     }
 
+    /**
+     * @return Records inserted
+     */
     @JsonProperty("insert")
     public Optional<Long> getInsert() {
         return insert;
     }
 
+    /**
+     * @return Records the execution processed
+     */
     @JsonProperty("total")
     public Optional<Long> getTotal() {
         return total;
     }
 
+    /**
+     * @return Records updated
+     */
     @JsonProperty("update")
     public Optional<Long> getUpdate() {
         return update;
     }
 
+    /**
+     * @return Records upserted
+     */
     @JsonProperty("upserts")
     public Optional<Long> getUpserts() {
         return upserts;
     }
 
+    /**
+     * @return Warnings raised during the execution
+     */
     @JsonProperty("warnings")
     public Optional<Long> getWarnings() {
         return warnings;
@@ -141,7 +162,6 @@ public final class ExecutionCounts {
 
         private Optional<Long> warnings = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -157,6 +177,9 @@ public final class ExecutionCounts {
             return this;
         }
 
+        /**
+         * <p>Records deleted</p>
+         */
         @JsonSetter(value = "delete", nulls = Nulls.SKIP)
         public Builder delete(Optional<Long> delete) {
             this.delete = delete;
@@ -168,6 +191,9 @@ public final class ExecutionCounts {
             return this;
         }
 
+        /**
+         * <p>Records that failed with an error</p>
+         */
         @JsonSetter(value = "error", nulls = Nulls.SKIP)
         public Builder error(Optional<Long> error) {
             this.error = error;
@@ -179,6 +205,9 @@ public final class ExecutionCounts {
             return this;
         }
 
+        /**
+         * <p>Records inserted</p>
+         */
         @JsonSetter(value = "insert", nulls = Nulls.SKIP)
         public Builder insert(Optional<Long> insert) {
             this.insert = insert;
@@ -190,6 +219,9 @@ public final class ExecutionCounts {
             return this;
         }
 
+        /**
+         * <p>Records the execution processed</p>
+         */
         @JsonSetter(value = "total", nulls = Nulls.SKIP)
         public Builder total(Optional<Long> total) {
             this.total = total;
@@ -201,6 +233,9 @@ public final class ExecutionCounts {
             return this;
         }
 
+        /**
+         * <p>Records updated</p>
+         */
         @JsonSetter(value = "update", nulls = Nulls.SKIP)
         public Builder update(Optional<Long> update) {
             this.update = update;
@@ -212,6 +247,9 @@ public final class ExecutionCounts {
             return this;
         }
 
+        /**
+         * <p>Records upserted</p>
+         */
         @JsonSetter(value = "upserts", nulls = Nulls.SKIP)
         public Builder upserts(Optional<Long> upserts) {
             this.upserts = upserts;
@@ -223,6 +261,9 @@ public final class ExecutionCounts {
             return this;
         }
 
+        /**
+         * <p>Warnings raised during the execution</p>
+         */
         @JsonSetter(value = "warnings", nulls = Nulls.SKIP)
         public Builder warnings(Optional<Long> warnings) {
             this.warnings = warnings;
@@ -236,6 +277,20 @@ public final class ExecutionCounts {
 
         public ExecutionCounts build() {
             return new ExecutionCounts(delete, error, insert, total, update, upserts, warnings, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("delete")
+                    || key.equalsIgnoreCase("error")
+                    || key.equalsIgnoreCase("insert")
+                    || key.equalsIgnoreCase("total")
+                    || key.equalsIgnoreCase("update")
+                    || key.equalsIgnoreCase("upserts")
+                    || key.equalsIgnoreCase("warnings")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

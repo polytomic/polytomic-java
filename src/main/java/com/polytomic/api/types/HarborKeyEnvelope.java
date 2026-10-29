@@ -29,6 +29,9 @@ public final class HarborKeyEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The created credential
+     */
     @JsonProperty("data")
     public Optional<HarborApiKeyCreatedResponse> getData() {
         return data;
@@ -67,7 +70,6 @@ public final class HarborKeyEnvelope {
     public static final class Builder {
         private Optional<HarborApiKeyCreatedResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -77,6 +79,9 @@ public final class HarborKeyEnvelope {
             return this;
         }
 
+        /**
+         * <p>The created credential</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<HarborApiKeyCreatedResponse> data) {
             this.data = data;
@@ -90,6 +95,14 @@ public final class HarborKeyEnvelope {
 
         public HarborKeyEnvelope build() {
             return new HarborKeyEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

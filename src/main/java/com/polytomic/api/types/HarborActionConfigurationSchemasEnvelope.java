@@ -36,11 +36,17 @@ public final class HarborActionConfigurationSchemasEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Action schemas on this page
+     */
     @JsonProperty("data")
     public Optional<List<HarborActionSchemaResponse>> getData() {
         return data;
     }
 
+    /**
+     * @return Pagination details for the next page
+     */
     @JsonProperty("pagination")
     public Optional<PaginationDetails> getPagination() {
         return pagination;
@@ -82,7 +88,6 @@ public final class HarborActionConfigurationSchemasEnvelope {
 
         private Optional<PaginationDetails> pagination = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -93,6 +98,9 @@ public final class HarborActionConfigurationSchemasEnvelope {
             return this;
         }
 
+        /**
+         * <p>Action schemas on this page</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<List<HarborActionSchemaResponse>> data) {
             this.data = data;
@@ -104,6 +112,9 @@ public final class HarborActionConfigurationSchemasEnvelope {
             return this;
         }
 
+        /**
+         * <p>Pagination details for the next page</p>
+         */
         @JsonSetter(value = "pagination", nulls = Nulls.SKIP)
         public Builder pagination(Optional<PaginationDetails> pagination) {
             this.pagination = pagination;
@@ -117,6 +128,14 @@ public final class HarborActionConfigurationSchemasEnvelope {
 
         public HarborActionConfigurationSchemasEnvelope build() {
             return new HarborActionConfigurationSchemasEnvelope(data, pagination, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("pagination")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

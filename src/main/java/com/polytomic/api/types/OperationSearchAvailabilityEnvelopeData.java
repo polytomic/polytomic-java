@@ -34,13 +34,16 @@ public final class OperationSearchAvailabilityEnvelopeData {
     }
 
     /**
-     * @return Whether operation search is configured on this API deployment.
+     * @return Whether operation search is configured on this API deployment
      */
     @JsonProperty("enabled")
     public boolean getEnabled() {
         return enabled;
     }
 
+    /**
+     * @return Present when a one-question request exceeds a question budget for this organization
+     */
     @JsonProperty("rate_limited")
     public Optional<OperationSearchRateLimit> getRateLimited() {
         return rateLimited;
@@ -78,7 +81,7 @@ public final class OperationSearchAvailabilityEnvelopeData {
 
     public interface EnabledStage {
         /**
-         * <p>Whether operation search is configured on this API deployment.</p>
+         * <p>Whether operation search is configured on this API deployment</p>
          */
         _FinalStage enabled(boolean enabled);
 
@@ -92,6 +95,9 @@ public final class OperationSearchAvailabilityEnvelopeData {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Present when a one-question request exceeds a question budget for this organization</p>
+         */
         _FinalStage rateLimited(Optional<OperationSearchRateLimit> rateLimited);
 
         _FinalStage rateLimited(OperationSearchRateLimit rateLimited);
@@ -103,7 +109,6 @@ public final class OperationSearchAvailabilityEnvelopeData {
 
         private Optional<OperationSearchRateLimit> rateLimited = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -116,7 +121,7 @@ public final class OperationSearchAvailabilityEnvelopeData {
         }
 
         /**
-         * <p>Whether operation search is configured on this API deployment.</p>
+         * <p>Whether operation search is configured on this API deployment</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -126,12 +131,19 @@ public final class OperationSearchAvailabilityEnvelopeData {
             return this;
         }
 
+        /**
+         * <p>Present when a one-question request exceeds a question budget for this organization</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage rateLimited(OperationSearchRateLimit rateLimited) {
             this.rateLimited = Optional.ofNullable(rateLimited);
             return this;
         }
 
+        /**
+         * <p>Present when a one-question request exceeds a question budget for this organization</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "rate_limited", nulls = Nulls.SKIP)
         public _FinalStage rateLimited(Optional<OperationSearchRateLimit> rateLimited) {
@@ -142,6 +154,14 @@ public final class OperationSearchAvailabilityEnvelopeData {
         @java.lang.Override
         public OperationSearchAvailabilityEnvelopeData build() {
             return new OperationSearchAvailabilityEnvelopeData(enabled, rateLimited, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("enabled") || key.equalsIgnoreCase("rate_limited")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

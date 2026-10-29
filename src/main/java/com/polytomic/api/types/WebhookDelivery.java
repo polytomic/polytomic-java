@@ -104,7 +104,7 @@ public final class WebhookDelivery {
     }
 
     /**
-     * @return Response content returned by the webhook endpoint.
+     * @return Response content returned by the webhook endpoint
      */
     @JsonProperty("response_body")
     public Optional<String> getResponseBody() {
@@ -191,7 +191,6 @@ public final class WebhookDelivery {
 
         private Optional<Boolean> success = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -288,7 +287,7 @@ public final class WebhookDelivery {
         }
 
         /**
-         * <p>Response content returned by the webhook endpoint.</p>
+         * <p>Response content returned by the webhook endpoint</p>
          */
         @JsonSetter(value = "response_body", nulls = Nulls.SKIP)
         public Builder responseBody(Optional<String> responseBody) {
@@ -336,6 +335,23 @@ public final class WebhookDelivery {
                     statusCode,
                     success,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("attempted_at")
+                    || key.equalsIgnoreCase("duration_ms")
+                    || key.equalsIgnoreCase("error")
+                    || key.equalsIgnoreCase("error_kind")
+                    || key.equalsIgnoreCase("event_id")
+                    || key.equalsIgnoreCase("event_type")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("response_body")
+                    || key.equalsIgnoreCase("status_code")
+                    || key.equalsIgnoreCase("success")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

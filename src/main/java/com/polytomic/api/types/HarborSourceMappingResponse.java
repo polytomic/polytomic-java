@@ -48,7 +48,7 @@ public final class HarborSourceMappingResponse {
     }
 
     /**
-     * @return Requested source field identifiers mapped to their destination names. A requested field that was not materialized is absent.
+     * @return Requested source field identifiers mapped to their destination names. A requested field that is not in the Harbor is absent.
      */
     @JsonProperty("fields")
     public Optional<Map<String, Optional<String>>> getFields() {
@@ -56,7 +56,7 @@ public final class HarborSourceMappingResponse {
     }
 
     /**
-     * @return resolved when exactly one completed materialization was found, unresolved when none was, ambiguous when more than one was.
+     * @return resolved when exactly one sync writes the table into the Harbor and the table is there: a bulk sync's completed run, or a model sync's configured table in the Harbor's cached schema. unresolved when none does, ambiguous when more than one does.
      */
     @JsonProperty("status")
     public Optional<String> getStatus() {
@@ -102,7 +102,6 @@ public final class HarborSourceMappingResponse {
 
         private Optional<String> status = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -129,7 +128,7 @@ public final class HarborSourceMappingResponse {
         }
 
         /**
-         * <p>Requested source field identifiers mapped to their destination names. A requested field that was not materialized is absent.</p>
+         * <p>Requested source field identifiers mapped to their destination names. A requested field that is not in the Harbor is absent.</p>
          */
         @JsonSetter(value = "fields", nulls = Nulls.SKIP)
         public Builder fields(Optional<Map<String, Optional<String>>> fields) {
@@ -143,7 +142,7 @@ public final class HarborSourceMappingResponse {
         }
 
         /**
-         * <p>resolved when exactly one completed materialization was found, unresolved when none was, ambiguous when more than one was.</p>
+         * <p>resolved when exactly one sync writes the table into the Harbor and the table is there: a bulk sync's completed run, or a model sync's configured table in the Harbor's cached schema. unresolved when none does, ambiguous when more than one does.</p>
          */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<String> status) {
@@ -158,6 +157,16 @@ public final class HarborSourceMappingResponse {
 
         public HarborSourceMappingResponse build() {
             return new HarborSourceMappingResponse(destinationSchemaId, fields, status, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("destination_schema_id")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("status")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

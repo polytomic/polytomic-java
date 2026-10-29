@@ -30,6 +30,9 @@ public final class ConnectionProxySettingsEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The connection proxy settings
+     */
     @JsonProperty("data")
     public Optional<ConnectionProxySettingsResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class ConnectionProxySettingsEnvelope {
     public static final class Builder {
         private Optional<ConnectionProxySettingsResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class ConnectionProxySettingsEnvelope {
             return this;
         }
 
+        /**
+         * <p>The connection proxy settings</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<ConnectionProxySettingsResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class ConnectionProxySettingsEnvelope {
 
         public ConnectionProxySettingsEnvelope build() {
             return new ConnectionProxySettingsEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

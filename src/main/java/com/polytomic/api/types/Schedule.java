@@ -67,46 +67,73 @@ public final class Schedule {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Connection ID of the dbt Cloud connection; required for dbtcloud schedules
+     */
     @JsonProperty("connection_id")
     public Optional<String> getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * @return Day of the month for custom and builder schedules
+     */
     @JsonProperty("day_of_month")
     public Optional<String> getDayOfMonth() {
         return dayOfMonth;
     }
 
+    /**
+     * @return Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules
+     */
     @JsonProperty("day_of_week")
     public Optional<String> getDayOfWeek() {
         return dayOfWeek;
     }
 
+    /**
+     * @return How often the sync runs
+     */
     @JsonProperty("frequency")
     public Optional<ScheduleFrequency> getFrequency() {
         return frequency;
     }
 
+    /**
+     * @return Hour of the day for daily, weekly, custom, and builder schedules
+     */
     @JsonProperty("hour")
     public Optional<String> getHour() {
         return hour;
     }
 
+    /**
+     * @return dbt Cloud job ID; required for dbtcloud schedules
+     */
     @JsonProperty("job_id")
     public Optional<Integer> getJobId() {
         return jobId;
     }
 
+    /**
+     * @return Minute of the hour for hourly, daily, weekly, custom, and builder schedules
+     */
     @JsonProperty("minute")
     public Optional<String> getMinute() {
         return minute;
     }
 
+    /**
+     * @return Month of the year for custom and builder schedules
+     */
     @JsonProperty("month")
     public Optional<String> getMonth() {
         return month;
     }
 
+    /**
+     * @return Syncs this sync runs after; required for runafter schedules
+     */
     @JsonProperty("run_after")
     public Optional<RunAfter> getRunAfter() {
         return runAfter;
@@ -190,7 +217,6 @@ public final class Schedule {
 
         private Optional<Boolean> runAfterSuccessOnly = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -209,6 +235,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>Connection ID of the dbt Cloud connection; required for dbtcloud schedules</p>
+         */
         @JsonSetter(value = "connection_id", nulls = Nulls.SKIP)
         public Builder connectionId(Optional<String> connectionId) {
             this.connectionId = connectionId;
@@ -220,6 +249,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>Day of the month for custom and builder schedules</p>
+         */
         @JsonSetter(value = "day_of_month", nulls = Nulls.SKIP)
         public Builder dayOfMonth(Optional<String> dayOfMonth) {
             this.dayOfMonth = dayOfMonth;
@@ -231,6 +263,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules</p>
+         */
         @JsonSetter(value = "day_of_week", nulls = Nulls.SKIP)
         public Builder dayOfWeek(Optional<String> dayOfWeek) {
             this.dayOfWeek = dayOfWeek;
@@ -242,6 +277,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>How often the sync runs</p>
+         */
         @JsonSetter(value = "frequency", nulls = Nulls.SKIP)
         public Builder frequency(Optional<ScheduleFrequency> frequency) {
             this.frequency = frequency;
@@ -253,6 +291,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>Hour of the day for daily, weekly, custom, and builder schedules</p>
+         */
         @JsonSetter(value = "hour", nulls = Nulls.SKIP)
         public Builder hour(Optional<String> hour) {
             this.hour = hour;
@@ -264,6 +305,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>dbt Cloud job ID; required for dbtcloud schedules</p>
+         */
         @JsonSetter(value = "job_id", nulls = Nulls.SKIP)
         public Builder jobId(Optional<Integer> jobId) {
             this.jobId = jobId;
@@ -275,6 +319,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>Minute of the hour for hourly, daily, weekly, custom, and builder schedules</p>
+         */
         @JsonSetter(value = "minute", nulls = Nulls.SKIP)
         public Builder minute(Optional<String> minute) {
             this.minute = minute;
@@ -286,6 +333,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>Month of the year for custom and builder schedules</p>
+         */
         @JsonSetter(value = "month", nulls = Nulls.SKIP)
         public Builder month(Optional<String> month) {
             this.month = month;
@@ -297,6 +347,9 @@ public final class Schedule {
             return this;
         }
 
+        /**
+         * <p>Syncs this sync runs after; required for runafter schedules</p>
+         */
         @JsonSetter(value = "run_after", nulls = Nulls.SKIP)
         public Builder runAfter(Optional<RunAfter> runAfter) {
             this.runAfter = runAfter;
@@ -335,6 +388,23 @@ public final class Schedule {
                     runAfter,
                     runAfterSuccessOnly,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("day_of_month")
+                    || key.equalsIgnoreCase("day_of_week")
+                    || key.equalsIgnoreCase("frequency")
+                    || key.equalsIgnoreCase("hour")
+                    || key.equalsIgnoreCase("job_id")
+                    || key.equalsIgnoreCase("minute")
+                    || key.equalsIgnoreCase("month")
+                    || key.equalsIgnoreCase("run_after")
+                    || key.equalsIgnoreCase("run_after_success_only")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

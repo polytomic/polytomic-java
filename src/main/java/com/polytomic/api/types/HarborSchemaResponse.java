@@ -32,11 +32,17 @@ public final class HarborSchemaResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Schema ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
     }
 
+    /**
+     * @return Schema name
+     */
     @JsonProperty("name")
     public Optional<String> getName() {
         return name;
@@ -77,7 +83,6 @@ public final class HarborSchemaResponse {
 
         private Optional<String> name = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -88,6 +93,9 @@ public final class HarborSchemaResponse {
             return this;
         }
 
+        /**
+         * <p>Schema ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -99,6 +107,9 @@ public final class HarborSchemaResponse {
             return this;
         }
 
+        /**
+         * <p>Schema name</p>
+         */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
             this.name = name;
@@ -112,6 +123,14 @@ public final class HarborSchemaResponse {
 
         public HarborSchemaResponse build() {
             return new HarborSchemaResponse(id, name, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id") || key.equalsIgnoreCase("name")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -35,11 +35,17 @@ public final class IdentityCredentialCapabilitiesSchema {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Connections this credential may query through the query runner
+     */
     @JsonProperty("query")
     public Optional<IdentityCredentialConnectionCapabilitySchema> getQuery() {
         return query;
     }
 
+    /**
+     * @return Connections this credential may inspect schemas for
+     */
     @JsonProperty("schemas")
     public Optional<IdentityCredentialConnectionCapabilitySchema> getSchemas() {
         return schemas;
@@ -81,7 +87,6 @@ public final class IdentityCredentialCapabilitiesSchema {
 
         private Optional<IdentityCredentialConnectionCapabilitySchema> schemas = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -92,6 +97,9 @@ public final class IdentityCredentialCapabilitiesSchema {
             return this;
         }
 
+        /**
+         * <p>Connections this credential may query through the query runner</p>
+         */
         @JsonSetter(value = "query", nulls = Nulls.SKIP)
         public Builder query(Optional<IdentityCredentialConnectionCapabilitySchema> query) {
             this.query = query;
@@ -103,6 +111,9 @@ public final class IdentityCredentialCapabilitiesSchema {
             return this;
         }
 
+        /**
+         * <p>Connections this credential may inspect schemas for</p>
+         */
         @JsonSetter(value = "schemas", nulls = Nulls.SKIP)
         public Builder schemas(Optional<IdentityCredentialConnectionCapabilitySchema> schemas) {
             this.schemas = schemas;
@@ -116,6 +127,14 @@ public final class IdentityCredentialCapabilitiesSchema {
 
         public IdentityCredentialCapabilitiesSchema build() {
             return new IdentityCredentialCapabilitiesSchema(query, schemas, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("query") || key.equalsIgnoreCase("schemas")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

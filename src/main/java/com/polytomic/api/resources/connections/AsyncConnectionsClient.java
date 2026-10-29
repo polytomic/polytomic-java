@@ -5,6 +5,7 @@ package com.polytomic.api.resources.connections;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.connections.proxy.AsyncProxyClient;
@@ -61,7 +62,14 @@ public class AsyncConnectionsClient {
      * </ul>
      */
     public CompletableFuture<ConnectionTypeResponseEnvelope> getTypes() {
-        return this.rawClient.getTypes().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionTypeResponseEnvelope>> rawFuture = this.rawClient.getTypes();
+        CompletableFuture<ConnectionTypeResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -75,7 +83,15 @@ public class AsyncConnectionsClient {
      * </ul>
      */
     public CompletableFuture<ConnectionTypeResponseEnvelope> getTypes(RequestOptions requestOptions) {
-        return this.rawClient.getTypes(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionTypeResponseEnvelope>> rawFuture =
+                this.rawClient.getTypes(requestOptions);
+        CompletableFuture<ConnectionTypeResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -87,7 +103,15 @@ public class AsyncConnectionsClient {
      * connection instance and not a set of current credential values.</p>
      */
     public CompletableFuture<JsonschemaSchema> getConnectionTypeSchema(String id) {
-        return this.rawClient.getConnectionTypeSchema(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<JsonschemaSchema>> rawFuture =
+                this.rawClient.getConnectionTypeSchema(id);
+        CompletableFuture<JsonschemaSchema> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -99,7 +123,15 @@ public class AsyncConnectionsClient {
      * connection instance and not a set of current credential values.</p>
      */
     public CompletableFuture<JsonschemaSchema> getConnectionTypeSchema(String id, RequestOptions requestOptions) {
-        return this.rawClient.getConnectionTypeSchema(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<JsonschemaSchema>> rawFuture =
+                this.rawClient.getConnectionTypeSchema(id, requestOptions);
+        CompletableFuture<JsonschemaSchema> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -113,7 +145,16 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<ConnectionParameterValuesResponseEnvelope> getTypeParameterValues(
             String type, GetConnectionTypeParameterValuesRequestSchema request) {
-        return this.rawClient.getTypeParameterValues(type, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionParameterValuesResponseEnvelope>> rawFuture =
+                this.rawClient.getTypeParameterValues(type, request);
+        CompletableFuture<ConnectionParameterValuesResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -129,9 +170,16 @@ public class AsyncConnectionsClient {
             String type,
             GetConnectionTypeParameterValuesRequestSchema request,
             IdempotentRequestOptions requestOptions) {
-        return this.rawClient
-                .getTypeParameterValues(type, request, requestOptions)
-                .thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionParameterValuesResponseEnvelope>> rawFuture =
+                this.rawClient.getTypeParameterValues(type, request, requestOptions);
+        CompletableFuture<ConnectionParameterValuesResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -162,7 +210,14 @@ public class AsyncConnectionsClient {
      * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public CompletableFuture<ConnectionListResponseEnvelope> list() {
-        return this.rawClient.list().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> rawFuture = this.rawClient.list();
+        CompletableFuture<ConnectionListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -193,7 +248,15 @@ public class AsyncConnectionsClient {
      * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public CompletableFuture<ConnectionListResponseEnvelope> list(RequestOptions requestOptions) {
-        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionListResponseEnvelope>> rawFuture =
+                this.rawClient.list(requestOptions);
+        CompletableFuture<ConnectionListResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -210,7 +273,15 @@ public class AsyncConnectionsClient {
      * </blockquote>
      */
     public CompletableFuture<CreateConnectionResponseEnvelope> create(CreateConnectionRequestSchema request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateConnectionResponseEnvelope>> rawFuture =
+                this.rawClient.create(request);
+        CompletableFuture<CreateConnectionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -228,7 +299,15 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<CreateConnectionResponseEnvelope> create(
             CreateConnectionRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateConnectionResponseEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<CreateConnectionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -243,7 +322,15 @@ public class AsyncConnectionsClient {
      * </ul>
      */
     public CompletableFuture<ConnectCardResponseEnvelope> connect(ConnectCardRequest request) {
-        return this.rawClient.connect(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectCardResponseEnvelope>> rawFuture =
+                this.rawClient.connect(request);
+        CompletableFuture<ConnectCardResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -259,7 +346,15 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<ConnectCardResponseEnvelope> connect(
             ConnectCardRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.connect(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectCardResponseEnvelope>> rawFuture =
+                this.rawClient.connect(request, requestOptions);
+        CompletableFuture<ConnectCardResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -268,7 +363,15 @@ public class AsyncConnectionsClient {
      * <p>The response includes the server-enforced connection name, fixed type or whitelist, bound connection ID, completion redirect, branding, and absolute expiration time.</p>
      */
     public CompletableFuture<ConnectSessionResponseEnvelope> getConnectSession() {
-        return this.rawClient.getConnectSession().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectSessionResponseEnvelope>> rawFuture =
+                this.rawClient.getConnectSession();
+        CompletableFuture<ConnectSessionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -277,7 +380,15 @@ public class AsyncConnectionsClient {
      * <p>The response includes the server-enforced connection name, fixed type or whitelist, bound connection ID, completion redirect, branding, and absolute expiration time.</p>
      */
     public CompletableFuture<ConnectSessionResponseEnvelope> getConnectSession(RequestOptions requestOptions) {
-        return this.rawClient.getConnectSession(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectSessionResponseEnvelope>> rawFuture =
+                this.rawClient.getConnectSession(requestOptions);
+        CompletableFuture<ConnectSessionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -292,7 +403,14 @@ public class AsyncConnectionsClient {
      * succeeds.</p>
      */
     public CompletableFuture<Void> testConnection(TestConnectionRequest request) {
-        return this.rawClient.testConnection(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.testConnection(request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -308,7 +426,15 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<Void> testConnection(
             TestConnectionRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.testConnection(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture =
+                this.rawClient.testConnection(request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -336,7 +462,14 @@ public class AsyncConnectionsClient {
      * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public CompletableFuture<ConnectionResponseEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionResponseEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<ConnectionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -364,7 +497,15 @@ public class AsyncConnectionsClient {
      * <code>status</code> or <code>status_error</code>, and the Connection response is still returned.</p>
      */
     public CompletableFuture<ConnectionResponseEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<ConnectionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -387,7 +528,15 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<CreateConnectionResponseEnvelope> update(
             String id, UpdateConnectionRequestSchema request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateConnectionResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request);
+        CompletableFuture<CreateConnectionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -410,7 +559,15 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<CreateConnectionResponseEnvelope> update(
             String id, UpdateConnectionRequestSchema request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CreateConnectionResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<CreateConnectionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -428,7 +585,14 @@ public class AsyncConnectionsClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id) {
-        return this.rawClient.delete(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -446,7 +610,14 @@ public class AsyncConnectionsClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -464,7 +635,14 @@ public class AsyncConnectionsClient {
      * </blockquote>
      */
     public CompletableFuture<Void> delete(String id, ConnectionsDeleteRequest request) {
-        return this.rawClient.delete(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, request);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -483,7 +661,14 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<Void> delete(
             String id, ConnectionsDeleteRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, request, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -497,7 +682,16 @@ public class AsyncConnectionsClient {
      * which lets you resolve completions before the connection has been created.</p>
      */
     public CompletableFuture<ConnectionParameterValuesResponseEnvelope> getParameterValues(String id) {
-        return this.rawClient.getParameterValues(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionParameterValuesResponseEnvelope>> rawFuture =
+                this.rawClient.getParameterValues(id);
+        CompletableFuture<ConnectionParameterValuesResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -512,7 +706,16 @@ public class AsyncConnectionsClient {
      */
     public CompletableFuture<ConnectionParameterValuesResponseEnvelope> getParameterValues(
             String id, RequestOptions requestOptions) {
-        return this.rawClient.getParameterValues(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ConnectionParameterValuesResponseEnvelope>> rawFuture =
+                this.rawClient.getParameterValues(id, requestOptions);
+        CompletableFuture<ConnectionParameterValuesResponseEnvelope> future =
+                rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -532,7 +735,14 @@ public class AsyncConnectionsClient {
      * assume a fixed vocabulary across connection types.</p>
      */
     public CompletableFuture<GetConnectionUsageEnvelope> getUsage(String id) {
-        return this.rawClient.getUsage(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetConnectionUsageEnvelope>> rawFuture = this.rawClient.getUsage(id);
+        CompletableFuture<GetConnectionUsageEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -552,7 +762,15 @@ public class AsyncConnectionsClient {
      * assume a fixed vocabulary across connection types.</p>
      */
     public CompletableFuture<GetConnectionUsageEnvelope> getUsage(String id, RequestOptions requestOptions) {
-        return this.rawClient.getUsage(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetConnectionUsageEnvelope>> rawFuture =
+                this.rawClient.getUsage(id, requestOptions);
+        CompletableFuture<GetConnectionUsageEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public AsyncProxyClient proxy() {

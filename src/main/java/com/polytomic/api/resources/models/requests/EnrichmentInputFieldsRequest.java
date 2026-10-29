@@ -30,6 +30,9 @@ public final class EnrichmentInputFieldsRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Enricher configuration to list valid input fields for
+     */
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
@@ -68,7 +71,6 @@ public final class EnrichmentInputFieldsRequest {
     public static final class Builder {
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class EnrichmentInputFieldsRequest {
             return this;
         }
 
+        /**
+         * <p>Enricher configuration to list valid input fields for</p>
+         */
         @JsonSetter(value = "configuration", nulls = Nulls.SKIP)
         public Builder configuration(Optional<Map<String, Object>> configuration) {
             this.configuration = configuration;
@@ -91,6 +96,14 @@ public final class EnrichmentInputFieldsRequest {
 
         public EnrichmentInputFieldsRequest build() {
             return new EnrichmentInputFieldsRequest(configuration, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("configuration")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

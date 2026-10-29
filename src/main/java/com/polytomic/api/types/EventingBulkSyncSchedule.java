@@ -33,11 +33,17 @@ public final class EventingBulkSyncSchedule {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Frequency of the schedule
+     */
     @JsonProperty("frequency")
     public Optional<String> getFrequency() {
         return frequency;
     }
 
+    /**
+     * @return Bulk sync schedule ID
+     */
     @JsonProperty("id")
     public Optional<String> getId() {
         return id;
@@ -78,7 +84,6 @@ public final class EventingBulkSyncSchedule {
 
         private Optional<String> id = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -89,6 +94,9 @@ public final class EventingBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Frequency of the schedule</p>
+         */
         @JsonSetter(value = "frequency", nulls = Nulls.SKIP)
         public Builder frequency(Optional<String> frequency) {
             this.frequency = frequency;
@@ -100,6 +108,9 @@ public final class EventingBulkSyncSchedule {
             return this;
         }
 
+        /**
+         * <p>Bulk sync schedule ID</p>
+         */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
             this.id = id;
@@ -113,6 +124,14 @@ public final class EventingBulkSyncSchedule {
 
         public EventingBulkSyncSchedule build() {
             return new EventingBulkSyncSchedule(frequency, id, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("frequency") || key.equalsIgnoreCase("id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

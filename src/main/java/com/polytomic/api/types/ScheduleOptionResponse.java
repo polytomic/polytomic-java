@@ -31,6 +31,9 @@ public final class ScheduleOptionResponse {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Schedule types available for model syncs
+     */
     @JsonProperty("schedule_options")
     public Optional<List<ScheduleScheduleOption>> getScheduleOptions() {
         return scheduleOptions;
@@ -69,7 +72,6 @@ public final class ScheduleOptionResponse {
     public static final class Builder {
         private Optional<List<ScheduleScheduleOption>> scheduleOptions = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -79,6 +81,9 @@ public final class ScheduleOptionResponse {
             return this;
         }
 
+        /**
+         * <p>Schedule types available for model syncs</p>
+         */
         @JsonSetter(value = "schedule_options", nulls = Nulls.SKIP)
         public Builder scheduleOptions(Optional<List<ScheduleScheduleOption>> scheduleOptions) {
             this.scheduleOptions = scheduleOptions;
@@ -92,6 +97,14 @@ public final class ScheduleOptionResponse {
 
         public ScheduleOptionResponse build() {
             return new ScheduleOptionResponse(scheduleOptions, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("schedule_options")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

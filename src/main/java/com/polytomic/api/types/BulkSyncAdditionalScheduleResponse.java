@@ -87,20 +87,23 @@ public final class BulkSyncAdditionalScheduleResponse {
     }
 
     /**
-     * @return Timestamp the schedule was created.
+     * @return Timestamp the schedule was created
      */
     @JsonProperty("created_at")
     public Optional<OffsetDateTime> getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * @return Actor that created the schedule
+     */
     @JsonProperty("created_by")
     public Optional<OutputActor> getCreatedBy() {
         return createdBy;
     }
 
     /**
-     * @return Day of the month (1-31) for monthly schedules.
+     * @return Day of the month for custom and builder schedules
      */
     @JsonProperty("day_of_month")
     public Optional<String> getDayOfMonth() {
@@ -108,20 +111,23 @@ public final class BulkSyncAdditionalScheduleResponse {
     }
 
     /**
-     * @return Day of the week for weekly schedules.
+     * @return Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules
      */
     @JsonProperty("day_of_week")
     public Optional<String> getDayOfWeek() {
         return dayOfWeek;
     }
 
+    /**
+     * @return How often the sync runs on this schedule: manual, continuous, hourly, daily, weekly, custom, or builder
+     */
     @JsonProperty("frequency")
     public ScheduleFrequency getFrequency() {
         return frequency;
     }
 
     /**
-     * @return Hour of the day (0-23, in UTC) the schedule fires.
+     * @return Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules
      */
     @JsonProperty("hour")
     public Optional<String> getHour() {
@@ -129,7 +135,7 @@ public final class BulkSyncAdditionalScheduleResponse {
     }
 
     /**
-     * @return Unique identifier of the schedule.
+     * @return Unique identifier of the schedule
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -137,7 +143,7 @@ public final class BulkSyncAdditionalScheduleResponse {
     }
 
     /**
-     * @return Minute of the hour (0-59) the schedule fires.
+     * @return Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules
      */
     @JsonProperty("minute")
     public Optional<String> getMinute() {
@@ -145,13 +151,16 @@ public final class BulkSyncAdditionalScheduleResponse {
     }
 
     /**
-     * @return Month of the year (1-12) for yearly schedules.
+     * @return Month of the year for custom and builder schedules
      */
     @JsonProperty("month")
     public Optional<String> getMonth() {
         return month;
     }
 
+    /**
+     * @return Controls how the destination is handled when this schedule executes
+     */
     @JsonProperty("resync_mode")
     public Optional<BulkScheduleSyncMode> getResyncMode() {
         return resyncMode;
@@ -165,19 +174,25 @@ public final class BulkSyncAdditionalScheduleResponse {
         return schemas;
     }
 
+    /**
+     * @return Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields
+     */
     @JsonProperty("selective_mode")
     public Optional<BulkSelectiveMode> getSelectiveMode() {
         return selectiveMode;
     }
 
     /**
-     * @return Timestamp the schedule was last updated.
+     * @return Timestamp the schedule was last updated
      */
     @JsonProperty("updated_at")
     public Optional<OffsetDateTime> getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * @return Actor that most recently updated the schedule
+     */
     @JsonProperty("updated_by")
     public Optional<OutputActor> getUpdatedBy() {
         return updatedBy;
@@ -241,6 +256,9 @@ public final class BulkSyncAdditionalScheduleResponse {
     }
 
     public interface FrequencyStage {
+        /**
+         * <p>How often the sync runs on this schedule: manual, continuous, hourly, daily, weekly, custom, or builder</p>
+         */
         _FinalStage frequency(@NotNull ScheduleFrequency frequency);
 
         Builder from(BulkSyncAdditionalScheduleResponse other);
@@ -254,58 +272,64 @@ public final class BulkSyncAdditionalScheduleResponse {
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
         /**
-         * <p>Timestamp the schedule was created.</p>
+         * <p>Timestamp the schedule was created</p>
          */
         _FinalStage createdAt(Optional<OffsetDateTime> createdAt);
 
         _FinalStage createdAt(OffsetDateTime createdAt);
 
+        /**
+         * <p>Actor that created the schedule</p>
+         */
         _FinalStage createdBy(Optional<OutputActor> createdBy);
 
         _FinalStage createdBy(OutputActor createdBy);
 
         /**
-         * <p>Day of the month (1-31) for monthly schedules.</p>
+         * <p>Day of the month for custom and builder schedules</p>
          */
         _FinalStage dayOfMonth(Optional<String> dayOfMonth);
 
         _FinalStage dayOfMonth(String dayOfMonth);
 
         /**
-         * <p>Day of the week for weekly schedules.</p>
+         * <p>Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules</p>
          */
         _FinalStage dayOfWeek(Optional<String> dayOfWeek);
 
         _FinalStage dayOfWeek(String dayOfWeek);
 
         /**
-         * <p>Hour of the day (0-23, in UTC) the schedule fires.</p>
+         * <p>Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules</p>
          */
         _FinalStage hour(Optional<String> hour);
 
         _FinalStage hour(String hour);
 
         /**
-         * <p>Unique identifier of the schedule.</p>
+         * <p>Unique identifier of the schedule</p>
          */
         _FinalStage id(Optional<String> id);
 
         _FinalStage id(String id);
 
         /**
-         * <p>Minute of the hour (0-59) the schedule fires.</p>
+         * <p>Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules</p>
          */
         _FinalStage minute(Optional<String> minute);
 
         _FinalStage minute(String minute);
 
         /**
-         * <p>Month of the year (1-12) for yearly schedules.</p>
+         * <p>Month of the year for custom and builder schedules</p>
          */
         _FinalStage month(Optional<String> month);
 
         _FinalStage month(String month);
 
+        /**
+         * <p>Controls how the destination is handled when this schedule executes</p>
+         */
         _FinalStage resyncMode(Optional<BulkScheduleSyncMode> resyncMode);
 
         _FinalStage resyncMode(BulkScheduleSyncMode resyncMode);
@@ -317,17 +341,23 @@ public final class BulkSyncAdditionalScheduleResponse {
 
         _FinalStage schemas(List<String> schemas);
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         */
         _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode);
 
         _FinalStage selectiveMode(BulkSelectiveMode selectiveMode);
 
         /**
-         * <p>Timestamp the schedule was last updated.</p>
+         * <p>Timestamp the schedule was last updated</p>
          */
         _FinalStage updatedAt(Optional<OffsetDateTime> updatedAt);
 
         _FinalStage updatedAt(OffsetDateTime updatedAt);
 
+        /**
+         * <p>Actor that most recently updated the schedule</p>
+         */
         _FinalStage updatedBy(Optional<OutputActor> updatedBy);
 
         _FinalStage updatedBy(OutputActor updatedBy);
@@ -363,7 +393,6 @@ public final class BulkSyncAdditionalScheduleResponse {
 
         private Optional<OffsetDateTime> createdAt = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -387,6 +416,10 @@ public final class BulkSyncAdditionalScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>How often the sync runs on this schedule: manual, continuous, hourly, daily, weekly, custom, or builder</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         @JsonSetter("frequency")
         public _FinalStage frequency(@NotNull ScheduleFrequency frequency) {
@@ -394,12 +427,19 @@ public final class BulkSyncAdditionalScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>Actor that most recently updated the schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage updatedBy(OutputActor updatedBy) {
             this.updatedBy = Optional.ofNullable(updatedBy);
             return this;
         }
 
+        /**
+         * <p>Actor that most recently updated the schedule</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "updated_by", nulls = Nulls.SKIP)
         public _FinalStage updatedBy(Optional<OutputActor> updatedBy) {
@@ -408,7 +448,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Timestamp the schedule was last updated.</p>
+         * <p>Timestamp the schedule was last updated</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -418,7 +458,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Timestamp the schedule was last updated.</p>
+         * <p>Timestamp the schedule was last updated</p>
          */
         @java.lang.Override
         @JsonSetter(value = "updated_at", nulls = Nulls.SKIP)
@@ -427,12 +467,19 @@ public final class BulkSyncAdditionalScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage selectiveMode(BulkSelectiveMode selectiveMode) {
             this.selectiveMode = Optional.ofNullable(selectiveMode);
             return this;
         }
 
+        /**
+         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "selective_mode", nulls = Nulls.SKIP)
         public _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode) {
@@ -460,12 +507,19 @@ public final class BulkSyncAdditionalScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>Controls how the destination is handled when this schedule executes</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage resyncMode(BulkScheduleSyncMode resyncMode) {
             this.resyncMode = Optional.ofNullable(resyncMode);
             return this;
         }
 
+        /**
+         * <p>Controls how the destination is handled when this schedule executes</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "resync_mode", nulls = Nulls.SKIP)
         public _FinalStage resyncMode(Optional<BulkScheduleSyncMode> resyncMode) {
@@ -474,7 +528,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Month of the year (1-12) for yearly schedules.</p>
+         * <p>Month of the year for custom and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -484,7 +538,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Month of the year (1-12) for yearly schedules.</p>
+         * <p>Month of the year for custom and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "month", nulls = Nulls.SKIP)
@@ -494,7 +548,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Minute of the hour (0-59) the schedule fires.</p>
+         * <p>Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -504,7 +558,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Minute of the hour (0-59) the schedule fires.</p>
+         * <p>Minute of the hour (0-59) for hourly, daily, weekly, custom, and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "minute", nulls = Nulls.SKIP)
@@ -514,7 +568,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Unique identifier of the schedule.</p>
+         * <p>Unique identifier of the schedule</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -524,7 +578,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Unique identifier of the schedule.</p>
+         * <p>Unique identifier of the schedule</p>
          */
         @java.lang.Override
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
@@ -534,7 +588,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Hour of the day (0-23, in UTC) the schedule fires.</p>
+         * <p>Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -544,7 +598,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Hour of the day (0-23, in UTC) the schedule fires.</p>
+         * <p>Hour of the day (0-23, in UTC) for daily, weekly, custom, and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "hour", nulls = Nulls.SKIP)
@@ -554,7 +608,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Day of the week for weekly schedules.</p>
+         * <p>Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -564,7 +618,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Day of the week for weekly schedules.</p>
+         * <p>Day of the week, 0 (Sunday) to 6 (Saturday), for weekly schedules; a cron day-of-week field for custom and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "day_of_week", nulls = Nulls.SKIP)
@@ -574,7 +628,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Day of the month (1-31) for monthly schedules.</p>
+         * <p>Day of the month for custom and builder schedules</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -584,7 +638,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Day of the month (1-31) for monthly schedules.</p>
+         * <p>Day of the month for custom and builder schedules</p>
          */
         @java.lang.Override
         @JsonSetter(value = "day_of_month", nulls = Nulls.SKIP)
@@ -593,12 +647,19 @@ public final class BulkSyncAdditionalScheduleResponse {
             return this;
         }
 
+        /**
+         * <p>Actor that created the schedule</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage createdBy(OutputActor createdBy) {
             this.createdBy = Optional.ofNullable(createdBy);
             return this;
         }
 
+        /**
+         * <p>Actor that created the schedule</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "created_by", nulls = Nulls.SKIP)
         public _FinalStage createdBy(Optional<OutputActor> createdBy) {
@@ -607,7 +668,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Timestamp the schedule was created.</p>
+         * <p>Timestamp the schedule was created</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -617,7 +678,7 @@ public final class BulkSyncAdditionalScheduleResponse {
         }
 
         /**
-         * <p>Timestamp the schedule was created.</p>
+         * <p>Timestamp the schedule was created</p>
          */
         @java.lang.Override
         @JsonSetter(value = "created_at", nulls = Nulls.SKIP)
@@ -644,6 +705,27 @@ public final class BulkSyncAdditionalScheduleResponse {
                     updatedAt,
                     updatedBy,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("created_at")
+                    || key.equalsIgnoreCase("created_by")
+                    || key.equalsIgnoreCase("day_of_month")
+                    || key.equalsIgnoreCase("day_of_week")
+                    || key.equalsIgnoreCase("frequency")
+                    || key.equalsIgnoreCase("hour")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("minute")
+                    || key.equalsIgnoreCase("month")
+                    || key.equalsIgnoreCase("resync_mode")
+                    || key.equalsIgnoreCase("schemas")
+                    || key.equalsIgnoreCase("selective_mode")
+                    || key.equalsIgnoreCase("updated_at")
+                    || key.equalsIgnoreCase("updated_by")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

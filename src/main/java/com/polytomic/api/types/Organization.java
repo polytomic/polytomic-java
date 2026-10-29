@@ -48,7 +48,7 @@ public final class Organization {
     }
 
     /**
-     * @return Unique identifier of the organization.
+     * @return Unique identifier of the organization
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -56,7 +56,7 @@ public final class Organization {
     }
 
     /**
-     * @return OIDC issuer URL for organizations using OpenID Connect single sign-on.
+     * @return OIDC issuer URL for organizations using OpenID Connect single sign-on
      */
     @JsonProperty("issuer")
     public Optional<String> getIssuer() {
@@ -64,7 +64,7 @@ public final class Organization {
     }
 
     /**
-     * @return Human-readable name of the organization.
+     * @return Human-readable name of the organization
      */
     @JsonProperty("name")
     public Optional<String> getName() {
@@ -72,7 +72,7 @@ public final class Organization {
     }
 
     /**
-     * @return Email domain used to match users to this organization during SSO sign-in.
+     * @return Email domain used to match users to this organization during SSO sign-in
      */
     @JsonProperty("sso_domain")
     public Optional<String> getSsoDomain() {
@@ -80,7 +80,7 @@ public final class Organization {
     }
 
     /**
-     * @return WorkOS organization identifier linking this organization to its SAML/SSO configuration.
+     * @return WorkOS organization identifier linking this organization to its SAML/SSO configuration
      */
     @JsonProperty("sso_org_id")
     public Optional<String> getSsoOrgId() {
@@ -132,7 +132,6 @@ public final class Organization {
 
         private Optional<String> ssoOrgId = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -147,7 +146,7 @@ public final class Organization {
         }
 
         /**
-         * <p>Unique identifier of the organization.</p>
+         * <p>Unique identifier of the organization</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -161,7 +160,7 @@ public final class Organization {
         }
 
         /**
-         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on.</p>
+         * <p>OIDC issuer URL for organizations using OpenID Connect single sign-on</p>
          */
         @JsonSetter(value = "issuer", nulls = Nulls.SKIP)
         public Builder issuer(Optional<String> issuer) {
@@ -175,7 +174,7 @@ public final class Organization {
         }
 
         /**
-         * <p>Human-readable name of the organization.</p>
+         * <p>Human-readable name of the organization</p>
          */
         @JsonSetter(value = "name", nulls = Nulls.SKIP)
         public Builder name(Optional<String> name) {
@@ -189,7 +188,7 @@ public final class Organization {
         }
 
         /**
-         * <p>Email domain used to match users to this organization during SSO sign-in.</p>
+         * <p>Email domain used to match users to this organization during SSO sign-in</p>
          */
         @JsonSetter(value = "sso_domain", nulls = Nulls.SKIP)
         public Builder ssoDomain(Optional<String> ssoDomain) {
@@ -203,7 +202,7 @@ public final class Organization {
         }
 
         /**
-         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration.</p>
+         * <p>WorkOS organization identifier linking this organization to its SAML/SSO configuration</p>
          */
         @JsonSetter(value = "sso_org_id", nulls = Nulls.SKIP)
         public Builder ssoOrgId(Optional<String> ssoOrgId) {
@@ -218,6 +217,18 @@ public final class Organization {
 
         public Organization build() {
             return new Organization(id, issuer, name, ssoDomain, ssoOrgId, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("issuer")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("sso_domain")
+                    || key.equalsIgnoreCase("sso_org_id")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -32,11 +32,17 @@ public final class UtilEnumValue {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Display label for the option
+     */
     @JsonProperty("label")
     public Optional<String> getLabel() {
         return label;
     }
 
+    /**
+     * @return Value to send for this option
+     */
     @JsonProperty("value")
     public Optional<String> getValue() {
         return value;
@@ -77,7 +83,6 @@ public final class UtilEnumValue {
 
         private Optional<String> value = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -88,6 +93,9 @@ public final class UtilEnumValue {
             return this;
         }
 
+        /**
+         * <p>Display label for the option</p>
+         */
         @JsonSetter(value = "label", nulls = Nulls.SKIP)
         public Builder label(Optional<String> label) {
             this.label = label;
@@ -99,6 +107,9 @@ public final class UtilEnumValue {
             return this;
         }
 
+        /**
+         * <p>Value to send for this option</p>
+         */
         @JsonSetter(value = "value", nulls = Nulls.SKIP)
         public Builder value(Optional<String> value) {
             this.value = value;
@@ -112,6 +123,14 @@ public final class UtilEnumValue {
 
         public UtilEnumValue build() {
             return new UtilEnumValue(label, value, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("label") || key.equalsIgnoreCase("value")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

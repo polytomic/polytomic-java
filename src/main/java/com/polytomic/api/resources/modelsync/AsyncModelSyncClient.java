@@ -5,10 +5,12 @@ package com.polytomic.api.resources.modelsync;
 
 import com.polytomic.api.core.ClientOptions;
 import com.polytomic.api.core.IdempotentRequestOptions;
+import com.polytomic.api.core.PolytomicHttpResponse;
 import com.polytomic.api.core.RequestOptions;
 import com.polytomic.api.core.Suppliers;
 import com.polytomic.api.resources.modelsync.errorhandling.AsyncErrorHandlingClient;
 import com.polytomic.api.resources.modelsync.executions.AsyncExecutionsClient;
+import com.polytomic.api.resources.modelsync.requests.ActivateSyncInput;
 import com.polytomic.api.resources.modelsync.requests.CreateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceFieldsRequest;
 import com.polytomic.api.resources.modelsync.requests.ModelSyncGetSourceRequest;
@@ -17,7 +19,6 @@ import com.polytomic.api.resources.modelsync.requests.StartModelSyncRequest;
 import com.polytomic.api.resources.modelsync.requests.UpdateModelSyncV5Request;
 import com.polytomic.api.resources.modelsync.targets.AsyncTargetsClient;
 import com.polytomic.api.types.ActivateSyncEnvelope;
-import com.polytomic.api.types.ActivateSyncInput;
 import com.polytomic.api.types.CancelSyncResponseEnvelope;
 import com.polytomic.api.types.GetSyncSourceMetaEnvelope;
 import com.polytomic.api.types.ListSyncResponseEnvelope;
@@ -63,7 +64,14 @@ public class AsyncModelSyncClient {
      * <a href="../../../../../api-reference/model-sync/get-source-fields"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getSource(String id) {
-        return this.rawClient.getSource(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture = this.rawClient.getSource(id);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -74,7 +82,15 @@ public class AsyncModelSyncClient {
      * <a href="../../../../../api-reference/model-sync/get-source-fields"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getSource(String id, RequestOptions requestOptions) {
-        return this.rawClient.getSource(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture =
+                this.rawClient.getSource(id, requestOptions);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -85,7 +101,15 @@ public class AsyncModelSyncClient {
      * <a href="../../../../../api-reference/model-sync/get-source-fields"><code>GET /api/connections/{id}/modelsync/source/fields</code></a>.</p>
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getSource(String id, ModelSyncGetSourceRequest request) {
-        return this.rawClient.getSource(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture =
+                this.rawClient.getSource(id, request);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -97,7 +121,15 @@ public class AsyncModelSyncClient {
      */
     public CompletableFuture<GetSyncSourceMetaEnvelope> getSource(
             String id, ModelSyncGetSourceRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getSource(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<GetSyncSourceMetaEnvelope>> rawFuture =
+                this.rawClient.getSource(id, request, requestOptions);
+        CompletableFuture<GetSyncSourceMetaEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -133,7 +165,14 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<ModelFieldResponse> getSourceFields(String id) {
-        return this.rawClient.getSourceFields(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelFieldResponse>> rawFuture = this.rawClient.getSourceFields(id);
+        CompletableFuture<ModelFieldResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -169,7 +208,15 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<ModelFieldResponse> getSourceFields(String id, RequestOptions requestOptions) {
-        return this.rawClient.getSourceFields(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelFieldResponse>> rawFuture =
+                this.rawClient.getSourceFields(id, requestOptions);
+        CompletableFuture<ModelFieldResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -205,7 +252,15 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<ModelFieldResponse> getSourceFields(String id, ModelSyncGetSourceFieldsRequest request) {
-        return this.rawClient.getSourceFields(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelFieldResponse>> rawFuture =
+                this.rawClient.getSourceFields(id, request);
+        CompletableFuture<ModelFieldResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -242,7 +297,15 @@ public class AsyncModelSyncClient {
      */
     public CompletableFuture<ModelFieldResponse> getSourceFields(
             String id, ModelSyncGetSourceFieldsRequest request, RequestOptions requestOptions) {
-        return this.rawClient.getSourceFields(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelFieldResponse>> rawFuture =
+                this.rawClient.getSourceFields(id, request, requestOptions);
+        CompletableFuture<ModelFieldResponse> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -258,7 +321,14 @@ public class AsyncModelSyncClient {
      * <a href="../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>.</p>
      */
     public CompletableFuture<ListSyncResponseEnvelope> list() {
-        return this.rawClient.list().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListSyncResponseEnvelope>> rawFuture = this.rawClient.list();
+        CompletableFuture<ListSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -274,7 +344,15 @@ public class AsyncModelSyncClient {
      * <a href="../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>.</p>
      */
     public CompletableFuture<ListSyncResponseEnvelope> list(RequestOptions requestOptions) {
-        return this.rawClient.list(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListSyncResponseEnvelope>> rawFuture =
+                this.rawClient.list(requestOptions);
+        CompletableFuture<ListSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -290,7 +368,14 @@ public class AsyncModelSyncClient {
      * <a href="../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>.</p>
      */
     public CompletableFuture<ListSyncResponseEnvelope> list(ModelSyncListRequest request) {
-        return this.rawClient.list(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListSyncResponseEnvelope>> rawFuture = this.rawClient.list(request);
+        CompletableFuture<ListSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -307,7 +392,15 @@ public class AsyncModelSyncClient {
      */
     public CompletableFuture<ListSyncResponseEnvelope> list(
             ModelSyncListRequest request, RequestOptions requestOptions) {
-        return this.rawClient.list(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ListSyncResponseEnvelope>> rawFuture =
+                this.rawClient.list(request, requestOptions);
+        CompletableFuture<ListSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -357,7 +450,15 @@ public class AsyncModelSyncClient {
      * a connection supports target creation.</p>
      */
     public CompletableFuture<ModelSyncV5ResponseEnvelope> create(CreateModelSyncV5Request request) {
-        return this.rawClient.create(request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> rawFuture =
+                this.rawClient.create(request);
+        CompletableFuture<ModelSyncV5ResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -408,7 +509,15 @@ public class AsyncModelSyncClient {
      */
     public CompletableFuture<ModelSyncV5ResponseEnvelope> create(
             CreateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.create(request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> rawFuture =
+                this.rawClient.create(request, requestOptions);
+        CompletableFuture<ModelSyncV5ResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -418,7 +527,15 @@ public class AsyncModelSyncClient {
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> or <a href="../../../api-reference/model-sync/update"><code>PUT /api/syncs/{id}</code></a>.</p>
      */
     public CompletableFuture<ScheduleOptionResponseEnvelope> getScheduleOptions() {
-        return this.rawClient.getScheduleOptions().thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleOptionResponseEnvelope>> rawFuture =
+                this.rawClient.getScheduleOptions();
+        CompletableFuture<ScheduleOptionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -428,7 +545,15 @@ public class AsyncModelSyncClient {
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> or <a href="../../../api-reference/model-sync/update"><code>PUT /api/syncs/{id}</code></a>.</p>
      */
     public CompletableFuture<ScheduleOptionResponseEnvelope> getScheduleOptions(RequestOptions requestOptions) {
-        return this.rawClient.getScheduleOptions(requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ScheduleOptionResponseEnvelope>> rawFuture =
+                this.rawClient.getScheduleOptions(requestOptions);
+        CompletableFuture<ScheduleOptionResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -438,7 +563,14 @@ public class AsyncModelSyncClient {
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
     public CompletableFuture<ModelSyncV5ResponseEnvelope> get(String id) {
-        return this.rawClient.get(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> rawFuture = this.rawClient.get(id);
+        CompletableFuture<ModelSyncV5ResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -448,14 +580,23 @@ public class AsyncModelSyncClient {
      * executions, use <a href="../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
     public CompletableFuture<ModelSyncV5ResponseEnvelope> get(String id, RequestOptions requestOptions) {
-        return this.rawClient.get(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> rawFuture =
+                this.rawClient.get(id, requestOptions);
+        CompletableFuture<ModelSyncV5ResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates a model sync's configuration.
      * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
      * Every field in the request body is written to the sync; any field you omit is
-     * cleared or reset to its default value.</p>
+     * cleared or reset to its default value. An empty or omitted <code>policies</code> list
+     * leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
      * single field mapping — fetch the current sync with
      * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,
@@ -466,14 +607,23 @@ public class AsyncModelSyncClient {
      * take effect on the sync's next execution.</p>
      */
     public CompletableFuture<ModelSyncV5ResponseEnvelope> update(String id, UpdateModelSyncV5Request request) {
-        return this.rawClient.update(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request);
+        CompletableFuture<ModelSyncV5ResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
      * Updates a model sync's configuration.
      * <p>Updating a model sync is a <strong>full replacement</strong> of the sync's configuration.
      * Every field in the request body is written to the sync; any field you omit is
-     * cleared or reset to its default value.</p>
+     * cleared or reset to its default value. An empty or omitted <code>policies</code> list
+     * leaves the sync's current policies unchanged.</p>
      * <p>To make a partial change — for example, toggling <code>active</code> or adjusting a
      * single field mapping — fetch the current sync with
      * <a href="../../../api-reference/model-sync/get"><code>GET /api/syncs/{id}</code></a>,
@@ -485,7 +635,15 @@ public class AsyncModelSyncClient {
      */
     public CompletableFuture<ModelSyncV5ResponseEnvelope> update(
             String id, UpdateModelSyncV5Request request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.update(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ModelSyncV5ResponseEnvelope>> rawFuture =
+                this.rawClient.update(id, request, requestOptions);
+        CompletableFuture<ModelSyncV5ResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -495,7 +653,14 @@ public class AsyncModelSyncClient {
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
     public CompletableFuture<Void> delete(String id) {
-        return this.rawClient.delete(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -505,7 +670,14 @@ public class AsyncModelSyncClient {
      * <a href="../../../api-reference/model-sync/create"><code>POST /api/syncs</code></a> if needed.</p>
      */
     public CompletableFuture<Void> delete(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.delete(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<Void>> rawFuture = this.rawClient.delete(id, requestOptions);
+        CompletableFuture<Void> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -519,7 +691,14 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<ActivateSyncEnvelope> activate(String id, ActivateSyncInput request) {
-        return this.rawClient.activate(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ActivateSyncEnvelope>> rawFuture = this.rawClient.activate(id, request);
+        CompletableFuture<ActivateSyncEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -534,7 +713,15 @@ public class AsyncModelSyncClient {
      */
     public CompletableFuture<ActivateSyncEnvelope> activate(
             String id, ActivateSyncInput request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.activate(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<ActivateSyncEnvelope>> rawFuture =
+                this.rawClient.activate(id, request, requestOptions);
+        CompletableFuture<ActivateSyncEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -546,7 +733,14 @@ public class AsyncModelSyncClient {
      * cancellation has taken effect.</p>
      */
     public CompletableFuture<CancelSyncResponseEnvelope> cancel(String id) {
-        return this.rawClient.cancel(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelSyncResponseEnvelope>> rawFuture = this.rawClient.cancel(id);
+        CompletableFuture<CancelSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -558,7 +752,15 @@ public class AsyncModelSyncClient {
      * cancellation has taken effect.</p>
      */
     public CompletableFuture<CancelSyncResponseEnvelope> cancel(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.cancel(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<CancelSyncResponseEnvelope>> rawFuture =
+                this.rawClient.cancel(id, requestOptions);
+        CompletableFuture<CancelSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -569,7 +771,14 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<StartSyncResponseEnvelope> start(String id) {
-        return this.rawClient.start(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<StartSyncResponseEnvelope>> rawFuture = this.rawClient.start(id);
+        CompletableFuture<StartSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -580,7 +789,15 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<StartSyncResponseEnvelope> start(String id, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.start(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<StartSyncResponseEnvelope>> rawFuture =
+                this.rawClient.start(id, requestOptions);
+        CompletableFuture<StartSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -591,7 +808,15 @@ public class AsyncModelSyncClient {
      * </blockquote>
      */
     public CompletableFuture<StartSyncResponseEnvelope> start(String id, StartModelSyncRequest request) {
-        return this.rawClient.start(id, request).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<StartSyncResponseEnvelope>> rawFuture =
+                this.rawClient.start(id, request);
+        CompletableFuture<StartSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -603,7 +828,15 @@ public class AsyncModelSyncClient {
      */
     public CompletableFuture<StartSyncResponseEnvelope> start(
             String id, StartModelSyncRequest request, IdempotentRequestOptions requestOptions) {
-        return this.rawClient.start(id, request, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<StartSyncResponseEnvelope>> rawFuture =
+                this.rawClient.start(id, request, requestOptions);
+        CompletableFuture<StartSyncResponseEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -613,7 +846,14 @@ public class AsyncModelSyncClient {
      * history, use <a href="../../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
     public CompletableFuture<SyncStatusEnvelope> getStatus(String id) {
-        return this.rawClient.getStatus(id).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncStatusEnvelope>> rawFuture = this.rawClient.getStatus(id);
+        CompletableFuture<SyncStatusEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     /**
@@ -623,7 +863,15 @@ public class AsyncModelSyncClient {
      * history, use <a href="../../../../api-reference/model-sync/executions/list"><code>GET /api/syncs/{id}/executions</code></a>.</p>
      */
     public CompletableFuture<SyncStatusEnvelope> getStatus(String id, RequestOptions requestOptions) {
-        return this.rawClient.getStatus(id, requestOptions).thenApply(response -> response.body());
+        CompletableFuture<PolytomicHttpResponse<SyncStatusEnvelope>> rawFuture =
+                this.rawClient.getStatus(id, requestOptions);
+        CompletableFuture<SyncStatusEnvelope> future = rawFuture.thenApply(response -> response.body());
+        future.whenComplete((result_, throwable_) -> {
+            if (future.isCancelled()) {
+                rawFuture.cancel(true);
+            }
+        });
+        return future;
     }
 
     public AsyncTargetsClient targets() {

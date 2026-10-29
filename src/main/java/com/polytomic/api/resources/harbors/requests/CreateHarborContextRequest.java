@@ -129,7 +129,6 @@ public final class CreateHarborContextRequest {
 
         private Optional<String> description = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -187,6 +186,16 @@ public final class CreateHarborContextRequest {
         @java.lang.Override
         public CreateHarborContextRequest build() {
             return new CreateHarborContextRequest(content, description, title, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("content")
+                    || key.equalsIgnoreCase("description")
+                    || key.equalsIgnoreCase("title")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

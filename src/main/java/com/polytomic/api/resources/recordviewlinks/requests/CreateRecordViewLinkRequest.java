@@ -67,18 +67,24 @@ public final class CreateRecordViewLinkRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicHarborSession() {
         return polytomicHarborSession;
     }
 
+    /**
+     * @return New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+     */
     @JsonIgnore
     public Optional<String> getPolytomicActivityRequestId() {
         return polytomicActivityRequestId;
     }
 
     /**
-     * @return Connection containing the record.
+     * @return Connection containing the record
      */
     @JsonProperty("connection_id")
     public String getConnectionId() {
@@ -110,7 +116,7 @@ public final class CreateRecordViewLinkRequest {
     }
 
     /**
-     * @return The lookup-key value for the record.
+     * @return The lookup-key value for the record
      */
     @JsonProperty("lookup_key_value")
     public String getLookupKeyValue() {
@@ -118,7 +124,7 @@ public final class CreateRecordViewLinkRequest {
     }
 
     /**
-     * @return Schema containing the record.
+     * @return Schema containing the record
      */
     @JsonProperty("schema_id")
     public String getSchemaId() {
@@ -126,7 +132,7 @@ public final class CreateRecordViewLinkRequest {
     }
 
     /**
-     * @return Optional creator/source label.
+     * @return Optional creator/source label
      */
     @JsonProperty("source")
     public Optional<String> getSource() {
@@ -181,7 +187,7 @@ public final class CreateRecordViewLinkRequest {
 
     public interface ConnectionIdStage {
         /**
-         * <p>Connection containing the record.</p>
+         * <p>Connection containing the record</p>
          */
         LookupKeyFieldStage connectionId(@NotNull String connectionId);
 
@@ -197,14 +203,14 @@ public final class CreateRecordViewLinkRequest {
 
     public interface LookupKeyValueStage {
         /**
-         * <p>The lookup-key value for the record.</p>
+         * <p>The lookup-key value for the record</p>
          */
         SchemaIdStage lookupKeyValue(@NotNull String lookupKeyValue);
     }
 
     public interface SchemaIdStage {
         /**
-         * <p>Schema containing the record.</p>
+         * <p>Schema containing the record</p>
          */
         _FinalStage schemaId(@NotNull String schemaId);
     }
@@ -216,10 +222,16 @@ public final class CreateRecordViewLinkRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession);
 
         _FinalStage polytomicHarborSession(String polytomicHarborSession);
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId);
 
         _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId);
@@ -239,7 +251,7 @@ public final class CreateRecordViewLinkRequest {
         _FinalStage fields(List<String> fields);
 
         /**
-         * <p>Optional creator/source label.</p>
+         * <p>Optional creator/source label</p>
          */
         _FinalStage source(Optional<String> source);
 
@@ -267,7 +279,6 @@ public final class CreateRecordViewLinkRequest {
 
         private Optional<String> polytomicHarborSession = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -287,7 +298,7 @@ public final class CreateRecordViewLinkRequest {
         }
 
         /**
-         * <p>Connection containing the record.</p>
+         * <p>Connection containing the record</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -309,7 +320,7 @@ public final class CreateRecordViewLinkRequest {
         }
 
         /**
-         * <p>The lookup-key value for the record.</p>
+         * <p>The lookup-key value for the record</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -320,7 +331,7 @@ public final class CreateRecordViewLinkRequest {
         }
 
         /**
-         * <p>Schema containing the record.</p>
+         * <p>Schema containing the record</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -331,7 +342,7 @@ public final class CreateRecordViewLinkRequest {
         }
 
         /**
-         * <p>Optional creator/source label.</p>
+         * <p>Optional creator/source label</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -341,7 +352,7 @@ public final class CreateRecordViewLinkRequest {
         }
 
         /**
-         * <p>Optional creator/source label.</p>
+         * <p>Optional creator/source label</p>
          */
         @java.lang.Override
         @JsonSetter(value = "source", nulls = Nulls.SKIP)
@@ -390,24 +401,38 @@ public final class CreateRecordViewLinkRequest {
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(String polytomicActivityRequestId) {
             this.polytomicActivityRequestId = Optional.ofNullable(polytomicActivityRequestId);
             return this;
         }
 
+        /**
+         * <p>New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicActivityRequestId(Optional<String> polytomicActivityRequestId) {
             this.polytomicActivityRequestId = polytomicActivityRequestId;
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(String polytomicHarborSession) {
             this.polytomicHarborSession = Optional.ofNullable(polytomicHarborSession);
             return this;
         }
 
+        /**
+         * <p>Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.</p>
+         */
         @java.lang.Override
         public _FinalStage polytomicHarborSession(Optional<String> polytomicHarborSession) {
             this.polytomicHarborSession = polytomicHarborSession;
@@ -427,6 +452,20 @@ public final class CreateRecordViewLinkRequest {
                     schemaId,
                     source,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("connection_id")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("fields")
+                    || key.equalsIgnoreCase("lookup_key_field")
+                    || key.equalsIgnoreCase("lookup_key_value")
+                    || key.equalsIgnoreCase("schema_id")
+                    || key.equalsIgnoreCase("source")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

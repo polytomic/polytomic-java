@@ -161,44 +161,52 @@ public class ModelsClient {
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public ModelResponseEnvelope preview(CreateModelRequest body) {
         return this.rawClient.preview(body).body();
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public ModelResponseEnvelope preview(CreateModelRequest body, IdempotentRequestOptions requestOptions) {
         return this.rawClient.preview(body, requestOptions).body();
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public ModelResponseEnvelope preview(ModelsPreviewRequest request) {
         return this.rawClient.preview(request).body();
     }
 
     /**
-     * Submits a job that previews the fields a model would expose without persisting it.
-     * <p>The response contains a job ID that resolves to the list of fields the model
-     * would expose. Poll the job until it completes to retrieve the field list. The
-     * model is not persisted — this endpoint is useful for validating a query or
-     * configuration before calling <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
+     * Previews the fields a model exposes without saving the model.
+     * <p>The response contains the previewed model, including the fields it exposes.
+     * With <code>async=true</code>, the response contains a job instead; poll the job until it
+     * completes to retrieve the field list.</p>
+     * <p>The model is not saved, and <code>policies</code> and <code>labels</code> are ignored. Use this
+     * endpoint to validate a query or configuration before calling
+     * <a href="../../api-reference/models/create"><code>POST /api/models</code></a> to save it.</p>
      */
     public ModelResponseEnvelope preview(ModelsPreviewRequest request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.preview(request, requestOptions).body();
@@ -326,7 +334,8 @@ public class ModelsClient {
      * Updates a model's configuration.
      * <p>Updating a model is a <strong>full replacement</strong> of its configuration. Every field in
      * the request body is written to the model; any field you omit is cleared or reset
-     * to its default value.</p>
+     * to its default value. An empty or omitted <code>policies</code> list leaves the model's
+     * current policies unchanged.</p>
      * <p>To make a partial change, fetch the current model with
      * <a href="../../../api-reference/models/get"><code>GET /api/models/{id}</code></a>, modify the fields you want to change, and send
      * the complete object back in the update request.</p>
@@ -341,7 +350,8 @@ public class ModelsClient {
      * Updates a model's configuration.
      * <p>Updating a model is a <strong>full replacement</strong> of its configuration. Every field in
      * the request body is written to the model; any field you omit is cleared or reset
-     * to its default value.</p>
+     * to its default value. An empty or omitted <code>policies</code> list leaves the model's
+     * current policies unchanged.</p>
      * <p>To make a partial change, fetch the current model with
      * <a href="../../../api-reference/models/get"><code>GET /api/models/{id}</code></a>, modify the fields you want to change, and send
      * the complete object back in the update request.</p>

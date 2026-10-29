@@ -73,7 +73,7 @@ public final class BulkSyncSchemaExecutionStatus {
     }
 
     /**
-     * @return Number of errors emitted during the most recent execution.
+     * @return Number of errors emitted during the most recent execution
      */
     @JsonProperty("error_count")
     public Optional<Long> getErrorCount() {
@@ -81,7 +81,7 @@ public final class BulkSyncSchemaExecutionStatus {
     }
 
     /**
-     * @return ID of the most recent execution for the schema.
+     * @return ID of the most recent execution for the schema
      */
     @JsonProperty("execution_id")
     public Optional<String> getExecutionId() {
@@ -89,7 +89,7 @@ public final class BulkSyncSchemaExecutionStatus {
     }
 
     /**
-     * @return Number of records processed in the most recent execution.
+     * @return Number of records processed in the most recent execution
      */
     @JsonProperty("record_count")
     public Optional<Long> getRecordCount() {
@@ -97,7 +97,7 @@ public final class BulkSyncSchemaExecutionStatus {
     }
 
     /**
-     * @return Schema (table or object) identifier.
+     * @return Schema (table or object) identifier
      */
     @JsonProperty("schema")
     public Optional<String> getSchema() {
@@ -105,20 +105,23 @@ public final class BulkSyncSchemaExecutionStatus {
     }
 
     /**
-     * @return Timestamp when the most recent execution started.
+     * @return Timestamp when the most recent execution started
      */
     @JsonProperty("started_at")
     public Optional<OffsetDateTime> getStartedAt() {
         return startedAt;
     }
 
+    /**
+     * @return Current status of the schema's most recent execution
+     */
     @JsonProperty("status")
     public Optional<BulkSchemaExecutionStatus> getStatus() {
         return status;
     }
 
     /**
-     * @return Human-readable detail for the current status (e.g. an error message when status is failed).
+     * @return Human-readable detail for the current status (e.g. an error message when status is failed)
      */
     @JsonProperty("status_message")
     public Optional<String> getStatusMessage() {
@@ -126,7 +129,7 @@ public final class BulkSyncSchemaExecutionStatus {
     }
 
     /**
-     * @return Number of warnings emitted during the most recent execution.
+     * @return Number of warnings emitted during the most recent execution
      */
     @JsonProperty("warning_count")
     public Optional<Long> getWarningCount() {
@@ -199,7 +202,6 @@ public final class BulkSyncSchemaExecutionStatus {
 
         private Optional<Long> warningCount = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -232,7 +234,7 @@ public final class BulkSyncSchemaExecutionStatus {
         }
 
         /**
-         * <p>Number of errors emitted during the most recent execution.</p>
+         * <p>Number of errors emitted during the most recent execution</p>
          */
         @JsonSetter(value = "error_count", nulls = Nulls.SKIP)
         public Builder errorCount(Optional<Long> errorCount) {
@@ -246,7 +248,7 @@ public final class BulkSyncSchemaExecutionStatus {
         }
 
         /**
-         * <p>ID of the most recent execution for the schema.</p>
+         * <p>ID of the most recent execution for the schema</p>
          */
         @JsonSetter(value = "execution_id", nulls = Nulls.SKIP)
         public Builder executionId(Optional<String> executionId) {
@@ -260,7 +262,7 @@ public final class BulkSyncSchemaExecutionStatus {
         }
 
         /**
-         * <p>Number of records processed in the most recent execution.</p>
+         * <p>Number of records processed in the most recent execution</p>
          */
         @JsonSetter(value = "record_count", nulls = Nulls.SKIP)
         public Builder recordCount(Optional<Long> recordCount) {
@@ -274,7 +276,7 @@ public final class BulkSyncSchemaExecutionStatus {
         }
 
         /**
-         * <p>Schema (table or object) identifier.</p>
+         * <p>Schema (table or object) identifier</p>
          */
         @JsonSetter(value = "schema", nulls = Nulls.SKIP)
         public Builder schema(Optional<String> schema) {
@@ -288,7 +290,7 @@ public final class BulkSyncSchemaExecutionStatus {
         }
 
         /**
-         * <p>Timestamp when the most recent execution started.</p>
+         * <p>Timestamp when the most recent execution started</p>
          */
         @JsonSetter(value = "started_at", nulls = Nulls.SKIP)
         public Builder startedAt(Optional<OffsetDateTime> startedAt) {
@@ -301,6 +303,9 @@ public final class BulkSyncSchemaExecutionStatus {
             return this;
         }
 
+        /**
+         * <p>Current status of the schema's most recent execution</p>
+         */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<BulkSchemaExecutionStatus> status) {
             this.status = status;
@@ -313,7 +318,7 @@ public final class BulkSyncSchemaExecutionStatus {
         }
 
         /**
-         * <p>Human-readable detail for the current status (e.g. an error message when status is failed).</p>
+         * <p>Human-readable detail for the current status (e.g. an error message when status is failed)</p>
          */
         @JsonSetter(value = "status_message", nulls = Nulls.SKIP)
         public Builder statusMessage(Optional<String> statusMessage) {
@@ -327,7 +332,7 @@ public final class BulkSyncSchemaExecutionStatus {
         }
 
         /**
-         * <p>Number of warnings emitted during the most recent execution.</p>
+         * <p>Number of warnings emitted during the most recent execution</p>
          */
         @JsonSetter(value = "warning_count", nulls = Nulls.SKIP)
         public Builder warningCount(Optional<Long> warningCount) {
@@ -352,6 +357,22 @@ public final class BulkSyncSchemaExecutionStatus {
                     statusMessage,
                     warningCount,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("completed_at")
+                    || key.equalsIgnoreCase("error_count")
+                    || key.equalsIgnoreCase("execution_id")
+                    || key.equalsIgnoreCase("record_count")
+                    || key.equalsIgnoreCase("schema")
+                    || key.equalsIgnoreCase("started_at")
+                    || key.equalsIgnoreCase("status")
+                    || key.equalsIgnoreCase("status_message")
+                    || key.equalsIgnoreCase("warning_count")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

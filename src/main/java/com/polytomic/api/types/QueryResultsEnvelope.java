@@ -35,11 +35,17 @@ public final class QueryResultsEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return The query and its results for this page
+     */
     @JsonProperty("data")
     public Optional<RunQueryResult> getData() {
         return data;
     }
 
+    /**
+     * @return Links to adjacent pages of results
+     */
     @JsonProperty("links")
     public Optional<RunQueryPagination> getLinks() {
         return links;
@@ -80,7 +86,6 @@ public final class QueryResultsEnvelope {
 
         private Optional<RunQueryPagination> links = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -91,6 +96,9 @@ public final class QueryResultsEnvelope {
             return this;
         }
 
+        /**
+         * <p>The query and its results for this page</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<RunQueryResult> data) {
             this.data = data;
@@ -102,6 +110,9 @@ public final class QueryResultsEnvelope {
             return this;
         }
 
+        /**
+         * <p>Links to adjacent pages of results</p>
+         */
         @JsonSetter(value = "links", nulls = Nulls.SKIP)
         public Builder links(Optional<RunQueryPagination> links) {
             this.links = links;
@@ -115,6 +126,14 @@ public final class QueryResultsEnvelope {
 
         public QueryResultsEnvelope build() {
             return new QueryResultsEnvelope(data, links, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data") || key.equalsIgnoreCase("links")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

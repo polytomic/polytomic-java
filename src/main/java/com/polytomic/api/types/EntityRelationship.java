@@ -33,7 +33,7 @@ public final class EntityRelationship {
     }
 
     /**
-     * @return UUID of the related resource.
+     * @return UUID of the related resource
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -41,7 +41,7 @@ public final class EntityRelationship {
     }
 
     /**
-     * @return Canonical REST path of the related resource.
+     * @return Canonical REST path of the related resource
      */
     @JsonProperty("path")
     public Optional<String> getPath() {
@@ -83,7 +83,6 @@ public final class EntityRelationship {
 
         private Optional<String> path = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -95,7 +94,7 @@ public final class EntityRelationship {
         }
 
         /**
-         * <p>UUID of the related resource.</p>
+         * <p>UUID of the related resource</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {
@@ -109,7 +108,7 @@ public final class EntityRelationship {
         }
 
         /**
-         * <p>Canonical REST path of the related resource.</p>
+         * <p>Canonical REST path of the related resource</p>
          */
         @JsonSetter(value = "path", nulls = Nulls.SKIP)
         public Builder path(Optional<String> path) {
@@ -124,6 +123,14 @@ public final class EntityRelationship {
 
         public EntityRelationship build() {
             return new EntityRelationship(id, path, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("id") || key.equalsIgnoreCase("path")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

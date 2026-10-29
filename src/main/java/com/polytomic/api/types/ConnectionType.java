@@ -238,7 +238,6 @@ public final class ConnectionType {
 
         private Optional<ConnectionForm> configurationForm = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -396,6 +395,23 @@ public final class ConnectionType {
                     oauthPrompt,
                     useOauth,
                     additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("capabilities")
+                    || key.equalsIgnoreCase("configurationForm")
+                    || key.equalsIgnoreCase("envConfig")
+                    || key.equalsIgnoreCase("id")
+                    || key.equalsIgnoreCase("initialConfiguration")
+                    || key.equalsIgnoreCase("logo_dark_url")
+                    || key.equalsIgnoreCase("logo_url")
+                    || key.equalsIgnoreCase("name")
+                    || key.equalsIgnoreCase("oauth_prompt")
+                    || key.equalsIgnoreCase("use_oauth")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

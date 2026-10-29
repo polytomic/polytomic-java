@@ -52,13 +52,16 @@ public final class UserFieldRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Detailed type of the field, such as &quot;bigint&quot; or [&quot;decimal&quot;, {&quot;precision&quot;: 10, &quot;scale&quot;: 2}]; it must be consistent with type.
+     */
     @JsonProperty("definition")
     public Optional<TypesDefinition> getDefinition() {
         return definition;
     }
 
     /**
-     * @return Example value shown in the UI and used as a hint for downstream consumers.
+     * @return Example value shown in the UI and used as a hint for downstream consumers
      */
     @JsonProperty("example")
     public Optional<Object> getExample() {
@@ -74,7 +77,7 @@ public final class UserFieldRequest {
     }
 
     /**
-     * @return Human-readable label shown to users selecting this field in the app.
+     * @return Human-readable label shown to users selecting this field in the app
      */
     @JsonProperty("label")
     public String getLabel() {
@@ -90,7 +93,7 @@ public final class UserFieldRequest {
     }
 
     /**
-     * @return One of: string, number, boolean, datetime, array, object, binary.
+     * @return One of: string, number, boolean, datetime, array, object, binary
      */
     @JsonProperty("type")
     public String getType() {
@@ -142,14 +145,14 @@ public final class UserFieldRequest {
 
     public interface LabelStage {
         /**
-         * <p>Human-readable label shown to users selecting this field in the app.</p>
+         * <p>Human-readable label shown to users selecting this field in the app</p>
          */
         TypeStage label(@NotNull String label);
     }
 
     public interface TypeStage {
         /**
-         * <p>One of: string, number, boolean, datetime, array, object, binary.</p>
+         * <p>One of: string, number, boolean, datetime, array, object, binary</p>
          */
         _FinalStage type(@NotNull String type);
     }
@@ -161,12 +164,15 @@ public final class UserFieldRequest {
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
 
+        /**
+         * <p>Detailed type of the field, such as &quot;bigint&quot; or [&quot;decimal&quot;, {&quot;precision&quot;: 10, &quot;scale&quot;: 2}]; it must be consistent with type.</p>
+         */
         _FinalStage definition(Optional<TypesDefinition> definition);
 
         _FinalStage definition(TypesDefinition definition);
 
         /**
-         * <p>Example value shown in the UI and used as a hint for downstream consumers.</p>
+         * <p>Example value shown in the UI and used as a hint for downstream consumers</p>
          */
         _FinalStage example(Optional<Object> example);
 
@@ -194,7 +200,6 @@ public final class UserFieldRequest {
 
         private Optional<TypesDefinition> definition = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -222,7 +227,7 @@ public final class UserFieldRequest {
         }
 
         /**
-         * <p>Human-readable label shown to users selecting this field in the app.</p>
+         * <p>Human-readable label shown to users selecting this field in the app</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -233,7 +238,7 @@ public final class UserFieldRequest {
         }
 
         /**
-         * <p>One of: string, number, boolean, datetime, array, object, binary.</p>
+         * <p>One of: string, number, boolean, datetime, array, object, binary</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -264,7 +269,7 @@ public final class UserFieldRequest {
         }
 
         /**
-         * <p>Example value shown in the UI and used as a hint for downstream consumers.</p>
+         * <p>Example value shown in the UI and used as a hint for downstream consumers</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -274,7 +279,7 @@ public final class UserFieldRequest {
         }
 
         /**
-         * <p>Example value shown in the UI and used as a hint for downstream consumers.</p>
+         * <p>Example value shown in the UI and used as a hint for downstream consumers</p>
          */
         @java.lang.Override
         @JsonSetter(value = "example", nulls = Nulls.SKIP)
@@ -283,12 +288,19 @@ public final class UserFieldRequest {
             return this;
         }
 
+        /**
+         * <p>Detailed type of the field, such as &quot;bigint&quot; or [&quot;decimal&quot;, {&quot;precision&quot;: 10, &quot;scale&quot;: 2}]; it must be consistent with type.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
         @java.lang.Override
         public _FinalStage definition(TypesDefinition definition) {
             this.definition = Optional.ofNullable(definition);
             return this;
         }
 
+        /**
+         * <p>Detailed type of the field, such as &quot;bigint&quot; or [&quot;decimal&quot;, {&quot;precision&quot;: 10, &quot;scale&quot;: 2}]; it must be consistent with type.</p>
+         */
         @java.lang.Override
         @JsonSetter(value = "definition", nulls = Nulls.SKIP)
         public _FinalStage definition(Optional<TypesDefinition> definition) {
@@ -299,6 +311,19 @@ public final class UserFieldRequest {
         @java.lang.Override
         public UserFieldRequest build() {
             return new UserFieldRequest(definition, example, fieldId, label, path, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("definition")
+                    || key.equalsIgnoreCase("example")
+                    || key.equalsIgnoreCase("field_id")
+                    || key.equalsIgnoreCase("label")
+                    || key.equalsIgnoreCase("path")
+                    || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override

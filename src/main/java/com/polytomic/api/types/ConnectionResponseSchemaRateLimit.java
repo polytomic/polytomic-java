@@ -103,7 +103,6 @@ public final class ConnectionResponseSchemaRateLimit {
 
         private Optional<OffsetDateTime> limitedSince = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -160,6 +159,16 @@ public final class ConnectionResponseSchemaRateLimit {
         public ConnectionResponseSchemaRateLimit build() {
             return new ConnectionResponseSchemaRateLimit(
                     currentlyLimited, expiresAt, limitedSince, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("currently_limited")
+                    || key.equalsIgnoreCase("expires_at")
+                    || key.equalsIgnoreCase("limited_since")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -54,7 +54,7 @@ public final class ConnectionUsageSyncStats {
     }
 
     /**
-     * @return Per-category breakdown of the sync's calls, sorted by calls descending.
+     * @return Per-category breakdown of the sync's calls, sorted by calls descending
      */
     @JsonProperty("categories")
     public Optional<List<ConnectionUsageCategoryStats>> getCategories() {
@@ -62,7 +62,7 @@ public final class ConnectionUsageSyncStats {
     }
 
     /**
-     * @return Start time of the sync's most recent execution, or null if it has never run.
+     * @return Start time of the sync's most recent execution, or null if it has never run
      */
     @JsonProperty("lastRunAt")
     public Optional<OffsetDateTime> getLastRunAt() {
@@ -70,7 +70,7 @@ public final class ConnectionUsageSyncStats {
     }
 
     /**
-     * @return Unique identifier of the sync that spent the calls.
+     * @return Unique identifier of the sync that spent the calls
      */
     @JsonProperty("syncId")
     public Optional<String> getSyncId() {
@@ -78,7 +78,7 @@ public final class ConnectionUsageSyncStats {
     }
 
     /**
-     * @return Human-readable name of the sync, or empty if it could not be resolved.
+     * @return Human-readable name of the sync, or empty if it could not be resolved
      */
     @JsonProperty("syncName")
     public Optional<String> getSyncName() {
@@ -86,7 +86,7 @@ public final class ConnectionUsageSyncStats {
     }
 
     /**
-     * @return Kind of sync that spent the calls (model or bulk).
+     * @return Kind of sync that spent the calls (model or bulk)
      */
     @JsonProperty("syncType")
     public Optional<String> getSyncType() {
@@ -94,7 +94,7 @@ public final class ConnectionUsageSyncStats {
     }
 
     /**
-     * @return Total API calls the sync spent against this connection in the last 24 hours.
+     * @return Total API calls the sync spent against this connection in the last 24 hours
      */
     @JsonProperty("totalCalls")
     public Optional<Integer> getTotalCalls() {
@@ -150,7 +150,6 @@ public final class ConnectionUsageSyncStats {
 
         private Optional<Integer> totalCalls = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -166,7 +165,7 @@ public final class ConnectionUsageSyncStats {
         }
 
         /**
-         * <p>Per-category breakdown of the sync's calls, sorted by calls descending.</p>
+         * <p>Per-category breakdown of the sync's calls, sorted by calls descending</p>
          */
         @JsonSetter(value = "categories", nulls = Nulls.SKIP)
         public Builder categories(Optional<List<ConnectionUsageCategoryStats>> categories) {
@@ -180,7 +179,7 @@ public final class ConnectionUsageSyncStats {
         }
 
         /**
-         * <p>Start time of the sync's most recent execution, or null if it has never run.</p>
+         * <p>Start time of the sync's most recent execution, or null if it has never run</p>
          */
         @JsonSetter(value = "lastRunAt", nulls = Nulls.SKIP)
         public Builder lastRunAt(Optional<OffsetDateTime> lastRunAt) {
@@ -194,7 +193,7 @@ public final class ConnectionUsageSyncStats {
         }
 
         /**
-         * <p>Unique identifier of the sync that spent the calls.</p>
+         * <p>Unique identifier of the sync that spent the calls</p>
          */
         @JsonSetter(value = "syncId", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
@@ -208,7 +207,7 @@ public final class ConnectionUsageSyncStats {
         }
 
         /**
-         * <p>Human-readable name of the sync, or empty if it could not be resolved.</p>
+         * <p>Human-readable name of the sync, or empty if it could not be resolved</p>
          */
         @JsonSetter(value = "syncName", nulls = Nulls.SKIP)
         public Builder syncName(Optional<String> syncName) {
@@ -222,7 +221,7 @@ public final class ConnectionUsageSyncStats {
         }
 
         /**
-         * <p>Kind of sync that spent the calls (model or bulk).</p>
+         * <p>Kind of sync that spent the calls (model or bulk)</p>
          */
         @JsonSetter(value = "syncType", nulls = Nulls.SKIP)
         public Builder syncType(Optional<String> syncType) {
@@ -236,7 +235,7 @@ public final class ConnectionUsageSyncStats {
         }
 
         /**
-         * <p>Total API calls the sync spent against this connection in the last 24 hours.</p>
+         * <p>Total API calls the sync spent against this connection in the last 24 hours</p>
          */
         @JsonSetter(value = "totalCalls", nulls = Nulls.SKIP)
         public Builder totalCalls(Optional<Integer> totalCalls) {
@@ -252,6 +251,19 @@ public final class ConnectionUsageSyncStats {
         public ConnectionUsageSyncStats build() {
             return new ConnectionUsageSyncStats(
                     categories, lastRunAt, syncId, syncName, syncType, totalCalls, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("categories")
+                    || key.equalsIgnoreCase("lastRunAt")
+                    || key.equalsIgnoreCase("syncId")
+                    || key.equalsIgnoreCase("syncName")
+                    || key.equalsIgnoreCase("syncType")
+                    || key.equalsIgnoreCase("totalCalls")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

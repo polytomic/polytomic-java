@@ -40,7 +40,7 @@ public final class ExecutionsGetIngestConsoleLogsRequest {
     }
 
     /**
-     * @return Optional bulk sync ID for sync-scoped ingestion logs.
+     * @return Optional bulk sync ID for sync-scoped ingestion logs
      */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
@@ -101,7 +101,6 @@ public final class ExecutionsGetIngestConsoleLogsRequest {
 
         private Optional<String> after = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -114,7 +113,7 @@ public final class ExecutionsGetIngestConsoleLogsRequest {
         }
 
         /**
-         * <p>Optional bulk sync ID for sync-scoped ingestion logs.</p>
+         * <p>Optional bulk sync ID for sync-scoped ingestion logs</p>
          */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
@@ -157,6 +156,14 @@ public final class ExecutionsGetIngestConsoleLogsRequest {
 
         public ExecutionsGetIngestConsoleLogsRequest build() {
             return new ExecutionsGetIngestConsoleLogsRequest(syncId, limit, after, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("sync_id") || key.equalsIgnoreCase("limit") || key.equalsIgnoreCase("after")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

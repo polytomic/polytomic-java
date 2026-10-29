@@ -30,6 +30,9 @@ public final class SearchOperationsEnvelope {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Operation search results
+     */
     @JsonProperty("data")
     public Optional<SearchOperationsResponse> getData() {
         return data;
@@ -68,7 +71,6 @@ public final class SearchOperationsEnvelope {
     public static final class Builder {
         private Optional<SearchOperationsResponse> data = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -78,6 +80,9 @@ public final class SearchOperationsEnvelope {
             return this;
         }
 
+        /**
+         * <p>Operation search results</p>
+         */
         @JsonSetter(value = "data", nulls = Nulls.SKIP)
         public Builder data(Optional<SearchOperationsResponse> data) {
             this.data = data;
@@ -91,6 +96,14 @@ public final class SearchOperationsEnvelope {
 
         public SearchOperationsEnvelope build() {
             return new SearchOperationsEnvelope(data, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("data")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -34,11 +34,17 @@ public final class ConfigurationValue {
         this.additionalProperties = additionalProperties;
     }
 
+    /**
+     * @return Allowed values for the configuration field
+     */
     @JsonProperty("items")
     public Optional<List<Object>> getItems() {
         return items;
     }
 
+    /**
+     * @return JSON Schema type of the configuration field
+     */
     @JsonProperty("type")
     public Optional<String> getType() {
         return type;
@@ -79,7 +85,6 @@ public final class ConfigurationValue {
 
         private Optional<String> type = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -90,6 +95,9 @@ public final class ConfigurationValue {
             return this;
         }
 
+        /**
+         * <p>Allowed values for the configuration field</p>
+         */
         @JsonSetter(value = "items", nulls = Nulls.SKIP)
         public Builder items(Optional<List<Object>> items) {
             this.items = items;
@@ -101,6 +109,9 @@ public final class ConfigurationValue {
             return this;
         }
 
+        /**
+         * <p>JSON Schema type of the configuration field</p>
+         */
         @JsonSetter(value = "type", nulls = Nulls.SKIP)
         public Builder type(Optional<String> type) {
             this.type = type;
@@ -114,6 +125,14 @@ public final class ConfigurationValue {
 
         public ConfigurationValue build() {
             return new ConfigurationValue(items, type, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("items") || key.equalsIgnoreCase("type")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         public Builder additionalProperty(String key, Object value) {

@@ -42,7 +42,7 @@ public final class UpdateUserRequestSchema {
     }
 
     /**
-     * @return Email address used to sign the user in and receive notifications.
+     * @return Email address used to sign the user in and receive notifications
      */
     @JsonProperty("email")
     public String getEmail() {
@@ -96,7 +96,7 @@ public final class UpdateUserRequestSchema {
 
     public interface EmailStage {
         /**
-         * <p>Email address used to sign the user in and receive notifications.</p>
+         * <p>Email address used to sign the user in and receive notifications</p>
          */
         _FinalStage email(@NotNull String email);
 
@@ -133,7 +133,6 @@ public final class UpdateUserRequestSchema {
 
         private Optional<String> role = Optional.empty();
 
-        @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
@@ -147,7 +146,7 @@ public final class UpdateUserRequestSchema {
         }
 
         /**
-         * <p>Email address used to sign the user in and receive notifications.</p>
+         * <p>Email address used to sign the user in and receive notifications</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -200,6 +199,14 @@ public final class UpdateUserRequestSchema {
         @java.lang.Override
         public UpdateUserRequestSchema build() {
             return new UpdateUserRequestSchema(email, role, roleIds, additionalProperties);
+        }
+
+        @JsonAnySetter
+        private void putAdditionalPropertyFromJson(String key, Object value) {
+            if (key.equalsIgnoreCase("email") || key.equalsIgnoreCase("role") || key.equalsIgnoreCase("role_ids")) {
+                return;
+            }
+            this.additionalProperties.put(key, value);
         }
 
         @java.lang.Override
