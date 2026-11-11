@@ -214,12 +214,8 @@ public class ModelsClient {
 
     /**
      * Lists all models in the caller's organization.
-     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
-     * If more results are available, the response includes <code>pagination.next_page_token</code>.
-     * Pass that token back unchanged to continue from the last item you received.</p>
-     * <p>The token is opaque. Do not construct or edit it yourself.</p>
-     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
-     * non-positive values fall back to the same default.</p>
+     * <p>Results are returned as a single <code>data</code> array. This endpoint does not support
+     * pagination, <code>limit</code>, or <code>page_token</code> query parameters.</p>
      */
     public ModelListResponseEnvelope list() {
         return this.rawClient.list().body();
@@ -227,12 +223,8 @@ public class ModelsClient {
 
     /**
      * Lists all models in the caller's organization.
-     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> used as a tiebreaker.
-     * If more results are available, the response includes <code>pagination.next_page_token</code>.
-     * Pass that token back unchanged to continue from the last item you received.</p>
-     * <p>The token is opaque. Do not construct or edit it yourself.</p>
-     * <p>The <code>limit</code> is capped at 50. Values above that cap are reduced to 50, and
-     * non-positive values fall back to the same default.</p>
+     * <p>Results are returned as a single <code>data</code> array. This endpoint does not support
+     * pagination, <code>limit</code>, or <code>page_token</code> query parameters.</p>
      */
     public ModelListResponseEnvelope list(RequestOptions requestOptions) {
         return this.rawClient.list(requestOptions).body();

@@ -50,7 +50,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../guides/events">Events documentation</a> for the
+     * <a href="../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -64,7 +64,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../guides/events">Events documentation</a> for the
+     * <a href="../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -127,7 +127,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../guides/events">Events documentation</a> for the
+     * <a href="../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -141,7 +141,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../guides/events">Events documentation</a> for the
+     * <a href="../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -222,7 +222,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../guides/events">Events documentation</a> for the
+     * <a href="../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -236,7 +236,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../guides/events">Events documentation</a> for the
+     * <a href="../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -300,7 +300,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../guides/events">Events documentation</a> for the
+     * <a href="../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -314,7 +314,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../guides/events">Events documentation</a> for the
+     * <a href="../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      */
@@ -396,7 +396,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../guides/events">Events documentation</a> for the
+     * <a href="../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      * <p>Deletion is permanent. To stop delivery without losing the webhook
@@ -413,7 +413,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../guides/events">Events documentation</a> for the
+     * <a href="../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      * <p>Deletion is permanent. To stop delivery without losing the webhook
@@ -620,7 +620,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../../guides/events">Events documentation</a> for the
+     * <a href="../../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      * <p>Events are not queued while the webhook is disabled — any activity that occurs
@@ -638,7 +638,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../../guides/events">Events documentation</a> for the
+     * <a href="../../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      * <p>Events are not queued while the webhook is disabled — any activity that occurs
@@ -718,7 +718,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../../guides/events">Events documentation</a> for the
+     * <a href="../../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      * <p>Delivery resumes from the next event generated after this call. Events that
@@ -734,7 +734,7 @@ public class RawWebhooksClient {
      * <p>📘 One webhook per organization</p>
      * <p>An organization can register a single webhook, which receives every event
      * produced in that organization. See the
-     * <a href="../../../../guides/events">Events documentation</a> for the
+     * <a href="../../../../guides/events/overview">Events documentation</a> for the
      * list of event types and payload shapes.</p>
      * </blockquote>
      * <p>Delivery resumes from the next event generated after this call. Events that

@@ -37,6 +37,9 @@ public class AsyncProxyClient {
      * replacement for Polytomic's modeled endpoints. The request is executed with the
      * connection's stored credentials and inherited base URL, headers, and query
      * parameters.</p>
+     * <p>The connection must have proxy access enabled with
+     * <a href="../../../../api-reference/connections/update-proxy-settings"><code>PUT /api/connections/{id}/proxy/settings</code></a>,
+     * and its organization must have the Connection Proxy API entitlement.</p>
      * <p>Before building requests dynamically, call
      * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
      * to inspect the inherited base URL, blocked headers, accepted body types, and
@@ -87,6 +90,9 @@ public class AsyncProxyClient {
      * replacement for Polytomic's modeled endpoints. The request is executed with the
      * connection's stored credentials and inherited base URL, headers, and query
      * parameters.</p>
+     * <p>The connection must have proxy access enabled with
+     * <a href="../../../../api-reference/connections/update-proxy-settings"><code>PUT /api/connections/{id}/proxy/settings</code></a>,
+     * and its organization must have the Connection Proxy API entitlement.</p>
      * <p>Before building requests dynamically, call
      * <a href="../../../../api-reference/connections/get-proxy-info"><code>GET /api/connections/{id}/proxy/info</code></a>
      * to inspect the inherited base URL, blocked headers, accepted body types, and
@@ -241,10 +247,16 @@ public class AsyncProxyClient {
      * <p>The setting is stored on the parent connection. To update proxy access for a
      * shared connection, the caller must have edit permission for the parent
      * connection.</p>
-     * <p>Enabling proxy access requires a backend that supports the Connection Proxy API.
+     * <p>Enabling proxy access requires the Connection Proxy API entitlement on the
+     * organization that owns the parent connection. Without it, the request returns
+     * <code>403 Forbidden</code>. Proxy calls also require the entitlement, on both the calling
+     * organization and the parent's organization; if it is revoked, proxy access stops
+     * regardless of this setting.</p>
+     * <p>Enabling proxy access also requires a backend that supports the Connection Proxy API.
      * If the connection backend is unsupported, the request returns <code>400 Bad Request</code>.
      * Disabling proxy access is allowed for any connection the caller can edit.</p>
-     * <p>Setting <code>enabled</code> to <code>false</code> prevents proxy calls for the connection.</p>
+     * <p>Connections are disabled until proxy access is explicitly enabled with this
+     * endpoint. Setting <code>enabled</code> to <code>false</code> prevents proxy calls for the connection.</p>
      */
     public CompletableFuture<ConnectionProxySettingsEnvelope> updateProxySettings(
             String id, UpdateConnectionProxySettingsRequest request) {
@@ -264,10 +276,16 @@ public class AsyncProxyClient {
      * <p>The setting is stored on the parent connection. To update proxy access for a
      * shared connection, the caller must have edit permission for the parent
      * connection.</p>
-     * <p>Enabling proxy access requires a backend that supports the Connection Proxy API.
+     * <p>Enabling proxy access requires the Connection Proxy API entitlement on the
+     * organization that owns the parent connection. Without it, the request returns
+     * <code>403 Forbidden</code>. Proxy calls also require the entitlement, on both the calling
+     * organization and the parent's organization; if it is revoked, proxy access stops
+     * regardless of this setting.</p>
+     * <p>Enabling proxy access also requires a backend that supports the Connection Proxy API.
      * If the connection backend is unsupported, the request returns <code>400 Bad Request</code>.
      * Disabling proxy access is allowed for any connection the caller can edit.</p>
-     * <p>Setting <code>enabled</code> to <code>false</code> prevents proxy calls for the connection.</p>
+     * <p>Connections are disabled until proxy access is explicitly enabled with this
+     * endpoint. Setting <code>enabled</code> to <code>false</code> prevents proxy calls for the connection.</p>
      */
     public CompletableFuture<ConnectionProxySettingsEnvelope> updateProxySettings(
             String id, UpdateConnectionProxySettingsRequest request, IdempotentRequestOptions requestOptions) {

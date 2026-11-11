@@ -30,6 +30,8 @@ public final class BulkSchema {
 
     private final Optional<Boolean> enabled;
 
+    private final Optional<List<String>> excludedFields;
+
     private final Optional<List<BulkField>> fields;
 
     private final Optional<List<BulkFilter>> filters;
@@ -53,6 +55,7 @@ public final class BulkSchema {
             Optional<String> destinationHistoryOutputName,
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
+            Optional<List<String>> excludedFields,
             Optional<List<BulkField>> fields,
             Optional<List<BulkFilter>> filters,
             Optional<Boolean> historyEnabled,
@@ -66,6 +69,7 @@ public final class BulkSchema {
         this.destinationHistoryOutputName = destinationHistoryOutputName;
         this.disableDataCutoff = disableDataCutoff;
         this.enabled = enabled;
+        this.excludedFields = excludedFields;
         this.fields = fields;
         this.filters = filters;
         this.historyEnabled = historyEnabled;
@@ -107,6 +111,14 @@ public final class BulkSchema {
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
+    }
+
+    /**
+     * @return IDs of fields that are never synced, even when automatically_add_new_fields would add them. Present in responses wherever fields are; when patching, omit it to keep the current list and send an empty list to clear it.
+     */
+    @JsonProperty("excluded_fields")
+    public Optional<List<String>> getExcludedFields() {
+        return excludedFields;
     }
 
     /**
@@ -189,6 +201,7 @@ public final class BulkSchema {
                 && destinationHistoryOutputName.equals(other.destinationHistoryOutputName)
                 && disableDataCutoff.equals(other.disableDataCutoff)
                 && enabled.equals(other.enabled)
+                && excludedFields.equals(other.excludedFields)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
                 && historyEnabled.equals(other.historyEnabled)
@@ -206,6 +219,7 @@ public final class BulkSchema {
                 this.destinationHistoryOutputName,
                 this.disableDataCutoff,
                 this.enabled,
+                this.excludedFields,
                 this.fields,
                 this.filters,
                 this.historyEnabled,
@@ -235,6 +249,8 @@ public final class BulkSchema {
 
         private Optional<Boolean> enabled = Optional.empty();
 
+        private Optional<List<String>> excludedFields = Optional.empty();
+
         private Optional<List<BulkField>> fields = Optional.empty();
 
         private Optional<List<BulkFilter>> filters = Optional.empty();
@@ -260,6 +276,7 @@ public final class BulkSchema {
             destinationHistoryOutputName(other.getDestinationHistoryOutputName());
             disableDataCutoff(other.getDisableDataCutoff());
             enabled(other.getEnabled());
+            excludedFields(other.getExcludedFields());
             fields(other.getFields());
             filters(other.getFilters());
             historyEnabled(other.getHistoryEnabled());
@@ -324,6 +341,20 @@ public final class BulkSchema {
 
         public Builder enabled(Boolean enabled) {
             this.enabled = Optional.ofNullable(enabled);
+            return this;
+        }
+
+        /**
+         * <p>IDs of fields that are never synced, even when automatically_add_new_fields would add them. Present in responses wherever fields are; when patching, omit it to keep the current list and send an empty list to clear it.</p>
+         */
+        @JsonSetter(value = "excluded_fields", nulls = Nulls.SKIP)
+        public Builder excludedFields(Optional<List<String>> excludedFields) {
+            this.excludedFields = excludedFields;
+            return this;
+        }
+
+        public Builder excludedFields(List<String> excludedFields) {
+            this.excludedFields = Optional.ofNullable(excludedFields);
             return this;
         }
 
@@ -445,6 +476,7 @@ public final class BulkSchema {
                     destinationHistoryOutputName,
                     disableDataCutoff,
                     enabled,
+                    excludedFields,
                     fields,
                     filters,
                     historyEnabled,
@@ -462,6 +494,7 @@ public final class BulkSchema {
                     || key.equalsIgnoreCase("destination_history_output_name")
                     || key.equalsIgnoreCase("disable_data_cutoff")
                     || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("excluded_fields")
                     || key.equalsIgnoreCase("fields")
                     || key.equalsIgnoreCase("filters")
                     || key.equalsIgnoreCase("history_enabled")

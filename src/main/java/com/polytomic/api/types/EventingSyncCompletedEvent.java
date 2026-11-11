@@ -205,7 +205,7 @@ public final class EventingSyncCompletedEvent {
     }
 
     /**
-     * @return Final status of the execution
+     * @return Final status of the execution, one of completed, failed, or canceled
      */
     @JsonProperty("status")
     public Optional<UtilExecutionStatus> getStatus() {
@@ -213,7 +213,7 @@ public final class EventingSyncCompletedEvent {
     }
 
     /**
-     * @return Model sync ID
+     * @return Model Sync ID
      */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
@@ -221,7 +221,7 @@ public final class EventingSyncCompletedEvent {
     }
 
     /**
-     * @return Name of the model sync
+     * @return Name of the Model Sync
      */
     @JsonProperty("sync_name")
     public Optional<String> getSyncName() {
@@ -595,7 +595,7 @@ public final class EventingSyncCompletedEvent {
         }
 
         /**
-         * <p>Final status of the execution</p>
+         * <p>Final status of the execution, one of completed, failed, or canceled</p>
          */
         @JsonSetter(value = "status", nulls = Nulls.SKIP)
         public Builder status(Optional<UtilExecutionStatus> status) {
@@ -609,7 +609,7 @@ public final class EventingSyncCompletedEvent {
         }
 
         /**
-         * <p>Model sync ID</p>
+         * <p>Model Sync ID</p>
          */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
@@ -623,7 +623,7 @@ public final class EventingSyncCompletedEvent {
         }
 
         /**
-         * <p>Name of the model sync</p>
+         * <p>Name of the Model Sync</p>
          */
         @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
         public Builder syncName(Optional<String> syncName) {

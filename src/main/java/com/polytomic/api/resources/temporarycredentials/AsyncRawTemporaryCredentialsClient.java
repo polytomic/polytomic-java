@@ -76,6 +76,8 @@ public class AsyncRawTemporaryCredentialsClient {
      * </blockquote>
      * <p>Polytomic periodically removes expired credential records. API usage history
      * keeps its credential ID according to the normal API usage retention period.</p>
+     * <p>For a Harbor credential without an expiration, use
+     * <a href="../../api-reference/harbors/keys/create">Create Harbor key</a>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<TemporaryCredentialResponseEnvelope>> create(
             CreateTemporaryCredentialRequest request) {
@@ -116,6 +118,8 @@ public class AsyncRawTemporaryCredentialsClient {
      * </blockquote>
      * <p>Polytomic periodically removes expired credential records. API usage history
      * keeps its credential ID according to the normal API usage retention period.</p>
+     * <p>For a Harbor credential without an expiration, use
+     * <a href="../../api-reference/harbors/keys/create">Create Harbor key</a>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<TemporaryCredentialResponseEnvelope>> create(
             CreateTemporaryCredentialRequest request, IdempotentRequestOptions requestOptions) {

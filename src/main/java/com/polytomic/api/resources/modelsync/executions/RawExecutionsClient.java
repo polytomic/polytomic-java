@@ -48,12 +48,17 @@ public class RawExecutionsClient {
 
     /**
      * Lists executions for a model sync.
-     * <p>Results are ordered by start time descending. If more results are available, the
-     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
-     * to continue paging.</p>
-     * <p>The token is opaque. Do not construct or edit it yourself.</p>
-     * <p>For full details about a specific execution — including record counts and error
-     * summaries — use
+     * <p>Results are ordered by <code>created_at</code> descending. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to continue paging. A token is
+     * returned even on the last page and on empty pages. Stop paging when <code>data</code> is
+     * empty; the presence of a token does not mean more results are available.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions. Each page
+     * still lists its executions newest first; subsequent pages contain newer
+     * executions.</p>
+     * <p>Use <code>only_completed=true</code> to return only executions in terminal statuses.
+     * Ordering and pagination still use <code>created_at</code>.</p>
+     * <p>For full details about a specific execution, including record counts and error
+     * summaries, use
      * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public PolytomicHttpResponse<ListExecutionResponseEnvelope> list(String syncId) {
@@ -62,12 +67,17 @@ public class RawExecutionsClient {
 
     /**
      * Lists executions for a model sync.
-     * <p>Results are ordered by start time descending. If more results are available, the
-     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
-     * to continue paging.</p>
-     * <p>The token is opaque. Do not construct or edit it yourself.</p>
-     * <p>For full details about a specific execution — including record counts and error
-     * summaries — use
+     * <p>Results are ordered by <code>created_at</code> descending. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to continue paging. A token is
+     * returned even on the last page and on empty pages. Stop paging when <code>data</code> is
+     * empty; the presence of a token does not mean more results are available.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions. Each page
+     * still lists its executions newest first; subsequent pages contain newer
+     * executions.</p>
+     * <p>Use <code>only_completed=true</code> to return only executions in terminal statuses.
+     * Ordering and pagination still use <code>created_at</code>.</p>
+     * <p>For full details about a specific execution, including record counts and error
+     * summaries, use
      * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public PolytomicHttpResponse<ListExecutionResponseEnvelope> list(String syncId, RequestOptions requestOptions) {
@@ -76,12 +86,17 @@ public class RawExecutionsClient {
 
     /**
      * Lists executions for a model sync.
-     * <p>Results are ordered by start time descending. If more results are available, the
-     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
-     * to continue paging.</p>
-     * <p>The token is opaque. Do not construct or edit it yourself.</p>
-     * <p>For full details about a specific execution — including record counts and error
-     * summaries — use
+     * <p>Results are ordered by <code>created_at</code> descending. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to continue paging. A token is
+     * returned even on the last page and on empty pages. Stop paging when <code>data</code> is
+     * empty; the presence of a token does not mean more results are available.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions. Each page
+     * still lists its executions newest first; subsequent pages contain newer
+     * executions.</p>
+     * <p>Use <code>only_completed=true</code> to return only executions in terminal statuses.
+     * Ordering and pagination still use <code>created_at</code>.</p>
+     * <p>For full details about a specific execution, including record counts and error
+     * summaries, use
      * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public PolytomicHttpResponse<ListExecutionResponseEnvelope> list(String syncId, ExecutionsListRequest request) {
@@ -90,12 +105,17 @@ public class RawExecutionsClient {
 
     /**
      * Lists executions for a model sync.
-     * <p>Results are ordered by start time descending. If more results are available, the
-     * response includes <code>pagination.next_page_token</code>; pass that token back unchanged
-     * to continue paging.</p>
-     * <p>The token is opaque. Do not construct or edit it yourself.</p>
-     * <p>For full details about a specific execution — including record counts and error
-     * summaries — use
+     * <p>Results are ordered by <code>created_at</code> descending. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to continue paging. A token is
+     * returned even on the last page and on empty pages. Stop paging when <code>data</code> is
+     * empty; the presence of a token does not mean more results are available.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions. Each page
+     * still lists its executions newest first; subsequent pages contain newer
+     * executions.</p>
+     * <p>Use <code>only_completed=true</code> to return only executions in terminal statuses.
+     * Ordering and pagination still use <code>created_at</code>.</p>
+     * <p>For full details about a specific execution, including record counts and error
+     * summaries, use
      * <a href="../../../../api-reference/model-sync/executions/get"><code>GET /api/syncs/{sync_id}/executions/{id}</code></a>.</p>
      */
     public PolytomicHttpResponse<ListExecutionResponseEnvelope> list(

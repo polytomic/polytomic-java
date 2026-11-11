@@ -249,7 +249,7 @@ public final class HarboractivityapiHarborActivityMetadata {
     }
 
     /**
-     * @return Connection name when the query was submitted
+     * @return Connection name when the query was submitted, or of the source a fetched source document describes
      */
     @JsonProperty("connection_name")
     public Optional<String> getConnectionName() {
@@ -265,7 +265,7 @@ public final class HarboractivityapiHarborActivityMetadata {
     }
 
     /**
-     * @return Connection type of the queried connection
+     * @return Connection type of the queried connection, or of the source a fetched source document describes
      */
     @JsonProperty("connection_type")
     public Optional<String> getConnectionType() {
@@ -803,7 +803,7 @@ public final class HarboractivityapiHarborActivityMetadata {
         }
 
         /**
-         * <p>Connection name when the query was submitted</p>
+         * <p>Connection name when the query was submitted, or of the source a fetched source document describes</p>
          */
         @JsonSetter(value = "connection_name", nulls = Nulls.SKIP)
         public Builder connectionName(Optional<String> connectionName) {
@@ -831,7 +831,7 @@ public final class HarboractivityapiHarborActivityMetadata {
         }
 
         /**
-         * <p>Connection type of the queried connection</p>
+         * <p>Connection type of the queried connection, or of the source a fetched source document describes</p>
          */
         @JsonSetter(value = "connection_type", nulls = Nulls.SKIP)
         public Builder connectionType(Optional<String> connectionType) {

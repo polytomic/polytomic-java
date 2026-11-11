@@ -14,15 +14,12 @@
 
 Lists bulk syncs in the caller's organization.
 
-Results are ordered by `updated_at` descending, with `id` as a tiebreaker for
-syncs modified at the same instant. Pagination uses an opaque
-`pagination.next_page_token` returned in the response; pass it back as the
-`page_token` query parameter to fetch the next page. The `limit` parameter is
-optional, and the default and maximum page size is 50 syncs.
+Results are returned as a single `data` array. You can filter by `active`, but
+this endpoint does not support pagination, `limit`, or `page_token` query
+parameters.
 
-> 📘 To retrieve a specific sync, use
-> [`GET /api/bulk/syncs/{id}`](../../../api-reference/bulk-sync/get)
-> instead of filtering the list client-side.
+To retrieve a specific Bulk Sync, use
+[`GET /api/bulk/syncs/{id}`](../../../api-reference/bulk-sync/get).
 </dd>
 </dl>
 </dd>
@@ -123,6 +120,17 @@ When omitted, automatic discovery defaults are conservative:
 - `automatically_add_new_fields` defaults to enabling newly discovered fields
   on already selected objects.
 - `normalize_names` defaults to enabled.
+
+## Scheduling
+
+To sync the two selective groups of objects at different frequencies, add one
+entry to `additional_schedules` with `selective_mode` set to
+`incrementalFields` and another with `nonincrementalFields`. Set
+`default_schedule.frequency` to `manual` to avoid an additional automatic run
+covering all selected objects. The default schedule does not accept a
+selective mode. Check `capabilities.supports_selective_modes` on
+[`GET /api/connections/{id}/bulksync/source`](../../../api-reference/bulk-sync/get-source)
+for the source connection first.
 </dd>
 </dl>
 </dd>
@@ -1140,15 +1148,28 @@ client.bulkSync().getSource(
 
 Describes the destination configuration schema a connection accepts when used as a bulk sync destination.
 
-The response is a JSON Schema object describing the shape of the
-`destination_configuration` field you must supply when
-[creating](../../../../../api-reference/bulk-sync/create) or
-[updating](../../../../../api-reference/bulk-sync/update) a bulk sync that uses this
-connection as its destination. Required fields vary by connection type.
+Use `configuration` to discover the fields accepted by
+`destination_configuration` when you [create](../../../../../api-reference/bulk-sync/create)
+or [update](../../../../../api-reference/bulk-sync/update) a Bulk Sync. Required fields vary
+by Connection type. Use `modes` to choose a mode supported by this destination.
 
-> 📘 Fetch this endpoint once per connection type rather than once per sync.
-> The configuration schema is the same for all syncs sharing the same
-> destination connection.
+## Suggested initial configuration
+
+Supply `source_connection_id` to request suggested values for a new Bulk Sync.
+For example, Snowflake suggests an output schema based on the source Connection
+name. You must be able to read both Connections, and they must belong to the
+same Organization.
+
+When the destination generates suggestions, `initial_configuration` contains
+values using the same field names as `destination_configuration`. Use these
+values as a starting point, preserving any explicit choices. This request does
+not change a Connection or an existing Bulk Sync. Omit `source_connection_id`
+to retrieve metadata without contextual suggestions.
+
+> ℹ️ Configuration field metadata is reusable for the destination Connection.
+> Initial values depend on the source and destination Connections. Fetch them
+> for each new source/destination pair rather than caching them by Connection
+> type. Do not apply them over an existing configuration.
 </dd>
 </dl>
 </dd>
@@ -1163,7 +1184,13 @@ connection as its destination. Required fields vary by connection type.
 <dd>
 
 ```java
-client.bulkSync().getDestination("248df4b7-aa70-47b8-a036-33ac447e668d");
+client.bulkSync().getDestination(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    BulkSyncGetDestinationRequest
+        .builder()
+        .sourceConnectionId("248df4b7-aa70-47b8-a036-33ac447e668d")
+        .build()
+);
 ```
 </dd>
 </dl>
@@ -1179,6 +1206,14 @@ client.bulkSync().getDestination("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dd>
 
 **id:** `String` — Connection ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sourceConnectionId:** `Optional<String>` — Source Connection ID used to suggest initial destination configuration values
     
 </dd>
 </dl>
@@ -1205,12 +1240,9 @@ client.bulkSync().getDestination("248df4b7-aa70-47b8-a036-33ac447e668d");
 
 Lists all connection types supported by this deployment.
 
-Each entry includes per-type metadata:
-
-- The available operations the connection type supports.
-- Its category.
-- Whether the connection type is enabled for the caller's organization.
-- Which modes (source, destination, enrichment) it can act as.
+Each entry includes the Connection type's ID, name, capabilities, and
+configuration schema. Capabilities indicate whether it supports use as a
+source, destination, enrichment source, scheduler, or sync event log target.
 </dd>
 </dl>
 </dd>
@@ -1338,6 +1370,12 @@ client.connections().getTypeParameterValues(
     GetConnectionTypeParameterValuesRequestSchema
         .builder()
         .field("field")
+        .parameters(
+            new HashMap<String, Object>() {{
+                put("byo_app_token", "secret");
+                put("name", "Example");
+            }}
+        )
         .build()
 );
 ```
@@ -1659,6 +1697,14 @@ client.connections().connect(
 <dl>
 <dd>
 
+**access:** `Optional<List<ConnectAccessLevel>>` — Access levels the new connection requests: ["read"] for read-only access, or ["read", "write"] for full access, the default. Only some connection types support read-only access.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **connection:** `Optional<String>` — The id of an existing connection to update
     
 </dd>
@@ -1723,7 +1769,7 @@ client.connections().connect(
 <dl>
 <dd>
 
-**whitelist:** `Optional<List<String>>` — List of connection types which are allowed to be created. Ignored if type is set.
+**whitelist:** `Optional<List<String>>` — List of connection types which are allowed to be created. Ignored if type is set. The embedded form shows one connection type, so send exactly one entry.
     
 </dd>
 </dl>
@@ -3169,18 +3215,11 @@ client.schemas().get("248df4b7-aa70-47b8-a036-33ac447e668d", "public.users");
 <dl>
 <dd>
 
-Returns a sample of records from a schema on a connection.
+Returns all records from a supported schema on a Connection.
 
-The sample is intended for previewing the shape and values of data before
-committing to a sync configuration, not for full data export.
-
-> 🚧 The sample is not guaranteed to be representative of the full dataset.
-> Row selection is implementation-defined and may differ across connection
-> types.
-
-> 📘 If the schema's field definitions are stale, refresh them first with
-> [`POST /api/connections/{id}/schemas/refresh`](../../../../../../api-reference/schemas/refresh) to ensure
-> the sample aligns with the current schema structure.
+This endpoint supports only the HubSpot `deals_pipelines` schema. It returns
+all records from that schema in a single response, without sampling or
+pagination. Other backends and schemas are unsupported.
 </dd>
 </dl>
 </dd>
@@ -3484,14 +3523,8 @@ client.models().preview(
 
 Lists all models in the caller's organization.
 
-Results are ordered by `updated_at` descending, with `id` used as a tiebreaker.
-If more results are available, the response includes `pagination.next_page_token`.
-Pass that token back unchanged to continue from the last item you received.
-
-The token is opaque. Do not construct or edit it yourself.
-
-The `limit` is capped at 50. Values above that cap are reduced to 50, and
-non-positive values fall back to the same default.
+Results are returned as a single `data` array. This endpoint does not support
+pagination, `limit`, or `page_token` query parameters.
 </dd>
 </dl>
 </dd>
@@ -5613,15 +5646,18 @@ client.entities().getForPartner("248df4b7-aa70-47b8-a036-33ac447e668d");
 
 Lists audit events for the caller's organization.
 
-Results are paginated. If more events are available, the response includes
-`pagination.next_page_token`; pass that token back unchanged to continue from
-the last item you received.
+Results are ordered by `created_at` descending. Use `limit` to control how many
+events are returned. The response does not include a pagination token.
 
-Filter by event type using the `event_type` query parameter. Pass one of the
-identifiers returned by [`GET /api/events_types`](../../api-reference/events/get-types) to
-narrow results to a specific category of activity.
+Filter by event type using the `type` query parameter. Pass one of the
+identifiers returned by [`GET /api/events_types`](../../api-reference/events/get-types)
+to narrow results to a specific category of activity.
 
-> 📘 Events reflect audit activity scoped to the caller's organization.
+Use `starting_after` and `ending_before` to restrict results to events created
+strictly after or before a timestamp. Results remain newest first when you use
+either filter.
+
+> ℹ️ Events reflect audit activity scoped to your Organization.
 > The log captures both user-initiated and API-initiated actions.
 </dd>
 </dl>
@@ -5748,267 +5784,6 @@ client.events().getTypes();
 </details>
 
 ## Harbors
-<details><summary><code>client.harbors.listAuthorizedConnections() -> HarborConnectionListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists profile-authorized connections and capabilities for the current Harbor credential.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listAuthorizedConnections(
-    HarborsListAuthorizedConnectionsRequest
-        .builder()
-        .limit(1)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of results to return
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Token from the previous page
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listAuthorizedSchemas(connectionId) -> HarborSchemaListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists one bounded page of schema resources authorized by the current Harbor profile.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listAuthorizedSchemas(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListAuthorizedSchemasRequest
-        .builder()
-        .limit(1)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**connectionId:** `String` — Connection ID
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of results to return
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Token from the previous page
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.getAuthorizedSchema(connectionId, schemaId) -> HarborConnectionSchemaEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns one schema resource authorized by the current Harbor profile.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().getAuthorizedSchema(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "schema_id",
-    HarborsGetAuthorizedSchemaRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**connectionId:** `String` — Connection ID
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**schemaId:** `String` — Schema ID
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.harbors.registerSession(request) -> RegisterHarborSessionEnvelope</code></summary>
 <dl>
 <dd>
@@ -6601,2070 +6376,6 @@ client.harbors().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 </dl>
 </details>
 
-<details><summary><code>client.harbors.getActionConfiguration(harborId) -> HarborActionConfigurationEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns configured action grants and revisions for a Harbor.
-
-You must be an Organization administrator with permission to edit the Harbor.
-Use a writable API credential, not a Harbor profile credential. Read-only keys
-are denied because this endpoint requires Harbor edit permission.
-
-This response includes grants for Connections that no longer populate the
-Harbor. You can remove those stale grants without reattaching the Connection.
-Reading configuration does not require the Harbor Actions entitlement.
-
-Use each Connection's `revision` as `expected_revision` when replacing or
-removing its grants. Configuration responses contain metadata only, not provider
-credentials or record values.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().getActionConfiguration("248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.disableActionConfiguration(harborId) -> HarborActionConfigurationEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Disables all configured actions for a Harbor.
-
-You must be an Organization administrator with permission to edit the Harbor.
-Use a normal writable API credential, not a Harbor profile credential. Your
-Organization must have the Harbor Actions entitlement.
-
-> 🚧 Disable all actions
->
-> This removes every configured action grant from the Harbor, including grants
-> for detached Connections. There is no per-Connection revision check.
-
-The response contains the empty configuration. This request does not delete
-Connections, syncs, or provider records.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().disableActionConfiguration("248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listActionSourceConnections(harborId) -> HarborActionSourceConnectionsEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists action-capable source Connections that populate a Harbor.
-
-You must be an Organization administrator with permission to edit the Harbor.
-Use a writable API credential, not a Harbor profile credential. Read-only keys
-are denied because this endpoint requires Harbor edit permission. Discovery does
-not require the Harbor Actions entitlement.
-
-A Connection is eligible when it supports actions and is a source of a
-non-deleted Bulk Sync or Model Sync targeting the Harbor's backing Connection.
-Only saved, non-shared Connections in your Organization that you can query are
-included. Disabled syncs still establish source membership.
-
-Discover schemas and operations before choosing the grants to configure.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listActionSourceConnections("248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.setActionConfiguration(harborId, connectionId, request) -> HarborActionConfigurationEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Creates or replaces action grants for an eligible Harbor source Connection.
-
-You must be an Organization administrator with permission to edit both the
-Harbor and the source Connection. Use a normal writable API credential, not a
-Harbor profile credential. Your Organization must have the Harbor Actions
-entitlement.
-
-The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
-Sync targeting its backing Connection. This requirement applies to new grants
-and replacements, even when you only remove fields from an existing grant.
-
-Submit the complete grant set for this Connection. Omit `expected_revision` to
-create it, or supply the current revision to replace it. A missing, stale, or
-unexpected revision returns `409 Conflict`; read configuration again before
-retrying. Successful replacement creates a new revision.
-
-For mutating operations, `field_ids` selects input fields and
-`lookup_field_ids` must be omitted. For read-only operations, `field_ids`
-selects output fields and `lookup_field_ids` selects allowed lookup fields.
-Duplicate operations or field IDs are invalid. An empty grant set is invalid;
-remove the Connection's grants instead.
-
-This request changes permissions only. It does not execute provider actions.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().setActionConfiguration(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    SetHarborActionConfigurationRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**connectionId:** `String` — Source Connection whose action grants you want to manage
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**expectedRevision:** `Optional<String>` — Current revision when replacing existing grants. Omit when creating grants for this Connection.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**grants:** `Optional<List<HarborActionGrantSchema>>` — Complete replacement of this Connection's action grants
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.removeActionConfiguration(harborId, connectionId) -> HarborActionConfigurationEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Removes a Connection's action grants from a Harbor.
-
-You must be an Organization administrator with permission to edit the Harbor.
-Use a normal writable API credential, not a Harbor profile credential. Your
-Organization must have the Harbor Actions entitlement.
-
-Supply the current `expected_revision` as a query parameter. A stale revision
-returns `409 Conflict`; read configuration again before retrying.
-
-You can remove grants after the Connection stops populating the Harbor, or after
-the Connection is deleted. The response contains the remaining configured action
-Connections. This request does not delete the Connection or provider records.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().removeActionConfiguration(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsRemoveActionConfigurationRequest
-        .builder()
-        .expectedRevision("248df4b7-aa70-47b8-a036-33ac447e668d")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**connectionId:** `String` — Source Connection whose action grants you want to manage
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**expectedRevision:** `String` — Current revision of the Connection's action grants
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listActionConfigurationSchemas(harborId, connectionId) -> HarborActionConfigurationSchemasEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists available action schemas for an eligible Harbor source Connection.
-
-You must be an Organization administrator with permission to edit the Harbor
-and query the source Connection. Use a writable API credential, not a Harbor
-profile credential. Read-only keys are denied because this endpoint requires
-Harbor edit permission. Discovery does not require the Harbor Actions entitlement.
-
-The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
-Sync targeting its backing Connection. The response lists action schemas, not
-records. Use the next page token with the same search filter to continue.
-
-Operation IDs in the catalog are hints. Operation discovery returns the current
-configurable fields for a schema.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listActionConfigurationSchemas(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListActionConfigurationSchemasRequest
-        .builder()
-        .search("search")
-        .limit(1)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**connectionId:** `String` — Source Connection whose action grants you want to manage
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**search:** `Optional<String>` — Filter action schemas by ID or name.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of schemas to return
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque cursor returned by the previous request
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listActionConfigurationOperations(harborId, connectionId, schemaId) -> HarborActionConfigurationOperationsEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists operations and configurable fields for an eligible Harbor action schema.
-
-You must be an Organization administrator with permission to edit the Harbor
-and query the source Connection. Use a writable API credential, not a Harbor
-profile credential. Read-only keys are denied because this endpoint requires
-Harbor edit permission. Discovery does not require the Harbor Actions entitlement.
-
-The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
-Sync targeting its backing Connection. This request returns operation metadata,
-not provider records, and does not execute an action.
-
-For a mutating operation, choose input field IDs. For a read-only operation,
-choose output field IDs and at least one lookup field ID. Required input fields
-must be included in the grant.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listActionConfigurationOperations("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d", "schema_id");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**connectionId:** `String` — Source Connection whose action grants you want to manage
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**schemaId:** `String` — Exact action schema ID returned by schema discovery
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listContexts(harborId) -> HarborContextListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists context document metadata for a Harbor without returning document content.
-
-Collection items include the current published `version` number and omit
-`content`. Use the context item endpoint to retrieve a complete document.
-
-A Harbor profile credential can read context only when `harbor_id` identifies
-its own Harbor.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listContexts(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListContextsRequest
-        .builder()
-        .limit(50)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of context documents to return. Defaults to 50 and cannot exceed 50.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.createContext(harborId, request) -> HarborContextEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Creates and attaches a context document to a Harbor.
-
-The new document belongs only to this Harbor. Context documents cannot be attached to multiple Harbors.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().createContext(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    CreateHarborContextRequest
-        .builder()
-        .content("Bookings use the contract signed date...")
-        .title("Revenue definitions")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**content:** `String` — Plain-text context content. Maximum 20,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `Optional<String>` — Short summary of the context document. Maximum 1,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**title:** `String` — Human-readable context title. Maximum 200 characters.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listContextDrafts(harborId) -> HarborContextDraftListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists mutable Harbor context drafts without returning document content.
-
-The collection includes drafts for published context documents and initial drafts
-that have not yet been published. Use `context_id` with the draft detail,
-replacement, promotion, and discard endpoints.
-
-Draft metadata does not include `content`. Fetch a selected draft through its
-detail endpoint to read the complete candidate. Normal context list and detail
-operations continue to return published content only.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listContextDrafts(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListContextDraftsRequest
-        .builder()
-        .limit(50)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of mutable drafts to return. Defaults to 50 and cannot exceed 50.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.createContextDraft(harborId, request) -> HarborContextDraftEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Creates an unpublished context document with its initial mutable draft.
-
-Creates a stable context identity and its initial mutable draft without publishing
-content to the Harbor. The response includes `context_id`, which identifies the
-draft replacement, promotion, and discard routes.
-
-The initial draft has a null `base_revision_id`. It remains absent from normal
-context list/detail, GraphQL, entity lookup, and Harbor MCP reads until promoted.
-Use the regular context creation endpoint instead when the initial payload should
-be published immediately.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().createContextDraft(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    CreateHarborContextDraftRequest
-        .builder()
-        .content("Bookings use the contract signed date...")
-        .title("Revenue definitions")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to published version 1 on promotion
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**content:** `String` — Complete plain-text draft content. Maximum 20,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `Optional<String>` — Short summary of the draft. Maximum 1,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**title:** `String` — Human-readable draft title. Maximum 200 characters.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.getContext(harborId, contextId) -> HarborContextEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns one complete Harbor context document.
-
-The response includes the current published `version` number and complete
-plain-text `content`.
-
-A Harbor profile credential can read context only when `harbor_id` identifies
-its own Harbor.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().getContext(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsGetContextRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.updateContext(harborId, contextId, request) -> HarborContextEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Replaces one Harbor context document.
-
-Each successful request publishes the next immutable version. You can omit
-`change_note`.
-
-A direct publication leaves an existing draft unchanged.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().updateContext(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    SaveHarborContextRequest
-        .builder()
-        .content("Bookings use the contract signed date...")
-        .title("Revenue definitions")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**changeNote:** `Optional<String>` — Optional note describing this published change
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**content:** `String` — Plain-text context content. Maximum 20,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `Optional<String>` — Short summary of the context document. Maximum 1,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**title:** `String` — Human-readable context title. Maximum 200 characters.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.deleteContext(harborId, contextId) -> DeletedHarborContextEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Deletes one context document from a Harbor.
-
-Deleting a context document does not affect the Harbor or its other context documents.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().deleteContext(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsDeleteContextRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.getContextDraft(harborId, contextId) -> HarborContextDraftEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns the mutable draft for a Harbor context document.
-
-Drafts are available only through the draft endpoints. `base_revision_id`
-identifies the published revision from which the candidate was created. Normal
-context reads and Harbor MCP tools continue to return the current published
-version. Creator and updater IDs are null when their actor type is `system`.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().getContextDraft(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsGetContextDraftRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.saveContextDraft(harborId, contextId, request) -> HarborContextDraftEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Creates or completely replaces the mutable draft for a Harbor context document.
-
-The request supplies the complete draft payload. If a draft already exists,
-this request replaces it while preserving the draft ID, creation metadata, and
-`base_revision_id`.
-
-A new draft for a published document records the current revision as its base.
-An unpublished document's initial draft keeps a null base when replaced. Saving
-a draft does not change published content or its `updated_at`. Creator and
-updater provenance comes from the request actor; system actors have a null actor
-ID.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().saveContextDraft(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    SaveHarborContextDraftRequest
-        .builder()
-        .content("Bookings use the contract signed date...")
-        .title("Revenue definitions")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to the published version on promotion
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**content:** `String` — Complete plain-text draft content. Maximum 20,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `Optional<String>` — Short summary of the draft. Maximum 1,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**title:** `String` — Human-readable draft title. Maximum 200 characters.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.deleteContextDraft(harborId, contextId) -> DeletedHarborContextDraftEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Discards the mutable draft for a Harbor context document.
-
-Discarding a draft does not change the current published version or its
-history. If the draft belongs to a context that has never been published,
-discarding it also removes the otherwise empty context identity.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().deleteContextDraft(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsDeleteContextDraftRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.promoteContextDraft(harborId, contextId) -> HarborContextVersionEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Promotes the draft to the next immutable published context version.
-
-Promotion publishes the draft's exact title, description, content, and optional
-change note as the next version. An unpublished context's initial draft becomes
-version 1. The draft is removed after publication.
-
-Promotion returns a conflict when the current published revision differs from
-the draft's `base_revision_id`. The stale draft remains available so an author
-can compare it with the current version before discarding and recreating it.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().promoteContextDraft(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsPromoteContextDraftRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listContextVersions(harborId, contextId) -> HarborContextVersionListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists immutable published versions of a Harbor context document without returning content.
-
-Versions are ordered from newest to oldest. Collection items omit `content`,
-and the draft is never included. Pagination tokens continue from the last
-returned version, so publishing a newer version between requests does not shift
-or duplicate older results.
-
-Published revision IDs are durable artifact identities intended for future
-Harbor activity and audit records. Publisher IDs are paired with actor types.
-System publications have `published_by_type: "system"` and a null
-`published_by` because the system actor has no UUID.
-
-A Harbor profile credential can read versions only when `harbor_id` identifies
-its own Harbor.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listContextVersions(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListContextVersionsRequest
-        .builder()
-        .limit(50)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of published versions to return. Defaults to 50 and cannot exceed 50.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.getContextVersion(harborId, contextId, versionId) -> HarborContextVersionEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns one immutable published version of a Harbor context document.
-
-The response includes the complete title, description, and plain-text
-`content` captured when the version was published.
-
-Published versions cannot be changed or deleted. System publications have
-`published_by_type: "system"` and a null `published_by`.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().getContextVersion(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsGetContextVersionRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**contextId:** `String` — Unique identifier of the context document
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**versionId:** `String` — Unique identifier of the published context version
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listKeys(harborId) -> HarborKeyListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists active masked credentials for a Harbor.
-
-Each item contains a masked `key_hint`. Polytomic never returns a credential plaintext after creation.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listKeys(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListKeysRequest
-        .builder()
-        .limit(50)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of active credentials to return. Defaults to 50 and cannot exceed 50.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.createKey(harborId) -> HarborKeyEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Generates a new Harbor credential and returns its plaintext value once.
-
-Store the returned `value` securely. Polytomic returns it only in this response.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().createKey("248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.deleteKey(harborId, keyId) -> RevokedHarborKeyEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Revokes one Harbor credential by its credential ID.
-
-Revocation affects only the selected credential. Other active Harbor credentials remain valid.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().deleteKey("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**keyId:** `String` — Unique identifier of the Harbor credential
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.harbors.runQuery(harborId, request) -> RunQueryEnvelope</code></summary>
 <dl>
 <dd>
@@ -8690,6 +6401,11 @@ The response contains a query ID and an initial `created` status. Poll
 until the status is `done`, `failed`, or `unknown`. Follow the result endpoint's
 pagination links for additional rows. Results are temporary; check `expires`
 on the completed query.
+
+To open a result record in its source application, discover
+[record-view capabilities](../../../../api-reference/record-view-links/get-capabilities)
+and create a record-view link for the source Connection and schema. Record-view
+links are also available independently of Harbor.
 </dd>
 </dl>
 </dd>
@@ -8750,1107 +6466,6 @@ client.harbors().runQuery(
 <dd>
 
 **query:** `String` — SQL query to execute against the Harbor backing connection
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listSavedQueries(harborId) -> HarborSavedQueryListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists current published saved queries for a Harbor.
-
-Saved queries are supported only for Polytomic-managed Harbors whose backing
-Connection type is `polytomic_harbor`.
-
-Collection items contain current published metadata and omit SQL, parameter
-values, and unpublished drafts. A Harbor profile credential can list saved
-queries only when `harbor_id` identifies its own Harbor.
-
-## Harbor Activity
-
-When you use a Harbor profile credential, send a new nonzero UUID in
-`X-Polytomic-Activity-Request-ID` for each request, including each page. A
-missing or invalid ID returns `400 Bad Request`. Reusing a consumed ID returns
-`409 Conflict`.
-
-If you supply `X-Polytomic-Harbor-Session`, the session must be active and bound
-to your credential and Harbor. An invalid session returns `403 Forbidden`.
-Direct scoped REST requests may omit the session header.
-
-Polytomic records `saved_query.listed` before returning data. The event describes
-only the returned page, including saved-query IDs, immutable revision IDs,
-version numbers, and bounded name snapshots. Activity excludes SQL, parameter
-values, and expected column names. If Polytomic cannot record the event, the
-request returns `503 Service Unavailable` without saved-query data.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listSavedQueries(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListSavedQueriesRequest
-        .builder()
-        .limit(1)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of saved queries to return
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.createSavedQueryDraft(harborId, request) -> HarborSavedQueryDraftEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Creates a stable Harbor saved query with its initial mutable draft.
-
-Saved queries are supported only for Polytomic-managed Harbors whose backing
-Connection type is `polytomic_harbor`. Customer-managed Harbor backings return
-an unsupported-backing error.
-
-The saved query receives a stable ID, but it remains absent from published
-saved-query reads until an administrator publishes its initial draft.
-
-Use `{{parameter_name}}` references in `sql_template`. Each reference must have
-one scalar declaration. Validation values and defaults must match the declared
-`string`, `number`, `boolean`, `date`, `timestamp`, or `uuid` type.
-
-Unknown JSON fields, including fields inside parameter declarations, return
-`400 Bad Request` before the draft is saved. Use `default_value`, not `default`,
-for parameter defaults.
-
-When you omit a parameter during execution, Polytomic uses its published
-`default_value`, never its draft validation value. An omitted optional parameter
-without a default binds SQL `NULL`. A required parameter allows omission when a
-default exists, but rejects explicit `null` even with a default.
-
-For a report window, use a required parameter with a default so omission selects
-a useful window and explicit `null` is rejected:
-
-```json
-{"name": "days", "type": "number", "required": true, "default_value": 7}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().createSavedQueryDraft(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    CreateHarborSavedQueryDraftRequest
-        .builder()
-        .name("Monthly revenue")
-        .sqlTemplate("SELECT account_id, sum(amount) AS revenue FROM orders WHERE created_at >= {{start_date}} GROUP BY account_id")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**changeNote:** `Optional<String>` — Optional note copied to the immutable published version
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `Optional<String>` — Business definition and usage notes. Maximum 2,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**name:** `String` — Human-readable saved-query name. Maximum 200 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**owner:** `Optional<String>` — Human-readable owner label. Maximum 200 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listSavedQueryDrafts(harborId) -> HarborSavedQueryDraftListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists mutable Harbor saved-query drafts.
-
-Drafts are ordered from newest to oldest and include complete SQL, typed
-parameter declarations, and author-supplied validation values. Harbor profile
-credentials cannot access this endpoint.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listSavedQueryDrafts(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListSavedQueryDraftsRequest
-        .builder()
-        .limit(1)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of saved-query drafts to return
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.getSavedQuery(harborId, savedQueryId) -> HarborSavedQueryEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns the current published version of one Harbor saved query.
-
-The response contains the current immutable `revision_id`, SQL template,
-parameter contract, expected columns, and publication provenance. Validation
-inputs are draft-only and are never part of a published response.
-
-A Harbor profile credential can retrieve a saved query only from its own Harbor.
-
-## Harbor Activity
-
-When you use a Harbor profile credential, send a new nonzero UUID in
-`X-Polytomic-Activity-Request-ID` for each request. A missing or invalid ID
-returns `400 Bad Request`. Reusing a consumed ID returns `409 Conflict`.
-
-If you supply `X-Polytomic-Harbor-Session`, the session must be active and bound
-to your credential and Harbor. An invalid session returns `403 Forbidden`.
-Direct scoped REST requests may omit the session header.
-
-Polytomic records `saved_query.fetched` before returning the definition. The
-event identifies the saved query, exact immutable revision, published version,
-and bounded name snapshot. It does not indicate query execution. Activity
-excludes SQL, parameter defaults and validation values, expected column names,
-and result rows. If Polytomic cannot record the event, the request returns
-`503 Service Unavailable` without saved-query data.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().getSavedQuery(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsGetSavedQueryRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**savedQueryId:** `String` — Unique stable identifier of the saved query
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.deleteSavedQuery(harborId, savedQueryId) -> DeletedHarborSavedQueryEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Archives one Harbor saved query and removes it from active reads.
-
-Archiving removes the saved query and any draft from active reads while
-retaining its immutable revisions for provenance. The operation does not run
-the saved SQL or modify the Harbor backing Connection. Archiving does not cancel
-in-flight execution requests or queued executions.
-
-This REST operation archives the saved query; it does not merely unpublish it.
-Unpublish is available only through the GraphQL `unpublishHarborSavedQuery`
-mutation. There is no REST unpublish endpoint.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().deleteSavedQuery("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**savedQueryId:** `String` — Unique stable identifier of the saved query
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.saveSavedQueryDraft(harborId, savedQueryId, request) -> HarborSavedQueryDraftEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Creates or completely replaces the mutable draft for a Harbor saved query.
-
-Replacement is complete rather than partial. The next validation or publication
-uses the replacement SQL, parameter declarations, and validation values.
-
-Unknown JSON fields, including fields inside parameter declarations, return
-`400 Bad Request` before the draft is saved. Use `default_value`, not `default`,
-for parameter defaults.
-
-When you omit a parameter during execution, Polytomic uses its published
-`default_value`, never its draft validation value. An omitted optional parameter
-without a default binds SQL `NULL`. A required parameter allows omission when a
-default exists, but rejects explicit `null` even with a default.
-
-For a report window, use a required parameter with a default so omission selects
-a useful window and explicit `null` is rejected:
-
-```json
-{"name": "days", "type": "number", "required": true, "default_value": 7}
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().saveSavedQueryDraft(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    SaveHarborSavedQueryDraftRequest
-        .builder()
-        .name("Monthly revenue")
-        .sqlTemplate("SELECT account_id, sum(amount) AS revenue FROM orders WHERE created_at >= {{start_date}} GROUP BY account_id")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**savedQueryId:** `String` — Unique stable identifier of the saved query
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**changeNote:** `Optional<String>` — Optional note copied to the immutable published version
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `Optional<String>` — Business definition and usage notes. Maximum 2,000 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**name:** `String` — Human-readable saved-query name. Maximum 200 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**owner:** `Optional<String>` — Human-readable owner label. Maximum 200 characters.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.deleteSavedQueryDraft(harborId, savedQueryId) -> DeletedHarborSavedQueryDraftEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Discards the mutable draft for one Harbor saved query.
-
-Discarding an initial unpublished draft also removes its otherwise empty stable
-saved-query identity. Discarding a later draft preserves every immutable
-published version.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().deleteSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**savedQueryId:** `String` — Unique stable identifier of the saved query
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.publishSavedQueryDraft(harborId, savedQueryId) -> HarborSavedQueryEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Validates and publishes the current draft as the next immutable saved-query version.
-
-Only organization administrators can publish. Publication executes and validates
-the current draft with the Polytomic-managed Harbor's MotherDuck `read_scaling`
-credential. It fails instead of using the Harbor writer credential when the
-reader credential is missing or incomplete.
-
-After execution, publication verifies that the draft did not change. A
-concurrent edit returns a conflict and remains a draft. Successful publication
-creates the next immutable revision, records the observed ordered columns as its
-output contract, removes validation inputs from the published definition, and
-deletes the mutable draft. The response includes the immutable `revision_id`
-that future executions use for exact provenance.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().publishSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**savedQueryId:** `String` — Unique stable identifier of the saved query
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.validateSavedQueryDraft(harborId, savedQueryId) -> HarborSavedQueryValidationEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Validates the exact current saved-query draft and returns a bounded ephemeral preview.
-
-Only organization administrators can validate drafts. Named template references
-compile to DuckDB placeholders, and typed values are passed separately rather
-than interpolated into SQL.
-
-The query runs with the Polytomic-managed Harbor's MotherDuck `read_scaling`
-credential. Validation fails when that credential is missing or incomplete and
-never falls back to the Harbor writer credential. Preview rows and serialized
-response size are bounded. The preview and validation attempt are not persisted.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().validateSavedQueryDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**savedQueryId:** `String` — Unique stable identifier of the saved query
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.executeSavedQuery(harborId, savedQueryId, request) -> ExecuteHarborSavedQueryEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Submits the current published Harbor saved query for asynchronous reader-only execution.
-
-Use a Harbor-bound scoped credential with query access to the Harbor's backing
-Connection. Administrator credentials cannot submit executions here. Saved
-queries require a Polytomic-managed Harbor.
-
-Polytomic selects the current published revision while processing your request.
-The response identifies that exact immutable revision. Selection happens before
-Polytomic accepts the execution. Drafts, unpublished queries, and archived
-queries are unavailable for selection. You cannot select a historical revision
-or supply SQL through this endpoint.
-
-> ⚠️ Concurrent publication changes
->
-> Publishing, unpublishing, or archiving a saved query after selection does not
-> change the selected revision. An in-flight request may still be accepted and
-> execute that revision. Unpublishing or archiving does not cancel in-flight
-> requests or queued executions. Query access is checked again before execution
-> and result retrieval.
-
-Parameter values are bound separately from SQL. Omitted parameters use the
-published `default_value`, never draft validation values. An omitted optional
-parameter without a default binds SQL `NULL`. Required parameters allow omission
-when a default exists, but reject explicit `null` even with a default. Missing
-required values without defaults, explicit `null` for required parameters,
-unknown parameter names, and invalid scalar types return
-`422 Unprocessable Entity` without accepting an execution. Execution requires
-reader credentials and never falls back to writer credentials.
-
-For report windows, define parameters with `required: true` and a
-`default_value`, such as `7` for a `days` parameter. This allows omission while
-preventing explicit `null` from turning a time filter into a SQL `NULL`
-comparison.
-
-To archive a saved query through REST, use
-[`DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}`](../../../../../../api-reference/harbors/delete-saved-query).
-Unpublish is available only through the GraphQL `unpublishHarborSavedQuery`
-mutation, not a REST endpoint.
-
-## Results
-
-The response returns a task ID with status `created`, not result rows. Poll
-[`GET /api/queries/{id}`](../../../../../../api-reference/query-runner/get-query) using a credential
-from the same Harbor profile. Query access is checked again before execution and
-result retrieval. Stop polling at `done`, `failed`, or `unknown`; `unknown` means
-execution started but no durable terminal result is available.
-
-Results and detailed failure information expire after 24 hours. Use the
-`expires` field and follow `links.next` to retrieve additional result pages.
-
-## Harbor Activity
-
-Send a new nonzero UUID in `X-Polytomic-Activity-Request-ID`. Missing or invalid
-IDs return `400 Bad Request`. Reusing a consumed ID returns `409 Conflict` and
-does not create another execution.
-
-You may omit `X-Polytomic-Harbor-Session` for direct REST requests. If supplied,
-the session must be active and bound to your credential and Harbor.
-
-Polytomic records `query.submitted` atomically with acceptance. The event
-identifies the saved query, immutable revision, published version, and bounded
-name snapshot. SQL, parameter values and defaults, column names, and result rows
-remain outside Activity metadata. If Activity persistence is unavailable, the
-request returns `503 Service Unavailable` without accepting an execution.
-
-`query.started` records provider invocation. `query.succeeded` means results are
-available for authorized retrieval, not that you have consumed them.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().executeSavedQuery(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    ExecuteHarborSavedQueryRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**savedQueryId:** `String` — Unique stable identifier of the saved query
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**parameters:** `Optional<Map<String, Object>>` — Named JSON scalar overrides for declared parameters. Omission uses published default_value, or SQL NULL for optional parameters without a default. Required parameters reject explicit null even with a default; without a default they also reject omission. Unknown names and invalid types are rejected.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.resolveSourceMappings(harborId, request) -> ResolveHarborSourceMappingsEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Resolves documented source table and field identities to the names a Harbor's backing Connection accepts.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().resolveSourceMappings(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    ResolveHarborSourceMappingsRequest
-        .builder()
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sources:** `Optional<List<HarborSourceReference>>` — Source tables to resolve. Answered in request order; maximum 200 entries, each naming at most 500 fields.
     
 </dd>
 </dl>
@@ -9937,283 +6552,6 @@ client.harbors().getStatus("248df4b7-aa70-47b8-a036-33ac447e668d");
 <dd>
 
 **harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.listUsers(harborId) -> HarborUserListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists Harbor-only users assigned to a Harbor.
-
-The response contains only Harbor-only users currently assigned to this Harbor.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().listUsers(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    HarborsListUsersRequest
-        .builder()
-        .limit(50)
-        .pageToken("page_token")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of assigned users to return. Defaults to 50 and cannot exceed 50.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.inviteUser(harborId, request) -> HarborUserEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Invites and assigns a new Harbor-only user.
-
-The invited account is restricted to assigned Harbors and does not receive regular Polytomic application access.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().inviteUser(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    InviteHarborUserRequest
-        .builder()
-        .email("analyst@example.com")
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**email:** `String` — Email address used to invite the Harbor-only user
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.assignUser(harborId, userId) -> HarborUserEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Assigns an existing Harbor-only user to a Harbor.
-
-The assignment is idempotent. Regular Polytomic users cannot be assigned because they already have application access to Harbors.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().assignUser("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**userId:** `String` — Unique identifier of the Harbor-only user
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.harbors.unassignUser(harborId, userId) -> UnassignedHarborUserEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Removes a Harbor assignment without deleting the user.
-
-This removes only the Harbor assignment. The organization user remains available and may retain assignments to other Harbors.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.harbors().unassignUser("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**harborId:** `String` — Unique identifier of the Harbor
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**userId:** `String` — Unique identifier of the Harbor-only user
     
 </dd>
 </dl>
@@ -11174,386 +7512,6 @@ client.organization().delete("248df4b7-aa70-47b8-a036-33ac447e668d");
 </dl>
 </details>
 
-## Activity
-<details><summary><code>client.activity.list() -> HarborActivityListEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Lists Harbor Activity recorded for the caller's organization.
-
-You must be an active Organization administrator to use this endpoint.
-
-`start_time` is inclusive and `end_time` is exclusive. Both filter the time at
-which Polytomic recorded each event, which can differ from `occurred_at`. A
-single request can cover at most 90 days.
-
-Results are ordered from newest to oldest by default. Set `order` to `asc` to
-retrieve the oldest events first. A page contains at most 100 events. Pass
-`next_page_token` from the response as `page_token` with the same time range,
-filters, order, and limit to retrieve the next page. The token expires 24 hours
-after the first page. Pagination uses a live descending cursor, so an event from
-a transaction that commits between pages can require a fresh traversal.
-
-Responses include stable identities, bounded resource snapshots, schema label
-snapshots with truncation state, field counts, and row counts when available.
-They do not include internal recorded-order values, submitted SQL, raw field
-names, detailed provider errors, result rows, or raw pagination tokens.
-
-> ℹ️ Activity retention
->
-> Polytomic retains Activity events for at least 90 days. Pagination tokens
-> expire 24 hours after the first page.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.activity().list(
-    ActivityListRequest
-        .builder()
-        .startTime(OffsetDateTime.parse("2024-01-15T09:30:00Z"))
-        .endTime(OffsetDateTime.parse("2024-01-15T09:30:00Z"))
-        .harborId(
-            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
-        )
-        .eventType(
-            Arrays.asList(HarboractivityEventType.ACTION_LOOKED_UP)
-        )
-        .outcome(
-            Arrays.asList(HarboractivityOutcome.SUCCEEDED)
-        )
-        .operationId(
-            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
-        )
-        .sessionId(
-            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
-        )
-        .actorId(
-            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
-        )
-        .credentialId(
-            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
-        )
-        .connectionId(
-            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
-        )
-        .limit(1)
-        .pageToken("page_token")
-        .order(ActivityListRequestOrder.ASC)
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**startTime:** `OffsetDateTime` — Inclusive start of the event recorded-time range
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**endTime:** `OffsetDateTime` — Exclusive end of the event recorded-time range. The range can span at most 90 days.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of events to return. Defaults to 50 and cannot exceed 100.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request. It expires 24 hours after the first page.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**order:** `Optional<ActivityListRequestOrder>` — Order in which events were recorded. Defaults to desc.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**harborId:** `Optional<String>` — Return events for these Harbors. Repeat the parameter to filter by multiple IDs.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**eventType:** `Optional<HarboractivityEventType>` — Return events with these event types. Repeat the parameter to filter by multiple types.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**outcome:** `Optional<HarboractivityOutcome>` — Return events with these outcomes. Repeat the parameter to filter by multiple outcomes.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**operationId:** `Optional<String>` — Return events for these operation IDs.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sessionId:** `Optional<String>` — Return events for these session IDs.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**actorId:** `Optional<String>` — Return events for these actor IDs.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**credentialId:** `Optional<String>` — Return events for these credential IDs.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**connectionId:** `Optional<String>` — Return events for these Connection IDs.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.activity.getSession(sessionId) -> HarborActivitySessionEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns one Harbor Activity session and its events.
-
-You must be an active Organization administrator to use this endpoint. The
-session must belong to the Organization against which you authenticated.
-
-Events are ordered from oldest to newest by default. Set `order` to `desc` to
-retrieve the newest events first. A page contains at most 100 events. Pass
-`next_page_token` from the response as `page_token` with the same order and
-limit to retrieve the next page.
-
-`history_truncated` is `true` when Activity retention removed events from the
-beginning of the session. The lifecycle summary remains available while the
-session itself is retained.
-
-The response uses the same event allowlist as the Activity list and detail
-endpoints. It does not include session tokens, submitted SQL, raw field names,
-detailed provider errors, result rows, or raw pagination tokens.
-
-> ℹ️ Activity retention
->
-> Polytomic retains Activity events for at least 90 days. Pagination tokens
-> expire 24 hours after the first page.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.activity().getSession(
-    "248df4b7-aa70-47b8-a036-33ac447e668d",
-    ActivityGetSessionRequest
-        .builder()
-        .limit(1)
-        .pageToken("page_token")
-        .order(ActivityGetSessionRequestOrder.ASC)
-        .build()
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**sessionId:** `String` — Harbor Activity session ID
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `Optional<Integer>` — Maximum number of events to return. Defaults to 50 and cannot exceed 100.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request. It expires 24 hours after the first page.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**order:** `Optional<ActivityGetSessionRequestOrder>` — Order in which events were recorded. Defaults to asc.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.activity.get(eventId) -> HarborActivityEventEnvelope</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Returns one Harbor Activity event from the caller's organization.
-
-You must be an active Organization administrator to use this endpoint. The
-event must belong to the Organization against which you authenticated.
-
-The response can include stable identities, bounded resource snapshots, schema
-label snapshots with truncation state, field counts, and row counts. It does
-not include internal recorded-order values, submitted SQL, raw field names,
-detailed provider errors, result rows, or raw pagination tokens.
-
-> ℹ️ Activity retention
->
-> Polytomic retains Activity events for at least 90 days.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```java
-client.activity().get("248df4b7-aa70-47b8-a036-33ac447e668d");
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**eventId:** `String` — Activity event ID
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 ## Users
 <details><summary><code>client.users.listCurrentOrgUsers() -> CurrentOrgListUsersEnvelope</code></summary>
 <dl>
@@ -11878,9 +7836,12 @@ client.users().deleteCurrentOrgUser("248df4b7-aa70-47b8-a036-33ac447e668d");
 
 Lists all users in the specified organization.
 
-> 🚧 Requires partner key
->
-> User endpoints are only accessible using [partner keys](../../../../guides/obtaining-api-keys#partner-keys).
+These endpoints accept a [partner key](../../../../guides/obtaining-api-keys#partner-keys)
+or an Organization-scoped key derived from a partner key. An Organization-scoped
+key can access users only in its own Organization.
+
+To manage users with a user API key, use the current-Organization endpoints
+under `/api/organization/users`.
 
 Returns user records including each user's ID, email, and assigned roles.
 </dd>
@@ -11938,9 +7899,12 @@ client.users().list("248df4b7-aa70-47b8-a036-33ac447e668d");
 
 Creates a new user in the specified organization and assigns the requested permissions roles.
 
-> 🚧 Requires partner key
->
-> User endpoints are only accessible using [partner keys](../../../../guides/obtaining-api-keys#partner-keys).
+These endpoints accept a [partner key](../../../../guides/obtaining-api-keys#partner-keys)
+or an Organization-scoped key derived from a partner key. An Organization-scoped
+key can access users only in its own Organization.
+
+To manage users with a user API key, use the current-Organization endpoints
+under `/api/organization/users`.
 
 The new user receives an invitation email prompting them to set up their
 account. Role assignments take effect as soon as the invitation is accepted.
@@ -12029,9 +7993,12 @@ client.users().create(
 
 Returns a single user in the specified organization.
 
-> 🚧 Requires partner key
->
-> User endpoints are only accessible using [partner keys](../../../../../guides/obtaining-api-keys#partner-keys).
+These endpoints accept a [partner key](../../../../../guides/obtaining-api-keys#partner-keys)
+or an Organization-scoped key derived from a partner key. An Organization-scoped
+key can access users only in its own Organization.
+
+To manage users with a user API key, use the current-Organization endpoints
+under `/api/organization/users`.
 </dd>
 </dl>
 </dd>
@@ -12095,9 +8062,12 @@ client.users().get("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a
 
 Updates a user's assigned permissions roles.
 
-> 🚧 Requires partner key
->
-> User endpoints are only accessible using [partner keys](../../../../../guides/obtaining-api-keys#partner-keys).
+These endpoints accept a [partner key](../../../../../guides/obtaining-api-keys#partner-keys)
+or an Organization-scoped key derived from a partner key. An Organization-scoped
+key can access users only in its own Organization.
+
+To manage users with a user API key, use the current-Organization endpoints
+under `/api/organization/users`.
 
 Only the user's role assignments are modified. Profile information such as name
 and email address is not affected by this endpoint.
@@ -12195,9 +8165,12 @@ client.users().update(
 
 Deletes a user from the specified organization.
 
-> 🚧 Requires partner key
->
-> User endpoints are only accessible using [partner keys](../../../../../guides/obtaining-api-keys#partner-keys).
+These endpoints accept a [partner key](../../../../../guides/obtaining-api-keys#partner-keys)
+or an Organization-scoped key derived from a partner key. An Organization-scoped
+key can access users only in its own Organization.
+
+To manage users with a user API key, use the current-Organization endpoints
+under `/api/organization/users`.
 
 > 🚧 This action is permanent. The user is immediately removed from the
 > organization and loses access to all resources within it. This cannot be
@@ -12471,6 +8444,11 @@ client.recordViewLinks().create(
 <dd>
 
 Checks whether record-view links can be created for a connection schema.
+
+Use the Connection and schema for the record you want to open. When working
+with Harbor query results, use the source Connection and schema rather than
+assuming the Harbor's backing Connection can create a link. You can use
+record-view links independently of Harbor.
 </dd>
 </dl>
 </dd>
@@ -12596,6 +8574,9 @@ counting toward the limit immediately, before periodic cleanup removes them.
 
 Polytomic periodically removes expired credential records. API usage history
 keeps its credential ID according to the normal API usage retention period.
+
+For a Harbor credential without an expiration, use
+[Create Harbor key](../../api-reference/harbors/keys/create).
 </dd>
 </dl>
 </dd>
@@ -12682,7 +8663,7 @@ Lists the webhooks for the caller's organization.
 >
 > An organization can register a single webhook, which receives every event
 > produced in that organization. See the
-> [Events documentation](../../guides/events) for the
+> [Events documentation](../../guides/events/overview) for the
 > list of event types and payload shapes.
 </dd>
 </dl>
@@ -12728,7 +8709,7 @@ Creates the organization's webhook.
 >
 > An organization can register a single webhook, which receives every event
 > produced in that organization. See the
-> [Events documentation](../../guides/events) for the
+> [Events documentation](../../guides/events/overview) for the
 > list of event types and payload shapes.
 </dd>
 </dl>
@@ -12811,7 +8792,7 @@ Returns a single webhook by ID.
 >
 > An organization can register a single webhook, which receives every event
 > produced in that organization. See the
-> [Events documentation](../../../guides/events) for the
+> [Events documentation](../../../guides/events/overview) for the
 > list of event types and payload shapes.
 </dd>
 </dl>
@@ -12872,7 +8853,7 @@ Updates an existing webhook.
 >
 > An organization can register a single webhook, which receives every event
 > produced in that organization. See the
-> [Events documentation](../../../guides/events) for the
+> [Events documentation](../../../guides/events/overview) for the
 > list of event types and payload shapes.
 </dd>
 </dl>
@@ -12964,7 +8945,7 @@ Deletes a webhook.
 >
 > An organization can register a single webhook, which receives every event
 > produced in that organization. See the
-> [Events documentation](../../../guides/events) for the
+> [Events documentation](../../../guides/events/overview) for the
 > list of event types and payload shapes.
 
 Deletion is permanent. To stop delivery without losing the webhook
@@ -13139,7 +9120,7 @@ Disables a webhook without deleting it.
 >
 > An organization can register a single webhook, which receives every event
 > produced in that organization. See the
-> [Events documentation](../../../../guides/events) for the
+> [Events documentation](../../../../guides/events/overview) for the
 > list of event types and payload shapes.
 
 Events are not queued while the webhook is disabled — any activity that occurs
@@ -13205,7 +9186,7 @@ Re-enables a previously disabled webhook.
 >
 > An organization can register a single webhook, which receives every event
 > produced in that organization. See the
-> [Events documentation](../../../../guides/events) for the
+> [Events documentation](../../../../guides/events/overview) for the
 > list of event types and payload shapes.
 
 Delivery resumes from the next event generated after this call. Events that
@@ -13357,18 +9338,20 @@ client.bulkSync().executions().listStatus(
 
 Lists executions for a bulk sync.
 
-Results are ordered by start time descending by default. When more results are
-available, the response includes an opaque `pagination.next_page_token`; pass it
-back as the `page_token` query parameter to retrieve the next page. The `limit`
-parameter is optional, and the maximum page size is 100 executions.
+Results are ordered by `created_at` descending by default. Pass the opaque
+`pagination.next_page_token` back as `page_token` to retrieve the next page.
+A token is returned even on the last nonempty page and on subsequent empty
+pages. Stop paging when `data` is empty; the presence of a token does not mean
+more results are available. The maximum page size is 100 executions.
 
-Use `only_terminal=true` to return only finished executions. In that mode,
-executions are ordered by `updated_at` so recently completed runs appear first.
+Use `only_terminal=true` to return only executions in terminal statuses. In
+that mode, ordering and pagination use `updated_at` instead of `created_at`.
 
-Use `ascending=true` to walk forward from the oldest execution instead of
-starting with the newest execution.
+Use `ascending=true` to walk forward from the oldest executions by the selected
+sort timestamp. Each page still lists its executions newest first; subsequent
+pages contain newer executions.
 
-For the full details of a single run — including per-schema execution status —
+For the full details of a single run, including per-schema execution status,
 use [`GET /api/bulk/syncs/{id}/executions/{exec_id}`](../../../../../api-reference/bulk-sync/executions/get).
 </dd>
 </dl>
@@ -13432,7 +9415,7 @@ client.bulkSync().executions().list(
 <dl>
 <dd>
 
-**ascending:** `Optional<Boolean>` — When true, return executions from oldest to newest. Default is newest first.
+**ascending:** `Optional<Boolean>` — Traverse from the oldest executions by the selected sort timestamp; each page is ordered newest first.
     
 </dd>
 </dl>
@@ -13940,7 +9923,12 @@ client.bulkSync().executions().getSchemaConsoleLogs(
 <dl>
 <dd>
 
-Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+Fetch up to the most recent 50 retained console log entries for ingestion scoped by Connection and optional Bulk Sync.
+
+Entries are returned in chronological order. Use `after` with the returned
+`next_cursor` to fetch newer entries. Only the most recent 50 entries are
+retained per scope; older entries are discarded. The log expires after 48 hours
+without new entries.
 </dd>
 </dl>
 </dd>
@@ -14488,6 +10476,14 @@ client.bulkSync().schemas().update(
 <dl>
 <dd>
 
+**excludedFields:** `Optional<List<String>>` — IDs of fields that are never synced, even when automatically_add_new_fields would add them. Each must be an existing field that is not part of the primary key, the tracking field, or the partition key. Omit to keep the current list; send an empty list to clear it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **fields:** `Optional<List<UpdateBulkField>>` — Field-level configuration. Supplying an empty list enables every field discovered on the source.
     
 </dd>
@@ -14687,6 +10683,14 @@ replace existing schedules. Schedule times are interpreted in UTC.
 Creating a schedule only affects future automatic executions. To run the
 sync immediately, call
 [`POST /api/bulk/syncs/{id}/executions`](../../../../../api-reference/bulk-sync/start).
+
+To sync the two selective groups of objects at different frequencies, add one
+schedule with `selectiveMode` set to `incrementalFields` and another with
+`nonincrementalFields`. Set the default schedule to `manual` to avoid an
+additional automatic run covering all selected objects. Check
+`capabilities.supports_selective_modes` on
+[`GET /api/connections/{id}/bulksync/source`](../../../../../api-reference/bulk-sync/get-source)
+first.
 </dd>
 </dl>
 </dd>
@@ -14987,6 +10991,10 @@ replacement for Polytomic's modeled endpoints. The request is executed with the
 connection's stored credentials and inherited base URL, headers, and query
 parameters.
 
+The connection must have proxy access enabled with
+[`PUT /api/connections/{id}/proxy/settings`](../../../../api-reference/connections/update-proxy-settings),
+and its organization must have the Connection Proxy API entitlement.
+
 Before building requests dynamically, call
 [`GET /api/connections/{id}/proxy/info`](../../../../api-reference/connections/get-proxy-info)
 to inspect the inherited base URL, blocked headers, accepted body types, and
@@ -15239,11 +11247,18 @@ The setting is stored on the parent connection. To update proxy access for a
 shared connection, the caller must have edit permission for the parent
 connection.
 
-Enabling proxy access requires a backend that supports the Connection Proxy API.
+Enabling proxy access requires the Connection Proxy API entitlement on the
+organization that owns the parent connection. Without it, the request returns
+`403 Forbidden`. Proxy calls also require the entitlement, on both the calling
+organization and the parent's organization; if it is revoked, proxy access stops
+regardless of this setting.
+
+Enabling proxy access also requires a backend that supports the Connection Proxy API.
 If the connection backend is unsupported, the request returns `400 Bad Request`.
 Disabling proxy access is allowed for any connection the caller can edit.
 
-Setting `enabled` to `false` prevents proxy calls for the connection.
+Connections are disabled until proxy access is explicitly enabled with this
+endpoint. Setting `enabled` to `false` prevents proxy calls for the connection.
 </dd>
 </dl>
 </dd>
@@ -15559,6 +11574,855 @@ client.connections().sharedConnections().createSharedConnection(
 </dl>
 </details>
 
+## Harbors Connections
+<details><summary><code>client.harbors.connections.list() -> HarborConnectionListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists profile-authorized connections and capabilities for the current Harbor credential.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().connections().list(
+    ConnectionsListRequest
+        .builder()
+        .limit(1)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of results to return
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Token from the previous page
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.connections.listSchemas(connectionId) -> HarborSchemaListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists one bounded page of schema resources authorized by the current Harbor profile.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().connections().listSchemas(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ConnectionsListSchemasRequest
+        .builder()
+        .limit(1)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**connectionId:** `String` — Connection ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of results to return
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Token from the previous page
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.connections.getSchema(connectionId, schemaId) -> HarborConnectionSchemaEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one schema resource authorized by the current Harbor profile.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().connections().getSchema(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "schema_id",
+    ConnectionsGetSchemaRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**connectionId:** `String` — Connection ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**schemaId:** `String` — Schema ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Harbors ActionConfiguration
+<details><summary><code>client.harbors.actionConfiguration.get(harborId) -> HarborActionConfigurationEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns configured action grants and revisions for a Harbor.
+
+You must be an Organization administrator with permission to edit the Harbor.
+Use a writable API credential, not a Harbor profile credential. Read-only keys
+are denied because this endpoint requires Harbor edit permission.
+
+This response includes grants for Connections that no longer populate the
+Harbor. You can remove those stale grants without reattaching the Connection.
+Reading configuration does not require the Harbor Actions entitlement.
+
+Use each Connection's `revision` as `expected_revision` when replacing or
+removing its grants. Configuration responses contain metadata only, not provider
+credentials or record values.
+
+To discover and run granted operations with a Harbor credential, use
+[List actions](../../../../api-reference/harbors/actions/list). Configuration describes
+administrative grants; runtime discovery checks what the credential can use.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().actionConfiguration().get("248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.actionConfiguration.disable(harborId) -> HarborActionConfigurationEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Disables all configured actions for a Harbor.
+
+You must be an Organization administrator with permission to edit the Harbor.
+Use a normal writable API credential, not a Harbor profile credential. Your
+Organization must have the Harbor Actions entitlement.
+
+> 🚧 Disable all actions
+>
+> This removes every configured action grant from the Harbor, including grants
+> for detached Connections. There is no per-Connection revision check.
+
+The response contains the empty configuration. This request does not delete
+Connections, syncs, or provider records.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().actionConfiguration().disable("248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.actionConfiguration.listConnections(harborId) -> HarborActionSourceConnectionsEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists action-capable source Connections that populate a Harbor.
+
+You must be an Organization administrator with permission to edit the Harbor.
+Use a writable API credential, not a Harbor profile credential. Read-only keys
+are denied because this endpoint requires Harbor edit permission. Discovery does
+not require the Harbor Actions entitlement.
+
+A Connection is eligible when it supports actions and is a source of a
+non-deleted Bulk Sync or Model Sync targeting the Harbor's backing Connection.
+Only saved, non-shared Connections in your Organization that you can query are
+included. Disabled syncs still establish source membership.
+
+Discover schemas and operations before choosing the grants to configure.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().actionConfiguration().listConnections("248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.actionConfiguration.set(harborId, connectionId, request) -> HarborActionConfigurationEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates or replaces action grants for an eligible Harbor source Connection.
+
+You must be an Organization administrator with permission to edit both the
+Harbor and the source Connection. Use a normal writable API credential, not a
+Harbor profile credential. Your Organization must have the Harbor Actions
+entitlement.
+
+The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+Sync targeting its backing Connection. This requirement applies to new grants
+and replacements, even when you only remove fields from an existing grant.
+
+Submit the complete grant set for this Connection. Omit `expected_revision` to
+create it, or supply the current revision to replace it. A missing, stale, or
+unexpected revision returns `409 Conflict`; read configuration again before
+retrying. Successful replacement creates a new revision.
+
+For mutating operations, `field_ids` selects input fields and
+`lookup_field_ids` must be omitted. For read-only operations, `field_ids`
+selects output fields and `lookup_field_ids` selects allowed lookup fields.
+Duplicate operations or field IDs are invalid. An empty grant set is invalid;
+remove the Connection's grants instead.
+
+This request changes permissions only. It does not execute provider actions.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().actionConfiguration().set(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    SetHarborActionConfigurationRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**connectionId:** `String` — Source Connection whose action grants you want to manage
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**expectedRevision:** `Optional<String>` — Current revision when replacing existing grants. Omit when creating grants for this Connection.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**grants:** `Optional<List<HarborActionGrantSchema>>` — Complete replacement of this Connection's action grants
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.actionConfiguration.remove(harborId, connectionId) -> HarborActionConfigurationEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Removes a Connection's action grants from a Harbor.
+
+You must be an Organization administrator with permission to edit the Harbor.
+Use a normal writable API credential, not a Harbor profile credential. Your
+Organization must have the Harbor Actions entitlement.
+
+Supply the current `expected_revision` as a query parameter. A stale revision
+returns `409 Conflict`; read configuration again before retrying.
+
+You can remove grants after the Connection stops populating the Harbor, or after
+the Connection is deleted. The response contains the remaining configured action
+Connections. This request does not delete the Connection or provider records.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().actionConfiguration().remove(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ActionConfigurationRemoveRequest
+        .builder()
+        .expectedRevision("248df4b7-aa70-47b8-a036-33ac447e668d")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**connectionId:** `String` — Source Connection whose action grants you want to manage
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**expectedRevision:** `String` — Current revision of the Connection's action grants
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.actionConfiguration.listSchemas(harborId, connectionId) -> HarborActionConfigurationSchemasEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists available action schemas for an eligible Harbor source Connection.
+
+You must be an Organization administrator with permission to edit the Harbor
+and query the source Connection. Use a writable API credential, not a Harbor
+profile credential. Read-only keys are denied because this endpoint requires
+Harbor edit permission. Discovery does not require the Harbor Actions entitlement.
+
+The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+Sync targeting its backing Connection. The response lists action schemas, not
+records. Use the next page token with the same search filter to continue.
+
+Operation IDs in the catalog are hints. Operation discovery returns the current
+configurable fields for a schema.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().actionConfiguration().listSchemas(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ActionConfigurationListSchemasRequest
+        .builder()
+        .search("search")
+        .limit(1)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**connectionId:** `String` — Source Connection whose action grants you want to manage
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**search:** `Optional<String>` — Filter action schemas by ID or name.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of schemas to return
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque cursor returned by the previous request
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.actionConfiguration.listOperations(harborId, connectionId, schemaId) -> HarborActionConfigurationOperationsEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists operations and configurable fields for an eligible Harbor action schema.
+
+You must be an Organization administrator with permission to edit the Harbor
+and query the source Connection. Use a writable API credential, not a Harbor
+profile credential. Read-only keys are denied because this endpoint requires
+Harbor edit permission. Discovery does not require the Harbor Actions entitlement.
+
+The Connection must populate the Harbor through a non-deleted Bulk Sync or Model
+Sync targeting its backing Connection. This request returns operation metadata,
+not provider records, and does not execute an action.
+
+For a mutating operation, choose input field IDs. For a read-only operation,
+choose output field IDs and at least one lookup field ID. Required input fields
+must be included in the grant.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().actionConfiguration().listOperations("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d", "schema_id");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**connectionId:** `String` — Source Connection whose action grants you want to manage
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**schemaId:** `String` — Exact action schema ID returned by schema discovery
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Harbors Actions
 <details><summary><code>client.harbors.actions.getExecution(harborId, executionId) -> HarborActionExecutionEnvelope</code></summary>
 <dl>
@@ -15708,6 +12572,10 @@ Send a new nonzero UUID in `X-Polytomic-Activity-Request-ID`. For direct REST
 requests, `X-Polytomic-Harbor-Session` is optional. If supplied, the session must
 be active and bound to the credential and Harbor. Discovery is recorded as
 `action.listed`; no response is returned if that event cannot be recorded.
+
+Organization administrators manage these grants through
+[Harbor action configuration](../../../../api-reference/harbors/action-configuration/get).
+Runtime discovery does not enable additional operations or fields.
 </dd>
 </dl>
 </dd>
@@ -16395,6 +13263,3268 @@ client.harbors().actions().prepare(
 </dl>
 </details>
 
+## Harbors Contexts
+<details><summary><code>client.harbors.contexts.list(harborId) -> HarborContextListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists context document metadata for a Harbor without returning document content.
+
+Collection items include the current published `version` number and omit
+`content`. Use the context item endpoint to retrieve a complete document.
+
+A Harbor profile credential can read context only when `harbor_id` identifies
+its own Harbor.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().list(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsListRequest
+        .builder()
+        .limit(50)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of context documents to return. Defaults to 50 and cannot exceed 50.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.create(harborId, request) -> HarborContextEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates and attaches a context document to a Harbor.
+
+The new document belongs only to this Harbor. Context documents cannot be attached to multiple Harbors.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().create(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    CreateHarborContextRequest
+        .builder()
+        .content("Bookings use the contract signed date...")
+        .title("Revenue definitions")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content:** `String` — Plain-text context content. Maximum 20,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — Short summary of the context document. Maximum 1,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**title:** `String` — Human-readable context title. Maximum 200 characters.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.listDrafts(harborId) -> HarborContextDraftListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists mutable Harbor context drafts without returning document content.
+
+The collection includes drafts for published context documents and initial drafts
+that have not yet been published. Use `context_id` with the draft detail,
+replacement, promotion, and discard endpoints.
+
+Draft metadata does not include `content`. Fetch a selected draft through its
+detail endpoint to read the complete candidate. Normal context list and detail
+operations continue to return published content only.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().listDrafts(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsListDraftsRequest
+        .builder()
+        .limit(50)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of mutable drafts to return. Defaults to 50 and cannot exceed 50.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.createDraft(harborId, request) -> HarborContextDraftEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates an unpublished context document with its initial mutable draft.
+
+Creates a stable context identity and its initial mutable draft without publishing
+content to the Harbor. The response includes `context_id`, which identifies the
+draft replacement, promotion, and discard routes.
+
+The initial draft has a null `base_revision_id`. It remains absent from normal
+context list/detail, GraphQL, entity lookup, and Harbor MCP reads until promoted.
+Use the regular context creation endpoint instead when the initial payload should
+be published immediately.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().createDraft(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    CreateHarborContextDraftRequest
+        .builder()
+        .content("Bookings use the contract signed date...")
+        .title("Revenue definitions")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to published version 1 on promotion
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content:** `String` — Complete plain-text draft content. Maximum 20,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — Short summary of the draft. Maximum 1,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**title:** `String` — Human-readable draft title. Maximum 200 characters.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.get(harborId, contextId) -> HarborContextEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one complete Harbor context document.
+
+The response includes the current published `version` number and complete
+plain-text `content`.
+
+A Harbor profile credential can read context only when `harbor_id` identifies
+its own Harbor.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().get(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsGetRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.update(harborId, contextId, request) -> HarborContextEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Replaces one Harbor context document.
+
+Each successful request publishes the next immutable version. You can omit
+`change_note`.
+
+A direct publication leaves an existing draft unchanged.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().update(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    SaveHarborContextRequest
+        .builder()
+        .content("Bookings use the contract signed date...")
+        .title("Revenue definitions")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**changeNote:** `Optional<String>` — Optional note describing this published change
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content:** `String` — Plain-text context content. Maximum 20,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — Short summary of the context document. Maximum 1,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**title:** `String` — Human-readable context title. Maximum 200 characters.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.delete(harborId, contextId) -> DeletedHarborContextEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deletes one context document from a Harbor.
+
+Deleting a context document does not affect the Harbor or its other context documents.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().delete(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsDeleteRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.getDraft(harborId, contextId) -> HarborContextDraftEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the mutable draft for a Harbor context document.
+
+Drafts are available only through the draft endpoints. `base_revision_id`
+identifies the published revision from which the candidate was created. Normal
+context reads and Harbor MCP tools continue to return the current published
+version. Creator and updater IDs are null when their actor type is `system`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().getDraft(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsGetDraftRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.saveDraft(harborId, contextId, request) -> HarborContextDraftEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates or completely replaces the mutable draft for a Harbor context document.
+
+The request supplies the complete draft payload. If a draft already exists,
+this request replaces it while preserving the draft ID, creation metadata, and
+`base_revision_id`.
+
+A new draft for a published document records the current revision as its base.
+An unpublished document's initial draft keeps a null base when replaced. Saving
+a draft does not change published content or its `updated_at`. Creator and
+updater provenance comes from the request actor; system actors have a null actor
+ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().saveDraft(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    SaveHarborContextDraftRequest
+        .builder()
+        .content("Bookings use the contract signed date...")
+        .title("Revenue definitions")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**changeNote:** `Optional<String>` — Optional note stored with the draft and copied to the published version on promotion
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content:** `String` — Complete plain-text draft content. Maximum 20,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — Short summary of the draft. Maximum 1,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**title:** `String` — Human-readable draft title. Maximum 200 characters.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.deleteDraft(harborId, contextId) -> DeletedHarborContextDraftEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Discards the mutable draft for a Harbor context document.
+
+Discarding a draft does not change the current published version or its
+history. If the draft belongs to a context that has never been published,
+discarding it also removes the otherwise empty context identity.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().deleteDraft(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsDeleteDraftRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.promoteDraft(harborId, contextId) -> HarborContextVersionEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Promotes the draft to the next immutable published context version.
+
+Promotion publishes the draft's exact title, description, content, and optional
+change note as the next version. An unpublished context's initial draft becomes
+version 1. The draft is removed after publication.
+
+Promotion returns a conflict when the current published revision differs from
+the draft's `base_revision_id`. The stale draft remains available so an author
+can compare it with the current version before discarding and recreating it.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().promoteDraft(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsPromoteDraftRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.listVersions(harborId, contextId) -> HarborContextVersionListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists immutable published versions of a Harbor context document without returning content.
+
+Versions are ordered from newest to oldest. Collection items omit `content`,
+and the draft is never included. Pagination tokens continue from the last
+returned version, so publishing a newer version between requests does not shift
+or duplicate older results.
+
+Published revision IDs are durable artifact identities intended for future
+Harbor activity and audit records. Publisher IDs are paired with actor types.
+System publications have `published_by_type: "system"` and a null
+`published_by` because the system actor has no UUID.
+
+A Harbor profile credential can read versions only when `harbor_id` identifies
+its own Harbor.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().listVersions(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsListVersionsRequest
+        .builder()
+        .limit(50)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of published versions to return. Defaults to 50 and cannot exceed 50.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.getVersion(harborId, contextId, versionId) -> HarborContextVersionEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one immutable published version of a Harbor context document.
+
+The response includes the complete title, description, and plain-text
+`content` captured when the version was published.
+
+Published versions cannot be changed or deleted. System publications have
+`published_by_type: "system"` and a null `published_by`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().getVersion(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ContextsGetVersionRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**contextId:** `String` — Unique identifier of the context document
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**versionId:** `String` — Unique identifier of the published context version
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.contexts.resolveSourceMappings(harborId, request) -> ResolveHarborSourceMappingsEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Resolves documented source table and field identities to the names a Harbor's backing Connection accepts.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().contexts().resolveSourceMappings(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ResolveHarborSourceMappingsRequest
+        .builder()
+        .sources(
+            Optional.of(
+                Arrays.asList(
+                    HarborSourceReference
+                        .builder()
+                        .connectionId("248df4b7-aa70-47b8-a036-33ac447e668d")
+                        .build()
+                )
+            )
+        )
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sources:** `Optional<List<HarborSourceReference>>` — Source tables to resolve. Answered in request order; maximum 200 entries, each naming at most 500 fields.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Harbors Keys
+<details><summary><code>client.harbors.keys.list(harborId) -> HarborKeyListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists non-expiring masked credentials for a Harbor.
+
+Only credentials with no expiration timestamp are returned. Credentials with
+an expiration timestamp are excluded, even if they have not yet expired.
+
+Each item contains a masked `key_hint`. Polytomic never returns a credential's
+plaintext value after creation.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().keys().list(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    KeysListRequest
+        .builder()
+        .limit(50)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of active credentials to return. Defaults to 50 and cannot exceed 50.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.keys.create(harborId) -> HarborKeyEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generates a new Harbor credential and returns its plaintext value once.
+
+Store the returned `value` securely. Polytomic returns it only in this response.
+
+For access that expires automatically, issue a Harbor-subject
+[temporary credential](../../../../api-reference/temporary-credentials/create) instead.
+Temporary credential issuance also supports user subjects.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().keys().create("248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.keys.delete(harborId, keyId) -> RevokedHarborKeyEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Revokes one Harbor credential by its credential ID.
+
+Revocation affects only the selected credential. Other active Harbor credentials remain valid.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().keys().delete("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**keyId:** `String` — Unique identifier of the Harbor credential
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Harbors SavedQueries
+<details><summary><code>client.harbors.savedQueries.list(harborId) -> HarborSavedQueryListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists current published saved queries for a Harbor.
+
+Saved queries are supported only for Polytomic-managed Harbors whose backing
+Connection type is `polytomic_harbor`.
+
+Collection items contain current published metadata and omit SQL, parameter
+values, and unpublished drafts. A Harbor profile credential can list saved
+queries only when `harbor_id` identifies its own Harbor.
+
+## Harbor Activity
+
+When you use a Harbor profile credential, send a new nonzero UUID in
+`X-Polytomic-Activity-Request-ID` for each request, including each page. A
+missing or invalid ID returns `400 Bad Request`. Reusing a consumed ID returns
+`409 Conflict`.
+
+If you supply `X-Polytomic-Harbor-Session`, the session must be active and bound
+to your credential and Harbor. An invalid session returns `403 Forbidden`.
+Direct scoped REST requests may omit the session header.
+
+Polytomic records `saved_query.listed` before returning data. The event describes
+only the returned page, including saved-query IDs, immutable revision IDs,
+version numbers, and bounded name snapshots. Activity excludes SQL, parameter
+values, and expected column names. If Polytomic cannot record the event, the
+request returns `503 Service Unavailable` without saved-query data.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().list(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    SavedQueriesListRequest
+        .builder()
+        .limit(1)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of saved queries to return
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.createDraft(harborId, request) -> HarborSavedQueryDraftEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a stable Harbor saved query with its initial mutable draft.
+
+Saved queries are supported only for Polytomic-managed Harbors whose backing
+Connection type is `polytomic_harbor`. Customer-managed Harbor backings return
+an unsupported-backing error.
+
+The saved query receives a stable ID, but it remains absent from published
+saved-query reads until an administrator publishes its initial draft.
+
+Use `{{parameter_name}}` references in `sql_template`. Each reference must have
+one scalar declaration. Validation values and defaults must match the declared
+`string`, `number`, `boolean`, `date`, `timestamp`, or `uuid` type.
+
+Unknown JSON fields, including fields inside parameter declarations, return
+`400 Bad Request` before the draft is saved. Use `default_value`, not `default`,
+for parameter defaults.
+
+When you omit a parameter during execution, Polytomic uses its published
+`default_value`, never its draft validation value. An omitted optional parameter
+without a default binds SQL `NULL`. A required parameter allows omission when a
+default exists, but rejects explicit `null` even with a default.
+
+For a report window, use a required parameter with a default so omission selects
+a useful window and explicit `null` is rejected:
+
+```json
+{"name": "days", "type": "number", "required": true, "default_value": 7}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().createDraft(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    CreateHarborSavedQueryDraftRequest
+        .builder()
+        .name("Monthly revenue")
+        .sqlTemplate("SELECT account_id, sum(amount) AS revenue FROM orders WHERE created_at >= {{start_date}} GROUP BY account_id")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**changeNote:** `Optional<String>` — Optional note copied to the immutable published version
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — Business definition and usage notes. Maximum 2,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `String` — Human-readable saved-query name. Maximum 200 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**owner:** `Optional<String>` — Human-readable owner label. Maximum 200 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.listDrafts(harborId) -> HarborSavedQueryDraftListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists mutable Harbor saved-query drafts.
+
+Drafts are ordered from newest to oldest and include complete SQL, typed
+parameter declarations, and author-supplied validation values. Harbor profile
+credentials cannot access this endpoint.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().listDrafts(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    SavedQueriesListDraftsRequest
+        .builder()
+        .limit(1)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of saved-query drafts to return
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.get(harborId, savedQueryId) -> HarborSavedQueryEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the current published version of one Harbor saved query.
+
+The response contains the current immutable `revision_id`, SQL template,
+parameter contract, expected columns, and publication provenance. Validation
+inputs are draft-only and are never part of a published response.
+
+A Harbor profile credential can retrieve a saved query only from its own Harbor.
+
+## Harbor Activity
+
+When you use a Harbor profile credential, send a new nonzero UUID in
+`X-Polytomic-Activity-Request-ID` for each request. A missing or invalid ID
+returns `400 Bad Request`. Reusing a consumed ID returns `409 Conflict`.
+
+If you supply `X-Polytomic-Harbor-Session`, the session must be active and bound
+to your credential and Harbor. An invalid session returns `403 Forbidden`.
+Direct scoped REST requests may omit the session header.
+
+Polytomic records `saved_query.fetched` before returning the definition. The
+event identifies the saved query, exact immutable revision, published version,
+and bounded name snapshot. It does not indicate query execution. Activity
+excludes SQL, parameter defaults and validation values, expected column names,
+and result rows. If Polytomic cannot record the event, the request returns
+`503 Service Unavailable` without saved-query data.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().get(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    SavedQueriesGetRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**savedQueryId:** `String` — Unique stable identifier of the saved query
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.delete(harborId, savedQueryId) -> DeletedHarborSavedQueryEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Archives one Harbor saved query and removes it from active reads.
+
+Archiving removes the saved query and any draft from active reads while
+retaining its immutable revisions for provenance. The operation does not run
+the saved SQL or modify the Harbor backing Connection. Archiving does not cancel
+in-flight execution requests or queued executions.
+
+This REST operation archives the saved query; it does not merely unpublish it.
+Unpublish is available only through the GraphQL `unpublishHarborSavedQuery`
+mutation. There is no REST unpublish endpoint.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().delete("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**savedQueryId:** `String` — Unique stable identifier of the saved query
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.saveDraft(harborId, savedQueryId, request) -> HarborSavedQueryDraftEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates or completely replaces the mutable draft for a Harbor saved query.
+
+Replacement is complete rather than partial. The next validation or publication
+uses the replacement SQL, parameter declarations, and validation values.
+
+Unknown JSON fields, including fields inside parameter declarations, return
+`400 Bad Request` before the draft is saved. Use `default_value`, not `default`,
+for parameter defaults.
+
+When you omit a parameter during execution, Polytomic uses its published
+`default_value`, never its draft validation value. An omitted optional parameter
+without a default binds SQL `NULL`. A required parameter allows omission when a
+default exists, but rejects explicit `null` even with a default.
+
+For a report window, use a required parameter with a default so omission selects
+a useful window and explicit `null` is rejected:
+
+```json
+{"name": "days", "type": "number", "required": true, "default_value": 7}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().saveDraft(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    SaveHarborSavedQueryDraftRequest
+        .builder()
+        .name("Monthly revenue")
+        .sqlTemplate("SELECT account_id, sum(amount) AS revenue FROM orders WHERE created_at >= {{start_date}} GROUP BY account_id")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**savedQueryId:** `String` — Unique stable identifier of the saved query
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**changeNote:** `Optional<String>` — Optional note copied to the immutable published version
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `Optional<String>` — Business definition and usage notes. Maximum 2,000 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `String` — Human-readable saved-query name. Maximum 200 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**owner:** `Optional<String>` — Human-readable owner label. Maximum 200 characters.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parameters:** `Optional<List<HarborSavedQueryParameter>>` — Typed scalar parameter declarations
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sqlTemplate:** `String` — DuckDB SQL template using {{name}} references for bound parameters
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**validationValues:** `Optional<Map<String, Object>>` — Author-supplied JSON scalar values used only to validate this draft
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.deleteDraft(harborId, savedQueryId) -> DeletedHarborSavedQueryDraftEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Discards the mutable draft for one Harbor saved query.
+
+Discarding an initial unpublished draft also removes its otherwise empty stable
+saved-query identity. Discarding a later draft preserves every immutable
+published version.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().deleteDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**savedQueryId:** `String` — Unique stable identifier of the saved query
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.publishDraft(harborId, savedQueryId) -> HarborSavedQueryEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Validates and publishes the current draft as the next immutable saved-query version.
+
+Only organization administrators can publish. Publication executes and validates
+the current draft with the Polytomic-managed Harbor's MotherDuck `read_scaling`
+credential. It fails instead of using the Harbor writer credential when the
+reader credential is missing or incomplete.
+
+After execution, publication verifies that the draft did not change. A
+concurrent edit returns a conflict and remains a draft. Successful publication
+creates the next immutable revision, records the observed ordered columns as its
+output contract, removes validation inputs from the published definition, and
+deletes the mutable draft. The response includes the immutable `revision_id`
+that future executions use for exact provenance.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().publishDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**savedQueryId:** `String` — Unique stable identifier of the saved query
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.validateDraft(harborId, savedQueryId) -> HarborSavedQueryValidationEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Validates the exact current saved-query draft and returns a bounded ephemeral preview.
+
+Only organization administrators can validate drafts. Named template references
+compile to DuckDB placeholders, and typed values are passed separately rather
+than interpolated into SQL.
+
+The query runs with the Polytomic-managed Harbor's MotherDuck `read_scaling`
+credential. Validation fails when that credential is missing or incomplete and
+never falls back to the Harbor writer credential. Preview rows and serialized
+response size are bounded. The preview and validation attempt are not persisted.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().validateDraft("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**savedQueryId:** `String` — Unique stable identifier of the saved query
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.savedQueries.execute(harborId, savedQueryId, request) -> ExecuteHarborSavedQueryEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Submits the current published Harbor saved query for asynchronous reader-only execution.
+
+Use a Harbor-bound scoped credential with query access to the Harbor's backing
+Connection. Administrator credentials cannot submit executions here. Saved
+queries require a Polytomic-managed Harbor.
+
+Polytomic selects the current published revision while processing your request.
+The response identifies that exact immutable revision. Selection happens before
+Polytomic accepts the execution. Drafts, unpublished queries, and archived
+queries are unavailable for selection. You cannot select a historical revision
+or supply SQL through this endpoint.
+
+> ⚠️ Concurrent publication changes
+>
+> Publishing, unpublishing, or archiving a saved query after selection does not
+> change the selected revision. An in-flight request may still be accepted and
+> execute that revision. Unpublishing or archiving does not cancel in-flight
+> requests or queued executions. Query access is checked again before execution
+> and result retrieval.
+
+Parameter values are bound separately from SQL. Omitted parameters use the
+published `default_value`, never draft validation values. An omitted optional
+parameter without a default binds SQL `NULL`. Required parameters allow omission
+when a default exists, but reject explicit `null` even with a default. Missing
+required values without defaults, explicit `null` for required parameters,
+unknown parameter names, and invalid scalar types return
+`422 Unprocessable Entity` without accepting an execution. Execution requires
+reader credentials and never falls back to writer credentials.
+
+For report windows, define parameters with `required: true` and a
+`default_value`, such as `7` for a `days` parameter. This allows omission while
+preventing explicit `null` from turning a time filter into a SQL `NULL`
+comparison.
+
+To archive a saved query through REST, use
+[`DELETE /api/harbors/{harbor_id}/saved-queries/{saved_query_id}`](../../../../../../api-reference/harbors/saved-queries/delete).
+Unpublish is available only through the GraphQL `unpublishHarborSavedQuery`
+mutation, not a REST endpoint.
+
+## Results
+
+The response returns a task ID with status `created`, not result rows. Poll
+[`GET /api/queries/{id}`](../../../../../../api-reference/query-runner/get-query) using a credential
+from the same Harbor profile. Query access is checked again before execution and
+result retrieval. Stop polling at `done`, `failed`, or `unknown`; `unknown` means
+execution started but no durable terminal result is available.
+
+Results and detailed failure information expire after 24 hours. Use the
+`expires` field and follow `links.next` to retrieve additional result pages.
+
+## Harbor Activity
+
+Send a new nonzero UUID in `X-Polytomic-Activity-Request-ID`. Missing or invalid
+IDs return `400 Bad Request`. Reusing a consumed ID returns `409 Conflict` and
+does not create another execution.
+
+You may omit `X-Polytomic-Harbor-Session` for direct REST requests. If supplied,
+the session must be active and bound to your credential and Harbor.
+
+Polytomic records `query.submitted` atomically with acceptance. The event
+identifies the saved query, immutable revision, published version, and bounded
+name snapshot. SQL, parameter values and defaults, column names, and result rows
+remain outside Activity metadata. If Activity persistence is unavailable, the
+request returns `503 Service Unavailable` without accepting an execution.
+
+`query.started` records provider invocation. `query.succeeded` means results are
+available for authorized retrieval, not that you have consumed them.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().savedQueries().execute(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ExecuteHarborSavedQueryRequest
+        .builder()
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**savedQueryId:** `String` — Unique stable identifier of the saved query
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicHarborSession:** `Optional<String>` — Harbor session token; when supplied, the session must be active and bound to this credential and Harbor.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**polytomicActivityRequestId:** `Optional<String>` — New nonzero UUID for each request, required for scoped credentials; a reused value is rejected.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parameters:** `Optional<Map<String, Object>>` — Named JSON scalar overrides for declared parameters. Omission uses published default_value, or SQL NULL for optional parameters without a default. Required parameters reject explicit null even with a default; without a default they also reject omission. Unknown names and invalid types are rejected.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Harbors Users
+<details><summary><code>client.harbors.users.list(harborId) -> HarborUserListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists Harbor-only users assigned to a Harbor.
+
+The response contains only Harbor-only users currently assigned to this Harbor.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().users().list(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    UsersListRequest
+        .builder()
+        .limit(50)
+        .pageToken("page_token")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of assigned users to return. Defaults to 50 and cannot exceed 50.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.users.invite(harborId, request) -> HarborUserEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Invites and assigns a new Harbor-only user.
+
+The invited account is restricted to assigned Harbors and does not receive regular Polytomic application access.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().users().invite(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    InviteHarborUserRequest
+        .builder()
+        .email("analyst@example.com")
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**email:** `String` — Email address used to invite the Harbor-only user
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.users.assign(harborId, userId) -> HarborUserEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Assigns an existing Harbor-only user to a Harbor.
+
+The assignment is idempotent. Regular Polytomic users cannot be assigned because they already have application access to Harbors.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().users().assign("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**userId:** `String` — Unique identifier of the Harbor-only user
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.users.unassign(harborId, userId) -> UnassignedHarborUserEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Removes a Harbor assignment without deleting the user.
+
+This removes only the Harbor assignment. The organization user remains available and may retain assignments to other Harbors.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().users().unassign("248df4b7-aa70-47b8-a036-33ac447e668d", "248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**harborId:** `String` — Unique identifier of the Harbor
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**userId:** `String` — Unique identifier of the Harbor-only user
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Harbors Activity
+<details><summary><code>client.harbors.activity.list() -> HarborActivityListEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists Harbor Activity recorded for the caller's organization.
+
+You must be an active Organization administrator to use this endpoint.
+
+`start_time` is inclusive and `end_time` is exclusive. Both filter the time at
+which Polytomic recorded each event, which can differ from `occurred_at`. A
+single request can cover at most 90 days.
+
+Results are ordered from newest to oldest by default. Set `order` to `asc` to
+retrieve the oldest events first. A page contains at most 100 events. Pass
+`next_page_token` from the response as `page_token` with the same time range,
+filters, order, and limit to retrieve the next page. The token expires 24 hours
+after the first page. Pagination uses a live descending cursor, so an event from
+a transaction that commits between pages can require a fresh traversal.
+
+Responses include stable identities, bounded resource snapshots, schema label
+snapshots with truncation state, field counts, and row counts when available.
+They do not include internal recorded-order values, submitted SQL, raw field
+names, detailed provider errors, result rows, or raw pagination tokens.
+
+> ℹ️ Activity retention
+>
+> Polytomic retains Activity events for at least 90 days. Pagination tokens
+> expire 24 hours after the first page.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().activity().list(
+    ActivityListRequest
+        .builder()
+        .startTime(OffsetDateTime.parse("2024-01-15T09:30:00Z"))
+        .endTime(OffsetDateTime.parse("2024-01-15T09:30:00Z"))
+        .harborId(
+            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+        )
+        .eventType(
+            Arrays.asList(HarboractivityEventType.ACTION_LOOKED_UP)
+        )
+        .outcome(
+            Arrays.asList(HarboractivityOutcome.SUCCEEDED)
+        )
+        .operationId(
+            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+        )
+        .sessionId(
+            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+        )
+        .actorId(
+            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+        )
+        .credentialId(
+            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+        )
+        .connectionId(
+            Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+        )
+        .limit(1)
+        .pageToken("page_token")
+        .order(ActivityListRequestOrder.ASC)
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**startTime:** `OffsetDateTime` — Inclusive start of the event recorded-time range
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**endTime:** `OffsetDateTime` — Exclusive end of the event recorded-time range. The range can span at most 90 days.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of events to return. Defaults to 50 and cannot exceed 100.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request. It expires 24 hours after the first page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**order:** `Optional<ActivityListRequestOrder>` — Order in which events were recorded. Defaults to desc.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**harborId:** `Optional<String>` — Return events for these Harbors. Repeat the parameter to filter by multiple IDs.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**eventType:** `Optional<HarboractivityEventType>` — Return events with these event types. Repeat the parameter to filter by multiple types.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**outcome:** `Optional<HarboractivityOutcome>` — Return events with these outcomes. Repeat the parameter to filter by multiple outcomes.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**operationId:** `Optional<String>` — Return events for these operation IDs.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sessionId:** `Optional<String>` — Return events for these session IDs.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**actorId:** `Optional<String>` — Return events for these actor IDs.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**credentialId:** `Optional<String>` — Return events for these credential IDs.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**connectionId:** `Optional<String>` — Return events for these Connection IDs.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.activity.getSession(sessionId) -> HarborActivitySessionEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one Harbor Activity session and its events.
+
+You must be an active Organization administrator to use this endpoint. The
+session must belong to the Organization against which you authenticated.
+
+Events are ordered from oldest to newest by default. Set `order` to `desc` to
+retrieve the newest events first. A page contains at most 100 events. Pass
+`next_page_token` from the response as `page_token` with the same order and
+limit to retrieve the next page.
+
+`history_truncated` is `true` when Activity retention removed events from the
+beginning of the session. The lifecycle summary remains available while the
+session itself is retained.
+
+The response uses the same event allowlist as the Activity list and detail
+endpoints. It does not include session tokens, submitted SQL, raw field names,
+detailed provider errors, result rows, or raw pagination tokens.
+
+> ℹ️ Activity retention
+>
+> Polytomic retains Activity events for at least 90 days. Pagination tokens
+> expire 24 hours after the first page.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().activity().getSession(
+    "248df4b7-aa70-47b8-a036-33ac447e668d",
+    ActivityGetSessionRequest
+        .builder()
+        .limit(1)
+        .pageToken("page_token")
+        .order(ActivityGetSessionRequestOrder.ASC)
+        .build()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sessionId:** `String` — Harbor Activity session ID
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `Optional<Integer>` — Maximum number of events to return. Defaults to 50 and cannot exceed 100.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `Optional<String>` — Opaque pagination cursor returned by the previous request. It expires 24 hours after the first page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**order:** `Optional<ActivityGetSessionRequestOrder>` — Order in which events were recorded. Defaults to asc.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.harbors.activity.get(eventId) -> HarborActivityEventEnvelope</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one Harbor Activity event from the caller's organization.
+
+You must be an active Organization administrator to use this endpoint. The
+event must belong to the Organization against which you authenticated.
+
+The response can include stable identities, bounded resource snapshots, schema
+label snapshots with truncation state, field counts, and row counts. It does
+not include internal recorded-order values, submitted SQL, raw field names,
+detailed provider errors, result rows, or raw pagination tokens.
+
+> ℹ️ Activity retention
+>
+> Polytomic retains Activity events for at least 90 days.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```java
+client.harbors().activity().get("248df4b7-aa70-47b8-a036-33ac447e668d");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**eventId:** `String` — Activity event ID
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## ModelSync Targets
 <details><summary><code>client.modelSync.targets.getTargetFields(id) -> TargetResponseEnvelope</code></summary>
 <dl>
@@ -16862,14 +16992,20 @@ client.modelSync().errorHandling().update(
 
 Lists executions for a model sync.
 
-Results are ordered by start time descending. If more results are available, the
-response includes `pagination.next_page_token`; pass that token back unchanged
-to continue paging.
+Results are ordered by `created_at` descending. Pass the opaque
+`pagination.next_page_token` back as `page_token` to continue paging. A token is
+returned even on the last page and on empty pages. Stop paging when `data` is
+empty; the presence of a token does not mean more results are available.
 
-The token is opaque. Do not construct or edit it yourself.
+Use `ascending=true` to walk forward from the oldest executions. Each page
+still lists its executions newest first; subsequent pages contain newer
+executions.
 
-For full details about a specific execution — including record counts and error
-summaries — use
+Use `only_completed=true` to return only executions in terminal statuses.
+Ordering and pagination still use `created_at`.
+
+For full details about a specific execution, including record counts and error
+summaries, use
 [`GET /api/syncs/{sync_id}/executions/{id}`](../../../../api-reference/model-sync/executions/get).
 </dd>
 </dl>
@@ -16932,7 +17068,7 @@ client.modelSync().executions().list(
 <dl>
 <dd>
 
-**ascending:** `Optional<Boolean>` — Return executions oldest first.
+**ascending:** `Optional<Boolean>` — Traverse from the oldest executions; each page is ordered newest first.
     
 </dd>
 </dl>
@@ -17462,6 +17598,21 @@ client.permissions().policies().create(
     CreatePolicyRequest
         .builder()
         .name("Custom")
+        .policyActions(
+            Optional.of(
+                Arrays.asList(
+                    PolicyAction
+                        .builder()
+                        .action("edit")
+                        .roleIds(
+                            Optional.of(
+                                Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+                            )
+                        )
+                        .build()
+                )
+            )
+        )
         .build()
 );
 ```
@@ -17601,6 +17752,21 @@ client.permissions().policies().update(
     UpdatePolicyRequest
         .builder()
         .name("Custom")
+        .policyActions(
+            Optional.of(
+                Arrays.asList(
+                    PolicyAction
+                        .builder()
+                        .action("edit")
+                        .roleIds(
+                            Optional.of(
+                                Arrays.asList("248df4b7-aa70-47b8-a036-33ac447e668d")
+                            )
+                        )
+                        .build()
+                )
+            )
+        )
         .build()
 );
 ```

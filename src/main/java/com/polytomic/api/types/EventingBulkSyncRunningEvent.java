@@ -84,7 +84,7 @@ public final class EventingBulkSyncRunningEvent {
     }
 
     /**
-     * @return Bulk sync ID
+     * @return Bulk Sync ID
      */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
@@ -92,7 +92,7 @@ public final class EventingBulkSyncRunningEvent {
     }
 
     /**
-     * @return Name of the bulk sync
+     * @return Name of the Bulk Sync
      */
     @JsonProperty("sync_name")
     public Optional<String> getSyncName() {
@@ -224,7 +224,7 @@ public final class EventingBulkSyncRunningEvent {
         }
 
         /**
-         * <p>Bulk sync ID</p>
+         * <p>Bulk Sync ID</p>
          */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
@@ -238,7 +238,7 @@ public final class EventingBulkSyncRunningEvent {
         }
 
         /**
-         * <p>Name of the bulk sync</p>
+         * <p>Name of the Bulk Sync</p>
          */
         @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
         public Builder syncName(Optional<String> syncName) {

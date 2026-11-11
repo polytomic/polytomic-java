@@ -11,6 +11,7 @@ import com.polytomic.api.resources.bulksync.errorhandling.ErrorHandlingClient;
 import com.polytomic.api.resources.bulksync.executions.ExecutionsClient;
 import com.polytomic.api.resources.bulksync.requests.ActivateBulkSyncInput;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncDeleteRequest;
+import com.polytomic.api.resources.bulksync.requests.BulkSyncGetDestinationRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncGetSourceRequest;
 import com.polytomic.api.resources.bulksync.requests.BulkSyncListRequest;
@@ -60,16 +61,11 @@ public class BulkSyncClient {
 
     /**
      * Lists bulk syncs in the caller's organization.
-     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
-     * syncs modified at the same instant. Pagination uses an opaque
-     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
-     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
-     * optional, and the default and maximum page size is 50 syncs.</p>
-     * <blockquote>
-     * <p>📘 To retrieve a specific sync, use
-     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
-     * instead of filtering the list client-side.</p>
-     * </blockquote>
+     * <p>Results are returned as a single <code>data</code> array. You can filter by <code>active</code>, but
+     * this endpoint does not support pagination, <code>limit</code>, or <code>page_token</code> query
+     * parameters.</p>
+     * <p>To retrieve a specific Bulk Sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>.</p>
      */
     public BulkSyncListEnvelope list() {
         return this.rawClient.list().body();
@@ -77,16 +73,11 @@ public class BulkSyncClient {
 
     /**
      * Lists bulk syncs in the caller's organization.
-     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
-     * syncs modified at the same instant. Pagination uses an opaque
-     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
-     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
-     * optional, and the default and maximum page size is 50 syncs.</p>
-     * <blockquote>
-     * <p>📘 To retrieve a specific sync, use
-     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
-     * instead of filtering the list client-side.</p>
-     * </blockquote>
+     * <p>Results are returned as a single <code>data</code> array. You can filter by <code>active</code>, but
+     * this endpoint does not support pagination, <code>limit</code>, or <code>page_token</code> query
+     * parameters.</p>
+     * <p>To retrieve a specific Bulk Sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>.</p>
      */
     public BulkSyncListEnvelope list(RequestOptions requestOptions) {
         return this.rawClient.list(requestOptions).body();
@@ -94,16 +85,11 @@ public class BulkSyncClient {
 
     /**
      * Lists bulk syncs in the caller's organization.
-     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
-     * syncs modified at the same instant. Pagination uses an opaque
-     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
-     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
-     * optional, and the default and maximum page size is 50 syncs.</p>
-     * <blockquote>
-     * <p>📘 To retrieve a specific sync, use
-     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
-     * instead of filtering the list client-side.</p>
-     * </blockquote>
+     * <p>Results are returned as a single <code>data</code> array. You can filter by <code>active</code>, but
+     * this endpoint does not support pagination, <code>limit</code>, or <code>page_token</code> query
+     * parameters.</p>
+     * <p>To retrieve a specific Bulk Sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>.</p>
      */
     public BulkSyncListEnvelope list(BulkSyncListRequest request) {
         return this.rawClient.list(request).body();
@@ -111,16 +97,11 @@ public class BulkSyncClient {
 
     /**
      * Lists bulk syncs in the caller's organization.
-     * <p>Results are ordered by <code>updated_at</code> descending, with <code>id</code> as a tiebreaker for
-     * syncs modified at the same instant. Pagination uses an opaque
-     * <code>pagination.next_page_token</code> returned in the response; pass it back as the
-     * <code>page_token</code> query parameter to fetch the next page. The <code>limit</code> parameter is
-     * optional, and the default and maximum page size is 50 syncs.</p>
-     * <blockquote>
-     * <p>📘 To retrieve a specific sync, use
-     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>
-     * instead of filtering the list client-side.</p>
-     * </blockquote>
+     * <p>Results are returned as a single <code>data</code> array. You can filter by <code>active</code>, but
+     * this endpoint does not support pagination, <code>limit</code>, or <code>page_token</code> query
+     * parameters.</p>
+     * <p>To retrieve a specific Bulk Sync, use
+     * <a href="../../../api-reference/bulk-sync/get"><code>GET /api/bulk/syncs/{id}</code></a>.</p>
      */
     public BulkSyncListEnvelope list(BulkSyncListRequest request, RequestOptions requestOptions) {
         return this.rawClient.list(request, requestOptions).body();
@@ -160,6 +141,15 @@ public class BulkSyncClient {
      * on already selected objects.</li>
      * <li><code>normalize_names</code> defaults to enabled.</li>
      * </ul>
+     * <h2>Scheduling</h2>
+     * <p>To sync the two selective groups of objects at different frequencies, add one
+     * entry to <code>additional_schedules</code> with <code>selective_mode</code> set to
+     * <code>incrementalFields</code> and another with <code>nonincrementalFields</code>. Set
+     * <code>default_schedule.frequency</code> to <code>manual</code> to avoid an additional automatic run
+     * covering all selected objects. The default schedule does not accept a
+     * selective mode. Check <code>capabilities.supports_selective_modes</code> on
+     * <a href="../../../api-reference/bulk-sync/get-source"><code>GET /api/connections/{id}/bulksync/source</code></a>
+     * for the source connection first.</p>
      */
     public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request) {
         return this.rawClient.create(request).body();
@@ -199,6 +189,15 @@ public class BulkSyncClient {
      * on already selected objects.</li>
      * <li><code>normalize_names</code> defaults to enabled.</li>
      * </ul>
+     * <h2>Scheduling</h2>
+     * <p>To sync the two selective groups of objects at different frequencies, add one
+     * entry to <code>additional_schedules</code> with <code>selective_mode</code> set to
+     * <code>incrementalFields</code> and another with <code>nonincrementalFields</code>. Set
+     * <code>default_schedule.frequency</code> to <code>manual</code> to avoid an additional automatic run
+     * covering all selected objects. The default schedule does not accept a
+     * selective mode. Check <code>capabilities.supports_selective_modes</code> on
+     * <a href="../../../api-reference/bulk-sync/get-source"><code>GET /api/connections/{id}/bulksync/source</code></a>
+     * for the source connection first.</p>
      */
     public BulkSyncResponseEnvelope create(CreateBulkSyncRequest request, IdempotentRequestOptions requestOptions) {
         return this.rawClient.create(request, requestOptions).body();
@@ -632,15 +631,25 @@ public class BulkSyncClient {
 
     /**
      * Describes the destination configuration schema a connection accepts when used as a bulk sync destination.
-     * <p>The response is a JSON Schema object describing the shape of the
-     * <code>destination_configuration</code> field you must supply when
-     * <a href="../../../../../api-reference/bulk-sync/create">creating</a> or
-     * <a href="../../../../../api-reference/bulk-sync/update">updating</a> a bulk sync that uses this
-     * connection as its destination. Required fields vary by connection type.</p>
+     * <p>Use <code>configuration</code> to discover the fields accepted by
+     * <code>destination_configuration</code> when you <a href="../../../../../api-reference/bulk-sync/create">create</a>
+     * or <a href="../../../../../api-reference/bulk-sync/update">update</a> a Bulk Sync. Required fields vary
+     * by Connection type. Use <code>modes</code> to choose a mode supported by this destination.</p>
+     * <h2>Suggested initial configuration</h2>
+     * <p>Supply <code>source_connection_id</code> to request suggested values for a new Bulk Sync.
+     * For example, Snowflake suggests an output schema based on the source Connection
+     * name. You must be able to read both Connections, and they must belong to the
+     * same Organization.</p>
+     * <p>When the destination generates suggestions, <code>initial_configuration</code> contains
+     * values using the same field names as <code>destination_configuration</code>. Use these
+     * values as a starting point, preserving any explicit choices. This request does
+     * not change a Connection or an existing Bulk Sync. Omit <code>source_connection_id</code>
+     * to retrieve metadata without contextual suggestions.</p>
      * <blockquote>
-     * <p>📘 Fetch this endpoint once per connection type rather than once per sync.
-     * The configuration schema is the same for all syncs sharing the same
-     * destination connection.</p>
+     * <p>ℹ️ Configuration field metadata is reusable for the destination Connection.
+     * Initial values depend on the source and destination Connections. Fetch them
+     * for each new source/destination pair rather than caching them by Connection
+     * type. Do not apply them over an existing configuration.</p>
      * </blockquote>
      */
     public BulkSyncDestEnvelope getDestination(String id) {
@@ -649,19 +658,84 @@ public class BulkSyncClient {
 
     /**
      * Describes the destination configuration schema a connection accepts when used as a bulk sync destination.
-     * <p>The response is a JSON Schema object describing the shape of the
-     * <code>destination_configuration</code> field you must supply when
-     * <a href="../../../../../api-reference/bulk-sync/create">creating</a> or
-     * <a href="../../../../../api-reference/bulk-sync/update">updating</a> a bulk sync that uses this
-     * connection as its destination. Required fields vary by connection type.</p>
+     * <p>Use <code>configuration</code> to discover the fields accepted by
+     * <code>destination_configuration</code> when you <a href="../../../../../api-reference/bulk-sync/create">create</a>
+     * or <a href="../../../../../api-reference/bulk-sync/update">update</a> a Bulk Sync. Required fields vary
+     * by Connection type. Use <code>modes</code> to choose a mode supported by this destination.</p>
+     * <h2>Suggested initial configuration</h2>
+     * <p>Supply <code>source_connection_id</code> to request suggested values for a new Bulk Sync.
+     * For example, Snowflake suggests an output schema based on the source Connection
+     * name. You must be able to read both Connections, and they must belong to the
+     * same Organization.</p>
+     * <p>When the destination generates suggestions, <code>initial_configuration</code> contains
+     * values using the same field names as <code>destination_configuration</code>. Use these
+     * values as a starting point, preserving any explicit choices. This request does
+     * not change a Connection or an existing Bulk Sync. Omit <code>source_connection_id</code>
+     * to retrieve metadata without contextual suggestions.</p>
      * <blockquote>
-     * <p>📘 Fetch this endpoint once per connection type rather than once per sync.
-     * The configuration schema is the same for all syncs sharing the same
-     * destination connection.</p>
+     * <p>ℹ️ Configuration field metadata is reusable for the destination Connection.
+     * Initial values depend on the source and destination Connections. Fetch them
+     * for each new source/destination pair rather than caching them by Connection
+     * type. Do not apply them over an existing configuration.</p>
      * </blockquote>
      */
     public BulkSyncDestEnvelope getDestination(String id, RequestOptions requestOptions) {
         return this.rawClient.getDestination(id, requestOptions).body();
+    }
+
+    /**
+     * Describes the destination configuration schema a connection accepts when used as a bulk sync destination.
+     * <p>Use <code>configuration</code> to discover the fields accepted by
+     * <code>destination_configuration</code> when you <a href="../../../../../api-reference/bulk-sync/create">create</a>
+     * or <a href="../../../../../api-reference/bulk-sync/update">update</a> a Bulk Sync. Required fields vary
+     * by Connection type. Use <code>modes</code> to choose a mode supported by this destination.</p>
+     * <h2>Suggested initial configuration</h2>
+     * <p>Supply <code>source_connection_id</code> to request suggested values for a new Bulk Sync.
+     * For example, Snowflake suggests an output schema based on the source Connection
+     * name. You must be able to read both Connections, and they must belong to the
+     * same Organization.</p>
+     * <p>When the destination generates suggestions, <code>initial_configuration</code> contains
+     * values using the same field names as <code>destination_configuration</code>. Use these
+     * values as a starting point, preserving any explicit choices. This request does
+     * not change a Connection or an existing Bulk Sync. Omit <code>source_connection_id</code>
+     * to retrieve metadata without contextual suggestions.</p>
+     * <blockquote>
+     * <p>ℹ️ Configuration field metadata is reusable for the destination Connection.
+     * Initial values depend on the source and destination Connections. Fetch them
+     * for each new source/destination pair rather than caching them by Connection
+     * type. Do not apply them over an existing configuration.</p>
+     * </blockquote>
+     */
+    public BulkSyncDestEnvelope getDestination(String id, BulkSyncGetDestinationRequest request) {
+        return this.rawClient.getDestination(id, request).body();
+    }
+
+    /**
+     * Describes the destination configuration schema a connection accepts when used as a bulk sync destination.
+     * <p>Use <code>configuration</code> to discover the fields accepted by
+     * <code>destination_configuration</code> when you <a href="../../../../../api-reference/bulk-sync/create">create</a>
+     * or <a href="../../../../../api-reference/bulk-sync/update">update</a> a Bulk Sync. Required fields vary
+     * by Connection type. Use <code>modes</code> to choose a mode supported by this destination.</p>
+     * <h2>Suggested initial configuration</h2>
+     * <p>Supply <code>source_connection_id</code> to request suggested values for a new Bulk Sync.
+     * For example, Snowflake suggests an output schema based on the source Connection
+     * name. You must be able to read both Connections, and they must belong to the
+     * same Organization.</p>
+     * <p>When the destination generates suggestions, <code>initial_configuration</code> contains
+     * values using the same field names as <code>destination_configuration</code>. Use these
+     * values as a starting point, preserving any explicit choices. This request does
+     * not change a Connection or an existing Bulk Sync. Omit <code>source_connection_id</code>
+     * to retrieve metadata without contextual suggestions.</p>
+     * <blockquote>
+     * <p>ℹ️ Configuration field metadata is reusable for the destination Connection.
+     * Initial values depend on the source and destination Connections. Fetch them
+     * for each new source/destination pair rather than caching them by Connection
+     * type. Do not apply them over an existing configuration.</p>
+     * </blockquote>
+     */
+    public BulkSyncDestEnvelope getDestination(
+            String id, BulkSyncGetDestinationRequest request, RequestOptions requestOptions) {
+        return this.rawClient.getDestination(id, request, requestOptions).body();
     }
 
     public ExecutionsClient executions() {

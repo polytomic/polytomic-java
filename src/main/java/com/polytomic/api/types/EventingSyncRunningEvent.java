@@ -64,7 +64,7 @@ public final class EventingSyncRunningEvent {
     }
 
     /**
-     * @return Model sync ID
+     * @return Model Sync ID
      */
     @JsonProperty("sync_id")
     public Optional<String> getSyncId() {
@@ -72,7 +72,7 @@ public final class EventingSyncRunningEvent {
     }
 
     /**
-     * @return Name of the model sync
+     * @return Name of the Model Sync
      */
     @JsonProperty("sync_name")
     public Optional<String> getSyncName() {
@@ -174,7 +174,7 @@ public final class EventingSyncRunningEvent {
         }
 
         /**
-         * <p>Model sync ID</p>
+         * <p>Model Sync ID</p>
          */
         @JsonSetter(value = "sync_id", nulls = Nulls.SKIP)
         public Builder syncId(Optional<String> syncId) {
@@ -188,7 +188,7 @@ public final class EventingSyncRunningEvent {
         }
 
         /**
-         * <p>Name of the model sync</p>
+         * <p>Name of the Model Sync</p>
          */
         @JsonSetter(value = "sync_name", nulls = Nulls.SKIP)
         public Builder syncName(Optional<String> syncName) {

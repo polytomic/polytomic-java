@@ -1136,19 +1136,10 @@ public class AsyncRawSchemasClient {
     }
 
     /**
-     * Returns a sample of records from a schema on a connection.
-     * <p>The sample is intended for previewing the shape and values of data before
-     * committing to a sync configuration, not for full data export.</p>
-     * <blockquote>
-     * <p>🚧 The sample is not guaranteed to be representative of the full dataset.
-     * Row selection is implementation-defined and may differ across connection
-     * types.</p>
-     * </blockquote>
-     * <blockquote>
-     * <p>📘 If the schema's field definitions are stale, refresh them first with
-     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> to ensure
-     * the sample aligns with the current schema structure.</p>
-     * </blockquote>
+     * Returns all records from a supported schema on a Connection.
+     * <p>This endpoint supports only the HubSpot <code>deals_pipelines</code> schema. It returns
+     * all records from that schema in a single response, without sampling or
+     * pagination. Other backends and schemas are unsupported.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<SchemaRecordsResponseEnvelope>> getRecords(
             String id, String schemaId) {
@@ -1156,19 +1147,10 @@ public class AsyncRawSchemasClient {
     }
 
     /**
-     * Returns a sample of records from a schema on a connection.
-     * <p>The sample is intended for previewing the shape and values of data before
-     * committing to a sync configuration, not for full data export.</p>
-     * <blockquote>
-     * <p>🚧 The sample is not guaranteed to be representative of the full dataset.
-     * Row selection is implementation-defined and may differ across connection
-     * types.</p>
-     * </blockquote>
-     * <blockquote>
-     * <p>📘 If the schema's field definitions are stale, refresh them first with
-     * <a href="../../../../../../api-reference/schemas/refresh"><code>POST /api/connections/{id}/schemas/refresh</code></a> to ensure
-     * the sample aligns with the current schema structure.</p>
-     * </blockquote>
+     * Returns all records from a supported schema on a Connection.
+     * <p>This endpoint supports only the HubSpot <code>deals_pipelines</code> schema. It returns
+     * all records from that schema in a single response, without sampling or
+     * pagination. Other backends and schemas are unsupported.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<SchemaRecordsResponseEnvelope>> getRecords(
             String id, String schemaId, RequestOptions requestOptions) {

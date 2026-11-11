@@ -23,6 +23,8 @@ import java.util.Optional;
 public final class BulkSyncDest {
     private final Optional<Map<String, Object>> configuration;
 
+    private final Optional<Map<String, Object>> initialConfiguration;
+
     private final Optional<List<SupportedBulkMode>> modes;
 
     private final Optional<List<BulkResyncMode>> supportedResyncModes;
@@ -33,11 +35,13 @@ public final class BulkSyncDest {
 
     private BulkSyncDest(
             Optional<Map<String, Object>> configuration,
+            Optional<Map<String, Object>> initialConfiguration,
             Optional<List<SupportedBulkMode>> modes,
             Optional<List<BulkResyncMode>> supportedResyncModes,
             Optional<Boolean> supportsHistoryMode,
             Map<String, Object> additionalProperties) {
         this.configuration = configuration;
+        this.initialConfiguration = initialConfiguration;
         this.modes = modes;
         this.supportedResyncModes = supportedResyncModes;
         this.supportsHistoryMode = supportsHistoryMode;
@@ -50,6 +54,14 @@ public final class BulkSyncDest {
     @JsonProperty("configuration")
     public Optional<Map<String, Object>> getConfiguration() {
         return configuration;
+    }
+
+    /**
+     * @return Suggested values for a new destination configuration, when source_connection_id is provided and the destination generates them. Preserve explicit choices and existing configurations.
+     */
+    @JsonProperty("initial_configuration")
+    public Optional<Map<String, Object>> getInitialConfiguration() {
+        return initialConfiguration;
     }
 
     /**
@@ -89,6 +101,7 @@ public final class BulkSyncDest {
 
     private boolean equalTo(BulkSyncDest other) {
         return configuration.equals(other.configuration)
+                && initialConfiguration.equals(other.initialConfiguration)
                 && modes.equals(other.modes)
                 && supportedResyncModes.equals(other.supportedResyncModes)
                 && supportsHistoryMode.equals(other.supportsHistoryMode);
@@ -96,7 +109,12 @@ public final class BulkSyncDest {
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.configuration, this.modes, this.supportedResyncModes, this.supportsHistoryMode);
+        return Objects.hash(
+                this.configuration,
+                this.initialConfiguration,
+                this.modes,
+                this.supportedResyncModes,
+                this.supportsHistoryMode);
     }
 
     @java.lang.Override
@@ -112,6 +130,8 @@ public final class BulkSyncDest {
     public static final class Builder {
         private Optional<Map<String, Object>> configuration = Optional.empty();
 
+        private Optional<Map<String, Object>> initialConfiguration = Optional.empty();
+
         private Optional<List<SupportedBulkMode>> modes = Optional.empty();
 
         private Optional<List<BulkResyncMode>> supportedResyncModes = Optional.empty();
@@ -124,6 +144,7 @@ public final class BulkSyncDest {
 
         public Builder from(BulkSyncDest other) {
             configuration(other.getConfiguration());
+            initialConfiguration(other.getInitialConfiguration());
             modes(other.getModes());
             supportedResyncModes(other.getSupportedResyncModes());
             supportsHistoryMode(other.getSupportsHistoryMode());
@@ -141,6 +162,20 @@ public final class BulkSyncDest {
 
         public Builder configuration(Map<String, Object> configuration) {
             this.configuration = Optional.ofNullable(configuration);
+            return this;
+        }
+
+        /**
+         * <p>Suggested values for a new destination configuration, when source_connection_id is provided and the destination generates them. Preserve explicit choices and existing configurations.</p>
+         */
+        @JsonSetter(value = "initial_configuration", nulls = Nulls.SKIP)
+        public Builder initialConfiguration(Optional<Map<String, Object>> initialConfiguration) {
+            this.initialConfiguration = initialConfiguration;
+            return this;
+        }
+
+        public Builder initialConfiguration(Map<String, Object> initialConfiguration) {
+            this.initialConfiguration = Optional.ofNullable(initialConfiguration);
             return this;
         }
 
@@ -188,12 +223,18 @@ public final class BulkSyncDest {
 
         public BulkSyncDest build() {
             return new BulkSyncDest(
-                    configuration, modes, supportedResyncModes, supportsHistoryMode, additionalProperties);
+                    configuration,
+                    initialConfiguration,
+                    modes,
+                    supportedResyncModes,
+                    supportsHistoryMode,
+                    additionalProperties);
         }
 
         @JsonAnySetter
         private void putAdditionalPropertyFromJson(String key, Object value) {
             if (key.equalsIgnoreCase("configuration")
+                    || key.equalsIgnoreCase("initial_configuration")
                     || key.equalsIgnoreCase("modes")
                     || key.equalsIgnoreCase("supported_resync_modes")
                     || key.equalsIgnoreCase("supports_history_mode")) {

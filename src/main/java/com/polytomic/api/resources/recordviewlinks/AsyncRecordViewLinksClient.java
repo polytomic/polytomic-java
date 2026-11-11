@@ -63,6 +63,10 @@ public class AsyncRecordViewLinksClient {
 
     /**
      * Checks whether record-view links can be created for a connection schema.
+     * <p>Use the Connection and schema for the record you want to open. When working
+     * with Harbor query results, use the source Connection and schema rather than
+     * assuming the Harbor's backing Connection can create a link. You can use
+     * record-view links independently of Harbor.</p>
      */
     public CompletableFuture<GetRecordViewCapabilitiesEnvelope> getCapabilities(
             RecordViewLinksGetCapabilitiesRequest request) {
@@ -79,6 +83,10 @@ public class AsyncRecordViewLinksClient {
 
     /**
      * Checks whether record-view links can be created for a connection schema.
+     * <p>Use the Connection and schema for the record you want to open. When working
+     * with Harbor query results, use the source Connection and schema rather than
+     * assuming the Harbor's backing Connection can create a link. You can use
+     * record-view links independently of Harbor.</p>
      */
     public CompletableFuture<GetRecordViewCapabilitiesEnvelope> getCapabilities(
             RecordViewLinksGetCapabilitiesRequest request, RequestOptions requestOptions) {

@@ -207,15 +207,17 @@ public class AsyncRawExecutionsClient {
 
     /**
      * Lists executions for a bulk sync.
-     * <p>Results are ordered by start time descending by default. When more results are
-     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
-     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
-     * parameter is optional, and the maximum page size is 100 executions.</p>
-     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
-     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
-     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
-     * starting with the newest execution.</p>
-     * <p>For the full details of a single run — including per-schema execution status —
+     * <p>Results are ordered by <code>created_at</code> descending by default. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to retrieve the next page.
+     * A token is returned even on the last nonempty page and on subsequent empty
+     * pages. Stop paging when <code>data</code> is empty; the presence of a token does not mean
+     * more results are available. The maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only executions in terminal statuses. In
+     * that mode, ordering and pagination use <code>updated_at</code> instead of <code>created_at</code>.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions by the selected
+     * sort timestamp. Each page still lists its executions newest first; subsequent
+     * pages contain newer executions.</p>
+     * <p>For the full details of a single run, including per-schema execution status,
      * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ListBulkSyncExecutionsEnvelope>> list(String id) {
@@ -224,15 +226,17 @@ public class AsyncRawExecutionsClient {
 
     /**
      * Lists executions for a bulk sync.
-     * <p>Results are ordered by start time descending by default. When more results are
-     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
-     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
-     * parameter is optional, and the maximum page size is 100 executions.</p>
-     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
-     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
-     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
-     * starting with the newest execution.</p>
-     * <p>For the full details of a single run — including per-schema execution status —
+     * <p>Results are ordered by <code>created_at</code> descending by default. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to retrieve the next page.
+     * A token is returned even on the last nonempty page and on subsequent empty
+     * pages. Stop paging when <code>data</code> is empty; the presence of a token does not mean
+     * more results are available. The maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only executions in terminal statuses. In
+     * that mode, ordering and pagination use <code>updated_at</code> instead of <code>created_at</code>.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions by the selected
+     * sort timestamp. Each page still lists its executions newest first; subsequent
+     * pages contain newer executions.</p>
+     * <p>For the full details of a single run, including per-schema execution status,
      * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ListBulkSyncExecutionsEnvelope>> list(
@@ -242,15 +246,17 @@ public class AsyncRawExecutionsClient {
 
     /**
      * Lists executions for a bulk sync.
-     * <p>Results are ordered by start time descending by default. When more results are
-     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
-     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
-     * parameter is optional, and the maximum page size is 100 executions.</p>
-     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
-     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
-     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
-     * starting with the newest execution.</p>
-     * <p>For the full details of a single run — including per-schema execution status —
+     * <p>Results are ordered by <code>created_at</code> descending by default. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to retrieve the next page.
+     * A token is returned even on the last nonempty page and on subsequent empty
+     * pages. Stop paging when <code>data</code> is empty; the presence of a token does not mean
+     * more results are available. The maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only executions in terminal statuses. In
+     * that mode, ordering and pagination use <code>updated_at</code> instead of <code>created_at</code>.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions by the selected
+     * sort timestamp. Each page still lists its executions newest first; subsequent
+     * pages contain newer executions.</p>
+     * <p>For the full details of a single run, including per-schema execution status,
      * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ListBulkSyncExecutionsEnvelope>> list(
@@ -260,15 +266,17 @@ public class AsyncRawExecutionsClient {
 
     /**
      * Lists executions for a bulk sync.
-     * <p>Results are ordered by start time descending by default. When more results are
-     * available, the response includes an opaque <code>pagination.next_page_token</code>; pass it
-     * back as the <code>page_token</code> query parameter to retrieve the next page. The <code>limit</code>
-     * parameter is optional, and the maximum page size is 100 executions.</p>
-     * <p>Use <code>only_terminal=true</code> to return only finished executions. In that mode,
-     * executions are ordered by <code>updated_at</code> so recently completed runs appear first.</p>
-     * <p>Use <code>ascending=true</code> to walk forward from the oldest execution instead of
-     * starting with the newest execution.</p>
-     * <p>For the full details of a single run — including per-schema execution status —
+     * <p>Results are ordered by <code>created_at</code> descending by default. Pass the opaque
+     * <code>pagination.next_page_token</code> back as <code>page_token</code> to retrieve the next page.
+     * A token is returned even on the last nonempty page and on subsequent empty
+     * pages. Stop paging when <code>data</code> is empty; the presence of a token does not mean
+     * more results are available. The maximum page size is 100 executions.</p>
+     * <p>Use <code>only_terminal=true</code> to return only executions in terminal statuses. In
+     * that mode, ordering and pagination use <code>updated_at</code> instead of <code>created_at</code>.</p>
+     * <p>Use <code>ascending=true</code> to walk forward from the oldest executions by the selected
+     * sort timestamp. Each page still lists its executions newest first; subsequent
+     * pages contain newer executions.</p>
+     * <p>For the full details of a single run, including per-schema execution status,
      * use <a href="../../../../../api-reference/bulk-sync/executions/get"><code>GET /api/bulk/syncs/{id}/executions/{exec_id}</code></a>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ListBulkSyncExecutionsEnvelope>> list(
@@ -1154,7 +1162,11 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     * Fetch up to the most recent 50 retained console log entries for ingestion scoped by Connection and optional Bulk Sync.
+     * <p>Entries are returned in chronological order. Use <code>after</code> with the returned
+     * <code>next_cursor</code> to fetch newer entries. Only the most recent 50 entries are
+     * retained per scope; older entries are discarded. The log expires after 48 hours
+     * without new entries.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getIngestConsoleLogs(
             String connectionId) {
@@ -1163,7 +1175,11 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     * Fetch up to the most recent 50 retained console log entries for ingestion scoped by Connection and optional Bulk Sync.
+     * <p>Entries are returned in chronological order. Use <code>after</code> with the returned
+     * <code>next_cursor</code> to fetch newer entries. Only the most recent 50 entries are
+     * retained per scope; older entries are discarded. The log expires after 48 hours
+     * without new entries.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getIngestConsoleLogs(
             String connectionId, RequestOptions requestOptions) {
@@ -1172,7 +1188,11 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     * Fetch up to the most recent 50 retained console log entries for ingestion scoped by Connection and optional Bulk Sync.
+     * <p>Entries are returned in chronological order. Use <code>after</code> with the returned
+     * <code>next_cursor</code> to fetch newer entries. Only the most recent 50 entries are
+     * retained per scope; older entries are discarded. The log expires after 48 hours
+     * without new entries.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getIngestConsoleLogs(
             String connectionId, ExecutionsGetIngestConsoleLogsRequest request) {
@@ -1180,7 +1200,11 @@ public class AsyncRawExecutionsClient {
     }
 
     /**
-     * Fetch the latest console log entries for ingestion scoped by connection and optional bulk sync. Returns the most recent 50 entries.
+     * Fetch up to the most recent 50 retained console log entries for ingestion scoped by Connection and optional Bulk Sync.
+     * <p>Entries are returned in chronological order. Use <code>after</code> with the returned
+     * <code>next_cursor</code> to fetch newer entries. Only the most recent 50 entries are
+     * retained per scope; older entries are discarded. The log expires after 48 hours
+     * without new entries.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ExecutionConsoleLogsResponseEnvelope>> getIngestConsoleLogs(
             String connectionId, ExecutionsGetIngestConsoleLogsRequest request, RequestOptions requestOptions) {

@@ -189,6 +189,9 @@ public class AsyncActionsClient {
      * requests, <code>X-Polytomic-Harbor-Session</code> is optional. If supplied, the session must
      * be active and bound to the credential and Harbor. Discovery is recorded as
      * <code>action.listed</code>; no response is returned if that event cannot be recorded.</p>
+     * <p>Organization administrators manage these grants through
+     * <a href="../../../../api-reference/harbors/action-configuration/get">Harbor action configuration</a>.
+     * Runtime discovery does not enable additional operations or fields.</p>
      */
     public CompletableFuture<HarborActionListEnvelope> list(String harborId) {
         CompletableFuture<PolytomicHttpResponse<HarborActionListEnvelope>> rawFuture = this.rawClient.list(harborId);
@@ -230,6 +233,9 @@ public class AsyncActionsClient {
      * requests, <code>X-Polytomic-Harbor-Session</code> is optional. If supplied, the session must
      * be active and bound to the credential and Harbor. Discovery is recorded as
      * <code>action.listed</code>; no response is returned if that event cannot be recorded.</p>
+     * <p>Organization administrators manage these grants through
+     * <a href="../../../../api-reference/harbors/action-configuration/get">Harbor action configuration</a>.
+     * Runtime discovery does not enable additional operations or fields.</p>
      */
     public CompletableFuture<HarborActionListEnvelope> list(String harborId, RequestOptions requestOptions) {
         CompletableFuture<PolytomicHttpResponse<HarborActionListEnvelope>> rawFuture =
@@ -272,6 +278,9 @@ public class AsyncActionsClient {
      * requests, <code>X-Polytomic-Harbor-Session</code> is optional. If supplied, the session must
      * be active and bound to the credential and Harbor. Discovery is recorded as
      * <code>action.listed</code>; no response is returned if that event cannot be recorded.</p>
+     * <p>Organization administrators manage these grants through
+     * <a href="../../../../api-reference/harbors/action-configuration/get">Harbor action configuration</a>.
+     * Runtime discovery does not enable additional operations or fields.</p>
      */
     public CompletableFuture<HarborActionListEnvelope> list(String harborId, ActionsListRequest request) {
         CompletableFuture<PolytomicHttpResponse<HarborActionListEnvelope>> rawFuture =
@@ -314,6 +323,9 @@ public class AsyncActionsClient {
      * requests, <code>X-Polytomic-Harbor-Session</code> is optional. If supplied, the session must
      * be active and bound to the credential and Harbor. Discovery is recorded as
      * <code>action.listed</code>; no response is returned if that event cannot be recorded.</p>
+     * <p>Organization administrators manage these grants through
+     * <a href="../../../../api-reference/harbors/action-configuration/get">Harbor action configuration</a>.
+     * Runtime discovery does not enable additional operations or fields.</p>
      */
     public CompletableFuture<HarborActionListEnvelope> list(
             String harborId, ActionsListRequest request, RequestOptions requestOptions) {

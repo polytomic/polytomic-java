@@ -22,15 +22,19 @@ import java.util.Optional;
 public final class BulkSyncSourceCapabilities {
     private final Optional<Boolean> supportsNamespaces;
 
+    private final Optional<Boolean> supportsSelectiveModes;
+
     private final Optional<Boolean> supportsTrackingFields;
 
     private final Map<String, Object> additionalProperties;
 
     private BulkSyncSourceCapabilities(
             Optional<Boolean> supportsNamespaces,
+            Optional<Boolean> supportsSelectiveModes,
             Optional<Boolean> supportsTrackingFields,
             Map<String, Object> additionalProperties) {
         this.supportsNamespaces = supportsNamespaces;
+        this.supportsSelectiveModes = supportsSelectiveModes;
         this.supportsTrackingFields = supportsTrackingFields;
         this.additionalProperties = additionalProperties;
     }
@@ -41,6 +45,14 @@ public final class BulkSyncSourceCapabilities {
     @JsonProperty("supports_namespaces")
     public Optional<Boolean> getSupportsNamespaces() {
         return supportsNamespaces;
+    }
+
+    /**
+     * @return Whether bulk sync schedules from this source can set a selective mode other than none
+     */
+    @JsonProperty("supports_selective_modes")
+    public Optional<Boolean> getSupportsSelectiveModes() {
+        return supportsSelectiveModes;
     }
 
     /**
@@ -64,12 +76,13 @@ public final class BulkSyncSourceCapabilities {
 
     private boolean equalTo(BulkSyncSourceCapabilities other) {
         return supportsNamespaces.equals(other.supportsNamespaces)
+                && supportsSelectiveModes.equals(other.supportsSelectiveModes)
                 && supportsTrackingFields.equals(other.supportsTrackingFields);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.supportsNamespaces, this.supportsTrackingFields);
+        return Objects.hash(this.supportsNamespaces, this.supportsSelectiveModes, this.supportsTrackingFields);
     }
 
     @java.lang.Override
@@ -85,6 +98,8 @@ public final class BulkSyncSourceCapabilities {
     public static final class Builder {
         private Optional<Boolean> supportsNamespaces = Optional.empty();
 
+        private Optional<Boolean> supportsSelectiveModes = Optional.empty();
+
         private Optional<Boolean> supportsTrackingFields = Optional.empty();
 
         private Map<String, Object> additionalProperties = new HashMap<>();
@@ -93,6 +108,7 @@ public final class BulkSyncSourceCapabilities {
 
         public Builder from(BulkSyncSourceCapabilities other) {
             supportsNamespaces(other.getSupportsNamespaces());
+            supportsSelectiveModes(other.getSupportsSelectiveModes());
             supportsTrackingFields(other.getSupportsTrackingFields());
             return this;
         }
@@ -112,6 +128,20 @@ public final class BulkSyncSourceCapabilities {
         }
 
         /**
+         * <p>Whether bulk sync schedules from this source can set a selective mode other than none</p>
+         */
+        @JsonSetter(value = "supports_selective_modes", nulls = Nulls.SKIP)
+        public Builder supportsSelectiveModes(Optional<Boolean> supportsSelectiveModes) {
+            this.supportsSelectiveModes = supportsSelectiveModes;
+            return this;
+        }
+
+        public Builder supportsSelectiveModes(Boolean supportsSelectiveModes) {
+            this.supportsSelectiveModes = Optional.ofNullable(supportsSelectiveModes);
+            return this;
+        }
+
+        /**
          * <p>Whether the source supports a tracking field for detecting changes between sync runs</p>
          */
         @JsonSetter(value = "supports_tracking_fields", nulls = Nulls.SKIP)
@@ -126,12 +156,15 @@ public final class BulkSyncSourceCapabilities {
         }
 
         public BulkSyncSourceCapabilities build() {
-            return new BulkSyncSourceCapabilities(supportsNamespaces, supportsTrackingFields, additionalProperties);
+            return new BulkSyncSourceCapabilities(
+                    supportsNamespaces, supportsSelectiveModes, supportsTrackingFields, additionalProperties);
         }
 
         @JsonAnySetter
         private void putAdditionalPropertyFromJson(String key, Object value) {
-            if (key.equalsIgnoreCase("supports_namespaces") || key.equalsIgnoreCase("supports_tracking_fields")) {
+            if (key.equalsIgnoreCase("supports_namespaces")
+                    || key.equalsIgnoreCase("supports_selective_modes")
+                    || key.equalsIgnoreCase("supports_tracking_fields")) {
                 return;
             }
             this.additionalProperties.put(key, value);

@@ -60,7 +60,7 @@ public final class ExecutionsListRequest {
     }
 
     /**
-     * @return When true, return executions from oldest to newest. Default is newest first.
+     * @return Traverse from the oldest executions by the selected sort timestamp; each page is ordered newest first.
      */
     @JsonProperty("ascending")
     public Optional<Boolean> getAscending() {
@@ -158,7 +158,7 @@ public final class ExecutionsListRequest {
         }
 
         /**
-         * <p>When true, return executions from oldest to newest. Default is newest first.</p>
+         * <p>Traverse from the oldest executions by the selected sort timestamp; each page is ordered newest first.</p>
          */
         @JsonSetter(value = "ascending", nulls = Nulls.SKIP)
         public Builder ascending(Optional<Boolean> ascending) {

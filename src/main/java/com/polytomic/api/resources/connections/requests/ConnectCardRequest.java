@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.polytomic.api.core.ObjectMappers;
+import com.polytomic.api.types.ConnectAccessLevel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonDeserialize(builder = ConnectCardRequest.Builder.class)
 public final class ConnectCardRequest {
+    private final Optional<List<ConnectAccessLevel>> access;
+
     private final Optional<String> connection;
 
     private final Optional<Boolean> dark;
@@ -43,6 +46,7 @@ public final class ConnectCardRequest {
     private final Map<String, Object> additionalProperties;
 
     private ConnectCardRequest(
+            Optional<List<ConnectAccessLevel>> access,
             Optional<String> connection,
             Optional<Boolean> dark,
             String name,
@@ -53,6 +57,7 @@ public final class ConnectCardRequest {
             Optional<Boolean> useOrganizationName,
             Optional<List<String>> whitelist,
             Map<String, Object> additionalProperties) {
+        this.access = access;
         this.connection = connection;
         this.dark = dark;
         this.name = name;
@@ -63,6 +68,14 @@ public final class ConnectCardRequest {
         this.useOrganizationName = useOrganizationName;
         this.whitelist = whitelist;
         this.additionalProperties = additionalProperties;
+    }
+
+    /**
+     * @return Access levels the new connection requests: [&quot;read&quot;] for read-only access, or [&quot;read&quot;, &quot;write&quot;] for full access, the default. Only some connection types support read-only access.
+     */
+    @JsonProperty("access")
+    public Optional<List<ConnectAccessLevel>> getAccess() {
+        return access;
     }
 
     /**
@@ -130,7 +143,7 @@ public final class ConnectCardRequest {
     }
 
     /**
-     * @return List of connection types which are allowed to be created. Ignored if type is set.
+     * @return List of connection types which are allowed to be created. Ignored if type is set. The embedded form shows one connection type, so send exactly one entry.
      */
     @JsonProperty("whitelist")
     public Optional<List<String>> getWhitelist() {
@@ -149,7 +162,8 @@ public final class ConnectCardRequest {
     }
 
     private boolean equalTo(ConnectCardRequest other) {
-        return connection.equals(other.connection)
+        return access.equals(other.access)
+                && connection.equals(other.connection)
                 && dark.equals(other.dark)
                 && name.equals(other.name)
                 && organizationId.equals(other.organizationId)
@@ -163,6 +177,7 @@ public final class ConnectCardRequest {
     @java.lang.Override
     public int hashCode() {
         return Objects.hash(
+                this.access,
                 this.connection,
                 this.dark,
                 this.name,
@@ -198,6 +213,13 @@ public final class ConnectCardRequest {
         _FinalStage additionalProperty(String key, Object value);
 
         _FinalStage additionalProperties(Map<String, Object> additionalProperties);
+
+        /**
+         * <p>Access levels the new connection requests: [&quot;read&quot;] for read-only access, or [&quot;read&quot;, &quot;write&quot;] for full access, the default. Only some connection types support read-only access.</p>
+         */
+        _FinalStage access(Optional<List<ConnectAccessLevel>> access);
+
+        _FinalStage access(List<ConnectAccessLevel> access);
 
         /**
          * <p>The id of an existing connection to update</p>
@@ -249,7 +271,7 @@ public final class ConnectCardRequest {
         _FinalStage useOrganizationName(Boolean useOrganizationName);
 
         /**
-         * <p>List of connection types which are allowed to be created. Ignored if type is set.</p>
+         * <p>List of connection types which are allowed to be created. Ignored if type is set. The embedded form shows one connection type, so send exactly one entry.</p>
          */
         _FinalStage whitelist(Optional<List<String>> whitelist);
 
@@ -276,12 +298,15 @@ public final class ConnectCardRequest {
 
         private Optional<String> connection = Optional.empty();
 
+        private Optional<List<ConnectAccessLevel>> access = Optional.empty();
+
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
         @java.lang.Override
         public Builder from(ConnectCardRequest other) {
+            access(other.getAccess());
             connection(other.getConnection());
             dark(other.getDark());
             name(other.getName());
@@ -306,7 +331,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>List of connection types which are allowed to be created. Ignored if type is set.</p>
+         * <p>List of connection types which are allowed to be created. Ignored if type is set. The embedded form shows one connection type, so send exactly one entry.</p>
          * @return Reference to {@code this} so that method calls can be chained together.
          */
         @java.lang.Override
@@ -316,7 +341,7 @@ public final class ConnectCardRequest {
         }
 
         /**
-         * <p>List of connection types which are allowed to be created. Ignored if type is set.</p>
+         * <p>List of connection types which are allowed to be created. Ignored if type is set. The embedded form shows one connection type, so send exactly one entry.</p>
          */
         @java.lang.Override
         @JsonSetter(value = "whitelist", nulls = Nulls.SKIP)
@@ -465,9 +490,30 @@ public final class ConnectCardRequest {
             return this;
         }
 
+        /**
+         * <p>Access levels the new connection requests: [&quot;read&quot;] for read-only access, or [&quot;read&quot;, &quot;write&quot;] for full access, the default. Only some connection types support read-only access.</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        public _FinalStage access(List<ConnectAccessLevel> access) {
+            this.access = Optional.ofNullable(access);
+            return this;
+        }
+
+        /**
+         * <p>Access levels the new connection requests: [&quot;read&quot;] for read-only access, or [&quot;read&quot;, &quot;write&quot;] for full access, the default. Only some connection types support read-only access.</p>
+         */
+        @java.lang.Override
+        @JsonSetter(value = "access", nulls = Nulls.SKIP)
+        public _FinalStage access(Optional<List<ConnectAccessLevel>> access) {
+            this.access = access;
+            return this;
+        }
+
         @java.lang.Override
         public ConnectCardRequest build() {
             return new ConnectCardRequest(
+                    access,
                     connection,
                     dark,
                     name,
@@ -482,7 +528,8 @@ public final class ConnectCardRequest {
 
         @JsonAnySetter
         private void putAdditionalPropertyFromJson(String key, Object value) {
-            if (key.equalsIgnoreCase("connection")
+            if (key.equalsIgnoreCase("access")
+                    || key.equalsIgnoreCase("connection")
                     || key.equalsIgnoreCase("dark")
                     || key.equalsIgnoreCase("name")
                     || key.equalsIgnoreCase("organization_id")

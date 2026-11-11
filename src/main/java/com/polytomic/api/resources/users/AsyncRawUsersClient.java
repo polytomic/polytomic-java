@@ -605,10 +605,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Lists all users in the specified organization.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ListUsersEnvelope>> list(String orgId) {
@@ -617,10 +618,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Lists all users in the specified organization.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <p>Returns user records including each user's ID, email, and assigned roles.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ListUsersEnvelope>> list(
@@ -710,10 +712,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Creates a new user in the specified organization and assigns the requested permissions roles.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <p>The new user receives an invitation email prompting them to set up their
      * account. Role assignments take effect as soon as the invitation is accepted.</p>
      */
@@ -724,10 +727,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Creates a new user in the specified organization and assigns the requested permissions roles.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <p>The new user receives an invitation email prompting them to set up their
      * account. Role assignments take effect as soon as the invitation is accepted.</p>
      */
@@ -832,10 +836,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Returns a single user in the specified organization.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> get(String orgId, String id) {
         return get(orgId, id, null);
@@ -843,10 +848,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Returns a single user in the specified organization.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<UserEnvelope>> get(
             String orgId, String id, RequestOptions requestOptions) {
@@ -940,10 +946,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Updates a user's assigned permissions roles.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <p>Only the user's role assignments are modified. Profile information such as name
      * and email address is not affected by this endpoint.</p>
      */
@@ -954,10 +961,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Updates a user's assigned permissions roles.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <p>Only the user's role assignments are modified. Profile information such as name
      * and email address is not affected by this endpoint.</p>
      */
@@ -1063,10 +1071,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Deletes a user from the specified organization.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <blockquote>
      * <p>🚧 This action is permanent. The user is immediately removed from the
      * organization and loses access to all resources within it. This cannot be
@@ -1079,10 +1088,11 @@ public class AsyncRawUsersClient {
 
     /**
      * Deletes a user from the specified organization.
-     * <blockquote>
-     * <p>🚧 Requires partner key</p>
-     * <p>User endpoints are only accessible using <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner keys</a>.</p>
-     * </blockquote>
+     * <p>These endpoints accept a <a href="../../../../../guides/obtaining-api-keys#partner-keys">partner key</a>
+     * or an Organization-scoped key derived from a partner key. An Organization-scoped
+     * key can access users only in its own Organization.</p>
+     * <p>To manage users with a user API key, use the current-Organization endpoints
+     * under <code>/api/organization/users</code>.</p>
      * <blockquote>
      * <p>🚧 This action is permanent. The user is immediately removed from the
      * organization and loses access to all resources within it. This cannot be

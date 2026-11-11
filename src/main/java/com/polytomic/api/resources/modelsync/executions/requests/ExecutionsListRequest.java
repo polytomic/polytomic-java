@@ -56,7 +56,7 @@ public final class ExecutionsListRequest {
     }
 
     /**
-     * @return Return executions oldest first.
+     * @return Traverse from the oldest executions; each page is ordered newest first.
      */
     @JsonProperty("ascending")
     public Optional<Boolean> getAscending() {
@@ -142,7 +142,7 @@ public final class ExecutionsListRequest {
         }
 
         /**
-         * <p>Return executions oldest first.</p>
+         * <p>Traverse from the oldest executions; each page is ordered newest first.</p>
          */
         @JsonSetter(value = "ascending", nulls = Nulls.SKIP)
         public Builder ascending(Optional<Boolean> ascending) {

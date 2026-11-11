@@ -51,13 +51,9 @@ public class ConnectionsClient {
 
     /**
      * Lists all connection types supported by this deployment.
-     * <p>Each entry includes per-type metadata:</p>
-     * <ul>
-     * <li>The available operations the connection type supports.</li>
-     * <li>Its category.</li>
-     * <li>Whether the connection type is enabled for the caller's organization.</li>
-     * <li>Which modes (source, destination, enrichment) it can act as.</li>
-     * </ul>
+     * <p>Each entry includes the Connection type's ID, name, capabilities, and
+     * configuration schema. Capabilities indicate whether it supports use as a
+     * source, destination, enrichment source, scheduler, or sync event log target.</p>
      */
     public ConnectionTypeResponseEnvelope getTypes() {
         return this.rawClient.getTypes().body();
@@ -65,13 +61,9 @@ public class ConnectionsClient {
 
     /**
      * Lists all connection types supported by this deployment.
-     * <p>Each entry includes per-type metadata:</p>
-     * <ul>
-     * <li>The available operations the connection type supports.</li>
-     * <li>Its category.</li>
-     * <li>Whether the connection type is enabled for the caller's organization.</li>
-     * <li>Which modes (source, destination, enrichment) it can act as.</li>
-     * </ul>
+     * <p>Each entry includes the Connection type's ID, name, capabilities, and
+     * configuration schema. Capabilities indicate whether it supports use as a
+     * source, destination, enrichment source, scheduler, or sync event log target.</p>
      */
     public ConnectionTypeResponseEnvelope getTypes(RequestOptions requestOptions) {
         return this.rawClient.getTypes(requestOptions).body();

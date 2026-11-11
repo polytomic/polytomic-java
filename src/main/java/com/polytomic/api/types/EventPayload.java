@@ -51,6 +51,10 @@ public final class EventPayload {
             return visitor.visit((EventingBulkSyncCompletedWithErrorEvent) this.value);
         } else if (this.type == 9) {
             return visitor.visit((EventingBulkSyncFailedEvent) this.value);
+        } else if (this.type == 10) {
+            return visitor.visit((EventingIngestionStalledEvent) this.value);
+        } else if (this.type == 11) {
+            return visitor.visit((EventingIngestionRecoveredEvent) this.value);
         }
         throw new IllegalStateException("Failed to visit value. This should never happen.");
     }
@@ -115,6 +119,14 @@ public final class EventPayload {
         return new EventPayload(value, 9);
     }
 
+    public static EventPayload of(EventingIngestionStalledEvent value) {
+        return new EventPayload(value, 10);
+    }
+
+    public static EventPayload of(EventingIngestionRecoveredEvent value) {
+        return new EventPayload(value, 11);
+    }
+
     public interface Visitor<T> {
         T visit(EventingSyncRunningEvent value);
 
@@ -135,6 +147,10 @@ public final class EventPayload {
         T visit(EventingBulkSyncCompletedWithErrorEvent value);
 
         T visit(EventingBulkSyncFailedEvent value);
+
+        T visit(EventingIngestionStalledEvent value);
+
+        T visit(EventingIngestionRecoveredEvent value);
     }
 
     static final class Deserializer extends StdDeserializer<EventPayload> {
@@ -183,6 +199,14 @@ public final class EventPayload {
             }
             try {
                 return of(ObjectMappers.JSON_MAPPER.convertValue(value, EventingBulkSyncFailedEvent.class));
+            } catch (RuntimeException e) {
+            }
+            try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, EventingIngestionStalledEvent.class));
+            } catch (RuntimeException e) {
+            }
+            try {
+                return of(ObjectMappers.JSON_MAPPER.convertValue(value, EventingIngestionRecoveredEvent.class));
             } catch (RuntimeException e) {
             }
             throw new JsonParseException(p, "Failed to deserialize");

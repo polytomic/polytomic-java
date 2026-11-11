@@ -30,6 +30,8 @@ public final class UpdateBulkSchema {
 
     private final Optional<Boolean> enabled;
 
+    private final Optional<List<String>> excludedFields;
+
     private final Optional<List<UpdateBulkField>> fields;
 
     private final Optional<List<BulkFilter>> filters;
@@ -48,6 +50,7 @@ public final class UpdateBulkSchema {
             Optional<OffsetDateTime> dataCutoffTimestamp,
             Optional<Boolean> disableDataCutoff,
             Optional<Boolean> enabled,
+            Optional<List<String>> excludedFields,
             Optional<List<UpdateBulkField>> fields,
             Optional<List<BulkFilter>> filters,
             Optional<Boolean> historyEnabled,
@@ -58,6 +61,7 @@ public final class UpdateBulkSchema {
         this.dataCutoffTimestamp = dataCutoffTimestamp;
         this.disableDataCutoff = disableDataCutoff;
         this.enabled = enabled;
+        this.excludedFields = excludedFields;
         this.fields = fields;
         this.filters = filters;
         this.historyEnabled = historyEnabled;
@@ -89,6 +93,14 @@ public final class UpdateBulkSchema {
     @JsonProperty("enabled")
     public Optional<Boolean> getEnabled() {
         return enabled;
+    }
+
+    /**
+     * @return IDs of fields that are never synced, even when automatically_add_new_fields would add them. Each must be an existing field that is not part of the primary key, the tracking field, or the partition key. Omit to keep the current list; send an empty list to clear it.
+     */
+    @JsonProperty("excluded_fields")
+    public Optional<List<String>> getExcludedFields() {
+        return excludedFields;
     }
 
     /**
@@ -154,6 +166,7 @@ public final class UpdateBulkSchema {
         return dataCutoffTimestamp.equals(other.dataCutoffTimestamp)
                 && disableDataCutoff.equals(other.disableDataCutoff)
                 && enabled.equals(other.enabled)
+                && excludedFields.equals(other.excludedFields)
                 && fields.equals(other.fields)
                 && filters.equals(other.filters)
                 && historyEnabled.equals(other.historyEnabled)
@@ -168,6 +181,7 @@ public final class UpdateBulkSchema {
                 this.dataCutoffTimestamp,
                 this.disableDataCutoff,
                 this.enabled,
+                this.excludedFields,
                 this.fields,
                 this.filters,
                 this.historyEnabled,
@@ -193,6 +207,8 @@ public final class UpdateBulkSchema {
 
         private Optional<Boolean> enabled = Optional.empty();
 
+        private Optional<List<String>> excludedFields = Optional.empty();
+
         private Optional<List<UpdateBulkField>> fields = Optional.empty();
 
         private Optional<List<BulkFilter>> filters = Optional.empty();
@@ -213,6 +229,7 @@ public final class UpdateBulkSchema {
             dataCutoffTimestamp(other.getDataCutoffTimestamp());
             disableDataCutoff(other.getDisableDataCutoff());
             enabled(other.getEnabled());
+            excludedFields(other.getExcludedFields());
             fields(other.getFields());
             filters(other.getFilters());
             historyEnabled(other.getHistoryEnabled());
@@ -261,6 +278,20 @@ public final class UpdateBulkSchema {
 
         public Builder enabled(Boolean enabled) {
             this.enabled = Optional.ofNullable(enabled);
+            return this;
+        }
+
+        /**
+         * <p>IDs of fields that are never synced, even when automatically_add_new_fields would add them. Each must be an existing field that is not part of the primary key, the tracking field, or the partition key. Omit to keep the current list; send an empty list to clear it.</p>
+         */
+        @JsonSetter(value = "excluded_fields", nulls = Nulls.SKIP)
+        public Builder excludedFields(Optional<List<String>> excludedFields) {
+            this.excludedFields = excludedFields;
+            return this;
+        }
+
+        public Builder excludedFields(List<String> excludedFields) {
+            this.excludedFields = Optional.ofNullable(excludedFields);
             return this;
         }
 
@@ -353,6 +384,7 @@ public final class UpdateBulkSchema {
                     dataCutoffTimestamp,
                     disableDataCutoff,
                     enabled,
+                    excludedFields,
                     fields,
                     filters,
                     historyEnabled,
@@ -367,6 +399,7 @@ public final class UpdateBulkSchema {
             if (key.equalsIgnoreCase("data_cutoff_timestamp")
                     || key.equalsIgnoreCase("disable_data_cutoff")
                     || key.equalsIgnoreCase("enabled")
+                    || key.equalsIgnoreCase("excluded_fields")
                     || key.equalsIgnoreCase("fields")
                     || key.equalsIgnoreCase("filters")
                     || key.equalsIgnoreCase("history_enabled")

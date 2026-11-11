@@ -39,6 +39,8 @@ public final class ConnectionType {
 
     private final Optional<BackendOAuthPrompt> oauthPrompt;
 
+    private final boolean supportsReadOnlyAccess;
+
     private final Optional<Boolean> useOauth;
 
     private final Map<String, Object> additionalProperties;
@@ -53,6 +55,7 @@ public final class ConnectionType {
             Optional<String> logoUrl,
             Optional<String> name,
             Optional<BackendOAuthPrompt> oauthPrompt,
+            boolean supportsReadOnlyAccess,
             Optional<Boolean> useOauth,
             Map<String, Object> additionalProperties) {
         this.capabilities = capabilities;
@@ -64,6 +67,7 @@ public final class ConnectionType {
         this.logoUrl = logoUrl;
         this.name = name;
         this.oauthPrompt = oauthPrompt;
+        this.supportsReadOnlyAccess = supportsReadOnlyAccess;
         this.useOauth = useOauth;
         this.additionalProperties = additionalProperties;
     }
@@ -113,6 +117,14 @@ public final class ConnectionType {
         return oauthPrompt;
     }
 
+    /**
+     * @return Whether this deployment supports creating this connection type through Connect with access set to [&quot;read&quot;].
+     */
+    @JsonProperty("supports_read_only_access")
+    public boolean getSupportsReadOnlyAccess() {
+        return supportsReadOnlyAccess;
+    }
+
     @JsonProperty("use_oauth")
     public Optional<Boolean> getUseOauth() {
         return useOauth;
@@ -139,6 +151,7 @@ public final class ConnectionType {
                 && logoUrl.equals(other.logoUrl)
                 && name.equals(other.name)
                 && oauthPrompt.equals(other.oauthPrompt)
+                && supportsReadOnlyAccess == other.supportsReadOnlyAccess
                 && useOauth.equals(other.useOauth);
     }
 
@@ -154,6 +167,7 @@ public final class ConnectionType {
                 this.logoUrl,
                 this.name,
                 this.oauthPrompt,
+                this.supportsReadOnlyAccess,
                 this.useOauth);
     }
 
@@ -167,9 +181,16 @@ public final class ConnectionType {
     }
 
     public interface CapabilitiesStage {
-        _FinalStage capabilities(@NotNull BackendConnectionCapabilities capabilities);
+        SupportsReadOnlyAccessStage capabilities(@NotNull BackendConnectionCapabilities capabilities);
 
         Builder from(ConnectionType other);
+    }
+
+    public interface SupportsReadOnlyAccessStage {
+        /**
+         * <p>Whether this deployment supports creating this connection type through Connect with access set to [&quot;read&quot;].</p>
+         */
+        _FinalStage supportsReadOnlyAccess(boolean supportsReadOnlyAccess);
     }
 
     public interface _FinalStage {
@@ -217,8 +238,10 @@ public final class ConnectionType {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Builder implements CapabilitiesStage, _FinalStage {
+    public static final class Builder implements CapabilitiesStage, SupportsReadOnlyAccessStage, _FinalStage {
         private BackendConnectionCapabilities capabilities;
+
+        private boolean supportsReadOnlyAccess;
 
         private Optional<Boolean> useOauth = Optional.empty();
 
@@ -253,14 +276,26 @@ public final class ConnectionType {
             logoUrl(other.getLogoUrl());
             name(other.getName());
             oauthPrompt(other.getOauthPrompt());
+            supportsReadOnlyAccess(other.getSupportsReadOnlyAccess());
             useOauth(other.getUseOauth());
             return this;
         }
 
         @java.lang.Override
         @JsonSetter("capabilities")
-        public _FinalStage capabilities(@NotNull BackendConnectionCapabilities capabilities) {
+        public SupportsReadOnlyAccessStage capabilities(@NotNull BackendConnectionCapabilities capabilities) {
             this.capabilities = capabilities;
+            return this;
+        }
+
+        /**
+         * <p>Whether this deployment supports creating this connection type through Connect with access set to [&quot;read&quot;].</p>
+         * @return Reference to {@code this} so that method calls can be chained together.
+         */
+        @java.lang.Override
+        @JsonSetter("supports_read_only_access")
+        public _FinalStage supportsReadOnlyAccess(boolean supportsReadOnlyAccess) {
+            this.supportsReadOnlyAccess = supportsReadOnlyAccess;
             return this;
         }
 
@@ -393,6 +428,7 @@ public final class ConnectionType {
                     logoUrl,
                     name,
                     oauthPrompt,
+                    supportsReadOnlyAccess,
                     useOauth,
                     additionalProperties);
         }
@@ -408,6 +444,7 @@ public final class ConnectionType {
                     || key.equalsIgnoreCase("logo_url")
                     || key.equalsIgnoreCase("name")
                     || key.equalsIgnoreCase("oauth_prompt")
+                    || key.equalsIgnoreCase("supports_read_only_access")
                     || key.equalsIgnoreCase("use_oauth")) {
                 return;
             }

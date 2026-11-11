@@ -59,6 +59,8 @@ public class TemporaryCredentialsClient {
      * </blockquote>
      * <p>Polytomic periodically removes expired credential records. API usage history
      * keeps its credential ID according to the normal API usage retention period.</p>
+     * <p>For a Harbor credential without an expiration, use
+     * <a href="../../api-reference/harbors/keys/create">Create Harbor key</a>.</p>
      */
     public TemporaryCredentialResponseEnvelope create(CreateTemporaryCredentialRequest request) {
         return this.rawClient.create(request).body();
@@ -98,6 +100,8 @@ public class TemporaryCredentialsClient {
      * </blockquote>
      * <p>Polytomic periodically removes expired credential records. API usage history
      * keeps its credential ID according to the normal API usage retention period.</p>
+     * <p>For a Harbor credential without an expiration, use
+     * <a href="../../api-reference/harbors/keys/create">Create Harbor key</a>.</p>
      */
     public TemporaryCredentialResponseEnvelope create(
             CreateTemporaryCredentialRequest request, IdempotentRequestOptions requestOptions) {

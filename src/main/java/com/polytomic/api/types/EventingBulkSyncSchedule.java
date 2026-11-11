@@ -42,7 +42,7 @@ public final class EventingBulkSyncSchedule {
     }
 
     /**
-     * @return Bulk sync schedule ID
+     * @return Bulk Sync schedule ID
      */
     @JsonProperty("id")
     public Optional<String> getId() {
@@ -109,7 +109,7 @@ public final class EventingBulkSyncSchedule {
         }
 
         /**
-         * <p>Bulk sync schedule ID</p>
+         * <p>Bulk Sync schedule ID</p>
          */
         @JsonSetter(value = "id", nulls = Nulls.SKIP)
         public Builder id(Optional<String> id) {

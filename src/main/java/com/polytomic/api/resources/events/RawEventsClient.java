@@ -35,14 +35,16 @@ public class RawEventsClient {
 
     /**
      * Lists audit events for the caller's organization.
-     * <p>Results are paginated. If more events are available, the response includes
-     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
-     * the last item you received.</p>
-     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
-     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
-     * narrow results to a specific category of activity.</p>
+     * <p>Results are ordered by <code>created_at</code> descending. Use <code>limit</code> to control how many
+     * events are returned. The response does not include a pagination token.</p>
+     * <p>Filter by event type using the <code>type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a>
+     * to narrow results to a specific category of activity.</p>
+     * <p>Use <code>starting_after</code> and <code>ending_before</code> to restrict results to events created
+     * strictly after or before a timestamp. Results remain newest first when you use
+     * either filter.</p>
      * <blockquote>
-     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * <p>ℹ️ Events reflect audit activity scoped to your Organization.
      * The log captures both user-initiated and API-initiated actions.</p>
      * </blockquote>
      */
@@ -52,14 +54,16 @@ public class RawEventsClient {
 
     /**
      * Lists audit events for the caller's organization.
-     * <p>Results are paginated. If more events are available, the response includes
-     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
-     * the last item you received.</p>
-     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
-     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
-     * narrow results to a specific category of activity.</p>
+     * <p>Results are ordered by <code>created_at</code> descending. Use <code>limit</code> to control how many
+     * events are returned. The response does not include a pagination token.</p>
+     * <p>Filter by event type using the <code>type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a>
+     * to narrow results to a specific category of activity.</p>
+     * <p>Use <code>starting_after</code> and <code>ending_before</code> to restrict results to events created
+     * strictly after or before a timestamp. Results remain newest first when you use
+     * either filter.</p>
      * <blockquote>
-     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * <p>ℹ️ Events reflect audit activity scoped to your Organization.
      * The log captures both user-initiated and API-initiated actions.</p>
      * </blockquote>
      */
@@ -69,14 +73,16 @@ public class RawEventsClient {
 
     /**
      * Lists audit events for the caller's organization.
-     * <p>Results are paginated. If more events are available, the response includes
-     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
-     * the last item you received.</p>
-     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
-     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
-     * narrow results to a specific category of activity.</p>
+     * <p>Results are ordered by <code>created_at</code> descending. Use <code>limit</code> to control how many
+     * events are returned. The response does not include a pagination token.</p>
+     * <p>Filter by event type using the <code>type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a>
+     * to narrow results to a specific category of activity.</p>
+     * <p>Use <code>starting_after</code> and <code>ending_before</code> to restrict results to events created
+     * strictly after or before a timestamp. Results remain newest first when you use
+     * either filter.</p>
      * <blockquote>
-     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * <p>ℹ️ Events reflect audit activity scoped to your Organization.
      * The log captures both user-initiated and API-initiated actions.</p>
      * </blockquote>
      */
@@ -86,14 +92,16 @@ public class RawEventsClient {
 
     /**
      * Lists audit events for the caller's organization.
-     * <p>Results are paginated. If more events are available, the response includes
-     * <code>pagination.next_page_token</code>; pass that token back unchanged to continue from
-     * the last item you received.</p>
-     * <p>Filter by event type using the <code>event_type</code> query parameter. Pass one of the
-     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a> to
-     * narrow results to a specific category of activity.</p>
+     * <p>Results are ordered by <code>created_at</code> descending. Use <code>limit</code> to control how many
+     * events are returned. The response does not include a pagination token.</p>
+     * <p>Filter by event type using the <code>type</code> query parameter. Pass one of the
+     * identifiers returned by <a href="../../api-reference/events/get-types"><code>GET /api/events_types</code></a>
+     * to narrow results to a specific category of activity.</p>
+     * <p>Use <code>starting_after</code> and <code>ending_before</code> to restrict results to events created
+     * strictly after or before a timestamp. Results remain newest first when you use
+     * either filter.</p>
      * <blockquote>
-     * <p>📘 Events reflect audit activity scoped to the caller's organization.
+     * <p>ℹ️ Events reflect audit activity scoped to your Organization.
      * The log captures both user-initiated and API-initiated actions.</p>
      * </blockquote>
      */

@@ -194,9 +194,6 @@ public final class BulkBulkSyncSchedule {
         return schemas;
     }
 
-    /**
-     * @return Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields
-     */
     @JsonProperty("selectiveMode")
     public Optional<BulkSelectiveMode> getSelectiveMode() {
         return selectiveMode;
@@ -389,9 +386,6 @@ public final class BulkBulkSyncSchedule {
 
         _FinalStage schemas(List<String> schemas);
 
-        /**
-         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
-         */
         _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode);
 
         _FinalStage selectiveMode(BulkSelectiveMode selectiveMode);
@@ -578,19 +572,12 @@ public final class BulkBulkSyncSchedule {
             return this;
         }
 
-        /**
-         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
-         * @return Reference to {@code this} so that method calls can be chained together.
-         */
         @java.lang.Override
         public _FinalStage selectiveMode(BulkSelectiveMode selectiveMode) {
             this.selectiveMode = Optional.ofNullable(selectiveMode);
             return this;
         }
 
-        /**
-         * <p>Whether this schedule runs a full fetch, only incremental fields, or only non-incremental fields</p>
-         */
         @java.lang.Override
         @JsonSetter(value = "selectiveMode", nulls = Nulls.SKIP)
         public _FinalStage selectiveMode(Optional<BulkSelectiveMode> selectiveMode) {

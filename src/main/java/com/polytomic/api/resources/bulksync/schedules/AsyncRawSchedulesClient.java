@@ -155,6 +155,13 @@ public class AsyncRawSchedulesClient {
      * <p>Creating a schedule only affects future automatic executions. To run the
      * sync immediately, call
      * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>.</p>
+     * <p>To sync the two selective groups of objects at different frequencies, add one
+     * schedule with <code>selectiveMode</code> set to <code>incrementalFields</code> and another with
+     * <code>nonincrementalFields</code>. Set the default schedule to <code>manual</code> to avoid an
+     * additional automatic run covering all selected objects. Check
+     * <code>capabilities.supports_selective_modes</code> on
+     * <a href="../../../../../api-reference/bulk-sync/get-source"><code>GET /api/connections/{id}/bulksync/source</code></a>
+     * first.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> create(
             String syncId, CreateScheduleRequest request) {
@@ -168,6 +175,13 @@ public class AsyncRawSchedulesClient {
      * <p>Creating a schedule only affects future automatic executions. To run the
      * sync immediately, call
      * <a href="../../../../../api-reference/bulk-sync/start"><code>POST /api/bulk/syncs/{id}/executions</code></a>.</p>
+     * <p>To sync the two selective groups of objects at different frequencies, add one
+     * schedule with <code>selectiveMode</code> set to <code>incrementalFields</code> and another with
+     * <code>nonincrementalFields</code>. Set the default schedule to <code>manual</code> to avoid an
+     * additional automatic run covering all selected objects. Check
+     * <code>capabilities.supports_selective_modes</code> on
+     * <a href="../../../../../api-reference/bulk-sync/get-source"><code>GET /api/connections/{id}/bulksync/source</code></a>
+     * first.</p>
      */
     public CompletableFuture<PolytomicHttpResponse<ScheduleEnvelope>> create(
             String syncId, CreateScheduleRequest request, IdempotentRequestOptions requestOptions) {
